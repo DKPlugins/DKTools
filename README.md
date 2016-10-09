@@ -75,4 +75,5 @@ A: Base class "DKTools_Sprite" includes the following types of events:
 Other elements have different events.
  
 Q: Сurrently DKTools has incomplete documentation and only in Russian. Will the English documentation ?
+
 A: Yes, of course. Currently the documentation is not a primary task, but I try to make time for it. I use JSDoc documentation.
