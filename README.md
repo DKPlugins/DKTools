@@ -67,13 +67,12 @@ A: Base class "DKTools_Sprite" includes the following types of events:
 7. deactivate - events, which are caused when calling the deactivation function of the element
 8. mouseEnter - events that are called when you hover over the element (triggered once)
 9. mouseStay - similar to the previous type, but triggered every frame until the mouse is stay on element
-10. mouseLeave - events that are called when the mouse leaves an element (triggered once)
+10. mouseLeave - events that are called when the mouse leaves an element (triggered once
 11. click - events that are called when a user clicks on an element (a simple click)
-12. longPress - event that are called when the user clicks long press on element
+12. longPress - event that are called when the user clicks long press on elemen
 13. wheelX - event that are called when the user scrolls the mouse wheel on the X axis
 14. wheelY - event that are called when the user scrolls the mouse wheel on the Y axis
 Other elements have different events.
  
 Q: Сurrently DKTools has incomplete documentation and only in Russian. Will the English documentation ?
-
 A: Yes, of course. Currently the documentation is not a primary task, but I try to make time for it. I use JSDoc documentation.
