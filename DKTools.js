@@ -263,18 +263,18 @@ if (!DKLocalizationManager) {
     };
 
     DKLocalizationManager.translation = function (plugin, param) {
-        var plugin_localization = DKLocalization[plugin];
+        var pluginLocalization = DKLocalization[plugin];
         var locale = DKLocale;
-        if (!plugin_localization) {
+        if (!pluginLocalization) {
             var error = 'undefined plugin: "%1"'.format(plugin);
             throw new Error(error);
         }
-        var param_translation = plugin_localization[param];
-        if (!param_translation) {
+        var paramTranslation = pluginLocalization[param];
+        if (!paramTranslation) {
             var error = '%1: undefined parameter: "%2"'.format(plugin, param);
             throw new Error(error);
         }
-        var result = param_translation[locale];
+        var result = paramTranslation[locale];
         if (!result) {
             var error = '%1: undefined locale: "%2"'.format(plugin, locale);
             throw new Error(error);
@@ -1373,56 +1373,59 @@ DKTools_Sprite._counter = 0;
 
 // properties
 
-/**
- * Цвет текста
- *
- * @property textColor
- * @type String
- */
-Object.defineProperty(DKTools_Sprite.prototype, 'textColor', {
-    get: function() {
-        return this._textColor;
-    },
-    configurable: true
-});
+Object.defineProperties(DKTools_Sprite.prototype, {
 
-/**
- * Цвет фона
- *
- * @property backgroundColor
- * @type String
- */
-Object.defineProperty(DKTools_Sprite.prototype, 'backgroundColor', {
-    get: function() {
-        return this._backgroundColor;
+    /**
+     * Цвет текста
+     *
+     * @property textColor
+     * @type String
+     */
+    textColor: {
+        get: function() {
+            return this._textColor;
+        },
+        configurable: true
     },
-    configurable: true
-});
 
-/**
- * Шрифт текста
- *
- * @property font
- * @type Array
- */
-Object.defineProperty(DKTools_Sprite.prototype, 'font', {
-    get: function() {
-        return this._font;
+    /**
+     * Цвет фона
+     *
+     * @property backgroundColor
+     * @type String
+     */
+    backgroundColor: {
+        get: function() {
+            return this._backgroundColor;
+        },
+        configurable: true
     },
-    configurable: true
-});
 
-/**
- * Выравнивание текста
- *
- * @property align
- * @type String
- */
-Object.defineProperty(DKTools_Sprite.prototype, 'align', {
-    get: function() {
-        return this._align;
+    /**
+     * Шрифт текста
+     *
+     * @property font
+     * @type Array
+     */
+    font: {
+        get: function() {
+            return this._font;
+        },
+        configurable: true
     },
-    configurable: true
+
+    /**
+     * Выравнивание текста
+     *
+     * @property align
+     * @type String
+     */
+    align: {
+        get: function() {
+            return this._align;
+        },
+        configurable: true
+    }
 });
 
 // initialize method
@@ -1690,7 +1693,9 @@ DKTools_Sprite.prototype.setupAll = function(object) {
  * @param {Number | null} [width = null] - Ширина Bitmap
 */
 DKTools_Sprite.prototype.setupWidth = function(width) {
-	this._bitmapWidth = (width ? width.clamp(this.minWidth(), this.maxWidth()) : this.minWidth());
+    var minWidth = this.minWidth();
+    var maxWidth = this.maxWidth();
+	this._bitmapWidth = (width ? width.clamp(minWidth, maxWidth) : minWidth);
 };
 
 /**
@@ -1700,7 +1705,9 @@ DKTools_Sprite.prototype.setupWidth = function(width) {
  * @param {Number || null} [height = null] - Высота Bitmap
 */
 DKTools_Sprite.prototype.setupHeight = function(height) {
-	this._bitmapHeight = (height ? height.clamp(this.minHeight(), this.maxHeight()) : this.minHeight());
+    var minHeight = this.minHeight();
+    var maxHeight = this.maxHeight();
+	this._bitmapHeight = (height ? height.clamp(minHeight, maxHeight) : minHeight);
 };
 
 /**
@@ -1780,10 +1787,10 @@ DKTools_Sprite.prototype.setupAlign = function(align) {
  * Устанавливает цвет фона
  *
  * @method setupBackgroundColor
- * @param {String | null} [backgroundColor = null] - Цвет фона
+ * @param {String | null} [color = null] - Цвет фона
 */
-DKTools_Sprite.prototype.setupBackgroundColor = function(backgroundColor) {
-	this._backgroundColor = backgroundColor || this.standardBackgroundColor();
+DKTools_Sprite.prototype.setupBackgroundColor = function(color) {
+	this._backgroundColor = (color == null ? this.standardBackgroundColor() : color);
 };
 
 /**
@@ -2264,13 +2271,13 @@ DKTools_Sprite.prototype.clearRect = function(object, y, width, height) {
 	if (!this.bitmap) {
         return false;
     }
+    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
+        return this.clearRect(object.x, object.y, object.width, object.height);
+    }
 	var x = object || 0;
     y = y || 0;
     width = width || this.width;
     height = height || this.height;
-	if (object && (object.constructor === Rectangle || object.constructor === Object)) {
-        return this.clearRect(object.x, object.y, object.width, object.height);
-	}
 	this.bitmap.clearRect(x, y, width, height);
 	return true;
 };
@@ -2504,6 +2511,7 @@ DKTools_Sprite.prototype.textWidth = function(text) {
 	if (text == null) {
         return 0;
     }
+    text = String(text);
 	if (this.bitmap) {
         return this.bitmap.measureTextWidth(text);
     }
@@ -2903,6 +2911,7 @@ if (DKToolsUtils.debug) {
         this.bitmap.drawLine(x1, y1, x2, y2, color);
         return true;
     };
+
 }
 
 /**
@@ -3568,6 +3577,7 @@ DKTools_Sprite.prototype.loadBitmap = function(folder, filename, listener, hue, 
 DKTools_Sprite.prototype.activate = function() {
     this.setupActive(true);
     this.updateActivateEvents();
+    this.updateInputData();
 };
 
 /**
@@ -3590,7 +3600,8 @@ DKTools_Sprite.prototype.deactivate = function() {
  */
 DKTools_Sprite.prototype.show = function(duration, activate) {
     if (duration > 0) {
-        var handler = this._updateMove.bind(this, this.x, this.y, 255, this.scale.x, this.scale.y);
+        var opacity = 255;
+        var handler = this._updateMove.bind(this, this.x, this.y, opacity, this.scale.x, this.scale.y);
         var onStartHandler = function() {
             this.setupVisible(true);
         }.bind(this);
@@ -3613,7 +3624,8 @@ DKTools_Sprite.prototype.show = function(duration, activate) {
 */
 DKTools_Sprite.prototype.hide = function(duration, blockDeactivate) {
     if (duration > 0) {
-        var handler = this._updateMove.bind(this, this.x, this.y, 0, this.scale.x, this.scale.y);
+        var opacity = 0;
+        var handler = this._updateMove.bind(this, this.x, this.y, opacity, this.scale.x, this.scale.y);
         var onStartHandler = null;
         var onEndHandler = function() {
             this.setupVisible(false);
@@ -3631,10 +3643,12 @@ DKTools_Sprite.prototype.hide = function(duration, blockDeactivate) {
 
 /**
  *
+ *
  * @method _getSymbol
  * @private
  *
  * @param {String} symbol - Символ
+ *
  * @return {Boolean}
  */
 DKTools_Sprite.prototype._getSymbol = function(symbol) {
@@ -3643,11 +3657,13 @@ DKTools_Sprite.prototype._getSymbol = function(symbol) {
 
 /**
  *
+ *
  * @method _getSymbols
  * @private
  *
  * @param object
- * @return {Array|Boolean}
+ *
+ * @return {Array | Boolean}
  */
 DKTools_Sprite.prototype._getSymbols = function(object) {
     var symbols = [];
@@ -3670,6 +3686,7 @@ DKTools_Sprite.prototype._getSymbols = function(object) {
 
 /**
  *
+ *
  * @method _setSymbol
  * @private
  *
@@ -3681,6 +3698,8 @@ DKTools_Sprite.prototype._setSymbol = function(symbol, value) {
 };
 
 /**
+ *
+ *
  * @method _enableSymbols
  * @private
  *
@@ -3702,6 +3721,7 @@ DKTools_Sprite.prototype._enableSymbols = function(object) {
 };
 
 /**
+ *
  *
  * @method _disableSymbols
  * @private
@@ -3725,6 +3745,8 @@ DKTools_Sprite.prototype._disableSymbols = function(object) {
 
 /**
  *
+ *
+ * @method isEnabled
  * @return {Boolean}
  */
 DKTools_Sprite.prototype.isEnabled = function() {
@@ -3734,12 +3756,14 @@ DKTools_Sprite.prototype.isEnabled = function() {
 
 /**
  *
+ *
  * @method enable
  *
  */
 DKTools_Sprite.prototype.enable = DKTools_Sprite.prototype._enableSymbols;
 
 /**
+ *
  *
  * @method disable
  *
@@ -3750,12 +3774,14 @@ DKTools_Sprite.prototype.disable = DKTools_Sprite.prototype._disableSymbols;
 
 /**
  *
+ *
  * @method canvasToLocalX
  * @return {Number}
  */
 DKTools_Sprite.prototype.canvasToLocalX = Sprite_Button.prototype.canvasToLocalX;
 
 /**
+ *
  *
  * @method canvasToLocalY
  * @return {Number}
@@ -3985,8 +4011,6 @@ DKTools_Sprite.prototype.continueEvents = function(type) {
     this.iterateEventContainer(type, callback);
 };
 
-//
-
 /**
  * Обновляет события
  *
@@ -4173,7 +4197,7 @@ DKTools_Sprite.prototype.eventContainerByType = function(type) {
  * @return {Array} Контейнер для событий
  */
 DKTools_Sprite.prototype.eventContainer = function(event) {
-    var type = event._type;
+    var type = event.type;
     return this.eventContainerByType(type);
 };
 
@@ -4512,30 +4536,33 @@ DKTools_Text.prototype.constructor = DKTools_Text;
 
 // properties
 
-/**
- * Отображаемый текст
- *
- * @property text
- * @type String
- */
-Object.defineProperty(DKTools_Text.prototype, 'text', {
-    get: function() {
-        return this._text;
-    },
-    configurable: true
-});
+Object.defineProperties(DKTools_Text.prototype, {
 
-/**
- * Длина отображаемого текста
- *
- * @property length
- * @type Number
- */
-Object.defineProperty(DKTools_Text.prototype, 'length', {
-    get: function() {
-        return this._text.length;
+    /**
+     * Отображаемый текст
+     *
+     * @property text
+     * @type String
+     */
+    text: {
+        get: function() {
+            return this._text;
+        },
+        configurable: true
     },
-    configurable: true
+
+    /**
+     * Длина отображаемого текста
+     *
+     * @property length
+     * @type Number
+     */
+    length: {
+        get: function() {
+            return this._text.length;
+        },
+        configurable: true
+    }
 });
 
 // standard methods
@@ -4663,6 +4690,8 @@ DKTools_Text.prototype.start = function(activate) {
 
 /**
  *
+ *
+ * @method object
  * @return {Object}
  */
 DKTools_Text.prototype.object = function() {
@@ -4859,8 +4888,7 @@ DKTools_Container_Base.prototype.setupAll = function(object) {
 	this.setupPlacement(object.placement);
     this.setupRows(object.rows);
     this.setupCols(object.cols);
-    this.setupXPadding(object.xPadding);
-    this.setupYPadding(object.yPadding);
+    this.setupPadding(object.xPadding, object.yPadding);
 };
 
 /**
@@ -4986,12 +5014,7 @@ DKTools_Container_Base.prototype.setAll = function(object, blockStart) {
     if (this.setCols(object.cols, block)) {
         changed++;
     }
-    if (this.setXPadding(object.xPadding, block)) {
-        changed++;
-    }
-    if (this.setYPadding(object.yPadding, block)) {
-        changed++;
-    }
+    changed += this.setPadding(object.xPadding, object.yPadding, block);
 	if (changed && !blockStart) {
         this.start();
     }
@@ -5220,6 +5243,8 @@ DKTools_Container_Base.prototype._cloneElements = function(startPosition) {
 
 /**
  *
+ *
+ * @method object
  * @return {Object}
  */
 DKTools_Container_Base.prototype.object = function() {
@@ -5244,8 +5269,8 @@ DKTools_Container_Base.prototype.minWidth = function() {
         return 1;
     }
     var width = 0;
-    var max_cols = this.maxCols() + 1;
-    for(var i = 1; i < max_cols; i++) {
+    var maxCols = this.maxCols() + 1;
+    for(var i = 1; i < maxCols; i++) {
         width += this.colWidth(i) + this._xPadding;
     }
     return width - this._xPadding;
@@ -5262,8 +5287,8 @@ DKTools_Container_Base.prototype.minHeight = function() {
         return 1;
     }
     var height = 0;
-    var max_rows = this.maxRows() + 1;
-    for(var i = 1; i < max_rows; i++) {
+    var maxRows = this.maxRows() + 1;
+    for(var i = 1; i < maxRows; i++) {
         height += this.rowHeight(i) + this._yPadding;
     }
     return height - this._yPadding;
@@ -5318,27 +5343,27 @@ DKTools_Container_Base.prototype._minElements = function() {
  */
 DKTools_Container_Base.prototype.checkRowsAndCols = function() {
     var rows, cols;
-    var max_rows = this.maxRows();
-    var max_cols = this.maxCols();
-    var min_elements = this._minElements();
-    if (max_rows !== 0 && max_cols !== 0) {
+    var maxRows = this.maxRows();
+    var maxCols = this.maxCols();
+    var minElements = this._minElements();
+    if (maxRows !== 0 && maxCols !== 0) {
         return false;
     }
-    if (max_rows === 0 && max_cols === 0) {
+    if (maxRows === 0 && maxCols === 0) {
         if (this.isHorizontalPlacement()) {
             rows = 1;
-            cols = min_elements;
+            cols = minElements;
         } else if (this.isVerticalPlacement()) {
-            rows = min_elements;
+            rows = minElements;
             cols = 1;
         }
     } else {
-        if (max_rows !== 0) {
-            rows = max_rows;
-            cols = Math.max(Math.ceil(min_elements / max_rows), 1);
+        if (maxRows !== 0) {
+            rows = maxRows;
+            cols = Math.max(Math.ceil(minElements / maxRows), 1);
         } else {
-            rows = Math.max(Math.ceil(min_elements / max_cols), 1);
-            cols = max_cols;
+            rows = Math.max(Math.ceil(minElements / maxCols), 1);
+            cols = maxCols;
         }
     }
     this.setupRows(rows);
@@ -5424,6 +5449,22 @@ DKTools_Container_Base.prototype.clearElements = function() {
 };
 
 /**
+ * Выполняет callback функцию для каждого элемента
+ *
+ * @method iterateElements
+ *
+ * @param {Function} callback - Функция обработки для каждого элемента контейнера
+ * @param {Boolean || null} start - Вызов функции start контейнера
+ */
+DKTools_Container_Base.prototype.iterateElements = function(callback, start) {
+    var elements = this.elements();
+    elements.forEach(callback);
+    if (start) {
+        this.start();
+    }
+};
+
+/**
  * Удаляет элементы контейнера из обработки
  *
  * @method removeElementsFromChild
@@ -5449,32 +5490,18 @@ DKTools_Container_Base.prototype.addElementsToChild = function() {
 };
 
 /**
- * Выполняет callback функцию для каждого элемента
- *
- * @method iterateElements
- *
- * @param {Function} callback - Функция обработки для каждого элемента контейнера
- * @param {Boolean || null} start - Вызов функции start контейнера
-*/
-DKTools_Container_Base.prototype.iterateElements = function(callback, start) {
-    var elements = this.elements();
-	elements.forEach(callback);
-	if (start) {
-        this.start();
-    }
-};
-
-/**
  * Добавляет элемент в контейнер
  *
  * @method addElement
  *
  * @param {DKToolsSprite || Array || null} object - Элемент или Массив элементов
  * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ *
+ * @return {Boolean}
 */
 DKTools_Container_Base.prototype.addElement = function(object, blockStart) {
 	if (!object) {
-        return;
+        return false;
     }
 	if (object.constructor === Array) {
 		for(var i = 0; i < object.length; i++) {
@@ -5487,9 +5514,11 @@ DKTools_Container_Base.prototype.addElement = function(object, blockStart) {
 	if (!blockStart) {
         this.start();
     }
+    return true;
 };
 
 /**
+ *
  *
  * @param {DKToolsSprite} element
  * @return {Number}
@@ -5607,6 +5636,26 @@ DKTools_Container_Base.prototype.deactivateElements = function(start) {
     }
 };
 
+DKTools_Container_Base.prototype.showElements = function(duration, activate, start) {
+    var callback = function(element) {
+        element.show(duration, activate);
+    }.bind(this);
+    this.iterateElements(callback);
+    if (start) {
+        this.start();
+    }
+};
+
+DKTools_Container_Base.prototype.hideElements = function(duration, blockDeactivate, start) {
+    var callback = function(element) {
+        element.hide(duration, blockDeactivate);
+    }.bind(this);
+    this.iterateElements(callback);
+    if (start) {
+        this.start();
+    }
+};
+
 /**
  * Возвращает элемент по его номеру
  *
@@ -5631,14 +5680,14 @@ DKTools_Container_Base.prototype.element = function(id) {
  */
 DKTools_Container_Base.prototype.row = function(row) {
     var array = [];
-    var max_rows = this.maxRows();
-    var max_cols = this.maxCols();
-    if (row < 1 || row > max_rows) {
+    var maxRows = this.maxRows();
+    var maxCols = this.maxCols();
+    if (row < 1 || row > maxRows) {
         return array;
     }
-    var start_index = max_cols * (row - 1);
-    for(var i = 0; i < max_cols; i++) {
-        var element = this.element(start_index + i);
+    var startIndex = maxCols * (row - 1);
+    for(var i = 0; i < maxCols; i++) {
+        var element = this.element(startIndex + i);
         array.push(element);
     }
     return array;
@@ -5655,14 +5704,14 @@ DKTools_Container_Base.prototype.row = function(row) {
  */
 DKTools_Container_Base.prototype.col = function(col) {
     var array = [];
-    var max_rows = this.maxRows();
-    var max_cols = this.maxCols();
-    if (col < 1 || col > max_cols) {
+    var maxRows = this.maxRows();
+    var maxCols = this.maxCols();
+    if (col < 1 || col > maxCols) {
         return array;
     }
-    var start_index = col - 1;
-    for(var i = 0; i < max_rows; i++) {
-        var element = this.element(start_index + max_cols * i);
+    var startIndex = col - 1;
+    for(var i = 0; i < maxRows; i++) {
+        var element = this.element(startIndex + maxCols * i);
         array.push(element);
     }
     return array;
@@ -5757,13 +5806,13 @@ DKTools_Container_Base.prototype.colX = function(col) {
  */
 DKTools_Container_Base.prototype.elementRow = function(element) {
     var index = this.elementIndex(element);
-    var max_rows = this.maxRows();
-    var max_cols = this.maxCols();
-    var row = Math.floor(index / max_rows);
-    if (index % max_cols === 0) {
+    var maxRows = this.maxRows();
+    var maxCols = this.maxCols();
+    var row = Math.floor(index / maxRows);
+    if (index % maxCols === 0) {
         row++;
     }
-    return row.clamp(1, max_rows);
+    return row.clamp(1, maxRows);
 };
 
 /**
@@ -5786,23 +5835,28 @@ DKTools_Container_Base.prototype.elementCol = function(element) {
  * Выравнивает элемент по ширине и высоте
  *
  * @method alignElement
+ *
  * @param {DKToolsSprite || Number} object - Номер элемента или сам элемент
+ *
+ * @return {Boolean}
  */
 DKTools_Container_Base.prototype.alignElement = function(object) {
     if (object == null) {
-        return;
+        return false;
+    }
+    if (object.constructor === Number) {
+        var element = this.element(object);
+        return this.alignElement(element);
     }
     var element = object;
-    if (object.constructor === Number) {
-        element = this.element(object);
-    }
-    var element_row = this.elementRow(element);
-    var element_col = this.elementCol(element);
-    var row_height = this.rowHeight(element_row);
-    var col_width = this.colWidth(element_col);
-    var x = this.colX(element_col) + (col_width - element.width) / 2;
-    var y = this.rowY(element_row) + (row_height - element.height) / 2;
+    var elementRow = this.elementRow(element);
+    var elementCol = this.elementCol(element);
+    var rowHeight = this.rowHeight(elementRow);
+    var colWidth = this.colWidth(elementCol);
+    var x = this.colX(elementCol) + (colWidth - element.width) / 2;
+    var y = this.rowY(elementRow) + (rowHeight - element.height) / 2;
     element.move(x, y);
+    return true;
 };
 
 /**
@@ -5812,7 +5866,7 @@ DKTools_Container_Base.prototype.alignElement = function(object) {
  * @param {Number} row - Номер строки
  */
 DKTools_Container_Base.prototype.alignRow = function(row) {
-    var row_height = this.rowHeight(row);
+    var rowHeight = this.rowHeight(row);
     var elements = this.row(row);
     for(var i = 0; i < elements.length; i++) {
         var element = elements[i];
@@ -5820,7 +5874,7 @@ DKTools_Container_Base.prototype.alignRow = function(row) {
             continue;
         }
         var x = element.x;
-        var y = this.rowY(row) + (row_height - element.height) / 2;
+        var y = this.rowY(row) + (rowHeight - element.height) / 2;
         element.move(x, y);
     }
 };
@@ -5832,14 +5886,14 @@ DKTools_Container_Base.prototype.alignRow = function(row) {
  * @param {Number} col - Номер столбца
  */
 DKTools_Container_Base.prototype.alignCol = function(col) {
-    var col_width = this.colWidth(col);
+    var colWidth = this.colWidth(col);
     var elements = this.col(col);
     for(var i = 0; i < elements.length; i++) {
         var element = elements[i];
         if (!element) {
             continue;
         }
-        var x = this.colX(col) + (col_width - element.width) / 2;
+        var x = this.colX(col) + (colWidth - element.width) / 2;
         var y = element.y;
         element.move(x, y);
     }
@@ -5882,10 +5936,10 @@ DKTools_Container_Base.prototype.updatePlacement = function() {
         return;
     }
     var id = 0;
-    var max_rows = this.maxRows() + 1;
-    var max_cols = this.maxCols() + 1;
-    for(var i = 1; i < max_rows; i++) {
-        for(var j = 1; j < max_cols; j++) {
+    var maxRows = this.maxRows() + 1;
+    var maxCols = this.maxCols() + 1;
+    for(var i = 1; i < maxRows; i++) {
+        for(var j = 1; j < maxCols; j++) {
             var element = this.element(id++);
             var x = this.colX(j);
             var y = this.rowY(i);
@@ -6127,6 +6181,7 @@ DKTools_Text_Container.prototype.start = function() {
 /**
  *
  *
+ * @method object
  * @return {Object}
  */
 DKTools_Text_Container.prototype.object = function() {
@@ -6429,6 +6484,7 @@ DKTools_Container.prototype._resizeTextSprite = function(alignTextSprite) {
 
 /**
  *
+ *
  * @method _cloneElements
  * @private
  *
@@ -6440,6 +6496,8 @@ DKTools_Container.prototype._cloneElements = function() {
 
 /**
  *
+ *
+ * @method object
  * @return {Object}
  */
 DKTools_Container.prototype.object = function() {
@@ -6453,6 +6511,8 @@ DKTools_Container.prototype.object = function() {
 
 /**
  *
+ *
+ * @method
  * @return {Boolean}
  */
 DKTools_Container.prototype.isInverted = function() {
@@ -6463,6 +6523,8 @@ DKTools_Container.prototype.isInverted = function() {
 
 /**
  *
+ *
+ * @method
  */
 DKTools_Container.prototype.invert = function() {
     this.setInverted(!this.isInverted());
@@ -6832,6 +6894,8 @@ DKTools_Progress_Bar_Base.prototype.minHeight = function() {
 
 /**
  *
+ *
+ * @method value
  * @return {Number}
  */
 DKTools_Progress_Bar_Base.prototype.value = function() {
@@ -6840,6 +6904,8 @@ DKTools_Progress_Bar_Base.prototype.value = function() {
 
 /**
  *
+ *
+ * @method max
  * @return {Number}
  */
 DKTools_Progress_Bar_Base.prototype.max = function() {
@@ -7058,6 +7124,8 @@ DKTools_Progress_Bar_Base.prototype.full = function() {
 
 /**
  *
+ *
+ * @method hasUpdateTextHandler
  * @return {Boolean}
  */
 DKTools_Progress_Bar_Base.prototype.hasUpdateTextHandler = function() {
@@ -7385,6 +7453,16 @@ DKTools_Progress_Bar.prototype.full = function() {
 // DK Tools Input Base
 //===========================================================================
 
+/**
+ * @class DKTools_Input_Base
+ *
+ * @constructor
+ *
+ * @param {Number} object - Координата X
+ * @param {Number} y - Координата Y
+ * @param {Number} width - Ширина Bitmap
+ * @param {Number} height - Высота Bitmap
+ */
 function DKTools_Input_Base() {
 	this.initialize.apply(this, arguments);
 }
@@ -7418,33 +7496,6 @@ Object.defineProperty(DKTools_Input_Base.prototype, 'caretPosition', {
     },
     configurable: true
 });
-
-// initialize methods
-
-/**
- * @class DKTools_Input_Base
- *
- * @constructor
- *
- * @param {Number} object - Координата X
- * @param {Number} y - Координата Y
- * @param {Number} width - Ширина Bitmap
- * @param {Number} height - Высота Bitmap
- */
-DKTools_Input_Base.prototype.initialize = function(object, y, width, height) {
-    this.initializeCaret();
-	DKTools_Text.prototype.initialize.call(this, object, y, width, height);
-    this.deactivate();
-};
-
-/**
- * Инициализирует каретку ввода
- *
- * @method initializeCaret
-*/
-DKTools_Input_Base.prototype.initializeCaret = function() {
-    this._caret = {};
-};
 
 // standard methods
 
@@ -7505,7 +7556,7 @@ DKTools_Input_Base.prototype.standardCaretText = function() {
  * @return Boolean
 */
 DKTools_Input_Base.prototype.standardCaretVisible = function() {
-    return true;
+    return this.standardActive();
 };
 
 /**
@@ -7567,7 +7618,7 @@ DKTools_Input_Base.prototype.setupMaxLength = function(length) {
 */
 DKTools_Input_Base.prototype.setupCaret = function(object) {
     object = object || {};
-    this._clearCaretCounter();
+    this._clearCaret();
     this.setupCaretRate(object.rate);
     this.setupCaretText(object.text);
     this.setupCaretVisible(object.visible);
@@ -7663,7 +7714,7 @@ DKTools_Input_Base.prototype.setAll = function(object, blockStart) {
 */
 DKTools_Input_Base.prototype.setText = function(text, blockUpdate) {
     if (DKTools_Text.prototype.setText.call(this, text, true)) {
-        this.setupCaretPosition(); // ???
+        this.setupCaretPosition();
         if (!blockUpdate) {
             this.updateBitmap();
         }
@@ -7941,7 +7992,7 @@ DKTools_Input_Base.prototype.hideCaret = function() {
  * @method clearInputText
  */
 DKTools_Input_Base.prototype.clearText = function() {
-    this.setupText('');
+    this.setText('');
 };
 
 /**
@@ -7952,6 +8003,16 @@ DKTools_Input_Base.prototype.clearText = function() {
 DKTools_Input_Base.prototype.clearInput = function() {
 	DKToolsInputManager.clear();
 	this.clearText();
+};
+
+/**
+ *
+ *
+ * @method _clearCaret
+ * @private
+ */
+DKTools_Input_Base.prototype._clearCaret = function() {
+    this._caret = {};
 };
 
 /**
@@ -7982,9 +8043,9 @@ DKTools_Input_Base.prototype.add = function(text, start, blockUpdate) {
     if (start == null || start > this.length) {
         start = this.length;
     }
-    var text = this._text;
-    var text1 = text.substring(0, start);
-    var text2 = text.substring(start - 1 + text.length);
+    var _text = this._text;
+    var text1 = _text.substring(0, start);
+    var text2 = _text.substring(start - 1 + text.length);
     return this.setText(text1 + text + text2, blockUpdate);
 };
 
@@ -8002,7 +8063,8 @@ DKTools_Input_Base.prototype.rem = function(start, count, blockUpdate) {
         return false;
     }
     if (count >= this.length) {
-        this.clearText();
+        //this.clearText();
+        this.setupText('');
         if (!blockUpdate) {
             this.updateBitmap();
         }
@@ -9703,10 +9765,10 @@ DKTools_Radio_Button_Base.prototype._minElements = function() {
 DKTools_Radio_Button_Base.prototype.createElements = function() {
     var elements = [];
     var id = 0;
-    var max_rows = this.maxRows();
-    var max_cols = this.maxCols();
-    for(var i = 0; i < max_rows; i++) {
-        for(var j = 0; j < max_cols; j++) {
+    var maxRows = this.maxRows();
+    var maxCols = this.maxCols();
+    for(var i = 0; i < maxRows; i++) {
+        for(var j = 0; j < maxCols; j++) {
             var element = this.createElement(id);
             elements.push(element);
             id++;
