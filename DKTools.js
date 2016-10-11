@@ -394,27 +394,27 @@ DKToolsUtils.stringToBooleanArray = function(object) {
 };
 
 DKToolsUtils.stringToFontArray = function(font) {
-    var standard_font_array = this.standardFontArray();
+    var standardFontArray = this.standardFontArray();
     if (font === '') {
-        return standard_font_array;
+        return standardFontArray;
     }
     if (font.constructor === String) {
         font = this.splitString(font);
     }
     if (font.length === 0) {
-        return standard_font_array;
+        return standardFontArray;
     }
     var array = [];
     if (font[0] !== '-1') {
         array[0] = font[0];
     } else {
-        array[0] = standard_font_array[0];
+        array[0] = standardFontArray[0];
     }
     array[1] = this.toBoolean(font[1]);
     if (font[2] !== '-1') {
         array[2] = Number(font[2]);
     } else {
-        array[2] = standard_font_array[2];
+        array[2] = standardFontArray[2];
     }
     return array;
 };
@@ -1376,6 +1376,19 @@ DKTools_Sprite._counter = 0;
 Object.defineProperties(DKTools_Sprite.prototype, {
 
     /**
+     * Название файла графики
+     *
+     * @property graphic
+     * @type String
+     */
+    graphic: {
+        get: function() {
+            return this._graphic;
+        },
+        configurable: true
+    },
+
+    /**
      * Цвет текста
      *
      * @property textColor
@@ -1423,6 +1436,62 @@ Object.defineProperties(DKTools_Sprite.prototype, {
     align: {
         get: function() {
             return this._align;
+        },
+        configurable: true
+    },
+
+    enteredTime: {
+        get: function() {
+            return this._enteredTime;
+        },
+        configurable: true
+    },
+
+    pressedTime: {
+        get: function() {
+            return this._pressedTime;
+        },
+        configurable: true
+    },
+
+    clickX : {
+        get: function() {
+            return this.canvasToLocalX(TouchInput.x);
+        },
+        configurable: true
+    },
+
+    clickY : {
+        get: function() {
+            return this.canvasToLocalY(TouchInput.y);
+        },
+        configurable: true
+    },
+
+    mouseX : {
+        get: function() {
+            return this.canvasToLocalX(TouchInput.mouseX);
+        },
+        configurable: true
+    },
+
+    mouseY : {
+        get: function() {
+            return this.canvasToLocalY(TouchInput.mouseY);
+        },
+        configurable: true
+    },
+
+    wheelX: {
+        get: function() {
+            return this._wheelX;
+        },
+        configurable: true
+    },
+
+    wheelY: {
+        get: function() {
+            return this._wheelY;
         },
         configurable: true
     }
@@ -1512,6 +1581,26 @@ DKTools_Sprite.prototype.standardVisible = function() {
  */
 DKTools_Sprite.prototype.standardActive = function() {
     return true;
+};
+
+/**
+ * Возвращает стандартный путь к папке с графикой
+ *
+ * @method standardGraphicFolder
+ * @return {String} Стандартный путь к папке с графикой
+ */
+DKTools_Sprite.prototype.standardGraphicFolder = function() {
+    return 'img/system/';
+};
+
+/**
+ * Возвращает стандартное название файла графики
+ *
+ * @method standardGraphic
+ * @return {String} Стандартное название файла графики
+ */
+DKTools_Sprite.prototype.standardGraphic = function() {
+    return null;
 };
 
 /**
@@ -1635,16 +1724,6 @@ DKTools_Sprite.prototype.standardOpacity = function() {
 };
 
 /**
- * Возвращает стандартный путь к папке с графикой
- *
- * @method standardGraphicFolder
- * @return {String} Стандартный путь к папке с графикой
- */
-DKTools_Sprite.prototype.standardGraphicFolder = function() {
-    return 'img/system/';
-};
-
-/**
  * Возвращает стандартное масштабирование спрайта
  *
  * @method standardScale
@@ -1678,6 +1757,7 @@ DKTools_Sprite.prototype.setupAll = function(object) {
     this.setupId(object.id);
     this.setupVisible(object.visible);
     this.setupActive(object.active);
+    this.setupGraphic(object.graphic);
 	this.setupTextColor(object.textColor);
 	this.setupAlign(object.align);
 	this.setupBackgroundColor(object.backgroundColor);
@@ -1764,6 +1844,16 @@ DKTools_Sprite.prototype.setupActive = function(active) {
 };
 
 /**
+ * Устанавливает название файла графики
+ *
+ * @method setupGraphic
+ * @param {String | null} [graphic] - Название файла графики
+ */
+DKTools_Sprite.prototype.setupGraphic = function(graphic) {
+    this._graphic = (graphic == null ? this.standardGraphic() : graphic);
+};
+
+/**
  * Устанавливает цвет текста
  *
  * @method setupTextColor
@@ -1817,16 +1907,23 @@ DKTools_Sprite.prototype.setupOpacity = function(opacity) {
  * Устанавливает Bitmap для спрайта
  *
  * @method setupBitmap
- * @param {Bitmap | null} [bitmap = null] - Bitmap спрайта
+ *
+ * @param {Bitmap | Object | null} [object] - Bitmap или Объект типа {}
+ * @param {String} object.folder - Путь к файлу
+ * @param {String} object.filename - Название файла
+ * @param {Function | null} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number | null} [object.hue] - Оттенок
+ * @param {Boolean | null} [object.smooth] - Сглаживание
 */
-DKTools_Sprite.prototype.setupBitmap = function(bitmap) {
-	this.bitmap = bitmap || null;
-	if (this.bitmap) {
-		this.bitmap.addLoadListener(function() {
-			this.setupSize(this.bitmap.width, this.bitmap.height);
+DKTools_Sprite.prototype.setupBitmap = function(object) {
+	this.bitmap = this.bitmapFromObject(object);
+    var bitmap = this.bitmap;
+	if (bitmap) {
+		bitmap.addLoadListener(function() {
+			this.setupSize(bitmap.width, bitmap.height);
 		}.bind(this));
 	}
-	this._fixedBitmap = !!this.bitmap;
+	this._fixedBitmap = !!bitmap;
 };
 
 /**
@@ -1981,6 +2078,9 @@ DKTools_Sprite.prototype.setAll = function(object, blockStart) {
 	var changed = 0;
 	var block = true;
     this._activateSetAllMode();
+    if (this.setGraphic(object.graphic, block)) {
+        changed++;
+    }
 	if (this.setTextColor(object.textColor, block)) {
         changed++;
     }
@@ -2068,6 +2168,31 @@ DKTools_Sprite.prototype.setActive = function(active) {
     var lastActive = this._active;
     this.setupActive(active);
     return lastActive !== this._active;
+};
+
+/**
+ * Изменяет название файла графики
+ *
+ * @method setGraphic
+ *
+ * @param {String | null} [graphic] - Название файла графики
+ * @param {Boolean | null} [blockStart] - Блокировка вызова функции start
+ *
+ * @return {Boolean} Возвращает true, если изменение произошло
+ */
+DKTools_Sprite.prototype.setGraphic = function(graphic, blockStart) {
+    if (this._graphic === graphic) {
+        return false;
+    }
+    var lastGraphic = this._graphic;
+    this.setupGraphic(graphic);
+    if (lastGraphic === this._graphic) {
+        return false;
+    }
+    if (!blockStart) {
+        this.start();
+    }
+    return true;
 };
 
 /**
@@ -2196,19 +2321,23 @@ DKTools_Sprite.prototype.setOpacity = function(opacity) {
 
 /**
  * Изменяет Bitmap спрайта
- * Возвращает true, если изменение произошло
  *
  * @method setBitmap
  *
- * @param {Bitmap || null} bitmap - Bitmap спрайта
+ * @param {Bitmap | Object | null} object - Bitmap или Объект типа {}
+ * @param {String} object.folder - Путь к файлу
+ * @param {String} object.filename - Название файла
+ * @param {Function | null} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number | null} [object.hue] - Оттенок
+ * @param {Boolean | null} [object.smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Возвращает true, если изменение произошло
 */
-DKTools_Sprite.prototype.setBitmap = function(bitmap) {
-	if (this.bitmap == bitmap) {
+DKTools_Sprite.prototype.setBitmap = function(object) {
+	if (this.bitmap == object) {
         return false;
     }
-	this.setupBitmap(bitmap);
+	this.setupBitmap(object);
 	return true;
 };
 
@@ -2268,7 +2397,7 @@ DKTools_Sprite.prototype.start = function(activate) {
  * @return Boolean
 */
 DKTools_Sprite.prototype.clearRect = function(object, y, width, height) {
-	if (!this.bitmap) {
+	if (!this.hasBitmap()) {
         return false;
     }
     if (object && (object.constructor === Rectangle || object.constructor === Object)) {
@@ -2341,6 +2470,7 @@ DKTools_Sprite.prototype.object = function() {
         id: this.id,
         visible: this.visible,
         active: this._active,
+        graphic: this._graphic,
         textColor: this._textColor,
         align: this._align,
         backgroundColor: this._backgroundColor,
@@ -2565,28 +2695,59 @@ DKTools_Sprite.prototype._deactivateSetAllMode = function() {
 //
 
 /**
- * Создает Bitmap спрайта шириной _bitmapWidth и высотой _bitmapHeight
+ * Проверяет спрайт на наличие Bitmap
  *
- * @method createBitmap
-*/
-DKTools_Sprite.prototype.createBitmap = function() {
-	if (this.isFixed()) {
-        return;
-    }
-	this.removeBitmap();
-	this.bitmap = new Bitmap(this._bitmapWidth, this._bitmapHeight);
+ * @method hasBitmap
+ * @return {Boolean} Возвращает true, если Bitmap есть
+ */
+DKTools_Sprite.prototype.hasBitmap = function() {
+    return !!this.bitmap;
+};
+
+/**
+ * Проверяет спрайт на наличие названия файла графики
+ *
+ * @method hasGraphic
+ * @return {Boolean} Возвращает true, если название файла графики установлено
+ */
+DKTools_Sprite.prototype.hasGraphic = function() {
+    return !!this._graphic;
 };
 
 /**
  * Удаляет Bitmap спрайта
  *
  * @method removeBitmap
-*/
+ */
 DKTools_Sprite.prototype.removeBitmap = function() {
-	if (!this.bitmap) {
-        return;
+    if (this.hasBitmap()) {
+        this.setBitmap();
     }
-	this.setBitmap();
+};
+
+/**
+ * Удаляет название файла графики
+ *
+ * @method removeGraphic
+ */
+DKTools_Sprite.prototype.removeGraphic = function() {
+    if (this.hasGraphic()) {
+        this.setGraphic();
+    }
+};
+
+/**
+ * Загружает изображения из названия файла графики
+ * Создает Bitmap спрайта шириной _bitmapWidth и высотой _bitmapHeight
+ *
+ * @method createBitmap
+*/
+DKTools_Sprite.prototype.createBitmap = function() {
+    if (this.hasGraphic()) {
+        this.loadGraphic();
+    } else if (!this.isFixed()) {
+        this.bitmap = new Bitmap(this._bitmapWidth, this._bitmapHeight);
+    }
 };
 
 // is methods
@@ -2648,7 +2809,7 @@ DKTools_Sprite.prototype.isWaiting = function() {
  * @return Boolean
 */
 DKTools_Sprite.prototype.isReady = function () {
-	return this.bitmap ? this.bitmap.isReady() : false;
+	return this.hasBitmap() ? this.bitmap.isReady() : false;
 };
 
 /**
@@ -2672,15 +2833,27 @@ DKTools_Sprite.prototype.isContainer = function() {
 };
 
 /**
+ * Возвращает true, если координаты находятся внутри спрайта
+ *
+ * @method isInside
+ *
+ * @param {Number} x - Координата X
+ * @param {Number} y - Координата Y
+ *
+ * @return {Boolean}
+ */
+DKTools_Sprite.prototype.isInside = function(x, y) {
+    return x >= 0 && y >= 0 && x <= this.width * this.scale.x && y <= this.height * this.scale.y;
+};
+
+/**
  * Возвращает true, если курсор мышки находится внутри спрайта
  *
  * @method isEntered
  * @return Boolean
  */
 DKTools_Sprite.prototype.isEntered = function() {
-    var x = this.canvasToLocalX(TouchInput.mouseX);
-    var y = this.canvasToLocalY(TouchInput.mouseY);
-    return x >= 0 && y >= 0 && x <= this.width * this.scale.x && y <= this.height * this.scale.y;
+    return this.isInside(this.mouseX, this.mouseY);
 };
 
 /**
@@ -2690,9 +2863,7 @@ DKTools_Sprite.prototype.isEntered = function() {
  * @return {Boolean} Возвращает true, если прикосновение было внутри спрайта
  */
 DKTools_Sprite.prototype.isTouched = function() {
-    var x = this.canvasToLocalX(TouchInput.x);
-    var y = this.canvasToLocalY(TouchInput.y);
-    return x >= 0 && y >= 0 && x <= this.width * this.scale.x && y <= this.height * this.scale.y;
+    return this.isInside(this.clickX, this.clickY);
 };
 
 /**
@@ -2799,7 +2970,7 @@ DKTools_Sprite.prototype._clearPressedTime = function() {
  * @return {Boolean} Возвращает true, если Bitmap существует
 */
 DKTools_Sprite.prototype.fillRect = function(color, object, y, width, height) {
-	if (!this.bitmap) {
+	if (!this.hasBitmap()) {
         return false;
     }
     if (object && (object.constructor === Rectangle || object.constructor === Object)) {
@@ -2851,7 +3022,7 @@ DKTools_Sprite.prototype.fillAll = function(color) {
  * @return Boolean
 */
 DKTools_Sprite.prototype.gradientFillRect = function(color1, color2, vertical, object, y, width, height) {
-	if (!this.bitmap) {
+	if (!this.hasBitmap()) {
         return false;
     }
     if (object && object.constructor === Rectangle) {
@@ -2886,7 +3057,7 @@ DKTools_Sprite.prototype.gradientFillAll = function(color1, color2, vertical) {
 if (DKToolsUtils.debug) {
 
     DKTools_Sprite.prototype.strokeRect = function(color, object, y, width, height) {
-        if (!this.bitmap) return false;
+        if (!this.hasBitmap()) return false;
         var x = object;
         if (object && object.constructor === Rectangle) {
             x = object.x;
@@ -2905,7 +3076,7 @@ if (DKToolsUtils.debug) {
     };
 
     DKTools_Sprite.prototype.drawLine = function (x1, y1, x2, y2, color) {
-        if (!this.bitmap) {
+        if (!this.hasBitmap()) {
             return false;
         }
         this.bitmap.drawLine(x1, y1, x2, y2, color);
@@ -2936,7 +3107,8 @@ if (DKToolsUtils.debug) {
  * @return Boolean
 */
 DKTools_Sprite.prototype.drawText = function(text, align, object, y, width, height) {
-	if (!this.bitmap || !text) {
+    text = String(text);
+	if (!this.hasBitmap() || !text) {
         return false;
     }
     if (object && (object.constructor === Rectangle || object.constructor === Object)) {
@@ -3081,7 +3253,7 @@ if (DKToolsUtils.debug) {
  * @return Boolean
 */
 DKTools_Sprite.prototype.drawCircle = function(radius, color, object, y) {
-	if (!this.bitmap) {
+	if (!this.hasBitmap()) {
         return false;
     }
     if (object && (object.constructor === Point || object.constructor === Object)) {
@@ -3141,7 +3313,7 @@ DKTools_Sprite.prototype.drawCircle = function(radius, color, object, y) {
 */
 DKTools_Sprite.prototype.drawBitmap = function(object, x1, y1, w1, h1, x2, y2, w2, h2) {
 	object = object || {};
-    if (!this.bitmap) {
+    if (!this.hasBitmap()) {
         return false;
     }
     var sx = x1, sy = y1, sw = w1, sh = h1;
@@ -3186,7 +3358,7 @@ DKTools_Sprite.prototype.drawBitmap = function(object, x1, y1, w1, h1, x2, y2, w
  * @return Boolean
 */
 DKTools_Sprite.prototype.drawIcon = function(iconIndex, object, y) {
-    if (!this.bitmap || iconIndex == null) {
+    if (!this.hasBitmap() || iconIndex == null) {
         return false;
     }
     if (object && (object.constructor === Point || object.constructor === Object)) {
@@ -3225,7 +3397,7 @@ DKTools_Sprite.prototype.drawIcon = function(iconIndex, object, y) {
  * @return Boolean
  */
 DKTools_Sprite.prototype.drawFace = function(faceName, faceIndex, object, y, width, height) {
-    if (!this.bitmap || faceName == null || faceIndex == null) {
+    if (!this.hasBitmap() || faceName == null || faceIndex == null) {
         return false;
     }
     if (object && (object.constructor === Rectangle || object.constructor === Object)) {
@@ -3266,7 +3438,7 @@ DKTools_Sprite.prototype.drawFace = function(faceName, faceIndex, object, y, wid
  * @return Boolean
  */
 DKTools_Sprite.prototype.drawCharacter = function(characterName, characterIndex, object, y) {
-    if (!this.bitmap) {
+    if (!this.hasBitmap()) {
         return false;
     }
     if (object && (object.constructor === Point || object.constructor === Object)) {
@@ -3567,6 +3739,20 @@ DKTools_Sprite.prototype.loadBitmap = function(folder, filename, listener, hue, 
 	return false;
 };
 
+/**
+ * Загружает графику из названия файла графики
+ *
+ * @method loadGraphic
+ */
+DKTools_Sprite.prototype.loadGraphic = function() {
+    if (this.hasGraphic()) {
+        p(this.graphic);
+        var folder = this.standardGraphicFolder();
+        var filename = this.graphic;
+        this.loadBitmap(folder, filename);
+    }
+};
+
 //
 
 /**
@@ -3776,6 +3962,9 @@ DKTools_Sprite.prototype.disable = DKTools_Sprite.prototype._disableSymbols;
  *
  *
  * @method canvasToLocalX
+ *
+ * @param {Number} x
+ *
  * @return {Number}
  */
 DKTools_Sprite.prototype.canvasToLocalX = Sprite_Button.prototype.canvasToLocalX;
@@ -3784,6 +3973,9 @@ DKTools_Sprite.prototype.canvasToLocalX = Sprite_Button.prototype.canvasToLocalX
  *
  *
  * @method canvasToLocalY
+ *
+ * @param {Number} y
+ *
  * @return {Number}
  */
 DKTools_Sprite.prototype.canvasToLocalY = Sprite_Button.prototype.canvasToLocalY;
@@ -4069,6 +4261,10 @@ DKTools_Sprite.prototype.updateStartEvents = function() {
         return;
     }
     this.updateEventContainer('start');
+};
+
+DKTools_Sprite.prototype.updateUpdateBitmapEvents = function() {
+    this.updateEventContainer('updateBitmap');
 };
 
 DKTools_Sprite.prototype.updateReadyEvents = function() {
@@ -4415,12 +4611,13 @@ DKTools_Sprite.prototype._updateMove = function(newX, newY, newOpacity, newScale
  * @method updateBitmap
 */
 DKTools_Sprite.prototype.updateBitmap = function() {
-	if (!this.clear()) {
+    if (this.isFixed() || !this.clear()) {
         return;
     }
 	this.updateBackground();
 	this.updateFont();
 	this.updateTextColor();
+    this.updateUpdateBitmapEvents();
 };
 
 /**
@@ -4724,13 +4921,23 @@ DKTools_Text.prototype.minHeight = function() {
 };
 
 /**
+ * Проверяет спрайт на наличие текста
+ *
+ * @method hasText
+ * @return {Boolean} Возвращает true, если текст установлен
+ */
+DKTools_Text.prototype.hasText = function() {
+    return !!this.text;
+};
+
+/**
  * Обновляет Bitmap спрайта
  *
  * @method updateBitmap
 */
 DKTools_Text.prototype.updateBitmap = function() {
     DKTools_Sprite.prototype.updateBitmap.call(this);
-    if (!this.bitmap) {
+    if (!this.hasBitmap() || this.isFixed()) {
         return;
     }
     this.updateText();
@@ -4742,7 +4949,9 @@ DKTools_Text.prototype.updateBitmap = function() {
  * @method updateText
 */
 DKTools_Text.prototype.updateText = function() {
-    this.drawText(this.text);
+    if (this.hasText()) {
+        this.drawText(this.text);
+    }
 };
 
 
@@ -4753,6 +4962,14 @@ DKTools_Text.prototype.updateText = function() {
 // DK Tools Container Base
 //===========================================================================
 
+/**
+ * @class DKTools_Container_Base
+ *
+ * @constructor
+ *
+ * @param {Number | Object | null} object - Координата X или Объект типа {}
+ * @param {Number | null} y - Координата Y
+ */
 function DKTools_Container_Base() {
 	this.initialize.apply(this, arguments);
 }
@@ -4774,21 +4991,6 @@ Object.defineProperty(DKTools_Container_Base.prototype, 'length', {
 	},
 	configurable: true
 });
-
-// initialize method
-
-/**
- * @class DKTools_Container_Base
- *
- * @constructor
- *
- * @param {Number | Object | null} object - Координата X или Объект типа {}
- * @param {Number | null} y - Координата Y
- */
-DKTools_Container_Base.prototype.initialize = function(object, y) {
-	this.clearElements();
-	DKTools_Sprite.prototype.initialize.call(this, object, y);
-};
 
 // standard methods
 
@@ -4862,6 +5064,16 @@ DKTools_Container_Base.prototype.standardYPadding = function() {
     return 18;
 };
 
+/**
+ *
+ *
+ * @method standardReversed
+ * @return {Boolean}
+ */
+DKTools_Container_Base.prototype.standardReversed = function() {
+    return false;
+};
+
 // setup methods
 
 /**
@@ -4889,6 +5101,7 @@ DKTools_Container_Base.prototype.setupAll = function(object) {
     this.setupRows(object.rows);
     this.setupCols(object.cols);
     this.setupPadding(object.xPadding, object.yPadding);
+    this.setupReversed(object.reversed);
 };
 
 /**
@@ -4898,7 +5111,11 @@ DKTools_Container_Base.prototype.setupAll = function(object) {
  * @param {Array || null} elements - Массив с элементами контейнера
 */
 DKTools_Container_Base.prototype.setupElements = function(elements) {
-	this._elements = elements || this.standardElements();
+    if (elements && elements.constructor === Array) {
+        this._elements = elements.clone();
+    } else {
+        this._elements = this.standardElements();
+    }
 };
 
 /**
@@ -4974,6 +5191,16 @@ DKTools_Container_Base.prototype.setupYPadding = function(padding) {
 DKTools_Container_Base.prototype.setupPadding = function(xPadding, yPadding) {
     this.setupXPadding(xPadding);
     this.setupYPadding(yPadding);
+};
+
+/**
+ *
+ *
+ * @method setupReversed
+ * @param reversed
+ */
+DKTools_Container_Base.prototype.setupReversed = function(reversed) {
+    this._reversed = (reversed == null ? this.standardReversed() : reversed);
 };
 
 // set methods
@@ -5201,6 +5428,31 @@ DKTools_Container_Base.prototype.setPadding = function(xPadding, yPadding, block
     return changed;
 };
 
+/**
+ *
+ *
+ * @method setReversed
+ *
+ * @param reversed
+ * @param blockStart
+ *
+ * @return {Boolean}
+ */
+DKTools_Container_Base.prototype.setReversed = function(reversed, blockStart) {
+    if (this._reversed === reversed) {
+        return false;
+    }
+    var lastReversed = this._reversed;
+    this.setupReversed(reversed);
+    if (lastReversed === this._reversed) {
+        return false;
+    }
+    if (!blockStart) {
+        this.start();
+    }
+    return true;
+};
+
 // other methods
 
 /**
@@ -5255,6 +5507,7 @@ DKTools_Container_Base.prototype.object = function() {
     object.cols = this._cols;
     object.xPadding = this._xPadding;
     object.yPadding = this._yPadding;
+    object.reversed = this._reversed;
     return object;
 };
 
@@ -5371,6 +5624,15 @@ DKTools_Container_Base.prototype.checkRowsAndCols = function() {
     return true;
 };
 
+/**
+ *
+ *
+ * @method reverse
+ */
+DKTools_Container_Base.prototype.reverse = function() {
+    this.setReversed(!this.isReversed());
+};
+
 // is methods
 
 /**
@@ -5427,6 +5689,16 @@ DKTools_Container_Base.prototype.isContainer = function() {
     return true;
 };
 
+/**
+ *
+ *
+ * @method isReversed
+ * @return {Boolean}
+ */
+DKTools_Container_Base.prototype.isReversed = function() {
+    return this._reversed;
+};
+
 // elements methods
 
 /**
@@ -5436,7 +5708,11 @@ DKTools_Container_Base.prototype.isContainer = function() {
  * @return Array
 */
 DKTools_Container_Base.prototype.elements = function() {
-    return this._elements;
+    var elements = this._elements;
+    if (this.isReversed()) {
+        elements = elements.clone().reverse();
+    }
+    return elements;
 };
 
 /**
@@ -5505,7 +5781,8 @@ DKTools_Container_Base.prototype.addElement = function(object, blockStart) {
     }
 	if (object.constructor === Array) {
 		for(var i = 0; i < object.length; i++) {
-            this._elements.push(object[i]);
+            var element = object[i];
+            this._elements.push(element);
         }
 	}
 	else {
@@ -5636,6 +5913,15 @@ DKTools_Container_Base.prototype.deactivateElements = function(start) {
     }
 };
 
+/**
+ *
+ *
+ * @method showElements
+ *
+ * @param duration
+ * @param activate
+ * @param start
+ */
 DKTools_Container_Base.prototype.showElements = function(duration, activate, start) {
     var callback = function(element) {
         element.show(duration, activate);
@@ -5646,6 +5932,15 @@ DKTools_Container_Base.prototype.showElements = function(duration, activate, sta
     }
 };
 
+/**
+ *
+ *
+ * @method hideElements
+ *
+ * @param duration
+ * @param blockDeactivate
+ * @param start
+ */
 DKTools_Container_Base.prototype.hideElements = function(duration, blockDeactivate, start) {
     var callback = function(element) {
         element.hide(duration, blockDeactivate);
@@ -5866,17 +6161,10 @@ DKTools_Container_Base.prototype.alignElement = function(object) {
  * @param {Number} row - Номер строки
  */
 DKTools_Container_Base.prototype.alignRow = function(row) {
-    var rowHeight = this.rowHeight(row);
     var elements = this.row(row);
-    for(var i = 0; i < elements.length; i++) {
-        var element = elements[i];
-        if (!element) {
-            continue;
-        }
-        var x = element.x;
-        var y = this.rowY(row) + (rowHeight - element.height) / 2;
-        element.move(x, y);
-    }
+    elements.forEach(function(element) {
+        this.alignElement(element);
+    }.bind(this));
 };
 
 /**
@@ -5886,17 +6174,10 @@ DKTools_Container_Base.prototype.alignRow = function(row) {
  * @param {Number} col - Номер столбца
  */
 DKTools_Container_Base.prototype.alignCol = function(col) {
-    var colWidth = this.colWidth(col);
     var elements = this.col(col);
-    for(var i = 0; i < elements.length; i++) {
-        var element = elements[i];
-        if (!element) {
-            continue;
-        }
-        var x = this.colX(col) + (colWidth - element.width) / 2;
-        var y = element.y;
-        element.move(x, y);
-    }
+    elements.forEach(function(element) {
+        this.alignElement(element);
+    }.bind(this));
 };
 
 /**
@@ -6198,7 +6479,11 @@ DKTools_Text_Container.prototype.object = function() {
  * @return Array
 */
 DKTools_Text_Container.prototype.elements = function() {
-	return [this._textSprite].concat(this._elements);
+    var elements = [this._textSprite].concat(this._elements);
+    if (this.isReversed()) {
+        elements.reverse();
+    }
+    return elements;
 };
 
 // private method
@@ -6235,11 +6520,27 @@ DKTools_Container.prototype.constructor = DKTools_Container;
 
 // property
 
-Object.defineProperty(DKTools_Container.prototype, 'baseSprite', {
-    get: function() {
-        return this._baseSprite;
+Object.defineProperties(DKTools_Container.prototype, {
+
+    /**
+     *
+     */
+    baseSprite: {
+        get: function() {
+            return this._baseSprite;
+        },
+        configurable: true
     },
-    configurable: true
+
+    /**
+     *
+     */
+    baseSpriteClass: {
+        get: function() {
+            return DKTools_Sprite;
+        },
+        configurable: true
+    }
 });
 
 // initialize method
@@ -6255,12 +6556,6 @@ Object.defineProperty(DKTools_Container.prototype, 'baseSprite', {
 DKTools_Container.prototype.initialize = function(object, y) {
     this._createBaseSprite();
     DKTools_Text_Container.prototype.initialize.call(this, object, y);
-};
-
-// standard methods
-
-DKTools_Container.prototype.standardInverted = function() {
-    return false;
 };
 
 // setup methods
@@ -6280,7 +6575,6 @@ DKTools_Container.prototype.setupAll = function(object) {
     object = object || {};
     DKTools_Text_Container.prototype.setupAll.call(this, object);
     this.setupBaseSprite(object.baseSprite);
-    this.setupInverted(object.inverted);
 };
 
 /**
@@ -6333,10 +6627,6 @@ DKTools_Container.prototype.setupBaseSpriteHeight = function(height) {
 */
 DKTools_Container.prototype.setupBaseSpriteSize = function(width, height) {
     this._baseSprite.setupSize(width, height);
-};
-
-DKTools_Container.prototype.setupInverted = function(inverted) {
-    this._inverted = (inverted == null ? this.standardInverted() : inverted);
 };
 
 // set methods
@@ -6407,28 +6697,6 @@ DKTools_Container.prototype.setBaseSpriteSize = function(width, height, blockSta
     return false;
 };
 
-/**
- *
- * @param inverted
- * @param blockStart
- *
- * @return {Boolean}
- */
-DKTools_Container.prototype.setInverted = function(inverted, blockStart) {
-    if (this._inverted === inverted) {
-        return false;
-    }
-    var lastInverted = this._inverted;
-    this.setupInverted(inverted);
-    if (lastInverted === this._inverted) {
-        return false;
-    }
-    if (!blockStart) {
-        this.start();
-    }
-    return true;
-};
-
 // other methods
 
 /**
@@ -6445,7 +6713,7 @@ DKTools_Container.prototype.start = function(resizeTextSprite, alignTextSprite) 
     }
     DKTools_Text_Container.prototype.start.call(this);
     if (resizeTextSprite) {
-        this._resizeTextSprite(alignTextSprite);
+        this.resizeTextSprite(alignTextSprite);
     }
 };
 
@@ -6461,19 +6729,19 @@ DKTools_Container.prototype.start = function(resizeTextSprite, alignTextSprite) 
  * @see object properties: DKTools_Sprite.prototype.initialize
  */
 DKTools_Container.prototype._createBaseSprite = function(object) {
-    this._baseSprite = new DKTools_Sprite(object);
+    this._baseSprite = new (this.baseSpriteClass)(object);
 };
 
-DKTools_Container.prototype._resizeTextSprite = function(alignTextSprite) {
+DKTools_Container.prototype.resizeTextSprite = function(align) {
     if (this.maxRows() === 1 && this.isHorizontalPlacement()) {
-        if (alignTextSprite) {
+        if (align) {
             this._textSprite.setupAlign('center');
         }
         this.addListener('ready', function () {
             this._textSprite.setHeight(this._baseSprite.height);
         }.bind(this));
     } else if (this.maxCols() === 1 && this.isVerticalPlacement()) {
-        if (alignTextSprite) {
+        if (align) {
             this._textSprite.setupAlign('center');
         }
         this.addListener('ready', function () {
@@ -6503,31 +6771,7 @@ DKTools_Container.prototype._cloneElements = function() {
 DKTools_Container.prototype.object = function() {
     var object = DKTools_Text_Container.prototype.object.call(this);
     object.baseSprite = this._baseSprite.object();
-    object.inverted = this._inverted;
     return object;
-};
-
-// is method
-
-/**
- *
- *
- * @method
- * @return {Boolean}
- */
-DKTools_Container.prototype.isInverted = function() {
-    return this._inverted;
-};
-
-//
-
-/**
- *
- *
- * @method
- */
-DKTools_Container.prototype.invert = function() {
-    this.setInverted(!this.isInverted());
 };
 
 /**
@@ -6537,10 +6781,11 @@ DKTools_Container.prototype.invert = function() {
  * @return Array
 */
 DKTools_Container.prototype.elements = function() {
-    if (this.isInverted()) {
-        return [this._baseSprite, this._textSprite];
+    var elements = [this._textSprite, this._baseSprite];
+    if (this.isReversed()) {
+        elements.reverse();
     }
-    return [this._textSprite, this._baseSprite];
+    return elements;
 };
 
 
@@ -7010,7 +7255,7 @@ DKTools_Progress_Bar_Base.prototype.update = function() {
 */
 DKTools_Progress_Bar_Base.prototype.updateBitmap = function() {
 	DKTools_Sprite.prototype.updateBitmap.call(this);
-	if (!this.bitmap) {
+	if (!this.hasBitmap()) {
         return;
     }
 	this.updateProgressColor();
@@ -7164,6 +7409,15 @@ function DKTools_Progress_Bar() {
 DKTools_Progress_Bar.prototype = Object.create(DKTools_Container.prototype);
 DKTools_Progress_Bar.prototype.constructor = DKTools_Progress_Bar;
 
+// property
+
+Object.defineProperty(DKTools_Progress_Bar.prototype, 'baseSpriteClass', {
+    get: function() {
+        return DKTools_Progress_Bar_Base;
+    },
+    configurable: true
+});
+
 // setup methods
 
 /**
@@ -7308,19 +7562,6 @@ DKTools_Progress_Bar.prototype.setUpdateTextHandler = function(method) {
     this._baseSprite.setUpdateTextHandler(method);
 };
 
-// private method
-
-/**
- * Создает базовый спрайт
- *
- * @method _createBaseSprite
- *
- * @private
-*/
-DKTools_Progress_Bar.prototype._createBaseSprite = function(object) {
-    this._baseSprite = new DKTools_Progress_Bar_Base(object);
-};
-
 // is methods
 
 /**
@@ -7331,16 +7572,6 @@ DKTools_Progress_Bar.prototype._createBaseSprite = function(object) {
 */
 DKTools_Progress_Bar.prototype.isShowPercent = function() {
     return this._baseSprite.isShowPercent();
-};
-
-/**
- * Возвращает true, если текущее значение равно 0
- *
- * @method isEmpty
- * @return Boolean
- */
-DKTools_Progress_Bar.prototype.isEmpty = function() {
-    return this._baseSprite.isEmpty();
 };
 
 /**
@@ -8167,6 +8398,19 @@ DKTools_Input_Base.prototype._isSymbol = function(symbol) {
 /**
  *
  *
+ * @method
+ * @private
+ *
+ * @param symbol
+ * @returns {Boolean}
+ */
+DKTools_Input_Base.prototype._isSpace = function(symbol) {
+    return symbol === ' ';
+};
+
+/**
+ *
+ *
  * @method _checkSymbol
  * @private
  *
@@ -8175,10 +8419,10 @@ DKTools_Input_Base.prototype._isSymbol = function(symbol) {
  * @return {Boolean}
  */
 DKTools_Input_Base.prototype._checkSymbol = function(symbol) {
-    return (this.isEnabled('symbols') && this._isSymbol(symbol) ||
-            this.isEnabled('alphabet') && this._isAlphabet(symbol) ||
-            this.isEnabled('numbers') && this._isNumber(symbol) ||
-            this.isEnabled('space') && symbol === ' ');
+    return (this.isEnabled('alphabet') && this._isAlphabet(symbol) ||
+        this.isEnabled('numbers') && this._isNumber(symbol) ||
+        this.isEnabled('space') && this._isSpace(symbol) ||
+        this.isEnabled('symbols') && this._isSymbol(symbol));
 };
 
 /**
@@ -8403,6 +8647,15 @@ function DKTools_Input() {
 DKTools_Input.prototype = Object.create(DKTools_Container.prototype);
 DKTools_Input.prototype.constructor = DKTools_Input;
 
+// property
+
+Object.defineProperty(DKTools_Input.prototype, 'baseSpriteClass', {
+    get: function() {
+        return DKTools_Input_Base;
+    },
+    configurable: true
+});
+
 // setup methods
 
 /**
@@ -8571,17 +8824,6 @@ DKTools_Input.prototype.setCaretPosition = function(position, blockUpdate) {
 // other methods
 
 /**
- * Создает базовый спрайт
-
- * @method _createBaseSprite
- *
- * @private
- */
-DKTools_Input.prototype._createBaseSprite = function(object) {
-    this._baseSprite = new DKTools_Input_Base(object);
-};
-
-/**
  * Добавляет текст
  *
  * @method add
@@ -8634,69 +8876,85 @@ DKTools_CheckBox_Base.prototype.constructor = DKTools_CheckBox_Base;
 
 // properties
 
-/**
- * Цвет текста
- *
- * @property textColor
- * @type String
- */
-Object.defineProperty(DKTools_CheckBox_Base.prototype, 'textColor', {
-    get: function() {
-        return this._textColor[this._checked];
-    },
-    configurable: true
-});
+Object.defineProperties(DKTools_CheckBox_Base.prototype, {
 
-/**
- * Цвет фона
- *
- * @property backgroundColor
- * @type String
- */
-Object.defineProperty(DKTools_CheckBox_Base.prototype, 'backgroundColor', {
-    get: function() {
-        return this._backgroundColor[this._checked];
+    /**
+     * Название файла графики
+     *
+     * @property graphic
+     * @type String
+     */
+    graphic: {
+        get: function() {
+            return this._graphic[this._checked];
+        },
+        configurable: true
     },
-    configurable: true
-});
 
-/**
- * Шрифт текста
- *
- * @property font
- * @type Array
- */
-Object.defineProperty(DKTools_CheckBox_Base.prototype, 'font', {
-    get: function() {
-        return this._font[this._checked];
+    /**
+     * Цвет текста
+     *
+     * @property textColor
+     * @type String
+     */
+    textColor: {
+        get: function() {
+            return this._textColor[this._checked];
+        },
+        configurable: true
     },
-    configurable: true
-});
 
-/**
- * Выравнивание текста
- *
- * @property align
- * @type String
- */
-Object.defineProperty(DKTools_CheckBox_Base.prototype, 'align', {
-    get: function() {
-        return this._align[this._checked];
+    /**
+     * Цвет фона
+     *
+     * @property backgroundColor
+     * @type String
+     */
+    backgroundColor: {
+        get: function() {
+            return this._backgroundColor[this._checked];
+        },
+        configurable: true
     },
-    configurable: true
-});
 
-/**
- * Отображаемый текст
- *
- * @property text
- * @type String
- */
-Object.defineProperty(DKTools_CheckBox_Base.prototype, 'text', {
-    get: function() {
-        return this._text[this._checked];
+    /**
+     * Шрифт текста
+     *
+     * @property font
+     * @type Array
+     */
+    font: {
+        get: function() {
+            return this._font[this._checked];
+        },
+        configurable: true
     },
-    configurable: true
+
+    /**
+     * Выравнивание текста
+     *
+     * @property align
+     * @type String
+     */
+    align: {
+        get: function() {
+            return this._align[this._checked];
+        },
+        configurable: true
+    },
+
+    /**
+     * Отображаемый текст
+     *
+     * @property text
+     * @type String
+     */
+    text: {
+        get: function() {
+            return this._text[this._checked];
+        },
+        configurable: true
+    }
 });
 
 // standard methods
@@ -8711,8 +8969,19 @@ DKTools_CheckBox_Base.prototype.standardActive = function() {
     return true;
 };
 
-DKTools_CheckBox_Base.prototype.standardChecked = function() {
-    return 'unchecked';
+/**
+ * Возвращает стандартную графику
+ *
+ * @method standardGraphic
+ * @return Object
+ */
+DKTools_CheckBox_Base.prototype.standardGraphic = function() {
+    var standardGraphic = DKTools_Text.prototype.standardGraphic.call(this);
+    var object = {
+        checked: standardGraphic,
+        unchecked: standardGraphic
+    };
+    return object;
 };
 
 /**
@@ -8790,17 +9059,13 @@ DKTools_CheckBox_Base.prototype.standardText = function() {
 };
 
 /**
- * Возвращает стандартную графику
  *
- * @method standardGraphic
- * @return Object
-*/
-DKTools_CheckBox_Base.prototype.standardGraphic = function() {
-    var object = {
-        checked: null,
-        unchecked: null
-    };
-	return object;
+ *
+ * @method standardChecked
+ * @return {string}
+ */
+DKTools_CheckBox_Base.prototype.standardChecked = function() {
+    return 'unchecked';
 };
 
 // setup methods
@@ -8827,7 +9092,31 @@ DKTools_CheckBox_Base.prototype.setupAll = function(object) {
     object = object || {};
 	DKTools_Text.prototype.setupAll.call(this, object);
 	this.setupChecked(object.checked);
-    this.setupGraphic(object.graphic);
+};
+
+/**
+ * Устанавливает графику включенного и выключенного состояния
+ *
+ * @method setupGraphic
+ *
+ * @param {String || Object || null} object - Графика включенного состояния или Объект типа {}
+ * @param {String || null} unchecked - Графика выключенного состояния
+ *
+ * object properties
+ * @property {String || null} checked - Графика включенного состояния
+ * @property {String || null} unchecked - Графика выключенного состояния
+ */
+DKTools_CheckBox_Base.prototype.setupGraphic = function(object, unchecked) {
+    if (object && object.constructor === Object) {
+        return this.setupGraphic(object.checked, object.unchecked);
+    }
+    var standardGraphic = this.standardGraphic();
+    var checked = object || standardGraphic.checked;
+    unchecked = unchecked || standardGraphic.unchecked;
+    this._graphic = {
+        checked: checked,
+        unchecked: unchecked
+    };
 };
 
 /**
@@ -8948,31 +9237,6 @@ DKTools_CheckBox_Base.prototype.setupChecked = function(checked) {
     }
 };
 
-/**
- * Устанавливает графику включенного и выключенного состояния
- *
- * @method setupGraphic
- *
- * @param {String || Object || null} object - Графика включенного состояния или Объект типа {}
- * @param {String || null} unchecked - Графика выключенного состояния
- *
- * object properties
- * @property {String || null} checked - Графика включенного состояния
- * @property {String || null} unchecked - Графика выключенного состояния
-*/
-DKTools_CheckBox_Base.prototype.setupGraphic = function(object, unchecked) {
-    if (object && object.constructor === Object) {
-        return this.setupGraphic(object.checked, object.unchecked);
-    }
-    var standardGraphic = this.standardGraphic();
-    var checked = object || standardGraphic.checked;
-    unchecked = unchecked || standardGraphic.unchecked;
-    this._graphic = {
-        checked: checked,
-        unchecked: unchecked
-    };
-};
-
 // set methods
 
 /** Изменить текст
@@ -9005,14 +9269,43 @@ DKTools_CheckBox_Base.prototype.setAll = function(object, blockStart) {
 	if (this.setChecked(object.checked, block)) {
         changed++;
     }
-    if (this.setGraphic(object.graphic, block)) {
-        changed++;
-    }
 	if (changed && !blockStart) {
         this.start();
     }
     this._deactivateSetAllMode();
 	return changed;
+};
+
+/** Изменить текст
+ * Изменяет графику включенного и выключенного состояния
+ * Возвращает true, если изменение произошло
+ *
+ * @method setGraphic
+ *
+ * @param {Object || null} object - Объект типа {}
+ * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ *
+ * object properties
+ * @property {String || null} checked - Графика включенного состояния
+ * @property {String || null} unchecked - Графика выключенного состояния
+ *
+ * @return Boolean
+ */
+DKTools_CheckBox_Base.prototype.setGraphic = function(object, blockStart) {
+    object = object || {};
+    var lastChecked = this._graphic.checked;
+    var lastUnchecked = this._graphic.unchecked;
+    if (lastChecked === object.checked && lastUnchecked === object.unchecked) {
+        return false;
+    }
+    this.setupGraphic(object);
+    if (lastChecked === this._graphic.checked && lastUnchecked === this._graphic.unchecked) {
+        return false;
+    }
+    if (!blockStart) {
+        this.start();
+    }
+    return true;
 };
 
 /**
@@ -9032,13 +9325,77 @@ DKTools_CheckBox_Base.prototype.setAll = function(object, blockStart) {
  */
 DKTools_CheckBox_Base.prototype.setTextColor = function(object, blockUpdate) {
     object = object || {};
-    if (this._textColor.checked === object.checked && this._textColor.unchecked === object.unchecked) {
-        return false;
-    }
     var lastChecked = this._textColor.checked;
     var lastUnchecked = this._textColor.unchecked;
+    if (lastChecked === object.checked && lastUnchecked === object.unchecked) {
+        return false;
+    }
     this.setupTextColor(object);
     if (lastChecked === this._textColor.checked && lastUnchecked === this._textColor.unchecked) {
+        return false;
+    }
+    if (!blockUpdate) {
+        this.updateBitmap();
+    }
+    return true;
+};
+
+/**
+ * Изменяет цвет фона включенного и выключенного состояния
+ * Возвращает true, если изменение произошло
+ *
+ * @method setBackgroundColor
+ *
+ * @param {Object || null} object - Объект типа {}
+ * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
+ *
+ * object properties
+ * @property {String || null} checked - Цвет фона включенного состояния
+ * @property {String || null} unchecked - Цвет фона выключенного состояния
+ *
+ * @return Boolean
+ */
+DKTools_CheckBox_Base.prototype.setBackgroundColor = function(object, blockUpdate) {
+    object = object || {};
+    var lastChecked = this._backgroundColor.checked;
+    var lastUnchecked = this._backgroundColor.unchecked;
+    if (lastChecked === object.checked && lastUnchecked === object.unchecked) {
+        return false;
+    }
+    this.setupBackgroundColor(object);
+    if (lastChecked === this._backgroundColor.checked && lastUnchecked === this._backgroundColor.unchecked) {
+        return false;
+    }
+    if (!blockUpdate) {
+        this.updateBitmap();
+    }
+    return true;
+};
+
+/**
+ * Изменяет выравнивание текста включенного и выключенного состояния
+ * Возвращает true, если изменение произошло
+ *
+ * @method setAlign
+ *
+ * @param {Object || null} object - Объект типа {}
+ * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
+ *
+ * object properties
+ * @property {String || null} checked - Выравнивание текста включенного состояния
+ * @property {String || null} unchecked - Выравнивание текста выключенного состояния
+ *
+ * @return Boolean
+ */
+DKTools_CheckBox_Base.prototype.setAlign = function(object, blockUpdate) {
+    object = object || {};
+    var lastChecked = this._align.checked;
+    var lastUnchecked = this._align.unchecked;
+    if (lastChecked === object.checked && lastUnchecked === object.unchecked) {
+        return false;
+    }
+    this.setupAlign(object);
+    if (lastChecked === this._align.checked && lastUnchecked === this._align.unchecked) {
         return false;
     }
     if (!blockUpdate) {
@@ -9064,11 +9421,11 @@ DKTools_CheckBox_Base.prototype.setTextColor = function(object, blockUpdate) {
 */
 DKTools_CheckBox_Base.prototype.setText = function(object, blockStart) {
     object = object || {};
-    if (this._text.checked === object.checked && this._text.unchecked === object.unchecked) {
-        return false;
-    }
     var lastChecked = this._text.checked;
     var lastUnchecked = this._text.unchecked;
+    if (lastChecked === object.checked && lastUnchecked === object.unchecked) {
+        return false;
+    }
     this.setupText(object);
     if (lastChecked === this._text.checked && lastUnchecked === this._text.unchecked) {
         return false;
@@ -9097,38 +9454,6 @@ DKTools_CheckBox_Base.prototype.setChecked = function(checked, blockUpdate) {
     var lastChecked = this._checked;
     this.setupChecked(checked);
     if (lastChecked === this._checked) {
-        return false;
-    }
-    if (!blockUpdate) {
-        this.updateBitmap();
-    }
-    return true;
-};
-
-/** Изменить текст
- * Изменяет графику включенного и выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setGraphic
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * object properties
- * @property {String || null} checked - Графика включенного состояния
- * @property {String || null} unchecked - Графика выключенного состояния
- *
- * @return Boolean
-*/
-DKTools_CheckBox_Base.prototype.setGraphic = function(object, blockUpdate) {
-    object = object || {};
-    if (this._graphic.checked === object.checked && this._graphic.unchecked === object.unchecked) {
-        return false;
-    }
-    var lastChecked = this._graphic.checked;
-    var lastUnchecked = this._graphic.unchecked;
-    this.setupGraphic(object);
-    if (lastChecked === this._graphic.checked && lastUnchecked === this._graphic.unchecked) {
         return false;
     }
     if (!blockUpdate) {
@@ -9183,41 +9508,6 @@ DKTools_CheckBox_Base.prototype.minWidth = function() {
 };
 
 /**
- * Возвращает минимальную высоту спрайта
- * Returns the minimum height of the sprite
- *
- * @method minHeight
- * @return Number
-*/
-DKTools_CheckBox_Base.prototype.minHeight = function() {
-	return 36;
-};
-
-/** Изменить текст
- * Если не установлена графика, то создает Bitmap спрайта шириной _bitmapWidth и высотой _bitmapHeight
- * Если графика установлена, то обновляем графику
- *
- * @method createBitmap
-*/
-DKTools_CheckBox_Base.prototype.createBitmap = function() {
-	if (this.hasGraphic()) {
-        return;
-    }
-    DKTools_Text.prototype.createBitmap.call(this);
-};
-
-/**
- * Удаляет графику
- *
- * @method removeGraphic
-*/
-DKTools_CheckBox_Base.prototype.removeGraphic = function() {
-	this.setupGraphic();
-	this.removeBitmap();
-	this.start();
-};
-
-/**
  * Копирует шрифт из source в target
  * Если какие-то значения отсутствуют, они берутся из standardFont
  *
@@ -9253,33 +9543,7 @@ DKTools_CheckBox_Base.prototype._checkFont = function(target, source, standardFo
  * @return Boolean
 */
 DKTools_CheckBox_Base.prototype.hasGraphic = function() {
-	return this._graphic['checked'] && this._graphic['unchecked'];
-};
-
-/**
- * Обновляет графику
- *
- * @method updateGraphic
-*/
-DKTools_CheckBox_Base.prototype.updateGraphic = function() {
-	if (this.hasGraphic()) {
-        var folder = this.standardGraphicFolder();
-        var filename = this._graphic[this._checked];
-        this.loadBitmap(folder, filename);
-    }
-};
-
-/**
- * Обновляет Bitmap спрайта
- *
- * @method updateBitmap
-*/
-DKTools_CheckBox_Base.prototype.updateBitmap = function() {
-	if (this.hasGraphic()) {
-        this.updateGraphic();
-    } else {
-        DKTools_Text.prototype.updateBitmap.call(this);
-    }
+	return !!this._graphic.checked && !!this._graphic.unchecked;
 };
 
 /** Изменить текст
@@ -9353,6 +9617,15 @@ function DKTools_CheckBox() {
 DKTools_CheckBox.prototype = Object.create(DKTools_Container.prototype);
 DKTools_CheckBox.prototype.constructor = DKTools_CheckBox;
 
+// property
+
+Object.defineProperty(DKTools_CheckBox.prototype, 'baseSpriteClass', {
+    get: function() {
+        return DKTools_CheckBox_Base;
+    },
+    configurable: true
+});
+
 // setup methods
 
 /** Изменить текст
@@ -9363,22 +9636,6 @@ DKTools_CheckBox.prototype.constructor = DKTools_CheckBox;
  */
 DKTools_CheckBox.prototype.setupChecked = function(checked) {
     this._baseSprite.setupChecked(checked);
-};
-
-/**
- * Устанавливает графику включенного и выключенного состояния
- *
- * @method setupGraphic
- *
- * @param {String || Object || null} object - Графика включенного состояния или Объект типа {}
- * @param {String || null} unchecked - Графика выключенного состояния
- *
- * object properties
- * @property {String || null} checked - Графика включенного состояния
- * @property {String || null} unchecked - Графика выключенного состояния
- */
-DKTools_CheckBox.prototype.setupGraphic = function(object, unchecked) {
-    this._baseSprite.setupGraphic(object, unchecked);
 };
 
 // set methods
@@ -9398,48 +9655,7 @@ DKTools_CheckBox.prototype.setChecked = function(checked, blockUpdate) {
     return this._baseSprite.setChecked(checked, blockUpdate);
 };
 
-/** Изменить текст
- * Изменяет графику включенного и выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setGraphic
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * object properties
- * @property {String || null} checked - Графика включенного состояния
- * @property {String || null} unchecked - Графика выключенного состояния
- *
- * @return Boolean
- */
-DKTools_CheckBox.prototype.setGraphic = function(object, blockUpdate) {
-    return this._baseSprite.setGraphic(object, blockUpdate);
-};
-
-// private method
-
-/**
- * Создает базовый спрайт
- *
- * @method _createBaseSprite
- *
- * @private
- */
-DKTools_CheckBox.prototype._createBaseSprite = function(object) {
-    this._baseSprite = new DKTools_CheckBox_Base(object);
-};
-
 // other methods
-
-/**
- * Удаляет графику
- *
- * @method removeGraphic
- */
-DKTools_CheckBox.prototype.removeGraphic = function() {
-    this._baseSprite.removeGraphic();
-};
 
 /** Изменить текст
  * Возвращает true, если элемент включен
@@ -9504,6 +9720,14 @@ DKTools_Radio_Button_Base.prototype.constructor = DKTools_Radio_Button_Base;
 // standard methods
 
 /**
+ * Возвращает стандартную графику
+ *
+ * @method standardGraphic
+ * @return Object
+ */
+DKTools_Radio_Button_Base.prototype.standardGraphic = DKTools_CheckBox_Base.prototype.standardGraphic;
+
+/**
  * Возвращает стандартный цвет текста
  *
  * @method standardTextColor
@@ -9544,14 +9768,6 @@ DKTools_Radio_Button_Base.prototype.standardFont = DKTools_CheckBox_Base.prototy
 DKTools_Radio_Button_Base.prototype.standardText = DKTools_CheckBox_Base.prototype.standardText;
 
 /**
- * Возвращает стандартную графику
- *
- * @method standardGraphic
- * @return Object
- */
-DKTools_Radio_Button_Base.prototype.standardGraphic = DKTools_CheckBox_Base.prototype.standardGraphic;
-
-/**
  * Возвращает стандартный номер выбранной кнопки
  *
  * @method standardIndex
@@ -9584,20 +9800,6 @@ DKTools_Radio_Button_Base.prototype.setupAll = function(object) {
 };
 
 /**
- * Устанавливает текст включенного и выключенного состояния
- *
- * @method setupText
- *
- * @param {String || Object || null} object - Текст включенного состояния или Объект типа {}
- * @param {String || null} unchecked - Текст выключенного состояния
- *
- * object properties
- * @property {String || null} checked - Текст включенного состояния
- * @property {String || null} unchecked - Текст выключенного состояния
- */
-DKTools_Radio_Button_Base.prototype.setupText = DKTools_CheckBox_Base.prototype.setupText;
-
-/**
  * Устанавливает графику включенного и выключенного состояния
  *
  * @method setupGraphic
@@ -9610,6 +9812,20 @@ DKTools_Radio_Button_Base.prototype.setupText = DKTools_CheckBox_Base.prototype.
  * @property {String || null} unchecked - Графика выключенного состояния
  */
 DKTools_Radio_Button_Base.prototype.setupGraphic = DKTools_CheckBox_Base.prototype.setupGraphic;
+
+/**
+ * Устанавливает текст включенного и выключенного состояния
+ *
+ * @method setupText
+ *
+ * @param {String || Object || null} object - Текст включенного состояния или Объект типа {}
+ * @param {String || null} unchecked - Текст выключенного состояния
+ *
+ * object properties
+ * @property {String || null} checked - Текст включенного состояния
+ * @property {String || null} unchecked - Текст выключенного состояния
+ */
+DKTools_Radio_Button_Base.prototype.setupText = DKTools_CheckBox_Base.prototype.setupText;
 
 /**
  * Устанавливает номер выбранной кнопки
@@ -9660,6 +9876,23 @@ DKTools_Radio_Button_Base.prototype.setAll = function(object, blockStart) {
 	return changed;
 };
 
+/** Изменить текст
+ * Изменяет графику включенного и выключенного состояния
+ * Возвращает true, если изменение произошло
+ *
+ * @method setGraphic
+ *
+ * @param {Object || null} object - Объект типа {}
+ * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
+ *
+ * object properties
+ * @property {String || null} checked - Графика включенного состояния
+ * @property {String || null} unchecked - Графика выключенного состояния
+ *
+ * @return Boolean
+ */
+DKTools_Radio_Button_Base.prototype.setGraphic = DKTools_CheckBox_Base.prototype.setGraphic;
+
 /**
  * Изменяет текст включенного и выключенного состояния
  * Возвращает true, если изменение произошло
@@ -9677,22 +9910,7 @@ DKTools_Radio_Button_Base.prototype.setAll = function(object, blockStart) {
  */
 DKTools_Radio_Button_Base.prototype.setText = DKTools_CheckBox_Base.prototype.setText;
 
-/** Изменить текст
- * Изменяет графику включенного и выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setGraphic
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * object properties
- * @property {String || null} checked - Графика включенного состояния
- * @property {String || null} unchecked - Графика выключенного состояния
- *
- * @return Boolean
- */
-DKTools_Radio_Button_Base.prototype.setGraphic = DKTools_CheckBox_Base.prototype.setGraphic;
+
 
 /**
  * Изменяет номер выбранной кнопки
@@ -9722,7 +9940,7 @@ DKTools_Radio_Button_Base.prototype.setElementTextHandler = function(method) {
  *
  * @method start
  */
-DKTools_Radio_Button_Base.prototype.start = function() {
+DKTools_Radio_Button_Base.prototype.start = function(activate) {
     this.checkRowsAndCols();
     if (this.isEmpty()) {
         this.createElements();
@@ -9730,7 +9948,7 @@ DKTools_Radio_Button_Base.prototype.start = function() {
     this.updateElementsId();
     this.updateElementsClickHandler();
     this.activateElements();
-    DKTools_Container_Base.prototype.start.call(this);
+    DKTools_Container_Base.prototype.start.call(this, activate);
 };
 
 DKTools_Radio_Button_Base.prototype.object = function() {
@@ -9769,9 +9987,8 @@ DKTools_Radio_Button_Base.prototype.createElements = function() {
     var maxCols = this.maxCols();
     for(var i = 0; i < maxRows; i++) {
         for(var j = 0; j < maxCols; j++) {
-            var element = this.createElement(id);
+            var element = this.createElement(id++);
             elements.push(element);
-            id++;
         }
     }
     this.setupElements(elements);
@@ -9787,7 +10004,7 @@ DKTools_Radio_Button_Base.prototype.createElements = function() {
  * @return DKTools_CheckBox
 */
 DKTools_Radio_Button_Base.prototype.createElement = function(id) {
-	var checked = (id === this.index());
+	var checked = (id === this._index);
     var text = this.elementText(id);
     var object = {
         baseSprite: DKTools_CheckBox_Base.prototype.object.call(this)
@@ -9871,14 +10088,6 @@ DKTools_Radio_Button_Base.prototype._elementClickHandler = function(element) {
  */
 DKTools_Radio_Button_Base.prototype.isContainer = function() {
     return true;
-};
-
-/**
- * Обновляет Bitmap спрайта
- *
- * @method updateBitmap
- */
-DKTools_Radio_Button_Base.prototype.updateBitmap = function() {
 };
 
 /**
@@ -9977,190 +10186,20 @@ function DKTools_Radio_Button() {
 DKTools_Radio_Button.prototype = Object.create(DKTools_Container.prototype);
 DKTools_Radio_Button.prototype.constructor = DKTools_Radio_Button;
 
+// property
+
+Object.defineProperty(DKTools_Radio_Button.prototype, 'baseSpriteClass', {
+    get: function() {
+        return DKTools_Radio_Button_Base;
+    },
+    configurable: true
+});
+
 // setup methods
-
-
 
 // set methods
 
-/**
- * Изменяет текст включенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setCheckedText
- *
- * @param {String || null} text - Текст включенного состояния
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @return Boolean
- */
-//DKTools_Radio_Button.prototype.setCheckedText = function(text, blockStart) {
-//    return this._baseSprite.setCheckedText(text, blockStart);
-//};
-
-/**
- * Изменяет текст выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setUncheckedText
- *
- * @param {String || null} text - Текст выключенного состояния
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @return Boolean
- */
-//DKTools_Radio_Button.prototype.setUncheckedText = function(text, blockStart) {
-//    return this._baseSprite.setUncheckedText(text, blockStart);
-//};
-
-/**
- * Изменяет цвет текста включенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setCheckedTextColor
- *
- * @param {String || null} color - Цвет текста включенного состояния
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-//DKTools_Radio_Button.prototype.setCheckedTextColor = function(color, blockUpdate) {
-//    return this._baseSprite.setCheckedTextColor(color, blockUpdate);
-//};
-
-/**
- * Изменяет цвет текста выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setUncheckedTextColor
- *
- * @param {String || null} color - Цвет текста выключенного состояния
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-//DKTools_Radio_Button.prototype.setUncheckedTextColor = function(color, blockUpdate) {
-//    return this._baseSprite.setUncheckedTextColor(color, blockUpdate);
-//};
-
-/**
- * Изменяет шрифт текста включенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setCheckedFont
- *
- * @param {Array || null} font - Шрифт текста включенного состояния
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @return Boolean
- */
-//DKTools_Radio_Button.prototype.setCheckedFont = function(font, blockStart) {
-//    return this._baseSprite.setCheckedFont(font, blockStart);
-//};
-
-/**
- * Изменяет шрифт текста выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setUncheckedFont
- *
- * @param {Array || null} font - Шрифт текста выключенного состояния
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @return Boolean
- */
-//DKTools_Radio_Button.prototype.setUncheckedFont = function(font, blockStart) {
-//    return this._baseSprite.setUncheckedFont(font, blockStart);
-//};
-
-/**
- * Изменяет выравнивание текста включенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setCheckedAlign
- *
- * @param {String || null} align - Выравнивание текста включенного состояния
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-//DKTools_Radio_Button.prototype.setCheckedAlign = function(align, blockUpdate) {
-//    return this._baseSprite.setCheckedAlign(align, blockUpdate);
-//};
-
-/**
- * Изменяет выравнивание текста выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setUncheckedAlign
- *
- * @param {String || null} align - Выравнивание текста выключенного состояния
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-//DKTools_Radio_Button.prototype.setUncheckedAlign = function(align, blockUpdate) {
-//    return this._baseSprite.setUncheckedAlign(align, blockUpdate);
-//};
-
-/**
- * Изменяет графику включенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setCheckedGraphic
- *
- * @param {String || null} graphic - Графика включенного состояния
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-//DKTools_Radio_Button.prototype.setCheckedGraphic = function(graphic, blockUpdate) {
-//    return this._baseSprite.setCheckedGraphic(graphic, blockUpdate);
-//};
-
-/**
- * Изменяет графику выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setUncheckedGraphic
- *
- * @param {String || null} graphic - Графика выключенного состояния
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-//DKTools_Radio_Button.prototype.setUncheckedGraphic = function(graphic, blockUpdate) {
-//    return this._baseSprite.setUncheckedGraphic(graphic, blockUpdate);
-//};
-
-/** Изменить текст
- * Изменяет графику включенного и выключенного состояния
- * Возвращает количество измененных параметров
- *
- * @method setGraphic
- *
- * @param {String || null} checked_graphic - Графика включенного состояния
- * @param {String || null} unchecked_graphic - Графика выключенного состояния
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Number
- */
-DKTools_Radio_Button.prototype.setGraphic = function(checked_graphic, unchecked_graphic, blockUpdate) {
-    return this._baseSprite.setGraphic(checked_graphic, unchecked_graphic, blockUpdate);
-};
-
 // other methods
-
-/**
- * Создает базовый спрайт
-
- * @method _createBaseSprite
- *
- * @private
- */
-DKTools_Radio_Button.prototype._createBaseSprite = function(object) {
-    this._baseSprite = new DKTools_Radio_Button_Base(object);
-};
 
 
 
@@ -10196,10 +10235,7 @@ Object.defineProperty(DKTools_Clicker_Base.prototype, 'length', {
  * @param {Number || null} object - Координата X
  * @param {Number || null} y - Координата Y
  */
-DKTools_Clicker_Base.prototype.initialize = function(object, y) {
-    this.clearElements();
-    DKTools_Sprite.prototype.initialize.call(this, object, y);
-};
+DKTools_Clicker_Base.prototype.initialize = DKTools_Container_Base.prototype.initialize;
 
 // standard methods
 
@@ -10211,9 +10247,7 @@ DKTools_Clicker_Base.prototype.initialize = function(object, y) {
  */
 DKTools_Clicker_Base.prototype.standardElements = DKTools_Container_Base.prototype.standardElements;
 
-DKTools_Clicker_Base.prototype.standardIndex = function() {
-    return 0;
-};
+DKTools_Clicker_Base.prototype.standardIndex = DKTools_Radio_Button_Base.prototype.standardIndex;
 
 // setup methods
 
@@ -10240,9 +10274,7 @@ DKTools_Clicker_Base.prototype.setupElements = DKTools_Container_Base.prototype.
  */
 DKTools_Clicker_Base.prototype.setupElement = DKTools_Container_Base.prototype.setupElement;
 
-DKTools_Clicker_Base.prototype.setupIndex = function(index) {
-    this._index = (index == null ? this.standardIndex() : index);
-};
+DKTools_Clicker_Base.prototype.setupIndex = DKTools_Radio_Button_Base.prototype.setupIndex;
 
 // set methods
 
@@ -10254,7 +10286,7 @@ DKTools_Clicker_Base.prototype.setAll = function(object, blockStart) {
     if (this.setElements(object.elements, block)) {
         changed++;
     }
-    if (this.setIndex(object.index)) {
+    if (this.setIndex(object.index)) { // вызывает start через select, blockStart не будет работать правильно
         changed++;
     }
     if (changed && !blockStart) {
@@ -10276,14 +10308,7 @@ DKTools_Clicker_Base.prototype.setAll = function(object, blockStart) {
  */
 DKTools_Clicker_Base.prototype.setElements = DKTools_Container_Base.prototype.setElements;
 
-DKTools_Clicker_Base.prototype.setIndex = function(index) {
-    if (this._index === index) {
-        return false;
-    }
-    var lastIndex = this._index;
-    this.select(index);
-    return lastIndex !== this._index;
-};
+DKTools_Clicker_Base.prototype.setIndex = DKTools_Radio_Button_Base.prototype.setIndex;
 
 // other methods
 
@@ -10310,7 +10335,7 @@ DKTools_Clicker_Base.prototype._checkElements = function() {
 /**
  * Клонирует элементы контейнера
  *
- * @method cloneElements
+ * @method _cloneElements
  * @private
  *
  * @param {Number | null} [startPosition = 0] - Стартовая позиция клонирования
@@ -10321,6 +10346,8 @@ DKTools_Clicker_Base.prototype._cloneElements = DKTools_Container_Base.prototype
 
 /**
  *
+ *
+ * @method object
  * @return {Object}
  */
 DKTools_Clicker_Base.prototype.object = function() {
@@ -10337,14 +10364,6 @@ DKTools_Clicker_Base.prototype.object = function() {
  */
 DKTools_Clicker_Base.prototype.createBitmap = function() {
     this.setupBitmap(this.selected());
-};
-
-/**
- * Обновляет Bitmap спрайта
- *
- * @method updateBitmap
- */
-DKTools_Clicker_Base.prototype.updateBitmap = function() {
 };
 
 /**
@@ -10496,22 +10515,20 @@ function DKTools_Clicker() {
 DKTools_Clicker.prototype = Object.create(DKTools_Container.prototype);
 DKTools_Clicker.prototype.constructor = DKTools_Clicker;
 
+// property
+
+Object.defineProperty(DKTools_Clicker.prototype, 'baseSpriteClass', {
+    get: function() {
+        return DKTools_Clicker_Base;
+    },
+    configurable: true
+});
+
 // setup methods
 
 // set methods
 
 // other methods
-
-/**
- * Создает базовый спрайт
-
- * @method _createBaseSprite
- *
- * @private
- */
-DKTools_Clicker.prototype._createBaseSprite = function(object) {
-    this._baseSprite = new DKTools_Clicker_Base(object);
-};
 
 DKTools_Clicker.prototype.autoSwitching = function(duration) {
     return this._baseSprite.autoSwitching(duration);
@@ -10540,118 +10557,15 @@ function DKTools_ColorPicker_Base() {
 DKTools_ColorPicker_Base.prototype = Object.create(DKTools_Sprite.prototype);
 DKTools_ColorPicker_Base.prototype.constructor = DKTools_ColorPicker_Base;
 
-// standard methods
-
-/**
- * Возвращает стандартную графику
- *
- * @method standardGraphic
- * @return null
-*/
-DKTools_ColorPicker_Base.prototype.standardGraphic = function() {
-	return null;
-};
-
-// setup methods
-
-/**
- * Устанавливает все параметры спрайта
- *
- * @method setupAll
- *
- * @param {Object || null} object - Объект типа {}
- *
- * object properties
- * @property {String || null} graphic - Название файла графики
- *
- * @see other object properties: DKTools_Sprite.prototype.setupAll
-*/
-DKTools_ColorPicker_Base.prototype.setupAll = function(object) {
-    object = object || {};
-	DKTools_Sprite.prototype.setupAll.call(this, object);
-	this.setupGraphic(object.graphic);
-};
-
-DKTools_ColorPicker_Base.prototype.setupGraphic = function(graphic) {
-	this._graphic = graphic || this.standardGraphic();
-};
-
-// set methods
-
-/**
- * Изменяет все параметры спрайта
- * Возвращает количество измененных параметров
- *
- * @method setAll
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * object properties
- * @property {String || null} graphic - Название файла графики
- *
- * @see other object properties: DKTools_Sprite.prototype.setAll
- *
- * @return Number
-*/
-DKTools_ColorPicker_Base.prototype.setAll = function(object, blockStart) {
-	var block = true;
-    var changed = DKTools_Sprite.prototype.setAll.call(this, object, block);
-	if (this.setGraphic(object.graphic, block)) {
-        changed++;
-    }
-	if (changed && !blockStart) {
-        this.start();
-    }
-	return changed;
-};
-
-/**
- *
- *
- * @method setGraphic
- *
- * @param graphic
- * @param blockStart
- *
- * @return {Boolean}
- */
-DKTools_ColorPicker_Base.prototype.setGraphic = function(graphic, blockStart) {
-	if (this._graphic === graphic) {
-        return false;
-    }
-	var lastGraphic = this._graphic;
-	this.setupGraphic(graphic);
-	if (lastGraphic === this._graphic) {
-        return false;
-    }
-	if (!blockStart) {
-        this.start();
-    }
-	return true;
-};
-
 // other methods
-
-DKTools_ColorPicker_Base.prototype.object = function() {
-    var object = DKTools_Sprite.prototype.object.call(this);
-    object.graphic = this._graphic;
-    return object;
-};
 
 DKTools_ColorPicker_Base.prototype.color = function() {
     return this._color;
 };
 
-DKTools_ColorPicker_Base.prototype.hasGraphic = function() {
-    return !!this._graphic;
-};
-
 DKTools_ColorPicker_Base.prototype.createBitmap = function() {
 	if (this.hasGraphic()) {
-        var folder = this.standardGraphicFolder();
-        var filename = this._graphic;
-        this.loadBitmap(folder, filename);
+        DKTools_Sprite.prototype.createBitmap.call(this);
     } else {
 		this.loadWindowskin();
 		this.setFrame(96, 144, 96, 48);
@@ -10661,8 +10575,8 @@ DKTools_ColorPicker_Base.prototype.createBitmap = function() {
 DKTools_ColorPicker_Base.prototype._updateColor = function() {
     var dx = this._frame.x;
     var dy = this._frame.y;
-    var x = this.canvasToLocalX(TouchInput.x) / this.scale.x + dx;
-    var y = this.canvasToLocalY(TouchInput.y) / this.scale.y + dy;
+    var x = this.clickX / this.scale.x + dx;
+    var y = this.clickY / this.scale.y + dy;
     this._color = this.bitmap.getPixel(x, y);
 };
 
@@ -10694,30 +10608,16 @@ function DKTools_ColorPicker() {
 DKTools_ColorPicker.prototype = Object.create(DKTools_Container.prototype);
 DKTools_ColorPicker.prototype.constructor = DKTools_ColorPicker;
 
-// setup method
+// property
 
-DKTools_ColorPicker.prototype.setupGraphic = function(graphic) {
-    this._baseSprite.setupGraphic(graphic);
-};
+Object.defineProperty(DKTools_ColorPicker.prototype, 'baseSpriteClass', {
+    get: function() {
+        return DKTools_ColorPicker_Base;
+    },
+    configurable: true
+});
 
-// set method
-
-DKTools_ColorPicker.prototype.setGraphic = function(graphic, blockStart) {
-    return this._baseSprite.setGraphic(graphic, blockStart);
-};
-
-// other methods
-
-/**
- * Создает базовый спрайт
-
- * @method _createBaseSprite
- *
- * @private
- */
-DKTools_ColorPicker.prototype._createBaseSprite = function(object) {
-    this._baseSprite = new DKTools_ColorPicker_Base(object);
-};
+// other method
 
 DKTools_ColorPicker.prototype.color = function() {
     return this._baseSprite.color();
@@ -11194,18 +11094,14 @@ function DKTools_Slider() {
 DKTools_Slider.prototype = Object.create(DKTools_Container.prototype);
 DKTools_Slider.prototype.constructor = DKTools_Slider;
 
-// other methods
+// property
 
-/**
- * Создает базовый спрайт
-
- * @method _createBaseSprite
- *
- * @private
- */
-DKTools_Slider.prototype._createBaseSprite = function(object) {
-    this._baseSprite = new DKTools_Slider_Base(object);
-};
+Object.defineProperty(DKTools_Slider.prototype, 'baseSpriteClass', {
+    get: function() {
+        return DKTools_Slider_Base;
+    },
+    configurable: true
+});
 
 
 
