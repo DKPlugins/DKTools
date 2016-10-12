@@ -52,12 +52,15 @@ Use "addChild" function for add element to your scene.
  
 # **FAQ**
 **Q: What is "DKTools_Sprite" ?**
+
 **A:** This is a class, who contain standard Sprite functions, Sprite_Button functions and many new functions. The most significant features are: avoid errors when changing parameters, event support, new features for click and mouse (long press, mouse enter/stay on element and mouse leave from element.
  
 **Q: What is "Event support" ?**
+
 **A:** I developed special class "DKToolsEvent", that handles a variety of activities that take place with the elements.
  
 **Q: What types of activities can take place with the elements?**
+
 **A:** Base class "DKTools_Sprite" includes the following types of events:
 
 1. wait - events that caused each time an element is updated (blocking update events)
@@ -78,4 +81,5 @@ Use "addChild" function for add element to your scene.
 Other elements have different events.
  
 **Q: Сurrently DKTools has incomplete documentation and only in Russian. Will the English documentation ?**
+
 **A:** Yes, of course. Currently the documentation is not a primary task, but I try to make time for it. I use JSDoc documentation.
