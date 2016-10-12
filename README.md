@@ -1,11 +1,12 @@
 **Author**: DK
+
 **Version**: Public 0.92 **Beta**
  
 **Description**: API. Contains elements for creating plugins.
  
 **Warning:** May contain bugs in some elements
  
-## **4 steps to use DKTools** h2
+## **4 steps to use DKTools**
 1. Create Element
 Create element from DKTools through "new" operator, like: var object = new DKTools_Sprite(x, y, width);
  
@@ -18,7 +19,7 @@ Call start function of element.
 4. Add element to your scene
 Use "addChild" function for add element to your scene.
  
-## **List of elements:** h2
+## **List of elements:**
 1. DKTools_Sprite - Based on standard Sprite. Base class for other elements. Contain all required functions.
 2. DKTools_Text - Element for drawing text.
 3. DKTools_Container_Base - Stores and processes the elements.
@@ -44,12 +45,12 @@ Use "addChild" function for add element to your scene.
 
 **Warning:** not all elements are ready
  
-## **3 main reasons for use DKTools:** h2
+## **3 main reasons for use DKTools:**
 1. No need to waste time creating special sprites or windows
 2. Large number of element parameters and all parameters have default values
 3. Many different functions in each element
  
-# **FAQ** h1
+# **FAQ**
 **Q: What is "DKTools_Sprite" ?**
 **A:** This is a class, who contain standard Sprite functions, Sprite_Button functions and many new functions. The most significant features are: avoid errors when changing parameters, event support, new features for click and mouse (long press, mouse enter/stay on element and mouse leave from element.
  
@@ -58,6 +59,7 @@ Use "addChild" function for add element to your scene.
  
 **Q: What types of activities can take place with the elements?**
 **A:** Base class "DKTools_Sprite" includes the following types of events:
+
 1. wait - events that caused each time an element is updated (blocking update events)
 2. update - events  that caused each time an element is updated
 3. start - events, which are caused when calling the function start element
@@ -72,6 +74,7 @@ Use "addChild" function for add element to your scene.
 12. longPress - event that are called when the user clicks long press on element
 13. wheelX - event that are called when the user scrolls the mouse wheel on the X axis
 14. wheelY - event that are called when the user scrolls the mouse wheel on the Y axis
+
 Other elements have different events.
  
 **Q: Сurrently DKTools has incomplete documentation and only in Russian. Will the English documentation ?**
