@@ -370,10 +370,10 @@ DKToolsUtils.splitString = function(string) {
 };
 
 DKToolsUtils.stringToNumberArray = function(object) {
-    if (object === '') {
+    if (!object) {
         return [];
     }
-    if (object.constructor === String) {
+    if (object instanceof String) {
         object = this.splitString(object);
     }
     return object.map(function(value) {
@@ -382,10 +382,10 @@ DKToolsUtils.stringToNumberArray = function(object) {
 };
 
 DKToolsUtils.stringToBooleanArray = function(object) {
-    if (object === '') {
+    if (!object) {
         return [];
     }
-    if (object.constructor === String) {
+    if (object instanceof String) {
         object = this.splitString(object);
     }
     return object.map(function(value) {
@@ -393,29 +393,18 @@ DKToolsUtils.stringToBooleanArray = function(object) {
     }, this);
 };
 
-DKToolsUtils.stringToFontArray = function(font) {
+DKToolsUtils.stringToFontArray = function(object) {
     var standardFontArray = this.standardFontArray();
-    if (font === '') {
+    if (!object || object.length === 0) {
         return standardFontArray;
     }
-    if (font.constructor === String) {
-        font = this.splitString(font);
-    }
-    if (font.length === 0) {
-        return standardFontArray;
+    if (object instanceof String) {
+        object = this.splitString(object);
     }
     var array = [];
-    if (font[0] !== '-1') {
-        array[0] = font[0];
-    } else {
-        array[0] = standardFontArray[0];
-    }
-    array[1] = this.toBoolean(font[1]);
-    if (font[2] !== '-1') {
-        array[2] = Number(font[2]);
-    } else {
-        array[2] = standardFontArray[2];
-    }
+    array[0] = (object[0] === '-1' ? standardFontArray[0] : object[0]);
+    array[1] = this.toBoolean(object[1]);
+    array[2] = (object[2] === '-1' ? standardFontArray[2] : Number(object[2]));
     return array;
 };
 
@@ -706,9 +695,7 @@ if (DKToolsUtils.debug) {
  */
 Bitmap.prototype.clone = function() {
     var oldCanvas = this.canvas;
-    var width = oldCanvas.width;
-    var height = oldCanvas.height;
-    var newBitmap = new Bitmap(width, height);
+    var newBitmap = new Bitmap(oldCanvas.width, oldCanvas.height);
     var newContext = newBitmap.context;
     newContext.drawImage(oldCanvas, 0, 0);
     return newBitmap;
@@ -718,252 +705,297 @@ Bitmap.prototype.clone = function() {
 // Array
 //===========================================================================
 
-/**
- * Подсчитывает количество item в массиве
- *
- * @method count
- *
- * @param {*} item - Элемент, количество которого нужно найти
- *
- * @return {Number} Возвращает количество элементов item в массиве
- */
-Array.prototype.count = function(item) {
-    var amount = 0;
-    for(var i = 0; i < this.length; i++) {
-        if (this[i] === item || (Number.isNaN(this[i]) && Number.isNaN(item))) {
-            amount++;
+Object.defineProperties(Array.prototype, {
+
+    /**
+     * Подсчитывает количество item в массиве
+     *
+     * @method Array.prototype.count
+     *
+     * @param {*} item - Элемент, количество которого нужно найти
+     *
+     * @return {Number} Возвращает количество элементов item в массиве
+     */
+    count: {
+        configurable: true,
+        enumerable: false,
+        value: function(item) {
+            var amount = 0;
+            for(var i = 0; i < this.length; i++) {
+                if (this[i] === item || (Number.isNaN(this[i]) && Number.isNaN(item))) {
+                    amount++;
+                }
+            }
+            return amount;
+        }
+    },
+
+    /**
+     * Суммирует количество объектов в массиве
+     *
+     * @method Array.prototype.counts
+     *
+     * @param {...number} arguments
+     *
+     * @return {Number} Сумма количества объектов в массиве
+     */
+    counts: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            if (this.isEmpty()) {
+                return 0;
+            }
+            var array = arguments;
+            if (arguments.length === 1 && arguments[0] instanceof Array) {
+                array = arguments[0];
+            }
+            var amount = 0;
+            for(var i = 0; i < array.length; i++) {
+                amount += this.count(array[i]);
+            }
+            return amount;
+        }
+    },
+
+    /**
+     * Возвращает реальную длину массива без учета NaN, null и undefined значений
+     *
+     * @method realLength
+     * @return {Number} Длина массива
+     */
+    realLength: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            return this.length - this.counts(Number.NaN, null, undefined);
+        }
+    },
+
+    /**
+     * Проверяет массив на пустоту
+     *
+     * @method isEmpty
+     * @return {Boolean} Возвращает true, если массив пуст
+     */
+    isEmpty: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            return this.length === 0;
+        }
+    },
+
+    /**
+     * Проверяет массив на содержание NaN, null и undefined
+     *
+     * @method isNeedCompact
+     * @return {Boolean} Возвращает true, если массив содержит NaN, null или undefined
+     */
+    isNeedCompact: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            return this.length !== this.realLength();
+        }
+    },
+
+    /**
+     * Проверяет, что массив является числовым
+     *
+     * @method isNumberArray
+     * @return {Boolean} Возвращает true, если массив является числовым
+     */
+    isNumberArray: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            if (this.isNeedCompact()) {
+                return false;
+            }
+            for(var i = 0; i < this.length; i++) {
+                if (!(this[i] instanceof Number)) {
+                    return false;
+                }
+            }
+            return !this.isEmpty();
+        }
+    },
+
+    /**
+     * Проверяет, что массив является булевым
+     *
+     * @method isBooleanArray
+     * @return {Boolean} Возвращает true, если массив является булевым
+     */
+    isBooleanArray: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            if (this.isNeedCompact()) {
+                return false;
+            }
+            for(var i = 0; i < this.length; i++) {
+                if (!(this[i] instanceof Boolean)) {
+                    return false;
+                }
+            }
+            return !this.isEmpty();
+        }
+    },
+
+    /**
+     * Проверяет, что массив является строковым
+     *
+     * @method isStringArray
+     * @return {Boolean} Возвращает true, если массив является строковым
+     */
+    isStringArray: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            if (this.isNeedCompact()) {
+                return false;
+            }
+            for(var i = 0; i < this.length; i++) {
+                if (!(this[i] instanceof String)) {
+                    return false;
+                }
+            }
+            return !this.isEmpty();
+        }
+    },
+
+    /**
+     * Сжимает массив, удаляя NaN, null и undefined
+     *
+     * @method compact
+     * @return {Array} Сжатый массив без NaN, null и undefined
+     */
+    compact: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            if (!this.isNeedCompact()) {
+                return this;
+            }
+            for(var i = 0; i < this.length; i++) {
+                var value = this[i];
+                if (value instanceof Array) {
+                    value.compact();
+                    continue;
+                }
+                if (value == null || Number.isNaN(value)) {
+                    this.splice(i, 1);
+                    return this.compact();
+                }
+            }
+            return this;
+        }
+    },
+
+    /**
+     * Удаляет item из массива
+     *
+     * @method remove
+     * @param {*} item - Элемент, который требуется удалить
+     */
+    remove: {
+        configurable: true,
+        enumerable: false,
+        value: function(item) {
+            var index = this.indexOf(item);
+            if (index >= 0) {
+                this[index] = null;
+            }
+            this.compact();
+        }
+    },
+
+    /**
+     * Вставляет item в массив
+     *
+     * @method insert
+     *
+     * @param {Number} index - Номер, куда вставить item
+     * @param {*} item - Элемент, который нужно вставить
+     */
+    insert: {
+        configurable: true,
+        enumerable: false,
+        value: function(index, item) {
+            this.splice(index, 0, item);
+        }
+    },
+
+    /**
+     * Возвращает минимальный элемент числового массива
+     *
+     * @method min
+     * @return {Number} Минимальный элемент массива
+     */
+    min: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            if (!this.isNumberArray()) {
+                return Number.NaN;
+            }
+            return Math.min.apply(Math, this);
+        }
+    },
+
+    /**
+     * Возвращает максимальный элемент числового массива
+     *
+     * @method max
+     * @return {Number} Максимальный элемент массива
+     */
+    max: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            if (!this.isNumberArray()) {
+                return Number.NaN;
+            }
+            return Math.max.apply(Math, this);
+        }
+    },
+
+    /**
+     * Выполняет логическую операцию дизъюнкция для булевого массива
+     *
+     * @method disjunction
+     * @return {Boolean | null} Возвращает true, если массив содержит true
+     */
+    disjunction: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            if (!this.isBooleanArray()) {
+                return null;
+            }
+            return this.count(true) > 0;
+        }
+    },
+
+    /**
+     * Выполняет логическую операцию конъюнкция для булевого массива
+     *
+     * @method conjunction
+     * @return {Boolean | null} Возвращает true, если массив не содержит false
+     */
+    conjunction: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            if (!this.isBooleanArray()) {
+                return null;
+            }
+            return this.count(false) === 0;
         }
     }
-    return amount;
-};
-Object.defineProperty(Array.prototype, 'count', { configurable: true, enumerable: false });
-
-/**
- * Суммирует количество объектов в массиве
- *
- * @method counts
- *
- * @param {...number} arguments
- *
- * @return {Number} Сумма количества объектов в массиве
- */
-Array.prototype.counts = function() {
-    if (this.isEmpty()) {
-        return 0;
-    }
-    var array = arguments;
-    if (arguments.length === 1 && arguments[0] && arguments[0].constructor === Array) {
-        array = arguments[0];
-    }
-    var amount = 0;
-    for(var i = 0; i < array.length; i++) {
-        amount += this.count(array[i]);
-    }
-    return amount;
-};
-Object.defineProperty(Array.prototype, 'counts', { configurable: true, enumerable: false });
-
-/**
- * Возвращает реальную длину массива без учета NaN, null и undefined значений
- *
- * @method realLength
- * @return {Number} Длина массива
- */
-Array.prototype.realLength = function() {
-    return this.length - this.counts(Number.NaN, null, undefined);
-};
-Object.defineProperty(Array.prototype, 'realLength', { configurable: true, enumerable: false });
-
-/**
- * Проверяет массив на пустоту
- *
- * @method isEmpty
- * @return {Boolean} Возвращает true, если массив пуст
- */
-Array.prototype.isEmpty = function() {
-    return this.length === 0;
-};
-Object.defineProperty(Array.prototype, 'isEmpty', { configurable: true, enumerable: false });
-
-/**
- * Проверяет массив на содержание NaN, null и undefined
- *
- * @method isNeedCompact
- * @return {Boolean} Возвращает true, если массив содержит NaN, null или undefined
- */
-Array.prototype.isNeedCompact = function() {
-    return this.length !== this.realLength();
-};
-Object.defineProperty(Array.prototype, 'isNeedCompact', { configurable: true, enumerable: false });
-
-/**
- * Проверяет, что массив является числовым
- *
- * @method isNumberArray
- * @return {Boolean} Возвращает true, если массив является числовым
- */
-Array.prototype.isNumberArray = function() {
-    if (this.isNeedCompact()) {
-        return false;
-    }
-    for(var i = 0; i < this.length; i++) {
-        var object = this[i];
-        if (object.constructor !== Number) {
-            return false;
-        }
-    }
-    return !this.isEmpty();
-};
-Object.defineProperty(Array.prototype, 'isNumberArray', { configurable: true, enumerable: false });
-
-/**
- * Проверяет, что массив является булевым
- *
- * @method isBooleanArray
- * @return {Boolean} Возвращает true, если массив является булевым
- */
-Array.prototype.isBooleanArray = function() {
-    if (this.isNeedCompact()) {
-        return false;
-    }
-    for(var i = 0; i < this.length; i++) {
-        var object = this[i];
-        if (object.constructor !== Boolean) {
-            return false;
-        }
-    }
-    return !this.isEmpty();
-};
-Object.defineProperty(Array.prototype, 'isBooleanArray', { configurable: true, enumerable: false });
-
-/**
- * Проверяет, что массив является строковым
- *
- * @method isStringArray
- * @return {Boolean} Возвращает true, если массив является строковым
- */
-Array.prototype.isStringArray = function() {
-    if (this.isNeedCompact()) {
-        return false;
-    }
-    for(var i = 0; i < this.length; i++) {
-        var object = this[i];
-        if (object.constructor !== String) {
-            return false;
-        }
-    }
-    return !this.isEmpty();
-};
-Object.defineProperty(Array.prototype, 'isStringArray', { configurable: true, enumerable: false });
-
-/**
- * Сжимает массив, удаляя NaN, null и undefined
- *
- * @method compact
- * @return {Array} Сжатый массив без NaN, null и undefined
- */
-Array.prototype.compact = function() {
-    if (!this.isNeedCompact()) {
-        return this;
-    }
-    for(var i = 0; i < this.length; i++) {
-        if (!this[i]) {
-            this.splice(i, 1);
-            return this.compact();
-        }
-    }
-    return this;
-};
-Object.defineProperty(Array.prototype, 'compact', { configurable: true, enumerable: false });
-
-/**
- * Вставляет item в массив
- *
- * @method insert
- *
- * @param {Number} index - Номер, куда вставить item
- * @param {*} item - Элемент, который нужно вставить
- */
-Array.prototype.insert = function(index, item) {
-    this.splice(index, 0, item);
-};
-Object.defineProperty(Array.prototype, 'insert', { configurable: true, enumerable: false });
-
-/**
- * Возвращает минимальный элемент числового массива
- *
- * @method min
- * @return {Number} Минимальный элемент массива
- */
-Array.prototype.min = function() {
-    if (!this.isNumberArray()) {
-        return Number.NaN;
-    }
-    return Math.min.apply(Math, this);
-};
-Object.defineProperty(Array.prototype, 'min', { configurable: true, enumerable: false });
-
-/**
- * Возвращает максимальный элемент числового массива
- *
- * @method max
- * @return {Number} Максимальный элемент массива
- */
-Array.prototype.max = function() {
-    if (!this.isNumberArray()) {
-        return Number.NaN;
-    }
-    return Math.max.apply(Math, this);
-};
-Object.defineProperty(Array.prototype, 'max', { configurable: true, enumerable: false });
-
-/**
- * Выполняет логическую операцию дизъюнкция для булевого массива
- *
- * @method disjunction
- * @return {Boolean | null} Возвращает true, если массив содержит true
- */
-Array.prototype.disjunction = function() {
-    if (!this.isBooleanArray()) {
-        return null;
-    }
-    return this.count(true) > 0;
-};
-Object.defineProperty(Array.prototype, 'disjunction', { configurable: true, enumerable: false });
-
-/**
- * Выполняет логическую операцию конъюнкция для булевого массива
- *
- * @method conjunction
- * @return {Boolean | null} Возвращает true, если массив не содержит false
- */
-Array.prototype.conjunction = function() {
-    if (!this.isBooleanArray()) {
-        return null;
-    }
-    return this.count(false) === 0;
-};
-Object.defineProperty(Array.prototype, 'conjunction', { configurable: true, enumerable: false });
-
-/**
- * Проверяет массивы на равенство простых данных
- *
- * @method compare
- * @return {Boolean} Возвращает true, если значения массивов равны
- */
-Array.prototype.compare = function(array) {
-    array = array || [];
-    if (this.length !== array.length) {
-        return false;
-    }
-    for(var i = 0; i < this.length; i++) {
-        if (this[i] !== array[i]) {
-            return false;
-        }
-    }
-    return true;
-};
-Object.defineProperty(Array.prototype, 'compare', { configurable: true, enumerable: false });
+});
 
 
 
@@ -979,111 +1011,113 @@ function DKToolsEvent() {
 
 // properties
 
-/**
- * Спрайт, для которого установлено событие
- *
- * @property target
- * @type DKToolsSprite
- */
-Object.defineProperty(DKToolsEvent.prototype, 'target', {
-    get: function() {
-        return this._target;
+Object.defineProperties(DKToolsEvent.prototype, {
+    /**
+     * Спрайт, для которого установлено событие
+     *
+     * @property target
+     * @type DKToolsSprite
+     */
+    target: {
+        get: function() {
+            return this._target;
+        },
+        configurable: true
     },
-    configurable: true
-});
 
-/**
- * Тип события
- *
- * @property type
- * @type String
- */
-Object.defineProperty(DKToolsEvent.prototype, 'type', {
-    get: function() {
-        return this._type;
+    /**
+     * Тип события
+     *
+     * @property type
+     * @type String
+     */
+    type: {
+        get: function() {
+            return this._type;
+        },
+        configurable: true
     },
-    configurable: true
-});
 
-/**
- * Обработчик события
- *
- * @property handler
- * @type Function || null
- */
-Object.defineProperty(DKToolsEvent.prototype, 'handler', {
-    get: function() {
-        return this._handler;
+    /**
+     * Обработчик события
+     *
+     * @property handler
+     * @type Function || null
+     */
+    handler: {
+        get: function() {
+            return this._handler;
+        },
+        configurable: true
     },
-    configurable: true
-});
 
-/**
- * Длительность события
- *
- * @property duration
- * @type Number
- */
-Object.defineProperty(DKToolsEvent.prototype, 'duration', {
-    get: function() {
-        return this._duration;
+    /**
+     * Длительность события
+     *
+     * @property duration
+     * @type Number
+     */
+    duration: {
+        get: function() {
+            return this._duration;
+        },
+        set: function(value) {
+            this._duration = value;
+        },
+        configurable: true
     },
-    set: function(value) {
-        this._duration = value;
-    },
-    configurable: true
-});
 
-/**
- * Обработчик начала работы события
- *
- * @property onStartHandler
- * @type Function || null
- */
-Object.defineProperty(DKToolsEvent.prototype, 'onStartHandler', {
-    get: function() {
-        return this._onStartHandler;
+    /**
+     * Обработчик начала работы события
+     *
+     * @property onStartHandler
+     * @type Function || null
+     */
+    onStartHandler: {
+        get: function() {
+            return this._onStartHandler;
+        },
+        configurable: true
     },
-    configurable: true
-});
 
-/**
- * Обработчик окончания работы события
- *
- * @property onEndHandler
- * @type Function || null
- */
-Object.defineProperty(DKToolsEvent.prototype, 'onEndHandler', {
-    get: function() {
-        return this._onEndHandler;
+    /**
+     * Обработчик окончания работы события
+     *
+     * @property onEndHandler
+     * @type Function || null
+     */
+    onEndHandler: {
+        get: function() {
+            return this._onEndHandler;
+        },
+        configurable: true
     },
-    configurable: true
-});
 
-/**
- * Начальная длительность события
- *
- * @property startDuration
- * @type Number
- */
-Object.defineProperty(DKToolsEvent.prototype, 'startDuration', {
-    get: function() {
-        return this._startDuration;
+    /**
+     * Начальная длительность события
+     *
+     * @property startDuration
+     * @type Number
+     */
+    startDuration: {
+        get: function() {
+            return this._startDuration;
+        },
+        configurable: true
     },
-    configurable: true
-});
 
-/**
- * Длительность паузы события
- *
- * @property pauseDuration
- * @type Number
- */
-Object.defineProperty(DKToolsEvent.prototype, 'pauseDuration', {
-    get: function() {
-        return this._pauseDuration;
-    },
-    configurable: true
+    /**
+     * Длительность паузы события
+     *
+     * @property pauseDuration
+     * @type Number
+     */
+    pauseDuration: {
+        get: function() {
+            return this._pauseDuration;
+        },
+        configurable: true
+    }
 });
 
 // initialize method
@@ -1525,10 +1559,7 @@ Object.defineProperties(DKTools_Sprite.prototype, {
 */
 DKTools_Sprite.prototype.initialize = function(object, y, width, height) {
 	Sprite.prototype.initialize.call(this);
-    this.clearEvents();
-    this.clearSymbols();
-    this._clearEnteredTime();
-    this._clearPressedTime();
+    this.clearAll();
 	var x = object, bitmap;
     if (object) {
         if (object.constructor === Object) {
@@ -1543,8 +1574,8 @@ DKTools_Sprite.prototype.initialize = function(object, y, width, height) {
         }
     }
 	this.move(x, y);
-	this.setupSize(width, height);
     this.setupAll(object);
+	this.setupSize(width, height);
 	this.setupBitmap(bitmap);
     this.setupLongPressInterval();
     DKTools_Sprite._counter++;
@@ -1735,6 +1766,12 @@ DKTools_Sprite.prototype.standardScale = function() {
 
 // setup methods
 
+DKTools_Sprite.prototype.setup = function(type, value) {
+    type = type.charAt(0).toUpperCase() + type.substr(1);
+    var func = 'setup%1'.format(type);
+    this[func](value);
+};
+
 /**
  * Устанавливает все параметры спрайта
  *
@@ -1795,11 +1832,14 @@ DKTools_Sprite.prototype.setupHeight = function(height) {
  *
  * @method setupSize
  *
- * @param {Number | null} [width = null] - Ширина Bitmap
+ * @param {Number | null} [object = null] - Ширина Bitmap
  * @param {Number | null} [height = null] - Высота Bitmap
 */
-DKTools_Sprite.prototype.setupSize = function(width, height) {
-	this.setupWidth(width);
+DKTools_Sprite.prototype.setupSize = function(object, height) {
+    if (object && object.constructor === Object) {
+        return this.setupSize(object.width, object.height);
+    }
+	this.setupWidth(object);
 	this.setupHeight(height);
 };
 
@@ -2286,12 +2326,12 @@ DKTools_Sprite.prototype.setBackgroundColor = function(color, blockUpdate) {
 */
 DKTools_Sprite.prototype.setFont = function(font, blockStart) {
 	font = font || this.standardFont();
-    if (this._font.compare(font)) {
+    if (this._font.equals(font)) {
         return false;
     }
     var lastFont = this._font;
 	this.setupFont(font);
-    if (this._font.compare(lastFont)) {
+    if (this._font.equals(lastFont)) {
         return false;
     }
 	if (!blockStart) {
@@ -2744,7 +2784,7 @@ DKTools_Sprite.prototype.removeGraphic = function() {
 */
 DKTools_Sprite.prototype.createBitmap = function() {
     if (this.hasGraphic()) {
-        this.loadGraphic();
+        this._loadGraphic();
     } else if (!this.isFixed()) {
         this.bitmap = new Bitmap(this._bitmapWidth, this._bitmapHeight);
     }
@@ -2898,6 +2938,18 @@ DKTools_Sprite.prototype.isFixed = function() {
 };
 
 // clear methods
+
+/**
+ * Очищает все данные спрайта
+ *
+ * @method clearAll
+ */
+DKTools_Sprite.prototype.clearAll = function() {
+    this.clearEvents();
+    this.clearSymbols();
+    this._clearEnteredTime();
+    this._clearPressedTime();
+};
 
 /**
  * Очищает события спрайта
@@ -3743,10 +3795,10 @@ DKTools_Sprite.prototype.loadBitmap = function(folder, filename, listener, hue, 
  * Загружает графику из названия файла графики
  *
  * @method loadGraphic
+ * @private
  */
-DKTools_Sprite.prototype.loadGraphic = function() {
+DKTools_Sprite.prototype._loadGraphic = function() {
     if (this.hasGraphic()) {
-        p(this.graphic);
         var folder = this.standardGraphicFolder();
         var filename = this.graphic;
         this.loadBitmap(folder, filename);
@@ -3880,7 +3932,43 @@ DKTools_Sprite.prototype._getSymbols = function(object) {
  * @param {Boolean} value
  */
 DKTools_Sprite.prototype._setSymbol = function(symbol, value) {
-    this._symbols[symbol] = Boolean(value);
+    value = Boolean(value);
+    var lastValue = this._getSymbol(symbol);
+    this._symbols[symbol] = value;
+    if (lastValue !== value) {
+        this.onSymbolChange(symbol, value);
+    }
+};
+
+/**
+ *
+ *
+ * @method onSymbolChange
+ *
+ * @param symbol
+ * @param value
+ */
+DKTools_Sprite.prototype.onSymbolChange = function(symbol, value) {
+};
+
+DKTools_Sprite.prototype.switchSymbol = function(symbol) {
+    var newValue = !this._getSymbol(symbol);
+    this._setSymbol(symbol, newValue);
+};
+
+DKTools_Sprite.prototype.switchSymbols = function(object) {
+    if (arguments.length > 1) {
+        for(var i = 0; i < arguments.length; i++) {
+            var symbol = arguments[i];
+            this.switchSymbol(symbol);
+        }
+    } else {
+        if (object.constructor === Array) {
+            return this.switchSymbols.apply(this, object);
+        } else {
+            return this.switchSymbol(object);
+        }
+    }
 };
 
 /**
@@ -4886,6 +4974,16 @@ DKTools_Text.prototype.start = function(activate) {
 };
 
 /**
+ * Очищает отображаемый текст
+ *
+ * @method clearText
+ * @param {Boolean} blockStart - Блокировка вызова функции start
+ */
+DKTools_Text.prototype.clearText = function(blockStart) {
+    this.setText(blockStart);
+};
+
+/**
  *
  *
  * @method object
@@ -5467,7 +5565,7 @@ DKTools_Container_Base.prototype.start = function() {
 	this.updatePlacement();
 	DKTools_Sprite.prototype.start.call(this);
     if (!this.isReady()) {
-        this.addListener('ready', function() {
+        this.addEventListener('ready', function() {
             this.startElements();
         }.bind(this));
     }
@@ -5633,6 +5731,16 @@ DKTools_Container_Base.prototype.reverse = function() {
     this.setReversed(!this.isReversed());
 };
 
+/**
+ * Очищает все данные спрайта
+ *
+ * @method clearAll
+ */
+DKTools_Container_Base.prototype.clearAll = function() {
+    DKTools_Sprite.prototype.clearAll.call(this);
+    this.clearElements();
+};
+
 // is methods
 
 /**
@@ -5672,10 +5780,11 @@ DKTools_Container_Base.prototype.isEmpty = function() {
  * @return Boolean
 */
 DKTools_Container_Base.prototype.isReady = function() {
-	for(var i = 0; i < this.length; i++)
-		if (!this.element(i).isReady()) {
+	for(var i = 0; i < this.length; i++) {
+        if (!this.element(i).isReady()) {
             return false;
         }
+    }
 	return true;
 };
 
@@ -6559,6 +6668,16 @@ DKTools_Container.prototype.initialize = function(object, y) {
 };
 
 // setup methods
+
+DKTools_Container.prototype.setup = function(target, type, value) {
+    type = type.charAt(0).toUpperCase() + type.substr(1);
+    var func = 'setup%1'.format(type);
+    if (target === 'container') {
+        this[func](value);
+    } else {
+        this[target][func](value);
+    }
+};
 
 /**
  * Устанавливает все параметры спрайта
@@ -7701,11 +7820,12 @@ function DKTools_Input_Base() {
 DKTools_Input_Base.prototype = Object.create(DKTools_Text.prototype);
 DKTools_Input_Base.prototype.constructor = DKTools_Input_Base;
 
-// russian alphabet
-DKTools_Input_Base._russian = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
+DKTools_Input_Base._alphabet = {};
 
+// russian alphabet
+DKTools_Input_Base._alphabet.ru = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
 // english alphabet
-DKTools_Input_Base._english = 'abcdefghijklmnopqrstuvwxyz';
+DKTools_Input_Base._alphabet.en = 'abcdefghijklmnopqrstuvwxyz';
 
 // string of numbers
 DKTools_Input_Base._numbers = '1234567890';
@@ -7850,6 +7970,7 @@ DKTools_Input_Base.prototype.setupMaxLength = function(length) {
 DKTools_Input_Base.prototype.setupCaret = function(object) {
     object = object || {};
     this._clearCaret();
+    this._clearCaretCounter();
     this.setupCaretRate(object.rate);
     this.setupCaretText(object.text);
     this.setupCaretVisible(object.visible);
@@ -8127,17 +8248,22 @@ DKTools_Input_Base.prototype.setCaretPosition = function(position, blockUpdate) 
  * @return {String}
  */
 DKTools_Input_Base.prototype._alphabet = function() {
-    return DKTools_Input_Base._russian + DKTools_Input_Base._english;
+    var alphabet = '';
+    for(var locale in DKTools_Input_Base._alphabet) {
+        alphabet += DKTools_Input_Base._alphabet[locale];
+    }
+    return alphabet;
 };
 
 /**
  *
+ *
+ * @method object
  * @return {Object}
  */
 DKTools_Input_Base.prototype.object = function() {
     var object = DKTools_Text.prototype.object.call(this);
     object.maxLength = this._maxLength;
-    object.type = this._type;
     object.caret = this._caret;
     return object;
 };
@@ -8218,15 +8344,6 @@ DKTools_Input_Base.prototype.hideCaret = function() {
 // clear methods
 
 /**
- * Очищает введенный текст
- *
- * @method clearInputText
- */
-DKTools_Input_Base.prototype.clearText = function() {
-    this.setText('');
-};
-
-/**
  * Очищает менеджер ввода текста и введенный текст
  *
  * @method clearInput
@@ -8256,7 +8373,25 @@ DKTools_Input_Base.prototype._clearCaretCounter = function() {
     this._caret.counter = 0;
 };
 
+/**
+ * Очищает все данные спрайта
+ *
+ * @method clearAll
+ */
+DKTools_Input_Base.prototype.clearAll = function() {
+    DKTools_Sprite.prototype.clearAll.call(this);
+    this._clearCaret();
+    this._clearCaretCounter();
+};
+
 //
+
+DKTools_Input_Base.prototype.onSymbolChange = function(symbol, value) {
+    DKTools_Sprite.prototype.onSymbolChange.call(this, symbol, value);
+    if (symbol === 'password') {
+        this.updateBitmap();
+    }
+};
 
 /**
  * Добавляет текст
@@ -9062,7 +9197,7 @@ DKTools_CheckBox_Base.prototype.standardText = function() {
  *
  *
  * @method standardChecked
- * @return {string}
+ * @return {String}
  */
 DKTools_CheckBox_Base.prototype.standardChecked = function() {
     return 'unchecked';
@@ -9410,12 +9545,11 @@ DKTools_CheckBox_Base.prototype.setAlign = function(object, blockUpdate) {
  *
  * @method setText
  *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {Object | null} [object] - Объект типа {}
+ * @param {Boolean | null} [blockStart] - Блокировка вызова функции start
  *
- * object properties
- * @property {String || null} checked - Текст включенного состояния
- * @property {String || null} unchecked - Текст выключенного состояния
+ * @param {String | null} [object.checked] - Текст включенного состояния
+ * @param {String | null} [object.unchecked] - Текст выключенного состояния
  *
  * @return Boolean
 */
@@ -9442,8 +9576,8 @@ DKTools_CheckBox_Base.prototype.setText = function(object, blockStart) {
  *
  * @method setChecked
  *
- * @param {Boolean || String || null} checked - Включен или выключен переключатель
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
+ * @param {Boolean | String | null} checked - Включен или выключен переключатель
+ * @param {Boolean | null} blockUpdate - Блокировка вызова функции updateBitmap
  *
  * @return Boolean
  */
@@ -9469,8 +9603,8 @@ DKTools_CheckBox_Base.prototype.setChecked = function(checked, blockUpdate) {
  *
  * @method start
  *
- * @param {Boolean || null} activate - Активировать спрайт
- * @param {Boolean || null} checked - Включить элемент
+ * @param {Boolean | null} activate - Активировать спрайт
+ * @param {Boolean | null} checked - Включить элемент
 */
 DKTools_CheckBox_Base.prototype.start = function(activate, checked) {
 	DKTools_Text.prototype.start.call(this, activate);
@@ -9483,7 +9617,7 @@ DKTools_CheckBox_Base.prototype.start = function(activate, checked) {
  * Возвращает объект со всеми параметрами спрайта
  *
  * @method object
- * @return Object
+ * @return {Object}
  */
 DKTools_CheckBox_Base.prototype.object = function() {
     var object = DKTools_Text.prototype.object.call(this);
@@ -9497,7 +9631,7 @@ DKTools_CheckBox_Base.prototype.object = function() {
  * Returns the minimum width of the sprite
  *
  * @method minWidth
- * @return Number
+ * @return {Number}
 */
 DKTools_CheckBox_Base.prototype.minWidth = function() {
     var standardText = this.standardText();
@@ -9512,18 +9646,17 @@ DKTools_CheckBox_Base.prototype.minWidth = function() {
  * Если какие-то значения отсутствуют, они берутся из standardFont
  *
  * @method _checkFont
- *
  * @private
  *
- * @param {Object || null} target - Объект типа {}
- * @param {Object || null} source - Объект типа {}
- * @param {Object || null} standardFont - Объект типа {}
+ * @param {Object | null} target - Объект типа {}
+ * @param {Object | null} source - Объект типа {}
+ * @param {Object | null} standardFont - Объект типа {}
  *
  * target, source and standardFont properties
- * @property {Array || null} checked - Шрифт включенного текста
- * @property {Array || null} unchecked - Шрифт выключенного текста
+ * @property {Array | null} checked - Шрифт включенного текста
+ * @property {Array | null} unchecked - Шрифт выключенного текста
  *
- * @return Object
+ * @return {Object}
  */
 DKTools_CheckBox_Base.prototype._checkFont = function(target, source, standardFont) {
     standardFont = standardFont || this.standardFont();
@@ -9540,7 +9673,7 @@ DKTools_CheckBox_Base.prototype._checkFont = function(target, source, standardFo
  * Возвращает true, если графика установлена
  *
  * @method hasGraphic
- * @return Boolean
+ * @return {Boolean}
 */
 DKTools_CheckBox_Base.prototype.hasGraphic = function() {
 	return !!this._graphic.checked && !!this._graphic.unchecked;
@@ -9550,7 +9683,7 @@ DKTools_CheckBox_Base.prototype.hasGraphic = function() {
  * Возвращает true, если элемент включен
  *
  * @method isChecked
- * @return Boolean
+ * @return {Boolean}
 */
 DKTools_CheckBox_Base.prototype.isChecked = function() {
 	return this._checked === 'checked';
@@ -9589,6 +9722,11 @@ DKTools_CheckBox_Base.prototype.uncheck = function() {
 	this.switch();
 };
 
+/**
+ *
+ *
+ * @method updateClickEvents
+ */
 DKTools_CheckBox_Base.prototype.updateClickEvents = function() {
     this.switch();
     DKTools_Text.prototype.updateClickEvents.call(this);
@@ -9619,6 +9757,12 @@ DKTools_CheckBox.prototype.constructor = DKTools_CheckBox;
 
 // property
 
+/**
+ *
+ *
+ * @property baseSpriteClass
+ * @type DKTools_CheckBox_Base
+ */
 Object.defineProperty(DKTools_CheckBox.prototype, 'baseSpriteClass', {
     get: function() {
         return DKTools_CheckBox_Base;
@@ -9717,55 +9861,7 @@ function DKTools_Radio_Button_Base() {
 DKTools_Radio_Button_Base.prototype = Object.create(DKTools_Container_Base.prototype);
 DKTools_Radio_Button_Base.prototype.constructor = DKTools_Radio_Button_Base;
 
-// standard methods
-
-/**
- * Возвращает стандартную графику
- *
- * @method standardGraphic
- * @return Object
- */
-DKTools_Radio_Button_Base.prototype.standardGraphic = DKTools_CheckBox_Base.prototype.standardGraphic;
-
-/**
- * Возвращает стандартный цвет текста
- *
- * @method standardTextColor
- * @return Object
- */
-DKTools_Radio_Button_Base.prototype.standardTextColor = DKTools_CheckBox_Base.prototype.standardTextColor;
-
-/**
- * Возвращает стандартное выравнивание
- *
- * @method standardAlign
- * @return Object
- */
-DKTools_Radio_Button_Base.prototype.standardAlign = DKTools_CheckBox_Base.prototype.standardAlign;
-
-/**
- * Возвращает стандартный цвет фона
- *
- * @method standardBackgroundColor
- * @return Object
- */
-DKTools_Radio_Button_Base.prototype.standardBackgroundColor = DKTools_CheckBox_Base.prototype.standardBackgroundColor;
-
-/**
- * Возвращает стандартный шрифт
-
- * @method standardFont
- * @return Object
- */
-DKTools_Radio_Button_Base.prototype.standardFont = DKTools_CheckBox_Base.prototype.standardFont;
-
-/**
- * Возвращает стандартный текст
- *
- * @method standardText
- * @return Object
- */
-DKTools_Radio_Button_Base.prototype.standardText = DKTools_CheckBox_Base.prototype.standardText;
+// standard method
 
 /**
  * Возвращает стандартный номер выбранной кнопки
@@ -9794,38 +9890,8 @@ DKTools_Radio_Button_Base.prototype.standardIndex = function() {
 DKTools_Radio_Button_Base.prototype.setupAll = function(object) {
     object = object || {};
 	DKTools_Container_Base.prototype.setupAll.call(this, object);
-    this.setupText(object.text);
-    this.setupGraphic(object.graphic);
     this.setupIndex(object.index);
 };
-
-/**
- * Устанавливает графику включенного и выключенного состояния
- *
- * @method setupGraphic
- *
- * @param {String || Object || null} object - Графика включенного состояния или Объект типа {}
- * @param {String || null} unchecked - Графика выключенного состояния
- *
- * object properties
- * @property {String || null} checked - Графика включенного состояния
- * @property {String || null} unchecked - Графика выключенного состояния
- */
-DKTools_Radio_Button_Base.prototype.setupGraphic = DKTools_CheckBox_Base.prototype.setupGraphic;
-
-/**
- * Устанавливает текст включенного и выключенного состояния
- *
- * @method setupText
- *
- * @param {String || Object || null} object - Текст включенного состояния или Объект типа {}
- * @param {String || null} unchecked - Текст выключенного состояния
- *
- * object properties
- * @property {String || null} checked - Текст включенного состояния
- * @property {String || null} unchecked - Текст выключенного состояния
- */
-DKTools_Radio_Button_Base.prototype.setupText = DKTools_CheckBox_Base.prototype.setupText;
 
 /**
  * Устанавливает номер выбранной кнопки
@@ -9859,14 +9925,7 @@ DKTools_Radio_Button_Base.prototype.setAll = function(object, blockStart) {
 	var block = true;
     var changed = DKTools_Container_Base.prototype.setAll.call(this, object, block);
     this._activateSetAllMode();
-    if (this.setText(objec.text, block)) {
-        changed++;
-    }
-    if (this.setGraphic(object.graphic, block)) {
-        changed++;
-    }
 	if (changed && !blockStart) {
-        this.clearElements();
         this.start();
     }
     if (this.setIndex(object.index)) {
@@ -9875,42 +9934,6 @@ DKTools_Radio_Button_Base.prototype.setAll = function(object, blockStart) {
     this._deactivateSetAllMode();
 	return changed;
 };
-
-/** Изменить текст
- * Изменяет графику включенного и выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setGraphic
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * object properties
- * @property {String || null} checked - Графика включенного состояния
- * @property {String || null} unchecked - Графика выключенного состояния
- *
- * @return Boolean
- */
-DKTools_Radio_Button_Base.prototype.setGraphic = DKTools_CheckBox_Base.prototype.setGraphic;
-
-/**
- * Изменяет текст включенного и выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setText
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * object properties
- * @property {String || null} checked - Текст включенного состояния
- * @property {String || null} unchecked - Текст выключенного состояния
- *
- * @return Boolean
- */
-DKTools_Radio_Button_Base.prototype.setText = DKTools_CheckBox_Base.prototype.setText;
-
-
 
 /**
  * Изменяет номер выбранной кнопки
@@ -9929,91 +9952,42 @@ DKTools_Radio_Button_Base.prototype.setIndex = function(index) {
     return lastIndex !== this._index;
 };
 
-DKTools_Radio_Button_Base.prototype.setElementTextHandler = function(method) {
-    this._elementTextHandler = method;
+// other methods
+
+DKTools_Radio_Button_Base.prototype.clearAll = function() {
+    DKTools_Container_Base.prototype.clearAll.call(this);
+    this.clearSelected();
 };
 
-// other methods
+DKTools_Radio_Button_Base.prototype.clearSelected = function() {
+    this._selected = [];
+};
+
+/**
+ *
+ *
+ * @method object
+ * @return {Object}
+ */
+DKTools_Radio_Button_Base.prototype.object = function() {
+    var object = DKTools_Container_Base.prototype.object.call(this);
+    object.index = this._index;
+    return object;
+};
 
 /**
  * Запускает работу спрайта
  *
  * @method start
  */
-DKTools_Radio_Button_Base.prototype.start = function(activate) {
-    this.checkRowsAndCols();
-    if (this.isEmpty()) {
-        this.createElements();
+DKTools_Radio_Button_Base.prototype.start = function() {
+    DKTools_Container_Base.prototype.start.call(this);
+    if (!this.isEnabled('multiSelect')) {
+        this.selected().check();
     }
     this.updateElementsId();
     this.updateElementsClickHandler();
     this.activateElements();
-    DKTools_Container_Base.prototype.start.call(this, activate);
-};
-
-DKTools_Radio_Button_Base.prototype.object = function() {
-    //var object1 = DKTools_CheckBox_Base.prototype.object.call(this);
-    //var object2 = DKTools_Container_Base.prototype.object.call(this);
-    var object = {};
-    //DKToolsUtils.mixin(object, object1);
-    //DKToolsUtils.mixin(object, object2);
-    //object.index = this._index;
-    return object;
-};
-
-/**
- * Возвращает минимальное количество элементов
- * Используется для проверки рядов и столбцов
- *
- * @method _minElements
- *
- * @private
- *
- * @return Number
- */
-DKTools_Radio_Button_Base.prototype._minElements = function() {
-    return this.isEmpty() ? 2 : DKTools_Container_Base.prototype._minElements.call(this);
-};
-
-/**
- * Создает кнопки
- *
- * @method createElements
-*/
-DKTools_Radio_Button_Base.prototype.createElements = function() {
-    var elements = [];
-    var id = 0;
-    var maxRows = this.maxRows();
-    var maxCols = this.maxCols();
-    for(var i = 0; i < maxRows; i++) {
-        for(var j = 0; j < maxCols; j++) {
-            var element = this.createElement(id++);
-            elements.push(element);
-        }
-    }
-    this.setupElements(elements);
-};
-
-/**
- * Создает одну кнопку
- *
- * @method createElement
- *
- * @param {Number} id - ID кнопки
- *
- * @return DKTools_CheckBox
-*/
-DKTools_Radio_Button_Base.prototype.createElement = function(id) {
-	var checked = (id === this._index);
-    var text = this.elementText(id);
-    var object = {
-        baseSprite: DKTools_CheckBox_Base.prototype.object.call(this)
-    };
-    var element = new DKTools_CheckBox(object);
-    element.setupText(text);
-    element.setupChecked(checked);
-    element.start();
-	return element;
 };
 
 /**
@@ -10032,28 +10006,20 @@ DKTools_Radio_Button_Base.prototype.activateElements = function(start) {
     }
 };
 
-DKTools_Radio_Button_Base.prototype.hasElementTextHandler = function() {
-    return !!this._elementTextHandler;
-};
-
-DKTools_Radio_Button_Base.prototype.elementText = function(id) {
-    if (this._elementTextHandler) {
-        return this._elementTextHandler(id);
-    }
-    return String(id);
-};
-
 /**
- * Обновляет ID кнопок
+ * Вызывает функцию deactivate у всех элементов контейнера
  *
- * @method updateElementsId
+ * @method deactivateElements
+ * @param {Boolean || null} start - Вызов функции start контейнера
  */
-DKTools_Radio_Button_Base.prototype.updateElementsId = function() {
-    var id = 0;
+DKTools_Radio_Button_Base.prototype.deactivateElements = function(start) {
     var callback = function(element) {
-        element._baseSprite.setupId(id++);
-    }.bind(this);
+        element._baseSprite.deactivate();
+    };
     this.iterateElements(callback);
+    if (start) {
+        this.start();
+    }
 };
 
 /**
@@ -10072,31 +10038,12 @@ DKTools_Radio_Button_Base.prototype.updateElementsClickHandler = function() {
 
 DKTools_Radio_Button_Base.prototype._elementClickHandler = function(element) {
     var checked = element.isChecked();
-    var id = element._baseSprite.id;
-	if (!checked) {
+    var id = element.id;
+	if (!checked && !this.isEnabled('multiSelect')) {
         return this.element(id).check();
     }
 	this.select(id);
     this.updateClickEvents();
-};
-
-/**
- * Возвращает true, если спрайт является контейнером
- *
- * @method isContainer
- * @return Boolean
- */
-DKTools_Radio_Button_Base.prototype.isContainer = function() {
-    return true;
-};
-
-/**
- * Удаляет графику
- *
- * @method removeGraphic
- */
-DKTools_Radio_Button_Base.prototype.removeGraphic = function() {
-    this.setGraphic();
 };
 
 /**
@@ -10157,12 +10104,22 @@ DKTools_Radio_Button_Base.prototype.select = function(id) {
     if (this.isEmpty()) {
         return;
     }
-	if (id >= this.length || id < 0 || id === this._index) {
+	if (id >= this.length || id < 0/* || id === this._index*/) {
         return;
     }
-	this.selected().uncheck();
-	this.setupIndex(id);
-	this.selected().check();
+    if (this.isEnabled('multiSelect')) {
+        if (this.element(id).isChecked()) {
+            if (!this._selected.contains(id)) {
+                this._selected.push(id);
+            }
+        } else {
+            this._selected.remove(id);
+        }
+    } else {
+        this.selected().uncheck();
+        this.setupIndex(id);
+        this.selected().check();
+    }
 };
 
 
