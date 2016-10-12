@@ -81,8 +81,8 @@ Use "addChild" function for add element to your scene.
 14. wheelY - event that are called when the user scrolls the mouse wheel on the Y axis
 
 Other elements have different events.
- 
- 
+
+
 **Q: Сurrently DKTools has incomplete documentation and only in Russian. Will the English documentation ?**
 
 **A:** Yes, of course. Currently the documentation is not a primary task, but I try to make time for it. I use JSDoc documentation.
