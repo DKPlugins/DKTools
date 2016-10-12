@@ -55,9 +55,11 @@ Use "addChild" function for add element to your scene.
 
 **A:** This is a class, who contain standard Sprite functions, Sprite_Button functions and many new functions. The most significant features are: avoid errors when changing parameters, event support, new features for click and mouse (long press, mouse enter/stay on element and mouse leave from element.
  
+ 
 **Q: What is "Event support" ?**
 
 **A:** I developed special class "DKToolsEvent", that handles a variety of activities that take place with the elements.
+ 
  
 **Q: What types of activities can take place with the elements?**
 
@@ -79,6 +81,7 @@ Use "addChild" function for add element to your scene.
 14. wheelY - event that are called when the user scrolls the mouse wheel on the Y axis
 
 Other elements have different events.
+ 
  
 **Q: Сurrently DKTools has incomplete documentation and only in Russian. Will the English documentation ?**
 
