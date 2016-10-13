@@ -1580,6 +1580,9 @@ DKTools_Sprite.prototype.initialize = function(object, y, width, height) {
     this.setupLongPressInterval();
     DKTools_Sprite._counter++;
 	this._started = false;
+    //if (object.start) {
+    //    this.start();
+    //}
 };
 
 // standard methods
@@ -6581,6 +6584,24 @@ DKTools_Text_Container.prototype.object = function() {
     return object;
 };
 
+DKTools_Text_Container.prototype.resizeTextSprite = function(align) {
+    if (this.maxRows() === 1 && this.isHorizontalPlacement()) {
+        if (align) {
+            this._textSprite.setupAlign('center');
+        }
+        this.addEventListener('ready', function () {
+            this._textSprite.setHeight(this.rowHeight(1));
+        }.bind(this));
+    } else if (this.maxCols() === 1 && this.isVerticalPlacement()) {
+        if (align) {
+            this._textSprite.setupAlign('center');
+        }
+        this.addEventListener('ready', function () {
+            this._textSprite.setWidth(this.colWidth(1));
+        }.bind(this));
+    }
+};
+
 /**
  * Возвращает все элементы контейнера
  *
@@ -6826,14 +6847,11 @@ DKTools_Container.prototype.setBaseSpriteSize = function(width, height, blockSta
  * @param {Boolean || null} resizeTextSprite - Изменить размер спрайта текста
  * @param {Boolean || null} alignTextSprite - Установить выравнивание по центру для спрайта текста
 */
-DKTools_Container.prototype.start = function(resizeTextSprite, alignTextSprite) {
+DKTools_Container.prototype.start = function() {
     if (!this._baseSprite.isStarted()) {
         this._baseSprite.start();
     }
     DKTools_Text_Container.prototype.start.call(this);
-    if (resizeTextSprite) {
-        this.resizeTextSprite(alignTextSprite);
-    }
 };
 
 /**
@@ -6849,24 +6867,6 @@ DKTools_Container.prototype.start = function(resizeTextSprite, alignTextSprite) 
  */
 DKTools_Container.prototype._createBaseSprite = function(object) {
     this._baseSprite = new (this.baseSpriteClass)(object);
-};
-
-DKTools_Container.prototype.resizeTextSprite = function(align) {
-    if (this.maxRows() === 1 && this.isHorizontalPlacement()) {
-        if (align) {
-            this._textSprite.setupAlign('center');
-        }
-        this.addListener('ready', function () {
-            this._textSprite.setHeight(this._baseSprite.height);
-        }.bind(this));
-    } else if (this.maxCols() === 1 && this.isVerticalPlacement()) {
-        if (align) {
-            this._textSprite.setupAlign('center');
-        }
-        this.addListener('ready', function () {
-            this._textSprite.setWidth(this._baseSprite.width);
-        }.bind(this));
-    }
 };
 
 /**
@@ -9954,15 +9954,6 @@ DKTools_Radio_Button_Base.prototype.setIndex = function(index) {
 
 // other methods
 
-DKTools_Radio_Button_Base.prototype.clearAll = function() {
-    DKTools_Container_Base.prototype.clearAll.call(this);
-    this.clearSelected();
-};
-
-DKTools_Radio_Button_Base.prototype.clearSelected = function() {
-    this._selected = [];
-};
-
 /**
  *
  *
@@ -9981,12 +9972,12 @@ DKTools_Radio_Button_Base.prototype.object = function() {
  * @method start
  */
 DKTools_Radio_Button_Base.prototype.start = function() {
-    DKTools_Container_Base.prototype.start.call(this);
-    if (!this.isEnabled('multiSelect')) {
-        this.selected().check();
+    if (!this.isStarted()) {
+        this.updateElementsId();
+        this.updateElementsClickHandler();
+        this.select(this._index);
     }
-    this.updateElementsId();
-    this.updateElementsClickHandler();
+    DKTools_Container_Base.prototype.start.call(this);
     this.activateElements();
 };
 
@@ -10029,19 +10020,12 @@ DKTools_Radio_Button_Base.prototype.deactivateElements = function(start) {
  */
 DKTools_Radio_Button_Base.prototype.updateElementsClickHandler = function() {
     var callback = function(element) {
-        if (!element._baseSprite.hasEvents('click')) {
-            element._baseSprite.addEventHandler('click', this._elementClickHandler.bind(this, element))
-        }
+        element._baseSprite.addEventHandler('click', this._elementClickHandler.bind(this, element.id))
     }.bind(this);
     this.iterateElements(callback);
 };
 
-DKTools_Radio_Button_Base.prototype._elementClickHandler = function(element) {
-    var checked = element.isChecked();
-    var id = element.id;
-	if (!checked && !this.isEnabled('multiSelect')) {
-        return this.element(id).check();
-    }
+DKTools_Radio_Button_Base.prototype._elementClickHandler = function(id) {
 	this.select(id);
     this.updateClickEvents();
 };
@@ -10101,25 +10085,12 @@ DKTools_Radio_Button_Base.prototype.next = function() {
  * @param {Number} id - ID кнопки
 */
 DKTools_Radio_Button_Base.prototype.select = function(id) {
-    if (this.isEmpty()) {
+    if (this.isEmpty() || id >= this.length || id < 0) {
         return;
     }
-	if (id >= this.length || id < 0/* || id === this._index*/) {
-        return;
-    }
-    if (this.isEnabled('multiSelect')) {
-        if (this.element(id).isChecked()) {
-            if (!this._selected.contains(id)) {
-                this._selected.push(id);
-            }
-        } else {
-            this._selected.remove(id);
-        }
-    } else {
-        this.selected().uncheck();
-        this.setupIndex(id);
-        this.selected().check();
-    }
+    this.selected().uncheck();
+    this.setupIndex(id);
+    this.selected().check();
 };
 
 
@@ -10154,9 +10125,65 @@ Object.defineProperty(DKTools_Radio_Button.prototype, 'baseSpriteClass', {
 
 // setup methods
 
+DKTools_Radio_Button.prototype.setupIndex = function(index) {
+    this._baseSprite.setupIndex(index);
+};
+
 // set methods
 
+DKTools_Radio_Button.prototype.setIndex = function(index) {
+    return this._baseSprite.setIndex(index);
+};
+
 // other methods
+
+/**
+ * Возвращает номер выбранной кнопки
+ *
+ * @method selectedIndex
+ * @return Number
+ */
+DKTools_Radio_Button.prototype.index = function() {
+    return this._baseSprite.index();
+};
+
+/**
+ * Возвращает выбранную кнопку
+ *
+ * @method selected
+ * @return DKTools_CheckBox
+ */
+DKTools_Radio_Button.prototype.selected = function() {
+    return this._baseSprite.selected();
+};
+
+/**
+ * Выбирает предыдущую кнопку
+ *
+ * @method prev
+ */
+DKTools_Radio_Button.prototype.prev = function() {
+    this._baseSprite.prev();
+};
+
+/**
+ * Выбирает следующую кнопку
+ *
+ * @method next
+ */
+DKTools_Radio_Button.prototype.next = function() {
+    this._baseSprite.next();
+};
+
+/**
+ * Выбирает кнопку по ID
+ *
+ * @method select
+ * @param {Number} id - ID кнопки
+ */
+DKTools_Radio_Button.prototype.select = function(id) {
+    this._baseSprite.select(id);
+};
 
 
 
@@ -11077,6 +11104,21 @@ function DKTools_Window_Base() {
 DKTools_Window_Base.prototype = Object.create(Window_Base.prototype);
 DKTools_Window_Base.prototype.constructor = DKTools_Window_Base;
 
+DKTools_Window_Base._counter = 0;
+
+// properties
+
+Object.defineProperties(DKTools_Window_Base.prototype, {
+    bitmap: {
+        get: function() {
+            return this.contents;
+        },
+        configurable: true
+    }
+});
+
+// initialize method
+
 /**
  * @class DKTools_Window_Base
  *
@@ -11088,14 +11130,16 @@ DKTools_Window_Base.prototype.constructor = DKTools_Window_Base;
  * @param {Number} height - Высота окна
  */
 DKTools_Window_Base.prototype.initialize = function(object, y, width, height) {
-	width = (width ? width.clamp(this.minWidth(), this.maxWidth()) : this.minWidth());
-	height = (height ? height.clamp(this.minHeight(), this.maxHeight()) : this.minHeight());
-	this.clearStartListeners();
-	this.setupId();
-	this.setupAll();
-	Window_Base.prototype.initialize.call(this, x || 0, y || 0, width, height);
-	this.setupActive();
-	this.started = false;
+	//width = (width ? width.clamp(this.minWidth(), this.maxWidth()) : this.minWidth());
+	//height = (height ? height.clamp(this.minHeight(), this.maxHeight()) : this.minHeight());
+	this.clearAll();
+
+	//Window_Base.prototype.initialize.call(this, x || 0, y || 0, width, height);
+
+    //this.move()
+    this.setupAll();
+    DKTools_Window_Base._counter++;
+	this._started = false;
 };
 
 /**
