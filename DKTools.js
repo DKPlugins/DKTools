@@ -101,7 +101,7 @@ DKLocalization.DKTools = {
  17. DKTools_ColorPicker
  18. DKTools_Slider_Base
  19. DKTools_Slider
- 20. DKTools_Window_Base
+ 20. DKTools_Window
  21. DKTools_Window_Selectable
  22. DKTools_Window_Command
 
@@ -161,7 +161,7 @@ DKLocalization.DKTools = {
  17. DKTools_ColorPicker
  18. DKTools_Slider_Base
  19. DKTools_Slider
- 20. DKTools_Window_Base
+ 20. DKTools_Window
  21. DKTools_Window_Selectable
  22. DKTools_Window_Command
  
@@ -699,6 +699,46 @@ Bitmap.prototype.clone = function() {
     var newContext = newBitmap.context;
     newContext.drawImage(oldCanvas, 0, 0);
     return newBitmap;
+};
+
+//===========================================================================
+// Point
+//===========================================================================
+
+Point.emptyPoint = new Point(0, 0);
+
+Point.prototype.isEmpty = function() {
+    return this.x === 0 && this.y === 0;
+};
+
+Point.prototype.toArray = function() {
+    return [this.x, this.y];
+};
+
+Point.prototype.equals = function(point) {
+    point = point || Point.emptyPoint;
+    return this.toArray().equals(point.toArray());
+};
+
+//===========================================================================
+// Rectangle
+//===========================================================================
+
+Rectangle.prototype.isEmpty = function() {
+    return this.x === 0 && this.y === 0 && this.width === 0 && this.height === 0;
+};
+
+Rectangle.prototype.toArray = function() {
+    return [this.x, this.y, this.width, this.height];
+};
+
+Rectangle.prototype.equals = function(rect) {
+    rect = rect || Rectangle.emptyRectangle;
+    return this.toArray().equals(rect.toArray());
+};
+
+Rectangle.prototype.clone = function() {
+    return new Rectangle(this.x, this.y, this.width, this.height);
 };
 
 //===========================================================================
@@ -1392,35 +1432,16 @@ DKToolsEvent.prototype.update = function() {
 
 
 //===========================================================================
-// DK Tools Sprite
+// DK Tools Base
 //===========================================================================
 
-function DKTools_Sprite() {
-	this.initialize.apply(this, arguments);
+function DKTools_Base() {
+    throw new Error('This is a abstract class (Это абстрактный класс!)');
 }
-
-DKTools_Sprite.prototype = Object.create(Sprite.prototype);
-DKTools_Sprite.prototype.constructor = DKTools_Sprite;
-
-// Счетчик созданных спрайтов
-DKTools_Sprite._counter = 0;
 
 // properties
 
-Object.defineProperties(DKTools_Sprite.prototype, {
-
-    /**
-     * Название файла графики
-     *
-     * @property graphic
-     * @type String
-     */
-    graphic: {
-        get: function() {
-            return this._graphic;
-        },
-        configurable: true
-    },
+Object.defineProperties(DKTools_Base.prototype, {
 
     /**
      * Цвет текста
@@ -1474,6 +1495,2584 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         configurable: true
     },
 
+    mouseX : {
+        get: function() {
+            return this.canvasToLocalX(TouchInput.mouseX);
+        },
+        configurable: true
+    },
+
+    mouseY : {
+        get: function() {
+            return this.canvasToLocalY(TouchInput.mouseY);
+        },
+        configurable: true
+    }
+
+});
+
+
+// standard methods
+
+/**
+ * Возвращает стандартную видимость спрайта
+ *
+ * @method standardVisible
+ * @return {Boolean} Стандартная видимость спрайта
+ */
+DKTools_Base.prototype.standardVisible = function() {
+    return true;
+};
+
+/**
+ * Возвращает стандартное значение активности спрайта
+ *
+ * @method standardActive
+ * @return {Boolean} Стандартное значение активности спрайта
+ */
+DKTools_Base.prototype.standardActive = function() {
+    return true;
+};
+
+/**
+ * Возвращает стандартный цвет текста
+ *
+ * @method standardTextColor
+ * @return {String} Стандартный цвет текста
+ */
+DKTools_Base.prototype.standardTextColor = function() {
+    return '#ffffff';
+};
+
+/**
+ * Возвращает стандартное выравнивание текста
+ *
+ * @method standardAlign
+ * @return {String} Стандартное выравнивание текста
+ */
+DKTools_Base.prototype.standardAlign = function() {
+    return 'center';
+};
+
+/**
+ * Возвращает стандартный цвет фона
+ *
+ * @method standardBackgroundColor
+ * @return {null} Стандартный цвет фона
+ */
+DKTools_Base.prototype.standardBackgroundColor = function() {
+    return null;
+};
+
+/**
+ * Возвращает стандартное имя шрифта
+ *
+ * @method standardFontName
+ * @return {String} Стандартное имя шрифта
+ */
+DKTools_Base.prototype.standardFontName = function() {
+    return 'GameFont';
+};
+
+/**
+ * Возвращает стандартное значение для курсива
+ *
+ * @method standardFontItalic
+ * @return {Boolean} Стандартное значение для курсива
+ */
+DKTools_Base.prototype.standardFontItalic = function() {
+    return false;
+};
+
+/**
+ * Возвращает стандартный размер шрифта
+ *
+ * @method standardFontSize
+ * @return {Number} Стандартный размер шрифта
+ */
+DKTools_Base.prototype.standardFontSize = function() {
+    return 28;
+};
+
+/**
+ * Возвращает стандартный шрифт текста
+ *
+ * @method standardFont
+ * @return {Array} Стандартный шрифт текста
+ */
+DKTools_Base.prototype.standardFont = function() {
+    return [this.standardFontName(), this.standardFontItalic(), this.standardFontSize()];
+};
+
+/**
+ * Возвращает стандартную обложку окна
+ *
+ * @method standardWindowskin
+ * @return {String}
+ */
+DKTools_Base.prototype.standardWindowskin = function() {
+    return 'Window';
+};
+
+// setup methods
+
+DKTools_Base.prototype.setup = function(type, value) {
+    type = type.charAt(0).toUpperCase() + type.substr(1);
+    var func = 'setup%1'.format(type);
+    this[func](value);
+};
+
+/**
+ * Устанавливает все параметры спрайта
+ *
+ * @method setupAll
+ *
+ * @param {Object | null} [object = {}] - Объект типа {}
+ *
+ * @param {Number | null} [object.id = null] - ID спрайта
+ * @param {Boolean | null} [object.visible = null] - Видимость спрайта
+ * @param {Boolean | null} [object.active = null] - Активность спрайта
+ * @param {String | null} [object.textColor = null] - Цвет текста
+ * @param {String | null} [object.align = null] - Выравнивание текста
+ * @param {String | null} [object.backgroundColor = null] - Цвет фона
+ * @param {Array | null} [object.font = null] - Шрифт текста
+ * @param {Number | null} [object.opacity = null] - Прозрачность спрайта
+ * @param {Object | Point | null} [object.scale = null] - Масштабирование спрайта
+ */
+DKTools_Base.prototype.setupAll = function(object) {
+    object = object || {};
+    this.setupId(object.id);
+    this.setupVisible(object.visible);
+    this.setupActive(object.active);
+    this.setupTextColor(object.textColor);
+    this.setupAlign(object.align);
+    this.setupBackgroundColor(object.backgroundColor);
+    this.setupFont(object.font);
+    this.setupOpacity(object.opacity);
+};
+
+/**
+ * Устанавливает размер Bitmap
+ *
+ * @method setupSize
+ *
+ * @param {Number | null} [object = null] - Ширина Bitmap
+ * @param {Number | null} [height = null] - Высота Bitmap
+ */
+DKTools_Base.prototype.setupSize = function(object, height) {
+    if (object && object.constructor === Object) {
+        return this.setupSize(object.width, object.height);
+    }
+    this.setupWidth(object);
+    this.setupHeight(height);
+};
+
+/**
+ * Устанавливает ID спрайта
+ *
+ * @method setupId
+ * @param {Number | String | null} [id = null] - ID спрайта
+ */
+DKTools_Base.prototype.setupId = function(id) {
+    this.id = (id == null ? null : id);
+};
+
+/**
+ * Устанавливает видимость спрайта
+ *
+ * @method setupVisible
+ * @param {Boolean | null} [visible = null] - Видимость спрайта
+ */
+DKTools_Base.prototype.setupVisible = function(visible) {
+    this.visible = (visible == null ? this.standardVisible() : visible);
+};
+
+/**
+ * Устанавливает активность спрайта
+ *
+ * @method setupActive
+ * @param {Boolean | null} [active = null] - Активность спрайта
+ */
+DKTools_Base.prototype.setupActive = function(active) {
+    this.active = (active == null ? this.standardActive() : active);
+};
+
+/**
+ * Устанавливает цвет текста
+ *
+ * @method setupTextColor
+ * @param {String | null} [textColor = null] - Цвет текста
+ */
+DKTools_Base.prototype.setupTextColor = function(textColor) {
+    this._textColor = textColor || this.standardTextColor();
+};
+
+/**
+ * Устанавливает выравнивание текста
+ *
+ * @method setupAlign
+ * @param {String | null} [align = null] - Выравнивание текста
+ */
+DKTools_Base.prototype.setupAlign = function(align) {
+    this._align = align || this.standardAlign();
+};
+
+/**
+ * Устанавливает цвет фона
+ *
+ * @method setupBackgroundColor
+ * @param {String | null} [color = null] - Цвет фона
+ */
+DKTools_Base.prototype.setupBackgroundColor = function(color) {
+    this._backgroundColor = (color == null ? this.standardBackgroundColor() : color);
+};
+
+/**
+ * Устанавливает шрифт текста
+ *
+ * @method setupFont
+ * @param {Array | null} [font = null] - Шрифт текста
+ */
+DKTools_Base.prototype.setupFont = function(font) {
+    this._font = this._checkFont(this._font, font);
+};
+
+// set methods
+
+/**
+ * Изменяет все параметры спрайта
+ *
+ * @method setAll
+ *
+ * @param {Object | null} [object = {}] - Объект типа {}
+ * @param {Boolean | null} [blockStart = null] - Блокировка вызова функции start
+ *
+ * @param {String | null} [object.textColor = null] - Цвет текста
+ * @param {String | null} [object.align = null] - Выравнивание текста
+ * @param {String | null} [object.backgroundColor = null] - Цвет фона
+ * @param {Array | null} [object.font = null] - Шрифт текста
+ * @param {Number | null} [object.opacity = null] - Прозрачность спрайта
+ * @param {Object | Point | null} [object.scale = null] - Масштабирование спрайта
+ *
+ * @return {Number} Количество измененных параметров
+ */
+DKTools_Base.prototype.setAll = function(object) {
+    object = object || {};
+    var changed = 0;
+    var block = true;
+    this._activateSetAllMode();
+    if (this.setTextColor(object.textColor, block)) {
+        changed++;
+    }
+    if (this.setAlign(object.align, block)) {
+        changed++;
+    }
+    if (this.setBackgroundColor(object.backgroundColor, block)) {
+        changed++;
+    }
+    if (this.setFont(object.font, block)) {
+        changed++;
+    }
+    if (this.setOpacity(object.opacity)) {
+        changed++;
+    }
+    this._deactivateSetAllMode();
+    return changed;
+};
+
+/**
+ * Изменяет ширину Bitmap
+ *
+ * @method setWidth
+ *
+ * @param {Number | null} [width = null] - Ширина Bitmap
+ * @param {Boolean | null} [blockStart = null] - Блокировка вызова функции start
+ *
+ * @return {Boolean} Возвращает true, если изменение произошло
+ */
+DKTools_Base.prototype.setWidth = function(width, blockStart) {
+    return this.resize(width, this.height, blockStart);
+};
+
+/**
+ * Изменяет высоту Bitmap
+ *
+ * @method setHeight
+ *
+ * @param {Number | null} [height = null] - Высота Bitmap
+ * @param {Boolean | null} [blockStart = null] - Блокировка вызова функции start
+ *
+ * @return {Boolean} Возвращает true, если изменение произошло
+ */
+DKTools_Base.prototype.setHeight = function(height, blockStart) {
+    return this.resize(this.width, height, blockStart);
+};
+
+/**
+ * Изменяет видимость спрайта
+ *
+ * @method setVisible
+ *
+ * @param {Boolean | null} [visible = null] - Видимость спрайта
+ *
+ * @return {Boolean} Возвращает true, если изменение произошло
+ */
+DKTools_Base.prototype.setVisible = function(visible) {
+    if (this.visible === visible) {
+        return false;
+    }
+    var lastVisible = this.visible;
+    this.setupVisible(visible);
+    return lastVisible !== this.visible;
+};
+
+/**
+ * Изменяет активность спрайта
+ *
+ * @method setActive
+ *
+ * @param {Boolean | null} [active = null] - Активность спрайта
+ *
+ * @return {Boolean} Возвращает true, если изменение произошло
+ */
+DKTools_Base.prototype.setActive = function(active) {
+    if (this.active === active) {
+        return false;
+    }
+    var lastActive = this.active;
+    this.setupActive(active);
+    return lastActive !== this.active;
+};
+
+/**
+ * Изменяет цвет текста
+ * Возвращает true, если изменение произошло
+ *
+ * @method setTextColor
+ *
+ * @param {String || null} color - Цвет текста
+ * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.setTextColor = function(color, blockUpdate) {
+    if (this._textColor === color) {
+        return false;
+    }
+    var lastColor = this._textColor;
+    this.setupTextColor(color);
+    if (lastColor === this._textColor) {
+        return false;
+    }
+    if (!blockUpdate) {
+        this.updateBitmap();
+    }
+    return true;
+};
+
+/**
+ * Изменяет выравнивание текста
+ * Возвращает true, если изменение произошло
+ *
+ * @method setAlign
+ *
+ * @param {String || null} align - Выравнивание текста
+ * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.setAlign = function(align, blockUpdate) {
+    if (this._align === align) {
+        return false;
+    }
+    var lastAlign = this._align;
+    this.setupAlign(align);
+    if (lastAlign === this._align) {
+        return false;
+    }
+    if (!blockUpdate) {
+        this.updateBitmap();
+    }
+    return true;
+};
+
+/**
+ * Изменяет цвет фона
+ * Возвращает true, если изменение произошло
+ *
+ * @method setBackgroundColor
+ *
+ * @param {String || null} color - Цвет фона
+ * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.setBackgroundColor = function(color, blockUpdate) {
+    if (this._backgroundColor === color) {
+        return false;
+    }
+    var lastColor = this._backgroundColor;
+    this.setupBackgroundColor(color);
+    if (lastColor === this._backgroundColor) {
+        return false;
+    }
+    if (!blockUpdate) {
+        this.updateBitmap();
+    }
+    return true;
+};
+
+/**
+ * Изменяет шрифт текста
+ * Возвращает true, если изменение произошло
+ *
+ * @method setFont
+ *
+ * @param {Array || null} font - Шрифт текста
+ * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.setFont = function(font, blockStart) {
+    font = font || this.standardFont();
+    if (this._font.equals(font)) {
+        return false;
+    }
+    var lastFont = this._font;
+    this.setupFont(font);
+    if (this._font.equals(lastFont)) {
+        return false;
+    }
+    if (!blockStart) {
+        this.start();
+    }
+    return true;
+};
+
+// other methods
+
+
+/**
+ * Запускает работу спрайта
+ *
+ * @method start
+ * @param {Boolean || null} activate - Активировать спрайт
+ */
+DKTools_Base.prototype.start = function(activate) {
+    this._started = true;
+    this.createAll();
+    this.updateAll();
+    this.updateStartEvents();
+    if (activate) {
+        this.activate();
+    }
+};
+
+/**
+ * Очищает Rect, если Bitmap есть
+ * Возвращает true, если Bitmap есть
+ *
+ * @method clearRect
+ *
+ * @param {Number || Rectangle || null} object - Координата X или область
+ * @param {Number || null} y - Координата Y
+ * @param {Number || null} width - Ширина области
+ * @param {Number || null} height - Высота области
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.clearRect = function(object, y, width, height) {
+    if (!this.hasBitmap()) {
+        return false;
+    }
+    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
+        return this.clearRect(object.x, object.y, object.width, object.height);
+    }
+    var x = object || 0;
+    y = y || 0;
+    width = width || this.standardDrawWidth();
+    height = height || this.standardDrawHeight();
+    this.bitmap.clearRect(x, y, width, height);
+    return true;
+};
+
+/**
+ * Очищает весь Bitmap, если он есть
+ * Возвращает true, если Bitmap есть
+ *
+ * @method clear
+ * @return Boolean
+ */
+DKTools_Base.prototype.clear = function() {
+    return this.clearRect();
+};
+
+/**
+ * Устанавливает ширину и высоту Bitmap, если они отличаются от текущих
+ *
+ * @method resize
+ *
+ * @param {Number | null} [width = this.minWidth()] - Ширина Bitmap (The width of the Bitmap)
+ * @param {Number | null} [height = this.minHeight()] - Высота Bitmap (The height of the Bitmap)
+ * @param {Boolean | null} [blockStart = false] - Блокировка вызова функции start
+ *
+ * @return {Boolean} Возвращает true, если изменение произошло
+ */
+DKTools_Base.prototype.resize = function(width, height, blockStart) {
+    if (width == null) {
+        width = this.minWidth();
+    }
+    if (height == null) {
+        height = this.minHeight();
+    }
+    if (this.width === width && this.height === height) {
+        return false;
+    }
+    var lastWidth = this.width;
+    var lastHeight = this.height;
+    this.setupSize(width, height);
+    if (lastWidth === this.width && lastHeight === this.height) {
+        return false;
+    }
+    if (!blockStart) {
+        this.start();
+    }
+    return true;
+};
+
+/**
+ * Возвращает объект со всеми параметрами спрайта
+ *
+ * @method object
+ * @return {Object} Объект со всеми параметрами спрайта
+ */
+DKTools_Base.prototype.object = function() {
+    var object = {
+        x: this.x,
+        y: this.y,
+        width: this.width,
+        height: this.height,
+        id: this.id,
+        visible: this.visible,
+        active: this.active,
+        textColor: this._textColor,
+        align: this._align,
+        backgroundColor: this._backgroundColor,
+        font: this._font,
+    };
+    return object;
+};
+
+/**
+ * Клонирует текущий спрайт
+ *
+ * @method clone
+ *
+ * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ *
+ * @return DKTools_Sprite
+ */
+DKTools_Base.prototype.clone = function(blockStart) {
+    var object = this.object();
+    var clone = new (this.constructor)(object);
+    if (!blockStart) {
+        clone.start();
+    }
+    return clone;
+};
+
+/**
+ * Перемещает спрайт
+ *
+ * @method move
+ *
+ * @param {Number | Point | Object | null} [object] - Координата X или Point, или Объект типа {}
+ * @param {Number | null} [newY] - Координата Y
+ * @param {Number | null} [duration] - Длительность перемещения
+ * @param {Number | null} [newOpacity] - Новая прозрачность
+ * @param {Number | null} [newScaleX] - Новое масштабирование по X
+ * @param {Number | null} [newScaleY] - Новое масштабирование по Y
+ *
+ * @param {Number | null} [object.x] - Координата X
+ * @param {Number | null} [object.y] - Координата Y
+ */
+//DKTools_Base.prototype.move = function(object, newY, duration, newOpacity, newScaleX, newScaleY) {
+//    if (object && (object.constructor === Point || object.constructor === Object)) {
+//        return Sprite.prototype.move.call(this, object.x || 0, object.y || 0);
+//    }
+//    duration = duration || 0;
+//    if (duration > 0) {
+//        var x = (object == null ? this.x : object);
+//        newY = (newY == null ? this.y : newY);
+//        newOpacity = (newOpacity == null ? this.opacity : newOpacity);
+//        newScaleX = newScaleX || this.scale.x;
+//        newScaleY = newScaleY || this.scale.y;
+//        return this.addEvent('wait', this._updateMove.bind(this, x, newY, newOpacity, newScaleX, newScaleY), duration);
+//    } else {
+//        var x = object || 0;
+//        newY = newY || 0;
+//        Sprite.prototype.move.call(this, x, newY);
+//    }
+//};
+
+/**
+ * Проверяет ширину и высоту Bitmap на соответствие минимальным значениям
+ * Возвращает true, если изменение произошло
+ *
+ * @method checkSize
+ * @return Number
+ */
+//DKTools_Base.prototype.checkSize = function() {
+//    var minWidth = this.minWidth();
+//    var minHeight = this.minHeight();
+//    var changed = 0;
+//    if (this._bitmapWidth < minWidth) {
+//        this.setupWidth(minWidth);
+//        changed++;
+//    }
+//    if (this._bitmapHeight < minHeight) {
+//        this.setupHeight(minHeight);
+//        changed++;
+//    }
+//    return changed;
+//};
+
+/**
+ * Возвращает Bitmap из объекта или загружает его
+ *
+ * @method bitmapFromObject
+ * @param {Bitmap || Object || null} object - Bitmap или Объект типа {}
+ *
+ * @property {String} folder - Папка изображения
+ * @property {String} filename - Название файла
+ * @property {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @property {Number || null} hue - Оттенок
+ * @property {Boolean || null} smooth - Сглаживание
+ *
+ * @return Bitmap || null
+ */
+DKTools_Base.prototype.bitmapFromObject = function(object) {
+    var bitmap = object || null;
+    if (!object) {
+        return bitmap;
+    }
+    if (object.constructor === Object) {
+        bitmap = ImageManager.loadBitmap(object.folder, object.filename, object.hue, object.smooth);
+        if (object.listener) {
+            bitmap.addLoadListener(object.listener);
+        }
+    }
+    return bitmap;
+};
+
+/**
+ * Возвращает максимальную ширину Bitmap
+ *
+ * @method maxWidth
+ * @return Number
+ */
+DKTools_Base.prototype.maxWidth = function() {
+    return Graphics.boxWidth;
+};
+
+/**
+ * Возвращает максимальную высоту Bitmap
+ *
+ * @method maxHeight
+ * @return Number
+ */
+DKTools_Base.prototype.maxHeight = function() {
+    return Graphics.boxHeight;
+};
+
+// private methods
+
+// Может заменить на символы и isEnabled ?
+
+/**
+ * Возвращает true, если идет обработка функции setAll
+ *
+ * @method _isSetAllMode
+ *
+ * @private
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype._isSetAllMode = function() {
+    return this._setAllMode;
+};
+
+/**
+ * Включает режим обработки функции setAll
+ *
+ * @method _activateSetAllMode
+ *
+ * @private
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype._activateSetAllMode = function() {
+    this._setAllMode = true;
+};
+
+/**
+ * Выключает режим обработки функции setAll
+ *
+ * @method _deactivateSetAllMode
+ *
+ * @private
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype._deactivateSetAllMode = function() {
+    this._setAllMode = false;
+};
+
+//
+
+/**
+ * Проверяет спрайт на наличие Bitmap
+ *
+ * @method hasBitmap
+ * @return {Boolean} Возвращает true, если Bitmap есть
+ */
+DKTools_Base.prototype.hasBitmap = function() {
+    return !!this.bitmap;
+};
+
+// is methods
+
+/**
+ * Возвращает true, если спрайт виден
+ *
+ * @method isVisible
+ * @return Boolean
+ */
+DKTools_Base.prototype.isVisible = function() {
+    return this.visible;
+};
+
+/**
+ * Возвращает true, если спрайт активен
+ *
+ * @method isActive
+ * @return Boolean
+ */
+DKTools_Base.prototype.isActive = function() {
+    return Sprite_Button.prototype.isActive.call(this) && this.active;
+};
+
+/**
+ * Возвращает true, если спрайт виден и активен
+ *
+ * @method isVisibleAndActive
+ * @return Boolean
+ */
+DKTools_Base.prototype.isVisibleAndActive = function() {
+    return this.isVisible() && this.isActive();
+};
+
+/**
+ * Возвращает true, если работа спрайта была запущена
+ *
+ * @method isStarted
+ * @return Boolean
+ */
+DKTools_Base.prototype.isStarted = function() {
+    return this._started;
+};
+
+/**
+ * Возвращает true, если у спрайта есть события-ожидания
+ *
+ * @method isWaiting
+ * @return Boolean
+ */
+DKTools_Base.prototype.isWaiting = function() {
+    return this.hasEvents('wait');
+};
+
+/**
+ * Возвращает true, если Bitmap готов
+ *
+ * @method isReady
+ * @return Boolean
+ */
+DKTools_Base.prototype.isReady = function () {
+    return this.hasBitmap() ? this.bitmap.isReady() : false;
+};
+
+/**
+ * Возвращает true, если спрайт занят
+ *
+ * @method isBusy
+ * @return Boolean
+ */
+DKTools_Base.prototype.isBusy = function() {
+    return this.isWaiting() && !this.isReady();
+};
+
+/**
+ * Возвращает true, если координаты находятся внутри спрайта
+ *
+ * @method isInside
+ *
+ * @param {Number} x - Координата X
+ * @param {Number} y - Координата Y
+ *
+ * @return {Boolean}
+ */
+//DKTools_Base.prototype.isInside = function(x, y) {
+//    return x >= 0 && y >= 0 && x <= this.width * this.scale.x && y <= this.height * this.scale.y;
+//};
+
+/**
+ * Возвращает true, если курсор мышки находится внутри спрайта
+ *
+ * @method isEntered
+ * @return Boolean
+ */
+//DKTools_Base.prototype.isEntered = function() {
+//    return this.isInside(this.mouseX, this.mouseY);
+//};
+
+/**
+ * Проверяет было ли прикосновение внутри спрайта
+ *
+ * @method isTouched
+ * @return {Boolean} Возвращает true, если прикосновение было внутри спрайта
+ */
+//DKTools_Base.prototype.isTouched = function() {
+//    return this.isInside(this.clickX, this.clickY);
+//};
+
+/**
+ * Проверяет спрайт на одиночное или длительное нажатие
+ *
+ * @method isPressed
+ * @return {Boolean} Возвращает true, если спрайт был нажат один раз или нажимается длительное время
+ */
+//DKTools_Base.prototype.isPressed = function() {
+//    return this._touching || this.isLongPressed();
+//};
+
+// clear methods
+
+/**
+ * Очищает все данные спрайта
+ *
+ * @method clearAll
+ */
+DKTools_Base.prototype.clearAll = function() {
+    this.clearEvents();
+    this.clearSymbols();
+    this._clearEnteredTime();
+};
+
+/**
+ * Очищает события спрайта
+ *
+ * @method clearEvents
+ * @param {Array | String | null} [object = null] - Массив с типами событий или тип события
+ */
+DKTools_Base.prototype.clearEvents = function(object) {
+    if (object) {
+        if (object.constructor === Array) {
+            for(var i = 0; i < object.length; i++) {
+                var type = object[i];
+                this.createEventContainer(type);
+            }
+        } else {
+            this._events[object] = [];
+        }
+    } else {
+        this._events = {};
+    }
+};
+
+/**
+ * Очищает параметры спрайта
+ *
+ * @method clearSymbols
+ */
+DKTools_Base.prototype.clearSymbols = function() {
+    this._symbols = {};
+};
+
+/**
+ * Сбрасывает счетчик ...
+ *
+ * @method _clearEnteredTime
+ * @private
+ */
+DKTools_Base.prototype._clearEnteredTime = function() {
+    this._enteredTime = 0;
+};
+
+// draw methods
+
+/**
+ * Заливает область цветом
+ *
+ * @method fillRect
+ *
+ * @param {String | null} [color = #ffffff] - Цвет заливки
+ * @param {Number | Rectangle | Object | null} [object = 0] - Координата X или Rectangle, или Объект типа {}
+ * @param {Number | null} [y = 0] - Координата Y
+ * @param {Number | null} [width = this._bitmapWidth] - Ширина области
+ * @param {Number | null} [height = this._bitmapHeight] - Высота области
+ *
+ * @param {Number | null} [object.x = null] - Координата X
+ * @param {Number | null} [object.y = null] - Координата Y
+ * @param {Number | null} [object.width = null] - Ширина области
+ * @param {Number | null} [object.height = null] - Высота области
+ *
+ * @return {Boolean} Возвращает true, если Bitmap существует
+ */
+DKTools_Base.prototype.fillRect = function(color, object, y, width, height) {
+    if (!this.hasBitmap()) {
+        return false;
+    }
+    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
+        return this.fillRect(color, object.x, object.y, object.width, object.height);
+    }
+    var x = object || 0;
+    y = y || 0;
+    width = width || this.standardDrawWidth();
+    height = height || this.standardDrawHeight();
+    color = color || '#ffffff';
+    this.bitmap.fillRect(x, y, width, height, color);
+    return true;
+};
+
+/**
+ * Заливает весь Bitmap цветом
+ * Возвращает true, если Bitmap существует
+ *
+ * @method fillAll
+ *
+ * @param {String || null} color - Цвет заливки
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.fillAll = function(color) {
+    return this.fillRect(color);
+};
+
+/**
+ * Заливает область градиентом
+ * Возвращает true, если Bitmap существует
+ *
+ * @method gradientFillRect
+ *
+ * @param {String || null} color1 - Цвет 1
+ * @param {String || null} color2 - Цвет 2
+ * @param {Boolean || null} vertical - Вертикальный градиент
+ * @param {Number || Rectangle || Object || null} object - Координата X или область, или Объект типа {}
+ * @param {Number || null} y - Координата Y
+ * @param {Number || null} width - Ширина области
+ * @param {Number || null} height - Высота области
+ *
+ * object properties
+ * @property {Number || null} x - Координата X
+ * @property {Number || null} y - Координата Y
+ * @property {Number || null} width - Ширина области
+ * @property {Number || null} height - Высота области
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.gradientFillRect = function(color1, color2, vertical, object, y, width, height) {
+    if (!this.hasBitmap()) {
+        return false;
+    }
+    if (object && object.constructor === Rectangle) {
+        return this.gradientFillRect(color1, color2, vertical, object.x, object.y, object.width, object.height);
+    }
+    var x = object || 0;
+    y = y || 0;
+    width = width || this.standardDrawWidth();
+    height = height || this.standardDrawHeight();
+    color1 = color1 || '#ffffff';
+    color2 = color2 || '#000000';
+    this.bitmap.gradientFillRect(x, y, width, height, color1, color2, vertical);
+    return true;
+};
+
+/**
+ * Заливает весь Bitmap градиентом
+ * Возвращает true, если Bitmap существует
+
+ * @method gradientFillAll
+ *
+ * @param {String || null} color1 - Цвет 1
+ * @param {String || null} color2 - Цвет 2
+ * @param {Boolean || null} vertical - Вертикальный градиент
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.gradientFillAll = function(color1, color2, vertical) {
+    return this.gradientFillAll(color1, color2, vertical);
+};
+
+//if (DKToolsUtils.debug) {
+//
+//    DKTools_Sprite.prototype.strokeRect = function(color, object, y, width, height) {
+//        if (!this.hasBitmap()) return false;
+//        var x = object;
+//        if (object && object.constructor === Rectangle) {
+//            x = object.x;
+//            y = object.y;
+//            width = object.width;
+//            height = object.height;
+//        }
+//        this.bitmap.strokeRect(x || 0, y || 0, width || this._bitmapWidth, height || this._bitmapHeight, color || '#ffffff');
+//        return true;
+//    };
+//
+//    DKTools_Sprite.prototype.fillArc = function () {
+//    };
+//
+//    DKTools_Sprite.prototype.strokeArc = function () {
+//    };
+//
+//    DKTools_Sprite.prototype.drawLine = function (x1, y1, x2, y2, color) {
+//        if (!this.hasBitmap()) {
+//            return false;
+//        }
+//        this.bitmap.drawLine(x1, y1, x2, y2, color);
+//        return true;
+//    };
+//
+//}
+
+/**
+ * Рисует текст
+ * Возвращает true, если Bitmap существует
+ *
+ * @method drawText
+ *
+ * @param {String || null} text - Текст
+ * @param {String || null} align - Выравнивание текста
+ * @param {Number || Rectangle || Object || null} object - Координата X или область, или Объект типа {}
+ * @param {Number || null} y - Координата Y
+ * @param {Number || null} width - Ширина области
+ * @param {Number || null} height - Высота области
+ *
+ * object properties
+ * @property {Number || null} x - Координата X
+ * @property {Number || null} y - Координата Y
+ * @property {Number || null} width - Ширина области
+ * @property {Number || null} height - Высота области
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.drawText = function(text, align, object, y, width, height) {
+    text = String(text);
+    if (!this.hasBitmap() || !text) {
+        return false;
+    }
+    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
+        return this.drawText(text, align, object.x, object.y, object.width, object.height);
+    }
+    var x = x || 0;
+    y = y || 0;
+    width = width || this.standardDrawWidth();
+    height = height || this.standardDrawHeight();
+    align = align || this.align || this.standardAlign();
+    this.bitmap.drawText(text, x, y, width, height, align);
+    return true;
+};
+
+//if (DKToolsUtils.debug) {
+//
+//    DKTools_Sprite.prototype.drawTextEx = function(text, x, y) {
+//        if (text) {
+//            var textState = {
+//                index: 0,
+//                x: x,
+//                y: y,
+//                left: x
+//            };
+//            textState.text = this.convertEscapeCharacters(text);
+//            textState.height = this.calcTextHeight(textState, false);
+//            while (textState.index < textState.text.length) {
+//                this.processCharacter(textState);
+//            }
+//            return textState.x - x;
+//        } else {
+//            return 0;
+//        }
+//    };
+//
+//    DKTools_Sprite.prototype.convertEscapeCharacters = Window_Base.prototype.convertEscapeCharacters;
+//
+//    DKTools_Sprite.prototype.actorName = Window_Base.prototype.actorName;
+//
+//    DKTools_Sprite.prototype.partyMemberName = Window_Base.prototype.partyMemberName;
+//
+//    DKTools_Sprite.prototype.processCharacter = Window_Base.prototype.processCharacter;
+//
+//    DKTools_Sprite.prototype.processNormalCharacter = function(textState) {
+//        var text = textState.text[textState.index++];
+//        var width = this.textWidth(text);
+//        var align = 'left';
+//        this.drawText(text, align, textState.x, textState.y, width * 2, textState.height);
+//        textState.x += width;
+//    };
+//
+//    DKTools_Sprite.prototype.processNewLine = Window_Base.prototype.processNewLine;
+//
+//    DKTools_Sprite.prototype.processNewPage = Window_Base.prototype.processNewPage;
+//
+//    DKTools_Sprite.prototype.obtainEscapeCode = Window_Base.prototype.obtainEscapeCode;
+//
+//    DKTools_Sprite.prototype.obtainEscapeParam = Window_Base.prototype.obtainEscapeParam;
+//
+//    DKTools_Sprite.prototype.processEscapeCharacter = function(code, textState) {
+//        switch (code) {
+//            case 'C':
+//                //this.changeTextColor(this.textColor(this.obtainEscapeParam(textState)));
+//                break;
+//            case 'I':
+//                this.processDrawIcon(this.obtainEscapeParam(textState), textState);
+//                break;
+//            case '{':
+//                this.makeFontBigger();
+//                break;
+//            case '}':
+//                this.makeFontSmaller();
+//                break;
+//        }
+//    };
+//
+//    DKTools_Sprite.prototype.processDrawIcon = Window_Base.prototype.processDrawIcon;
+//
+//    DKTools_Sprite.prototype.makeFontBigger = function() {
+//        if (this.bitmap && this.bitmap.fontSize <= 96) {
+//            this.bitmap.fontSize += 12;
+//        }
+//    };
+//
+//    DKTools_Sprite.prototype.makeFontSmaller = function() {
+//        if (this.bitmap && this.bitmap.fontSize >= 24) {
+//            this.bitmap.fontSize -= 12;
+//        }
+//    };
+//
+//    DKTools_Sprite.prototype.calcTextHeight = function(textState, all) {
+//        var lastFontSize = this.bitmap.fontSize;
+//        var textHeight = 0;
+//        var lines = textState.text.slice(textState.index).split('\n');
+//        var maxLines = all ? lines.length : 1;
+//
+//        for (var i = 0; i < maxLines; i++) {
+//            var maxFontSize = this.bitmap.fontSize;
+//            var regExp = /\x1b[\{\}]/g;
+//            for (;;) {
+//                var array = regExp.exec(lines[i]);
+//                if (array) {
+//                    if (array[0] === '\x1b{') {
+//                        this.makeFontBigger();
+//                    }
+//                    if (array[0] === '\x1b}') {
+//                        this.makeFontSmaller();
+//                    }
+//                    if (maxFontSize < this.bitmap.fontSize) {
+//                        maxFontSize = this.bitmap.fontSize;
+//                    }
+//                } else {
+//                    break;
+//                }
+//            }
+//            textHeight += maxFontSize + 8;
+//        }
+//
+//        this.bitmap.fontSize = lastFontSize;
+//        return textHeight;
+//    };
+//
+//    //DKTools_Sprite.prototype.autoText = function(text, duration) {
+//    //    this.addEventListener('wait', function() {
+//    //
+//    //    }.bind(this));
+//    //};
+//
+//}
+
+/**
+ * Рисует круг
+ * Возвращает true, если Bitmap существует
+ *
+ * @method drawCircle
+ *
+ * @param {Number || null} radius - Радиус
+ * @param {String || null} color - Цвет
+ * @param {Number || Point || Object || null} object - Координата X или Point, или Объект типа {}
+ * @param {Number || null} y - Координата Y
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.drawCircle = function(radius, color, object, y) {
+    if (!this.hasBitmap()) {
+        return false;
+    }
+    if (object && (object.constructor === Point || object.constructor === Object)) {
+        return this.drawCircle(radius, color, object.x, object.y);
+    }
+    var x = object || 0;
+    y = y || 0;
+    radius = radius || 1;
+    color = color || '#ffffff';
+    this.bitmap.drawCircle(x, y, radius, color);
+    return true;
+};
+
+/**
+ * Рисует кусок из Bitmap в Bitmap спрайта
+ * Возвращает true, если Bitmap существует
+ *
+ * @method drawBitmap
+ *
+ * @param {Bitmap || Object} object - Bitmap или объект типа {}
+ * @param {Number || null} x1 - Координата X
+ * @param {Number || null} y1 - Координата Y
+ * @param {Number || null} w1 - Ширина области из Bitmap
+ * @param {Number || null} h1 - Высота области из Bitmap
+ * @param {Number || null} x2 - Координата X
+ * @param {Number || null} y2 - Координата Y
+ * @param {Number || null} w2 - Ширина рисуемой области
+ * @param {Number || null} h2 - Высота рисуемой области
+ *
+ * object.properties
+ * @property {Bitmap || Object} - Bitmap или Объект типа {}
+ * @property {Number || null} x1 - Координата X
+ * @property {Number || null} y1 - Координата Y
+ * @property {Number || null} w1 - Ширина области из Bitmap
+ * @property {Number || null} h1 - Высота области из Bitmap
+ * @property {Number || null} x2 - Координата X
+ * @property {Number || null} y2 - Координата Y
+ * @property {Number || null} w2 - Ширина рисуемой области
+ * @property {Number || null} h2 - Высота рисуемой области
+ * @property {Rectangle || Object || null} rect1 - Область или Объект типа {}
+ * @property {Rectangle || Object || null} rect2 - Область или Объект типа {}
+ *
+ * object.bitmap properties
+ * @property {String} folder - Путь к файлу
+ * @property {String} filename - Название файла
+ * @property {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @property {Number || null} hue - Оттенок
+ * @property {Boolean || null} smooth - Сглаживание
+ *
+ * object.rect1 and object.rect2 properties
+ * @property {Number || null} x - Координата X
+ * @property {Number || null} y - Координата Y
+ * @property {Number || null} width - Ширина области
+ * @property {Number || null} height - Высота области
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.drawBitmap = function(object, x1, y1, w1, h1, x2, y2, w2, h2) {
+    object = object || {};
+    if (!this.hasBitmap()) {
+        return false;
+    }
+    var sx = x1, sy = y1, sw = w1, sh = h1;
+    var dx = x2, dy = y2, dw = w2, dh = h2;
+    var bitmap = object;
+    if (object.constructor === Object) {
+        bitmap = this.bitmapFromObject(object.bitmap);
+        sx = object.x1; sy = object.y1; sw = object.w1; sh = object.h1;
+        dx = object.x2; dy = object.y2; dw = object.w2; dh = object.h2;
+        if (object.rect1 && (object.rect1.constructor === Rectangle || object.rect1.constructor === Object)) {
+            sx = object.rect1.x;
+            sy = object.rect1.y;
+            sw = object.rect1.width;
+            sh = object.rect1.height;
+        }
+        if (object.rect2 && (object.rect2.constructor === Rectangle || object.rect2.constructor === Object)) {
+            dx = object.rect2.x;
+            dy = object.rect2.y;
+            dw = object.rect2.width;
+            dh = object.rect2.height;
+        }
+    }
+    if (!bitmap) {
+        return false;
+    }
+    bitmap.addLoadListener(function() {
+        this.bitmap.blt(bitmap, sx, sy, sw, sh, dx, dy, dw, dh);
+    }.bind(this));
+    return true;
+};
+
+/**
+ * Рисует иконку из IconSet
+ * Возвращает true, если Bitmap существует
+ *
+ * @method drawIcon
+ *
+ * @param {Number} iconIndex - ID иконки
+ * @param {Number || Point || Object || null} object - Координата X или Point, или Объект типа {}
+ * @param {Number || null} y - Координата Y
+ *
+ * @return Boolean
+ */
+//DKTools_Base.prototype.drawIcon = function(iconIndex, object, y) {
+//    if (!this.hasBitmap() || iconIndex == null) {
+//        return false;
+//    }
+//    if (object && (object.constructor === Point || object.constructor === Object)) {
+//        return this.drawIcon(iconIndex, object.x, object.y);
+//    }
+//    var x = object || 0;
+//    y = y || 0;
+//    var bitmap = ImageManager.loadSystem('IconSet');
+//    var pw = Window_Base._iconWidth;
+//    var ph = Window_Base._iconHeight;
+//    var sx = iconIndex % 16 * pw;
+//    var sy = Math.floor(iconIndex / 16) * ph;
+//    this.bitmap.blt(bitmap, sx, sy, pw, ph, x, y);
+//    return true;
+//};
+
+/**
+ * Рисует лицо персонажа
+ * Возвращает true, если Bitmap существует
+ *
+ * @method drawFace
+ *
+ * @param {String} faceName - Название файла
+ * @param {Number} faceIndex - Номер лица
+ * @param {Number || Rectangle || Object || null} object - Координата X или область, или Объект типа {}
+ * @param {Number || null} y - Координата Y
+ * @param {Number || null} width - Ширина области
+ * @param {Number || null} height - Высота области
+ *
+ * object properties
+ * @property {Number || null} x - Координата X
+ * @property {Number || null} y - Координата Y
+ * @property {Number || null} width - Ширина области
+ * @property {Number || null} height - Высота области
+ *
+ * @return Boolean
+ */
+//DKTools_Base.prototype.drawFace = function(faceName, faceIndex, object, y, width, height) {
+//    if (!this.hasBitmap() || faceName == null || faceIndex == null) {
+//        return false;
+//    }
+//    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
+//        return this.drawFace(faceName, faceIndex, object.x, object.y, object.width, object.height);
+//    }
+//    var x = object || 0;
+//    y = y || 0;
+//    width = width || Window_Base._faceWidth;
+//    height = height || Window_Base._faceHeight;
+//    var bitmap = ImageManager.loadFace(faceName);
+//    var pw = Window_Base._faceWidth;
+//    var ph = Window_Base._faceHeight;
+//    var sw = Math.min(width, pw);
+//    var sh = Math.min(height, ph);
+//    var dx = Math.floor(x + Math.max(width - pw, 0) / 2);
+//    var dy = Math.floor(y + Math.max(height - ph, 0) / 2);
+//    var sx = faceIndex % 4 * pw + (pw - sw) / 2;
+//    var sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
+//    this.bitmap.blt(bitmap, sx, sy, sw, sh, dx, dy);
+//    return true;
+//};
+
+/**
+ * Рисует персонажа
+ * Возвращает true, если Bitmap существует
+ *
+ * @method drawCharacter
+ *
+ * @param {String} characterName - Название файла
+ * @param {Number} characterIndex - Номер персонажа
+ * @param {Number || Point || Object || null} object - Координата X или Point, или Объект типа {}
+ * @param {Number || null} y - Координата Y
+ *
+ * object properties
+ * @property {Number || null} x - Координата X
+ * @property {Number || null} y - Координата Y
+ *
+ * @return Boolean
+ */
+//DKTools_Base.prototype.drawCharacter = function(characterName, characterIndex, object, y) {
+//    if (!this.hasBitmap()) {
+//        return false;
+//    }
+//    if (object && (object.constructor === Point || object.constructor === Object)) {
+//        return this.drawCharacter(characterName, characterIndex, object.x, object.y);
+//    }
+//    var x = object || 0;
+//    y = y || 0;
+//    var bitmap = ImageManager.loadCharacter(characterName);
+//    var big = ImageManager.isBigCharacter(characterName);
+//    var pw = bitmap.width / (big ? 3 : 12);
+//    var ph = bitmap.height / (big ? 4 : 8);
+//    var n = characterIndex;
+//    var sx = (n % 4 * 3 + 1) * pw;
+//    var sy = (Math.floor(n / 4) * 4) * ph;
+//    this.bitmap.blt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph);
+//    return true;
+//};
+
+// load methods
+
+/**
+ * Загружает Bitmap из папки img/animations/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadAnimation
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadAnimation = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/animations/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает Bitmap из папки img/battlebacks1/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadBattleback1
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadBattleback1 = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/battlebacks1/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает Bitmap из папки img/battlebacks2/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadBattleback2
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadBattleback2 = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/battlebacks2/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает Bitmap из папки img/enemies/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadEnemy
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadEnemy = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/enemies/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает Bitmap из папки img/characters/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadCharacter
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadCharacter = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/characters/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает Bitmap из папки img/faces/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadFace
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadFace = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/faces/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает Bitmap из папки img/parallaxes/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadParallax
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadParallax = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/parallaxes/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает Bitmap из папки img/pictures/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadPicture
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadPicture = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/pictures/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает Bitmap из папки img/sv_actors/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadSvActor
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadSvActor = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/sv_actors/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает Bitmap из папки img/sv_enemies/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadSvEnemy
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadSvEnemy = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/sv_enemies/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает Bitmap из папки img/system/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadSystem
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadSystem = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/system/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает Bitmap из папки img/tilesets/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadTileset
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadTileset = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/tilesets/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает Bitmap из папки img/titles1/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadTitle1
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadTitle1 = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/titles1/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает Bitmap из папки img/titles2/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadTitle2
+ *
+ * @param {String} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadTitle2 = function(filename, listener, hue, smooth) {
+    return this.loadBitmap('img/titles2/', filename, listener, hue, smooth);
+};
+
+/**
+ * Загружает обложку окна из папки img/system/
+ * Возвращает true, если Bitmap был изменен
+ *
+ * @method loadWindowskin
+ *
+ * @param {String || null} filename - Название файла
+ * @param {Function || null} listener - Метод обработки после загрузки Bitmap
+ * @param {Number || null} hue - Оттенок
+ * @param {Boolean || null} smooth - Сглаживание
+ *
+ * @return Boolean
+ */
+DKTools_Base.prototype.loadWindowskin = function(filename, listener, hue, smooth) {
+    return this.loadSystem(filename || this.standardWindowskin(), listener, hue, smooth);
+};
+
+//
+
+/**
+ * Активирует спрайт
+ *
+ * @method activate
+ */
+DKTools_Base.prototype.activate = function() {
+    this.setupActive(true);
+    this.updateActivateEvents();
+    this.updateInputData();
+};
+
+/**
+ * Деактивирует спрайт
+ *
+ * @method deactivate
+ */
+DKTools_Base.prototype.deactivate = function() {
+    this.setupActive(false);
+    this.updateDeactivateEvents();
+};
+
+/**
+ * Показывает спрайт
+ *
+ * @method show
+ *
+ * @param {Number || null} duration - Длительность появления
+ * @param {Boolean || null} activate - Активировать спрайта
+ */
+DKTools_Base.prototype.show = function(duration, activate) {
+    if (duration > 0) {
+        var opacity = 255;
+        var handler = this._updateMove.bind(this, this.x, this.y, opacity, this.scale.x, this.scale.y);
+        var onStartHandler = function() {
+            this.setupVisible(true);
+        }.bind(this);
+        this.addEvent('wait', handler, duration, onStartHandler);
+    } else {
+        this.setupVisible(true);
+    }
+    if (activate) {
+        this.activate();
+    }
+};
+
+/**
+ * Скрывает спрайт
+ *
+ * @method hide
+ *
+ * @param {Number || null} duration - Длительность исчезновения
+ * @param {Boolean || null} blockDeactivate - Блокировка деактивации спрайта
+ */
+DKTools_Base.prototype.hide = function(duration, blockDeactivate) {
+    if (duration > 0) {
+        var opacity = 0;
+        var handler = this._updateMove.bind(this, this.x, this.y, opacity, this.scale.x, this.scale.y);
+        var onStartHandler = null;
+        var onEndHandler = function() {
+            this.setupVisible(false);
+        }.bind(this);
+        this.addEvent('wait', handler, duration, onStartHandler, onEndHandler);
+    } else {
+        this.setupVisible(false);
+    }
+    if (!blockDeactivate) {
+        this.deactivate();
+    }
+};
+
+//
+
+/**
+ *
+ *
+ * @method _getSymbol
+ * @private
+ *
+ * @param {String} symbol - Символ
+ *
+ * @return {Boolean}
+ */
+DKTools_Base.prototype._getSymbol = function(symbol) {
+    return !!this._symbols[symbol];
+};
+
+/**
+ *
+ *
+ * @method _getSymbols
+ * @private
+ *
+ * @param object
+ *
+ * @return {Array | Boolean}
+ */
+DKTools_Base.prototype._getSymbols = function(object) {
+    var symbols = [];
+    if (arguments.length > 1) {
+        for(var i = 0; i < arguments.length; i++) {
+            var symbol = object[i];
+            var value = this._getSymbol(symbol);
+            symbols.push(value);
+        }
+    } else {
+        if (object.constructor === Array) {
+            return this._getSymbols.apply(this, object);
+        } else {
+            var value = this._getSymbol(object);
+            symbols.push(value);
+        }
+    }
+    return symbols;
+};
+
+/**
+ *
+ *
+ * @method _setSymbol
+ * @private
+ *
+ * @param {String} symbol
+ * @param {Boolean} value
+ */
+DKTools_Base.prototype._setSymbol = function(symbol, value) {
+    value = Boolean(value);
+    var lastValue = this._getSymbol(symbol);
+    this._symbols[symbol] = value;
+    if (lastValue !== value) {
+        this.onSymbolChange(symbol, value);
+    }
+};
+
+/**
+ *
+ *
+ * @method onSymbolChange
+ *
+ * @param symbol
+ * @param value
+ */
+DKTools_Base.prototype.onSymbolChange = function(symbol, value) {
+};
+
+DKTools_Base.prototype.switchSymbol = function(symbol) {
+    var newValue = !this._getSymbol(symbol);
+    this._setSymbol(symbol, newValue);
+};
+
+DKTools_Base.prototype.switchSymbols = function(object) {
+    if (arguments.length > 1) {
+        for(var i = 0; i < arguments.length; i++) {
+            var symbol = arguments[i];
+            this.switchSymbol(symbol);
+        }
+    } else {
+        if (object.constructor === Array) {
+            return this.switchSymbols.apply(this, object);
+        } else {
+            return this.switchSymbol(object);
+        }
+    }
+};
+
+/**
+ *
+ *
+ * @method _enableSymbols
+ * @private
+ *
+ * @param object
+ */
+DKTools_Base.prototype._enableSymbols = function(object) {
+    if (arguments.length > 1) {
+        for(var i = 0; i < arguments.length; i++) {
+            var symbol = arguments[i];
+            this._setSymbol(symbol, true);
+        }
+    } else {
+        if (object.constructor === Array) {
+            return this._enableSymbols.apply(this, object);
+        } else {
+            return this._setSymbol(object, true);
+        }
+    }
+};
+
+/**
+ *
+ *
+ * @method _disableSymbols
+ * @private
+ *
+ * @param object
+ */
+DKTools_Base.prototype._disableSymbols = function(object) {
+    if (arguments.length > 1) {
+        for(var i = 0; i < arguments.length; i++) {
+            var symbol = arguments[i];
+            this._setSymbol(symbol, false);
+        }
+    } else {
+        if (object.constructor === Array) {
+            return this._disableSymbols.apply(this, object);
+        } else {
+            return this._setSymbol(object, false);
+        }
+    }
+};
+
+/**
+ *
+ *
+ * @method isEnabled
+ * @return {Boolean}
+ */
+DKTools_Base.prototype.isEnabled = function() {
+    var symbols = this._getSymbols.apply(this, arguments);
+    return symbols.conjunction();
+};
+
+/**
+ *
+ *
+ * @method enable
+ *
+ */
+DKTools_Base.prototype.enable = DKTools_Sprite.prototype._enableSymbols;
+
+/**
+ *
+ *
+ * @method disable
+ *
+ */
+DKTools_Base.prototype.disable = DKTools_Sprite.prototype._disableSymbols;
+
+//
+
+/**
+ * Копирует шрифт из source в target
+ * Если какие-то значения отсутствуют, они берутся из standardFont
+ *
+ * @method _checkFont
+ * @private
+ *
+ * @param {Array | null} [target] - Шрифт-цель
+ * @param {Array | null} [source] - Шрифт-источник
+ * @param {Array | null} [standardFont] - Стандартный шрифт
+ *
+ * @return {Array} Шрифт текста
+ */
+DKTools_Base.prototype._checkFont = function(target, source, standardFont) {
+    standardFont = standardFont || this.standardFont();
+    target = target || [];
+    source = source || [];
+    for(var i = 0; i < 3; i++) {
+        target[i] = (source[i] == null ? standardFont[i] : source[i]);
+    }
+    return target;
+};
+
+DKTools_Base.prototype._checkPoint = function(x, y, standardPoint) {
+    standardPoint = standardPoint || Point.emptyPoint;
+    x = (x == null ? standardPoint.x : x);
+    y = (y == null ? standardPoint.y : y);
+    return new Point(x, y);
+};
+
+DKTools_Base.prototype._checkRectangle = function(x, y, width, height, standardRect) {
+    standardRect = standardRect || Rectangle.emptyRectangle;
+    x = (x == null ? standardRect.x : x);
+    y = (y == null ? standardRect.y : y);
+    width = (width == null ? standardRect.width : width);
+    height = (height == null ? standardRect.height : height);
+    return new Rectangle(x, y, width, height);
+};
+
+// update methods
+
+/**
+ * Обновляет нажатие на спрайт
+ *
+ * @method updateTouch
+ */
+//DKTools_Base.prototype.updateTouch = function() {
+//    if (TouchInput.isPressed() && this.isTouched()) {
+//        if (TouchInput.isTriggered()) {
+//            this._touching = true;
+//        } else {
+//            this._pressedTime++;
+//            if (this.isLongPressed()) {
+//                this._touching = false;
+//                this.updateLongPressEvents();
+//            }
+//        }
+//    } else {
+//        if (this._touching && TouchInput.isReleased()) {
+//            this._touching = false;
+//            this.updateClickEvents();
+//        }
+//        this._clearPressedTime();
+//    }
+//    this.updateFrame();
+//    this.updateOpacity();
+//    this.updateScale();
+//};
+
+/**
+ * Обновляет нахождение в спрайте
+ *
+ * @method updateEnter
+ */
+//DKTools_Base.prototype.updateEnter = function() {
+//    if (this.isEntered()) {
+//        this._enteredTime++;
+//        this.updateWheelEvents();
+//        if (!this._entered) {
+//            this._entered = true;
+//            this.updateMouseEnterEvents();
+//        } else {
+//            this.updateMouseStayEvents();
+//            if (!Utils.isMobileDevice()) {
+//                this.updateTouch();
+//            }
+//        }
+//    } else {
+//        if (this._entered) {
+//            this._entered = false;
+//            this.updateMouseLeaveEvents();
+//        }
+//    }
+//};
+
+/**
+ * Обрабатывает обновление нахождения в спрайте и нажатия на спрайт
+ *
+ * @method processTouch
+ */
+//DKTools_Base.prototype.processTouch = function() {
+//    if (this.isVisibleAndActive() || this.isEnabled('deactivatedTouches')) {
+//        this.updateEnter();
+//        if (Utils.isMobileDevice()) {
+//            this.updateTouch();
+//        }
+//    } else {
+//        this._entered = false;
+//        this._touching = false;
+//        this._clearEnteredTime();
+//        this._clearPressedTime();
+//    }
+//};
+
+// event methods
+
+/**
+ * Проверяет контейнер с событиями, удаляя завершенные события
+ *
+ * @method _checkEventContainer
+ * @private
+ *
+ * @param {String} type - Тип события
+ *
+ * @return {Array}
+ */
+DKTools_Base.prototype._checkEventContainer = function(type) {
+    var events = [];
+    var callback = function(event) {
+        if (event && event.checkEvent()) {
+            events.push(event);
+        }
+    }.bind(this);
+    this.iterateEventContainer(type, callback);
+    return events;
+};
+
+/**
+ * Проверяет события
+ *
+ * @method checkEvents
+ */
+DKTools_Base.prototype.checkEvents = function() {
+    for(var type in this._events) {
+        this._events[type] = this._checkEventContainer(type);
+    }
+};
+
+/**
+ * Удаляет событие из контейнера
+ *
+ * @method removeEvent
+ *
+ * @param {DKToolsEvent} event - Событие
+ *
+ * @return {Boolean} Возвращает true, если событие было удалено
+ */
+DKTools_Base.prototype.removeEvent = function(event) {
+    var container = this.eventContainer(event);
+    var index = this.eventIndex(event);
+    if (index >= 0) {
+        container[index] = null;
+        return true;
+    }
+    return false;
+};
+
+/**
+ *
+ *
+ * @method iterateEventContainer
+ *
+ * @param {String} type - Тип события
+ * @param {Function} callback
+ */
+DKTools_Base.prototype.iterateEventContainer = function(type, callback) {
+    var container = this.eventContainerByType(type);
+    container.forEach(callback);
+};
+
+/**
+ *
+ *
+ * @method eventsIsPaused
+ *
+ * @param {String} type - Тип события
+ *
+ * @return {Boolean | null}
+ */
+DKTools_Base.prototype.eventsIsPaused = function(type) {
+    var paused = [];
+    var callback = function(event) {
+        paused.push(event.isPaused());
+    }.bind(this);
+    this.iterateEventContainer(type, callback);
+    return paused.conjunction();
+};
+
+/**
+ *
+ *
+ * @method pauseEvents
+ *
+ * @param {String} type - Тип события
+ * @param {Number} duration - Длительность паузы
+ */
+DKTools_Base.prototype.pauseEvents = function(type, duration) {
+    var callback = function(event) {
+        event.pause(duration);
+    }.bind(this);
+    this.iterateEventContainer(type, callback);
+};
+
+/**
+ *
+ *
+ * @method continueEvents
+ * @param {String} type - Тип события
+ */
+DKTools_Base.prototype.continueEvents = function(type) {
+    var callback = function(event) {
+        event.continue();
+    }.bind(this);
+    this.iterateEventContainer(type, callback);
+};
+
+/**
+ * Обновляет события
+ *
+ * @method updateEvents
+ */
+DKTools_Base.prototype.updateEvents = function() {
+    this.checkEvents();
+    if (!this.hasEvents()) {
+        return;
+    }
+    if (this.isWaiting()) {
+        this.updateWaitEvents();
+        return;
+    }
+    this.updateUpdateEvents();
+};
+
+/**
+ * Обновляет событие
+ *
+ * @method updateEvent
+ * @param {DKToolsEvent} event - Событие
+ */
+DKTools_Base.prototype.updateEvent = function(event) {
+    if (!event) {
+        return;
+    }
+    event.update();
+};
+
+/**
+ * Обновляет события из контейнера
+ *
+ * @method updateEventContainer
+ * @param {String} type - Тип события
+ */
+DKTools_Base.prototype.updateEventContainer = function(type) {
+    var callback = function(event) {
+        this.updateEvent(event);
+    }.bind(this);
+    this.iterateEventContainer(type, callback);
+};
+
+DKTools_Base.prototype.updateWaitEvents = function() {
+    var container = this.eventContainerByType('wait');
+    var event = container[0];
+    this.updateEvent(event);
+};
+
+DKTools_Base.prototype.updateUpdateEvents = function() {
+    this.updateEventContainer('update');
+};
+
+DKTools_Base.prototype.updateStartEvents = function() {
+    if (!this.isStarted()) {
+        return;
+    }
+    this.updateEventContainer('start');
+};
+
+DKTools_Base.prototype.updateReadyEvents = function() {
+    if (!this.isReady()) {
+        return;
+    }
+    this.updateEventContainer('ready');
+};
+
+DKTools_Base.prototype.updateFreeEvents = function() {
+    if (this.isBusy()) {
+        return;
+    }
+    this.updateEventContainer('free');
+};
+
+DKTools_Base.prototype.updateActivateEvents = function() {
+    this.updateEventContainer('activate');
+};
+
+DKTools_Base.prototype.updateDeactivateEvents = function() {
+    this.updateEventContainer('deactivate');
+};
+
+DKTools_Base.prototype.updateMouseEnterEvents = function() {
+    this.updateEventContainer('mouseEnter');
+};
+
+DKTools_Base.prototype.updateMouseStayEvents = function() {
+    this.updateEventContainer('mouseStay');
+};
+
+DKTools_Base.prototype.updateMouseLeaveEvents = function() {
+    if (this.isPressed()) {
+        this._entered = false;
+        this._touching = false;
+        this._clearEnteredTime();
+        this._clearPressedTime();
+        this.updateFrame();
+        this.updateOpacity();
+        this.updateScale();
+    }
+    this.updateEventContainer('mouseLeave');
+};
+
+DKTools_Base.prototype.updateWheelXEvents = function() {
+    this._wheelX = TouchInput.wheelX;
+    if (this._wheelX === 0) {
+        return;
+    }
+    this.updateEventContainer('wheelX');
+};
+
+DKTools_Base.prototype.updateWheelYEvents = function() {
+    this._wheelY = TouchInput.wheelY;
+    if (this._wheelY === 0) {
+        return;
+    }
+    this.updateEventContainer('wheelY');
+};
+
+DKTools_Base.prototype.updateWheelEvents = function() {
+    this.updateWheelXEvents();
+    this.updateWheelYEvents();
+};
+
+//
+
+/**
+ * Создает контейнер для событий
+ *
+ * @method createEventContainer
+ *
+ * @param {String} type - Тип события
+ *
+ * @return {Array} Контейнер для событий
+ */
+DKTools_Base.prototype.createEventContainer = function(type) {
+    this._events[type] = [];
+    return this._events[type];
+};
+
+/**
+ * Возвращает контейнер для событий по типу события
+ *
+ * @method eventContainerByType
+ *
+ * @param {String} type - Тип события
+ *
+ * @return {Array} Контейнер для событий
+ */
+DKTools_Base.prototype.eventContainerByType = function(type) {
+    var container = this._events[type];
+    if (container) {
+        return container;
+    } else {
+        return this.createEventContainer(type);
+    }
+};
+
+/**
+ * Возвращает контейнер для событий по событию
+ *
+ * @method eventContainer
+ *
+ * @param {DKToolsEvent} event - Событие
+ *
+ * @return {Array} Контейнер для событий
+ */
+DKTools_Base.prototype.eventContainer = function(event) {
+    var type = event.type;
+    return this.eventContainerByType(type);
+};
+
+/**
+ * Возвращает индекс события в его контейнере
+ *
+ * @method eventIndex
+ *
+ * @param {DKToolsEvent} event - Событие
+ *
+ * @return {Number} Индекс события в его контейнере
+ */
+DKTools_Base.prototype.eventIndex = function(event) {
+    var container = this.eventContainer(event);
+    return container.indexOf(event);
+};
+
+/**
+ * Возвращает массив со всеми или событиями определенного типа
+ *
+ * @method events
+ *
+ * @param {String | null} [type] - Тип события
+ *
+ * @return {Array} Массив с событиями
+ */
+DKTools_Base.prototype.events = function(type) {
+    if (type) {
+        return this.eventContainerByType(type);
+    }
+    var events = [];
+    for(type in this._events) {
+        var container = this.eventContainerByType(type);
+        events = events.concat(container);
+    }
+    return events;
+};
+
+/**
+ * Проверяет существование события в спрайте
+ *
+ * @method hasEvent
+ *
+ * @param {DKToolsEvent} event - Событие
+ *
+ * @return {Boolean}
+ */
+DKTools_Base.prototype.hasEvent = function(event) {
+    return this.eventIndex(event) >= 0;
+};
+
+/**
+ * Проверяет существование событий определенного типа
+ *
+ * @method hasEvents
+ *
+ * @param {String | null} [type] - Тип события
+ *
+ * @return {Boolean}
+ */
+DKTools_Base.prototype.hasEvents = function(type) {
+    return this.events(type).length > 0;
+};
+
+/**
+ * Создает событие
+ *
+ * @method _createEvent
+ * @private
+ *
+ * @param {String} type - Тип события
+ * @param {Function | null} [handler] - Обработчик события
+ * @param {Number | null} [duration] - Длительность события
+ * @param {Function | null} [onStartHandler] - Обработчик начала работы события
+ * @param {Function | null} [onEndHandler] - Обработчик окончания работы события
+ *
+ * @return {DKToolsEvent} Созданное событие
+ */
+DKTools_Base.prototype._createEvent = function(type, handler, duration, onStartHandler, onEndHandler) {
+    return new DKToolsEvent(this, type, handler, duration, onStartHandler, onEndHandler);
+};
+
+/**
+ * Добавляет событие
+ *
+ * @method addEvent
+ *
+ * @param {String} type - Тип события
+ * @param {Function | null} [handler] - Обработчик события
+ * @param {Number | null} [duration] - Длительность события
+ * @param {Function | null} [onStartHandler] - Обработчик начала работы события
+ * @param {Function | null} [onEndHandler] - Обработчик окончания работы события
+ *
+ * @return {DKToolsEvent}
+ */
+DKTools_Base.prototype.addEvent = function(type, handler, duration, onStartHandler, onEndHandler) {
+    var event = this._createEvent(type, handler, duration, onStartHandler, onEndHandler);
+    var container = this.eventContainer(event);
+    container.push(event);
+    return event;
+};
+
+/**
+ * Добавляет событие с бесконечной длительностью
+ *
+ * @method addEventHandler
+ *
+ * @param {String} type - Тип события
+ * @param {Function | null} [handler] - Обработчик события
+ *
+ * @return {DKToolsEvent}
+ */
+DKTools_Base.prototype.addEventHandler = function(type, handler) {
+    var duration = -1;
+    return this.addEvent(type, handler, duration);
+};
+
+/**
+ * Добавляет одноразовое событие
+ *
+ * @method addEventListener
+ *
+ * @param {String} type - Тип события
+ * @param {Function | null} [handler] - Обработчик события
+ *
+ * @return {DKToolsEvent}
+ */
+DKTools_Base.prototype.addEventListener = function(type, handler) {
+    var duration = 1;
+    return this.addEvent(type, handler, duration);
+};
+
+//
+
+/**
+ * Создает маршрут передвижения спрайта
+ *
+ * @method moveRoute
+ *
+ * @param {Object[]} route - Массив с объектами маршрута
+ * @param {Number | null} [route.duration = 1] - Длительность передвижения
+ * @param {Number | null} [route.onEndWait = 0] - Длительность ожидания после передвижения
+ * @param {Number | null} [route.x = this.x] - Координата X передвижения
+ * @param {Number | null} [route.y = this.y] - Координата Y передвижения
+ * @param {Number | null} [route.opacity = this.opacity] - Прозрачность передвижения
+ * @param {Number | null} [route.scaleX = this.scale.x] - Масштабирование передвижения по X
+ * @param {Number | null} [route.scaleY = this.scale.y] - Масштабирование передвижения по Y
+ *
+ * @return {Array} Массив с событиями
+ */
+DKTools_Base.prototype.moveRoute = function(route) {
+    if (!route) {
+        return [];
+    }
+    var events = [];
+    for(var i = 0; i < route.length; i++) {
+        var object = route[i];
+        var duration = object.duration || 1;
+        var onEndWaitDuration = object.onEndWait || 0;
+        var newX = (object.x == null ? this.x : object.x);
+        var newY = (object.y == null ? this.y : object.y);
+        var newOpacity = (object.opacity == null ? this.opacity : object.opacity);
+        var newScaleX = object.scaleX || this.scale.x;
+        var newScaleY = object.scaleY || this.scale.y;
+        var event = this.addEvent('wait', this._updateMove.bind(this, newX, newY, newOpacity, newScaleX, newScaleY), duration);
+        events.push(event);
+        if (onEndWaitDuration > 0) {
+            this.wait(onEndWaitDuration);
+        }
+    }
+    return events;
+};
+
+/**
+ * Заставляет спрайт ждать
+ *
+ * @method wait
+ * @param {Number} duration - Время ожидания в фреймах
+ * @param {Function | null} [onEndHandler] - Обработчик окончания работы события
+ */
+DKTools_Base.prototype.wait = function(duration, onEndHandler) {
+    var handler = null;
+    var onStartHandler = null;
+    return this.addEvent('wait', handler, duration, onStartHandler, onEndHandler);
+};
+
+/**
+ * Обновляет фон спрайта
+ *
+ * @method updateBackground
+ */
+DKTools_Base.prototype.updateBackground = function() {
+    if (this.backgroundColor) {
+        this.fillAll(this.backgroundColor);
+    }
+};
+
+/**
+ * Обновляет шрифт текста
+ *
+ * @method updateFont
+ */
+DKTools_Base.prototype.updateFont = function() {
+    this.bitmap.fontFace = this.font[0];
+    this.bitmap.fontItalic = this.font[1];
+    this.bitmap.fontSize = this.font[2];
+};
+
+/**
+ * Обновляет цвет текста
+ *
+ * @method updateTextColor
+ */
+DKTools_Base.prototype.updateTextColor = function() {
+    this.bitmap.textColor = this.textColor;
+};
+
+/**
+ * Обновляет данные ввода
+ *
+ * @method updateInputData
+ */
+DKTools_Sprite.prototype.updateInputData = function() {
+    Input.update();
+    TouchInput.update();
+};
+
+
+
+
+
+//===========================================================================
+// DK Tools Sprite
+//===========================================================================
+
+function DKTools_Sprite() {
+	this.initialize.apply(this, arguments);
+}
+
+DKTools_Sprite.prototype = Object.create(Sprite.prototype);
+DKToolsUtils.mixin(DKTools_Sprite.prototype, DKTools_Base.prototype);
+DKTools_Sprite.prototype.constructor = DKTools_Sprite;
+
+// Счетчик созданных спрайтов
+DKTools_Sprite._counter = 0;
+
+// properties
+
+Object.defineProperties(DKTools_Sprite.prototype, {
+
+    /**
+     * Название файла графики
+     *
+     * @property graphic
+     * @type String
+     */
+    graphic: {
+        get: function() {
+            return this._graphic;
+        },
+        configurable: true
+    },
+
     enteredTime: {
         get: function() {
             return this._enteredTime;
@@ -1498,20 +4097,6 @@ Object.defineProperties(DKTools_Sprite.prototype, {
     clickY : {
         get: function() {
             return this.canvasToLocalY(TouchInput.y);
-        },
-        configurable: true
-    },
-
-    mouseX : {
-        get: function() {
-            return this.canvasToLocalX(TouchInput.mouseX);
-        },
-        configurable: true
-    },
-
-    mouseY : {
-        get: function() {
-            return this.canvasToLocalY(TouchInput.mouseY);
         },
         configurable: true
     },
@@ -1567,7 +4152,7 @@ DKTools_Sprite.prototype.initialize = function(object, y, width, height) {
             y = object.y || y;
             width = object.width || width;
             height = object.height || height;
-            bitmap = this.bitmapFromObject(object.bitmap);
+            bitmap = object.bitmap;
         }
         if (object.constructor === Bitmap) {
             bitmap = object;
@@ -1579,13 +4164,29 @@ DKTools_Sprite.prototype.initialize = function(object, y, width, height) {
 	this.setupBitmap(bitmap);
     this.setupLongPressInterval();
     DKTools_Sprite._counter++;
-	this._started = false;
-    //if (object.start) {
-    //    this.start();
-    //}
 };
 
 // standard methods
+
+/**
+ * Возвращает стандартную ширину текста
+ *
+ * @method standardTextWidth
+ * @return {Number} Стандартная ширина текста
+ */
+DKTools_Sprite.prototype.standardDrawWidth = function() {
+    return this.height;
+};
+
+/**
+ * Возвращает стандартную высоту текста
+ *
+ * @method standardTextHeight
+ * @return {Number} Стандартная высота текста
+ */
+DKTools_Sprite.prototype.standardDrawHeight = function() {
+    return this.width;
+};
 
 /**
  * Возвращает стандартный интервал длительного нажатия
@@ -1595,26 +4196,6 @@ DKTools_Sprite.prototype.initialize = function(object, y, width, height) {
  */
 DKTools_Sprite.prototype.standardLongPressInterval = function() {
     return 20;
-};
-
-/**
- * Возвращает стандартную видимость спрайта
- *
- * @method standardVisible
- * @return {Boolean} Стандартная видимость спрайта
-*/
-DKTools_Sprite.prototype.standardVisible = function() {
-	return true;
-};
-
-/**
- * Возвращает стандартное значение активности спрайта
- *
- * @method standardActive
- * @return {Boolean} Стандартное значение активности спрайта
- */
-DKTools_Sprite.prototype.standardActive = function() {
-    return true;
 };
 
 /**
@@ -1638,116 +4219,6 @@ DKTools_Sprite.prototype.standardGraphic = function() {
 };
 
 /**
- * Возвращает стандартный цвет текста
- *
- * @method standardTextColor
- * @return {String} Стандартный цвет текста
-*/
-DKTools_Sprite.prototype.standardTextColor = function() {
-	return '#ffffff';
-};
-
-/**
- * Возвращает стандартный X текста
- *
- * @method standardTextX
- * @return {Number} Стандартная координата X текста
-*/
-DKTools_Sprite.prototype.standardTextX = function() {
-	return 0;
-};
-
-/**
- * Возвращает стандартный Y текста
- *
- * @method standardTextY
- * @return {Number} Стандартная координата Y текста
-*/
-DKTools_Sprite.prototype.standardTextY = function() {
-	return 0;
-};
-
-/**
- * Возвращает стандартную ширину текста
- *
- * @method standardTextWidth
- * @return {Number} Стандартная ширина текста
- */
-DKTools_Sprite.prototype.standardTextWidth = function() {
-    return this._bitmapWidth;
-};
-
-/**
- * Возвращает стандартную высоту текста
- *
- * @method standardTextHeight
- * @return {Number} Стандартная высота текста
- */
-DKTools_Sprite.prototype.standardTextHeight = function() {
-    return this._bitmapHeight;
-};
-
-/**
- * Возвращает стандартное выравнивание текста
- *
- * @method standardAlign
- * @return {String} Стандартное выравнивание текста
- */
-DKTools_Sprite.prototype.standardAlign = function() {
-    return 'center';
-};
-
-/**
- * Возвращает стандартный цвет фона
- *
- * @method standardBackgroundColor
- * @return {null} Стандартный цвет фона
- */
-DKTools_Sprite.prototype.standardBackgroundColor = function() {
-    return null;
-};
-
-/**
- * Возвращает стандартное имя шрифта
- *
- * @method standardFontName
- * @return {String} Стандартное имя шрифта
-*/
-DKTools_Sprite.prototype.standardFontName = function() {
-	return 'GameFont';
-};
-
-/**
- * Возвращает стандартное значение для курсива
- *
- * @method standardFontItalic
- * @return {Boolean} Стандартное значение для курсива
-*/
-DKTools_Sprite.prototype.standardFontItalic = function() {
-	return false;
-};
-
-/**
- * Возвращает стандартный размер шрифта
- *
- * @method standardFontSize
- * @return {Number} Стандартный размер шрифта
-*/
-DKTools_Sprite.prototype.standardFontSize = function() {
-	return 28;
-};
-
-/**
- * Возвращает стандартный шрифт текста
- *
- * @method standardFont
- * @return {Array} Стандартный шрифт текста
-*/
-DKTools_Sprite.prototype.standardFont = function() {
-	return [this.standardFontName(), this.standardFontItalic(), this.standardFontSize()];
-};
-
-/**
  * Возвращает стандартную прозрачность спрайта
  *
  * @method standardOpacity
@@ -1767,13 +4238,35 @@ DKTools_Sprite.prototype.standardScale = function() {
     return new Point(1, 1);
 };
 
-// setup methods
-
-DKTools_Sprite.prototype.setup = function(type, value) {
-    type = type.charAt(0).toUpperCase() + type.substr(1);
-    var func = 'setup%1'.format(type);
-    this[func](value);
+DKTools_Sprite.prototype.standardFrame = function() {
+    return new Rectangle(0, 0, this.width, this.height);
 };
+
+DKTools_Sprite.prototype.standardColdFrame = function() {
+    return null;
+};
+
+DKTools_Sprite.prototype.standardHotFrame = function() {
+    return null;
+};
+
+DKTools_Sprite.prototype.standardColdScale = function() {
+    return null;
+};
+
+DKTools_Sprite.prototype.standardHotScale = function() {
+    return null;
+};
+
+DKTools_Sprite.prototype.standardColdOpacity = function() {
+    return null;
+};
+
+DKTools_Sprite.prototype.standardHotOpacity = function() {
+    return null;
+};
+
+// setup methods
 
 /**
  * Устанавливает все параметры спрайта
@@ -1794,16 +4287,12 @@ DKTools_Sprite.prototype.setup = function(type, value) {
 */
 DKTools_Sprite.prototype.setupAll = function(object) {
 	object = object || {};
-    this.setupId(object.id);
-    this.setupVisible(object.visible);
-    this.setupActive(object.active);
+    DKTools_Base.prototype.setupAll.call(this, object);
     this.setupGraphic(object.graphic);
-	this.setupTextColor(object.textColor);
-	this.setupAlign(object.align);
-	this.setupBackgroundColor(object.backgroundColor);
-	this.setupFont(object.font);
-	this.setupOpacity(object.opacity);
     this.setupScale(object.scale);
+    if (object.start) {
+        this.start();
+    }
 };
 
 /**
@@ -1831,22 +4320,6 @@ DKTools_Sprite.prototype.setupHeight = function(height) {
 };
 
 /**
- * Устанавливает размер Bitmap
- *
- * @method setupSize
- *
- * @param {Number | null} [object = null] - Ширина Bitmap
- * @param {Number | null} [height = null] - Высота Bitmap
-*/
-DKTools_Sprite.prototype.setupSize = function(object, height) {
-    if (object && object.constructor === Object) {
-        return this.setupSize(object.width, object.height);
-    }
-	this.setupWidth(object);
-	this.setupHeight(height);
-};
-
-/**
  * Устанавливает интервал длительного нажатия
  *
  * @method setupLongPressInterval
@@ -1857,36 +4330,6 @@ DKTools_Sprite.prototype.setupLongPressInterval = function(interval) {
 };
 
 /**
- * Устанавливает ID спрайта
- *
- * @method setupId
- * @param {Number | String | null} [id = null] - ID спрайта
- */
-DKTools_Sprite.prototype.setupId = function(id) {
-    this.id = (id == null ? null : id);
-};
-
-/**
- * Устанавливает видимость спрайта
- *
- * @method setupVisible
- * @param {Boolean | null} [visible = null] - Видимость спрайта
-*/
-DKTools_Sprite.prototype.setupVisible = function(visible) {
-	this.visible = (visible == null ? this.standardVisible() : visible);
-};
-
-/**
- * Устанавливает активность спрайта
- *
- * @method setupActive
- * @param {Boolean | null} [active = null] - Активность спрайта
- */
-DKTools_Sprite.prototype.setupActive = function(active) {
-    this._active = (active == null ? this.standardActive() : active);
-};
-
-/**
  * Устанавливает название файла графики
  *
  * @method setupGraphic
@@ -1894,46 +4337,6 @@ DKTools_Sprite.prototype.setupActive = function(active) {
  */
 DKTools_Sprite.prototype.setupGraphic = function(graphic) {
     this._graphic = (graphic == null ? this.standardGraphic() : graphic);
-};
-
-/**
- * Устанавливает цвет текста
- *
- * @method setupTextColor
- * @param {String | null} [textColor = null] - Цвет текста
-*/
-DKTools_Sprite.prototype.setupTextColor = function(textColor) {
-	this._textColor = textColor || this.standardTextColor();
-};
-
-/**
- * Устанавливает выравнивание текста
- *
- * @method setupAlign
- * @param {String | null} [align = null] - Выравнивание текста
-*/
-DKTools_Sprite.prototype.setupAlign = function(align) {
-	this._align = align || this.standardAlign();
-};
-
-/**
- * Устанавливает цвет фона
- *
- * @method setupBackgroundColor
- * @param {String | null} [color = null] - Цвет фона
-*/
-DKTools_Sprite.prototype.setupBackgroundColor = function(color) {
-	this._backgroundColor = (color == null ? this.standardBackgroundColor() : color);
-};
-
-/**
- * Устанавливает шрифт текста
- *
- * @method setupFont
- * @param {Array | null} [font = null] - Шрифт текста
-*/
-DKTools_Sprite.prototype.setupFont = function(font) {
-    this._font = this._checkFont(this._font, font);
 };
 
 /**
@@ -1981,14 +4384,21 @@ DKTools_Sprite.prototype.setupBitmap = function(object) {
  * @param {Number | null} [object.y = this.standardScale().y] - Координата Y
  */
 DKTools_Sprite.prototype.setupScale = function(object, y) {
-    if (object && (object.constructor === Point || object.constructor === Object)) {
+    if (object && (object.constructor === Point || object.constructor === PIXI.ObservablePoint || object.constructor === Object)) {
         return this.setupScale(object.x, object.y);
     }
     var standardScale = this.standardScale();
-    var x = object || standardScale.x;
-    y = y || standardScale.y;
-    this.scale.x = x;
-    this.scale.y = y;
+    var scale = this._checkPoint(object, y, standardScale);
+    this.scale.copy(scale);
+};
+
+DKTools_Sprite.prototype.setupFrame = function(object, y, width, height) {
+    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
+        return this.setupFrame(object.x, object.y, object.width, object.height);
+    }
+    var standardFrame = this.standardFrame();
+    var frame = this._checkRectangle(object, y, width, height, standardFrame);
+    Sprite.prototype.setFrame.call(this, frame.x, frame.y, frame.width, frame.height);
 };
 
 /**
@@ -2010,8 +4420,9 @@ DKTools_Sprite.prototype.setupColdFrame = function(object, y, width, height) {
     if (object && (object.constructor === Rectangle || object.constructor === Object)) {
         return this.setupColdFrame(object.x, object.y, object.width, object.height);
     }
-    var x = object;
-    this._coldFrame = new Rectangle(x, y, width, height);
+    var standardFrame = this.standardColdFrame();
+    var frame = this._checkRectangle(object, y, width, height, standardFrame);
+    this._coldFrame = (frame.isEmpty() ? null : frame);
 };
 
 /**
@@ -2031,10 +4442,11 @@ DKTools_Sprite.prototype.setupColdFrame = function(object, y, width, height) {
  */
 DKTools_Sprite.prototype.setupHotFrame = function(object, y, width, height) {
     if (object && (object.constructor === Rectangle || object.constructor === Object)) {
-        return this.setupColdFrame(object.x, object.y, object.width, object.height);
+        return this.setupHotFrame(object.x, object.y, object.width, object.height);
     }
-    var x = object;
-    this._hotFrame = new Rectangle(x, y, width, height);
+    var standardFrame = this.standardHotFrame();
+    var frame = this._checkRectangle(object, y, width, height, standardFrame);
+    this._hotFrame = (frame.isEmpty() ? null : frame);
 };
 
 /**
@@ -2052,9 +4464,9 @@ DKTools_Sprite.prototype.setupColdScale = function(object, y) {
     if (object && (object.constructor === Point || object.constructor === Object)) {
         return this.setupColdScale(object.x, object.y);
     }
-    var x = object || 1;
-    y = y || 1;
-    this._coldScale = new Point(x, y);
+    var standardScale = this.standardColdScale();
+    var scale = this._checkPoint(object, y, standardScale);
+    this._coldScale = (scale.isEmpty() ? null : scale);
 };
 
 /**
@@ -2072,9 +4484,9 @@ DKTools_Sprite.prototype.setupHotScale = function(object, y) {
     if (object && (object.constructor === Point || object.constructor === Object)) {
         return this.setupHotScale(object.x, object.y);
     }
-    var x = object || 1;
-    y = y || 1;
-    this._hotScale = new Point(x, y);
+    var standardScale = this.standardHotScale();
+    var scale = this._checkPoint(object, y, standardScale);
+    this._hotScale = (scale.isEmpty() ? null : scale);
 };
 
 /**
@@ -2084,7 +4496,7 @@ DKTools_Sprite.prototype.setupHotScale = function(object, y) {
  * @param {Number | null} opacity = null] - Прозрачность спрайта
  */
 DKTools_Sprite.prototype.setupColdOpacity = function(opacity) {
-    this._coldOpacity = (opacity == null ? null : opacity);
+    this._coldOpacity = (opacity == null ? this.standardColdOpacity() : opacity);
 };
 
 /**
@@ -2094,7 +4506,7 @@ DKTools_Sprite.prototype.setupColdOpacity = function(opacity) {
  * @param {Number | null} [opacity = null] - Прозрачность спрайта
  */
 DKTools_Sprite.prototype.setupHotOpacity = function(opacity) {
-    this._hotOpacity = (opacity == null ? null : opacity);
+    this._hotOpacity = (opacity == null ? this.standardHotOpacity() : opacity);
 };
 
 // set methods
@@ -2118,99 +4530,20 @@ DKTools_Sprite.prototype.setupHotOpacity = function(opacity) {
 */
 DKTools_Sprite.prototype.setAll = function(object, blockStart) {
 	object = object || {};
-	var changed = 0;
 	var block = true;
+    var changed = DKTools_Base.prototype.setAll.call(this, object);
     this._activateSetAllMode();
     if (this.setGraphic(object.graphic, block)) {
         changed++;
     }
-	if (this.setTextColor(object.textColor, block)) {
-        changed++;
-    }
-	if (this.setAlign(object.align, block)) {
-        changed++;
-    }
-	if (this.setBackgroundColor(object.backgroundColor, block)) {
-        changed++;
-    }
-	if (this.setFont(object.font, block)) {
-        changed++;
-    }
-	if (changed && !blockStart) {
+    if (changed && !blockStart) {
         this.start();
-    }
-	if (this.setOpacity(object.opacity)) {
-        changed++;
     }
     if (this.setScale(object.scale)) {
         changed++;
     }
     this._deactivateSetAllMode();
 	return changed;
-};
-
-/**
- * Изменяет ширину Bitmap
- *
- * @method setWidth
- *
- * @param {Number | null} [width = null] - Ширина Bitmap
- * @param {Boolean | null} [blockStart = null] - Блокировка вызова функции start
- *
- * @return {Boolean} Возвращает true, если изменение произошло
-*/
-DKTools_Sprite.prototype.setWidth = function(width, blockStart) {
-	return this.resize(width, this._bitmapHeight, blockStart);
-};
-
-/**
- * Изменяет высоту Bitmap
- *
- * @method setHeight
- *
- * @param {Number | null} [height = null] - Высота Bitmap
- * @param {Boolean | null} [blockStart = null] - Блокировка вызова функции start
- *
- * @return {Boolean} Возвращает true, если изменение произошло
-*/
-DKTools_Sprite.prototype.setHeight = function(height, blockStart) {
-	return this.resize(this._bitmapWidth, height, blockStart);
-};
-
-/**
- * Изменяет видимость спрайта
- *
- * @method setVisible
- *
- * @param {Boolean | null} [visible = null] - Видимость спрайта
- *
- * @return {Boolean} Возвращает true, если изменение произошло
-*/
-DKTools_Sprite.prototype.setVisible = function(visible) {
-	if (this.visible === visible) {
-        return false;
-    }
-	var lastVisible = this.visible;
-	this.setupVisible(visible);
-	return lastVisible !== this.visible;
-};
-
-/**
- * Изменяет активность спрайта
- *
- * @method setActive
- *
- * @param {Boolean | null} [active = null] - Активность спрайта
- *
- * @return {Boolean} Возвращает true, если изменение произошло
- */
-DKTools_Sprite.prototype.setActive = function(active) {
-    if (this._active === active) {
-        return false;
-    }
-    var lastActive = this._active;
-    this.setupActive(active);
-    return lastActive !== this._active;
 };
 
 /**
@@ -2236,111 +4569,6 @@ DKTools_Sprite.prototype.setGraphic = function(graphic, blockStart) {
         this.start();
     }
     return true;
-};
-
-/**
- * Изменяет цвет текста
- * Возвращает true, если изменение произошло
- *
- * @method setTextColor
- *
- * @param {String || null} color - Цвет текста
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.setTextColor = function(color, blockUpdate) {
-	if (this._textColor === color) {
-        return false;
-    }
-	var lastColor = this._textColor;
-	this.setupTextColor(color);
-	if (lastColor === this._textColor) {
-        return false;
-    }
-	if (!blockUpdate) {
-        this.updateBitmap();
-    }
-	return true;
-};
-
-/**
- * Изменяет выравнивание текста
- * Возвращает true, если изменение произошло
- *
- * @method setAlign
- *
- * @param {String || null} align - Выравнивание текста
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.setAlign = function(align, blockUpdate) {
-	if (this._align === align) {
-        return false;
-    }
-	var lastAlign = this._align;
-	this.setupAlign(align);
-	if (lastAlign === this._align) {
-        return false;
-    }
-	if (!blockUpdate) {
-        this.updateBitmap();
-    }
-	return true;
-};
-
-/**
- * Изменяет цвет фона
- * Возвращает true, если изменение произошло
- *
- * @method setBackgroundColor
- *
- * @param {String || null} color - Цвет фона
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.setBackgroundColor = function(color, blockUpdate) {
-	if (this._backgroundColor === color) {
-        return false;
-    }
-	var lastColor = this._backgroundColor;
-	this.setupBackgroundColor(color);
-	if (lastColor === this._backgroundColor) {
-        return false;
-    }
-	if (!blockUpdate) {
-        this.updateBitmap();
-    }
-	return true;
-};
-
-/**
- * Изменяет шрифт текста
- * Возвращает true, если изменение произошло
- *
- * @method setFont
- *
- * @param {Array || null} font - Шрифт текста
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.setFont = function(font, blockStart) {
-	font = font || this.standardFont();
-    if (this._font.equals(font)) {
-        return false;
-    }
-    var lastFont = this._font;
-	this.setupFont(font);
-    if (this._font.equals(lastFont)) {
-        return false;
-    }
-	if (!blockStart) {
-        this.start();
-    }
-	return true;
 };
 
 /**
@@ -2396,7 +4624,7 @@ DKTools_Sprite.prototype.setBitmap = function(object) {
  * @return Boolean
  */
 DKTools_Sprite.prototype.setScale = function(object, y) {
-    if (object && (object.constructor === Point || object.constructor === Object)) {
+    if (object && (object.constructor === Point || object.constructor === PIXI.ObservablePoint || object.constructor === Object)) {
         return this.setScale(object.x, object.y);
     }
     var lastX = this.scale.x;
@@ -2408,95 +4636,21 @@ DKTools_Sprite.prototype.setScale = function(object, y) {
     return lastX !== this.scale.x || lastY !== this.scale.y;
 };
 
-// other methods
-
-/**
- * Запускает работу спрайта
- * 
- * @method start
- * @param {Boolean || null} activate - Активировать спрайт
-*/
-DKTools_Sprite.prototype.start = function(activate) {
-    this._started = true;
-    this.createBitmap();
-    this.updateBitmap();
-    this.updateStartEvents();
-    if (activate) {
-        this.activate();
-    }
-};
-
-/**
- * Очищает Rect, если Bitmap есть
- * Возвращает true, если Bitmap есть
- * 
- * @method clearRect
- *
- * @param {Number || Rectangle || null} object - Координата X или область
- * @param {Number || null} y - Координата Y
- * @param {Number || null} width - Ширина области
- * @param {Number || null} height - Высота области
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.clearRect = function(object, y, width, height) {
-	if (!this.hasBitmap()) {
-        return false;
-    }
+DKTools_Sprite.prototype.setFrame = function(object, y, width, height) {
     if (object && (object.constructor === Rectangle || object.constructor === Object)) {
-        return this.clearRect(object.x, object.y, object.width, object.height);
+        return this.setFrame(object.x, object.y, object.width, object.height);
     }
-	var x = object || 0;
-    y = y || 0;
-    width = width || this.width;
-    height = height || this.height;
-	this.bitmap.clearRect(x, y, width, height);
-	return true;
-};
-
-/**
- * Очищает весь Bitmap, если он есть
- * Возвращает true, если Bitmap есть
- * 
- * @method clear
- * @return Boolean
-*/
-DKTools_Sprite.prototype.clear = function() {
-	return this.clearRect();
-};
-
-/**
- * Устанавливает ширину и высоту Bitmap, если они отличаются от текущих
- *
- * @method resize
- *
- * @param {Number | null} [width = this.minWidth()] - Ширина Bitmap (The width of the Bitmap)
- * @param {Number | null} [height = this.minHeight()] - Высота Bitmap (The height of the Bitmap)
- * @param {Boolean | null} [blockStart = false] - Блокировка вызова функции start
- *
- * @return {Boolean} Возвращает true, если изменение произошло
-*/
-DKTools_Sprite.prototype.resize = function(width, height, blockStart) {
-	if (width == null) {
-        width = this.minWidth();
-    }
-	if (height == null) {
-        height = this.minHeight();
-    }
-	if (this._bitmapWidth === width && this._bitmapHeight === height) {
+    var standardFrame = this.standardFrame();
+    var lastFrame = this._frame.clone();
+    var newFrame = this._checkRectangle(object, y, width, height, standardFrame);
+    if (lastFrame.equals(newFrame)) {
         return false;
     }
-	var lastWidth = this._bitmapWidth;
-	var lastHeight = this._bitmapHeight;
-	this.setupSize(width, height);
-	if (lastWidth === this._bitmapWidth && lastHeight === this._bitmapHeight) {
-        return false;
-    }
-	if (!blockStart) {
-        this.start();
-    }
-	return true;
+    this.setupFrame(newFrame);
+    return !lastFrame.equals(this._frame);
 };
+
+// other methods
 
 /**
  * Возвращает объект со всеми параметрами спрайта
@@ -2505,43 +4659,14 @@ DKTools_Sprite.prototype.resize = function(width, height, blockStart) {
  * @return {Object} Объект со всеми параметрами спрайта
  */
 DKTools_Sprite.prototype.object = function() {
-    var object = {
-        x: this.x,
-        y: this.y,
-        width: this._bitmapWidth,
-        height: this._bitmapHeight,
-        id: this.id,
-        visible: this.visible,
-        active: this._active,
-        graphic: this._graphic,
-        textColor: this._textColor,
-        align: this._align,
-        backgroundColor: this._backgroundColor,
-        font: this._font,
-        opacity: this.opacity
-    };
+    var object = DKTools_Base.prototype.object.call(this);
+    object.graphic = this._graphic;
+    object.opacity = this.opacity;
+    object.scale = this.scale;
+    if (this.hasBitmap() && this.isFixed()) {
+        object.bitmap = this.bitmap.clone();
+    }
     return object;
-};
-
-/**
- * Клонирует текущий спрайт
- *
- * @method clone
- *
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @return DKTools_Sprite
- */
-DKTools_Sprite.prototype.clone = function(blockStart) {
-    var object = this.object();
-    var sprite = new (this.constructor)(object);
-    if (this.bitmap && this.isFixed()) {
-        sprite.setupBitmap(this.bitmap.clone());
-    }
-    if (!blockStart) {
-        sprite.start();
-    }
-    return sprite;
 };
 
 /**
@@ -2601,34 +4726,6 @@ DKTools_Sprite.prototype.checkSize = function() {
 };
 
 /**
- * Возвращает Bitmap из объекта или загружает его
- *
- * @method bitmapFromObject
- * @param {Bitmap || Object || null} object - Bitmap или Объект типа {}
- *
- * @property {String} folder - Папка изображения
- * @property {String} filename - Название файла
- * @property {Function || null} listener - Метод обработки после загрузки Bitmap
- * @property {Number || null} hue - Оттенок
- * @property {Boolean || null} smooth - Сглаживание
- *
- * @return Bitmap || null
-*/
-DKTools_Sprite.prototype.bitmapFromObject = function(object) {
-	var bitmap = object || null;
-	if (!object) {
-        return bitmap;
-    }
-	if (object.constructor === Object) {
-		bitmap = ImageManager.loadBitmap(object.folder, object.filename, object.hue, object.smooth);
-		if (object.listener) {
-            bitmap.addLoadListener(object.listener);
-        }
-	}
-	return bitmap;
-};
-
-/**
  * Возвращает минимальную ширину Bitmap
  * Returns the minimum width of the Bitmap
  *
@@ -2651,26 +4748,6 @@ DKTools_Sprite.prototype.minHeight = function() {
 };
 
 /**
- * Возвращает максимальную ширину Bitmap
- *
- * @method maxWidth
- * @return Number
-*/
-DKTools_Sprite.prototype.maxWidth = function() {
-	return Graphics.boxWidth;
-};
-
-/**
- * Возвращает максимальную высоту Bitmap
- *
- * @method maxHeight
- * @return Number
-*/
-DKTools_Sprite.prototype.maxHeight = function() {
-	return Graphics.boxHeight;
-};
-
-/**
  * Возвращает ширину текста
  * Returns the width of text
  *
@@ -2690,61 +4767,6 @@ DKTools_Sprite.prototype.textWidth = function(text) {
     }
 	var bitmap = new Bitmap();
 	return bitmap.measureTextWidth(text);
-};
-
-// private methods
-
-// Может заменить на символы и isEnabled ?
-
-/**
- * Возвращает true, если идет обработка функции setAll
- *
- * @method _isSetAllMode
- *
- * @private
- *
- * @return Boolean
- */
-DKTools_Sprite.prototype._isSetAllMode = function() {
-    return this._setAllMode;
-};
-
-/**
- * Включает режим обработки функции setAll
- *
- * @method _activateSetAllMode
- *
- * @private
- *
- * @return Boolean
- */
-DKTools_Sprite.prototype._activateSetAllMode = function() {
-    this._setAllMode = true;
-};
-
-/**
- * Выключает режим обработки функции setAll
- *
- * @method _deactivateSetAllMode
- *
- * @private
- *
- * @return Boolean
- */
-DKTools_Sprite.prototype._deactivateSetAllMode = function() {
-    this._setAllMode = false;
-};
-
-//
-
-/**
- * Проверяет спрайт на наличие Bitmap
- *
- * @method hasBitmap
- * @return {Boolean} Возвращает true, если Bitmap есть
- */
-DKTools_Sprite.prototype.hasBitmap = function() {
-    return !!this.bitmap;
 };
 
 /**
@@ -2779,6 +4801,10 @@ DKTools_Sprite.prototype.removeGraphic = function() {
     }
 };
 
+DKTools_Sprite.prototype.createAll = function() {
+    this.createBitmap();
+};
+
 /**
  * Загружает изображения из названия файла графики
  * Создает Bitmap спрайта шириной _bitmapWidth и высотой _bitmapHeight
@@ -2794,76 +4820,6 @@ DKTools_Sprite.prototype.createBitmap = function() {
 };
 
 // is methods
-
-/**
- * Возвращает true, если спрайт виден
- * 
- * @method isVisible
- * @return Boolean
-*/
-DKTools_Sprite.prototype.isVisible = function() {
-	return this.visible;
-};
-
-/**
- * Возвращает true, если спрайт активен
- *
- * @method isActive
- * @return Boolean
- */
-DKTools_Sprite.prototype.isActive = function() {
-    return Sprite_Button.prototype.isActive.call(this) && this._active;
-};
-
-/**
- * Возвращает true, если спрайт виден и активен
- *
- * @method isVisibleAndActive
- * @return Boolean
- */
-DKTools_Sprite.prototype.isVisibleAndActive = function() {
-    return this.isVisible() && this.isActive();
-};
-
-/**
- * Возвращает true, если работа спрайта была запущена
- * 
- * @method isStarted
- * @return Boolean
-*/
-DKTools_Sprite.prototype.isStarted = function() {
-	return this._started;
-};
-
-/**
- * Возвращает true, если у спрайта есть события-ожидания
- *
- * @method isWaiting
- * @return Boolean
- */
-DKTools_Sprite.prototype.isWaiting = function() {
-    return this.hasEvents('wait');
-};
-
-/**
- * Возвращает true, если Bitmap готов
- * 
- * @method isReady
- * @return Boolean
-*/
-DKTools_Sprite.prototype.isReady = function () {
-	return this.hasBitmap() ? this.bitmap.isReady() : false;
-};
-
-/**
- * Возвращает true, если спрайт занят
- *
- * @method isBusy
- * @return Boolean
- */
-DKTools_Sprite.prototype.isBusy = function() {
-    return this.isWaiting() && !this.isReady();
-};
 
 /**
  * Возвращает true, если спрайт является контейнером
@@ -2948,50 +4904,8 @@ DKTools_Sprite.prototype.isFixed = function() {
  * @method clearAll
  */
 DKTools_Sprite.prototype.clearAll = function() {
-    this.clearEvents();
-    this.clearSymbols();
-    this._clearEnteredTime();
+    DKTools_Base.prototype.clearAll.call(this);
     this._clearPressedTime();
-};
-
-/**
- * Очищает события спрайта
- *
- * @method clearEvents
- * @param {Array | String | null} [object = null] - Массив с типами событий или тип события
- */
-DKTools_Sprite.prototype.clearEvents = function(object) {
-    if (object) {
-        if (object.constructor === Array) {
-            for(var i = 0; i < object.length; i++) {
-                var type = object[i];
-                this.createEventContainer(type);
-            }
-        } else {
-            this._events[object] = [];
-        }
-    } else {
-        this._events = {};
-    }
-};
-
-/**
- * Очищает параметры спрайта
- *
- * @method clearSymbols
- */
-DKTools_Sprite.prototype.clearSymbols = function() {
-    this._symbols = {};
-};
-
-/**
- * Сбрасывает счетчик ...
- *
- * @method _clearEnteredTime
- * @private
- */
-DKTools_Sprite.prototype._clearEnteredTime = function() {
-    this._enteredTime = 0;
 };
 
 /**
@@ -3005,109 +4919,6 @@ DKTools_Sprite.prototype._clearPressedTime = function() {
 };
 
 // draw methods
-
-/**
- * Заливает область цветом
- *
- * @method fillRect
- *
- * @param {String | null} [color = #ffffff] - Цвет заливки
- * @param {Number | Rectangle | Object | null} [object = 0] - Координата X или Rectangle, или Объект типа {}
- * @param {Number | null} [y = 0] - Координата Y
- * @param {Number | null} [width = this._bitmapWidth] - Ширина области
- * @param {Number | null} [height = this._bitmapHeight] - Высота области
- *
- * @param {Number | null} [object.x = null] - Координата X
- * @param {Number | null} [object.y = null] - Координата Y
- * @param {Number | null} [object.width = null] - Ширина области
- * @param {Number | null} [object.height = null] - Высота области
- *
- * @return {Boolean} Возвращает true, если Bitmap существует
-*/
-DKTools_Sprite.prototype.fillRect = function(color, object, y, width, height) {
-	if (!this.hasBitmap()) {
-        return false;
-    }
-    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
-        return this.fillRect(color, object.x, object.y, object.width, object.height);
-    }
-	var x = object || 0;
-    y = y || 0;
-    width = width || this._bitmapWidth;
-    height = height || this._bitmapHeight;
-    color = color || '#ffffff';
-	this.bitmap.fillRect(x, y, width, height, color);
-	return true;
-};
-
-/**
- * Заливает весь Bitmap цветом
- * Возвращает true, если Bitmap существует
- *
- * @method fillAll
- *
- * @param {String || null} color - Цвет заливки
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.fillAll = function(color) {
-	return this.fillRect(color);
-};
-
-/**
- * Заливает область градиентом
- * Возвращает true, если Bitmap существует
- *
- * @method gradientFillRect
- *
- * @param {String || null} color1 - Цвет 1
- * @param {String || null} color2 - Цвет 2
- * @param {Boolean || null} vertical - Вертикальный градиент
- * @param {Number || Rectangle || Object || null} object - Координата X или область, или Объект типа {}
- * @param {Number || null} y - Координата Y
- * @param {Number || null} width - Ширина области
- * @param {Number || null} height - Высота области
- *
- * object properties
- * @property {Number || null} x - Координата X
- * @property {Number || null} y - Координата Y
- * @property {Number || null} width - Ширина области
- * @property {Number || null} height - Высота области
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.gradientFillRect = function(color1, color2, vertical, object, y, width, height) {
-	if (!this.hasBitmap()) {
-        return false;
-    }
-    if (object && object.constructor === Rectangle) {
-        return this.gradientFillRect(color1, color2, vertical, object.x, object.y, object.width, object.height);
-    }
-	var x = object || 0;
-    y = y || 0;
-    width = width || this._bitmapWidth;
-    height = height || this._bitmapHeight;
-    color1 = color1 || '#ffffff';
-    color2 = color2 || '#000000';
-	this.bitmap.gradientFillRect(x, y, width, height, color1, color2, vertical);
-	return true;
-};
-
-/**
- * Заливает весь Bitmap градиентом
- * Возвращает true, если Bitmap существует
-
- * @method gradientFillAll
- *
- * @param {String || null} color1 - Цвет 1
- * @param {String || null} color2 - Цвет 2
- * @param {Boolean || null} vertical - Вертикальный градиент
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.gradientFillAll = function(color1, color2, vertical) {
-	return this.gradientFillAll(color1, color2, vertical);
-};
 
 if (DKToolsUtils.debug) {
 
@@ -3139,44 +4950,6 @@ if (DKToolsUtils.debug) {
     };
 
 }
-
-/**
- * Рисует текст
- * Возвращает true, если Bitmap существует
- *
- * @method drawText
- *
- * @param {String || null} text - Текст
- * @param {String || null} align - Выравнивание текста
- * @param {Number || Rectangle || Object || null} object - Координата X или область, или Объект типа {}
- * @param {Number || null} y - Координата Y
- * @param {Number || null} width - Ширина области
- * @param {Number || null} height - Высота области
- *
- * object properties
- * @property {Number || null} x - Координата X
- * @property {Number || null} y - Координата Y
- * @property {Number || null} width - Ширина области
- * @property {Number || null} height - Высота области
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.drawText = function(text, align, object, y, width, height) {
-    text = String(text);
-	if (!this.hasBitmap() || !text) {
-        return false;
-    }
-    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
-        return this.drawText(text, align, object.x, object.y, object.width, object.height);
-    }
-	var x = (object == null ? this.standardTextX() : object);
-    y = (y == null ? this.standardTextY() : y);
-    width = width || this.standardTextWidth();
-    height = height || this.standardTextHeight();
-    align = align || this.align || this.standardAlign();
-	this.bitmap.drawText(text, x, y, width, height, align);
-	return true;
-};
 
 if (DKToolsUtils.debug) {
 
@@ -3295,112 +5068,6 @@ if (DKToolsUtils.debug) {
 }
 
 /**
- * Рисует круг
- * Возвращает true, если Bitmap существует
- *
- * @method drawCircle
- *
- * @param {Number || null} radius - Радиус
- * @param {String || null} color - Цвет
- * @param {Number || Point || Object || null} object - Координата X или Point, или Объект типа {}
- * @param {Number || null} y - Координата Y
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.drawCircle = function(radius, color, object, y) {
-	if (!this.hasBitmap()) {
-        return false;
-    }
-    if (object && (object.constructor === Point || object.constructor === Object)) {
-        return this.drawCircle(radius, color, object.x, object.y);
-    }
-    var x = object || 0;
-    y = y || 0;
-    radius = radius || 1;
-    color = color || '#ffffff';
-	this.bitmap.drawCircle(x, y, radius, color);
-	return true;
-};
-
-/**
- * Рисует кусок из Bitmap в Bitmap спрайта
- * Возвращает true, если Bitmap существует
- *
- * @method drawBitmap
- *
- * @param {Bitmap || Object} object - Bitmap или объект типа {}
- * @param {Number || null} x1 - Координата X
- * @param {Number || null} y1 - Координата Y
- * @param {Number || null} w1 - Ширина области из Bitmap
- * @param {Number || null} h1 - Высота области из Bitmap
- * @param {Number || null} x2 - Координата X
- * @param {Number || null} y2 - Координата Y
- * @param {Number || null} w2 - Ширина рисуемой области
- * @param {Number || null} h2 - Высота рисуемой области
- *
- * object.properties
- * @property {Bitmap || Object} - Bitmap или Объект типа {}
- * @property {Number || null} x1 - Координата X
- * @property {Number || null} y1 - Координата Y
- * @property {Number || null} w1 - Ширина области из Bitmap
- * @property {Number || null} h1 - Высота области из Bitmap
- * @property {Number || null} x2 - Координата X
- * @property {Number || null} y2 - Координата Y
- * @property {Number || null} w2 - Ширина рисуемой области
- * @property {Number || null} h2 - Высота рисуемой области
- * @property {Rectangle || Object || null} rect1 - Область или Объект типа {}
- * @property {Rectangle || Object || null} rect2 - Область или Объект типа {}
- *
- * object.bitmap properties
- * @property {String} folder - Путь к файлу
- * @property {String} filename - Название файла
- * @property {Function || null} listener - Метод обработки после загрузки Bitmap
- * @property {Number || null} hue - Оттенок
- * @property {Boolean || null} smooth - Сглаживание
- *
- * object.rect1 and object.rect2 properties
- * @property {Number || null} x - Координата X
- * @property {Number || null} y - Координата Y
- * @property {Number || null} width - Ширина области
- * @property {Number || null} height - Высота области
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.drawBitmap = function(object, x1, y1, w1, h1, x2, y2, w2, h2) {
-	object = object || {};
-    if (!this.hasBitmap()) {
-        return false;
-    }
-    var sx = x1, sy = y1, sw = w1, sh = h1;
-    var dx = x2, dy = y2, dw = w2, dh = h2;
-    var bitmap = object;
-    if (object.constructor === Object) {
-        bitmap = this.bitmapFromObject(object.bitmap);
-        sx = object.x1; sy = object.y1; sw = object.w1; sh = object.h1;
-        dx = object.x2; dy = object.y2; dw = object.w2; dh = object.h2;
-        if (object.rect1 && (object.rect1.constructor === Rectangle || object.rect1.constructor === Object)) {
-            sx = object.rect1.x;
-            sy = object.rect1.y;
-            sw = object.rect1.width;
-            sh = object.rect1.height;
-        }
-        if (object.rect2 && (object.rect2.constructor === Rectangle || object.rect2.constructor === Object)) {
-            dx = object.rect2.x;
-            dy = object.rect2.y;
-            dw = object.rect2.width;
-            dh = object.rect2.height;
-        }
-    }
-    if (!bitmap) {
-        return false;
-    }
-	bitmap.addLoadListener(function() {
-		this.bitmap.blt(bitmap, sx, sy, sw, sh, dx, dy, dw, dh);
-	}.bind(this));
-	return true;
-};
-
-/**
  * Рисует иконку из IconSet
  * Возвращает true, если Bitmap существует
  *
@@ -3515,261 +5182,6 @@ DKTools_Sprite.prototype.drawCharacter = function(characterName, characterIndex,
 // load methods
 
 /**
- * Загружает Bitmap из папки img/animations/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadAnimation
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadAnimation = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/animations/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/battlebacks1/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadBattleback1
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadBattleback1 = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/battlebacks1/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/battlebacks2/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadBattleback2
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadBattleback2 = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/battlebacks2/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/enemies/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadEnemy
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadEnemy = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/enemies/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/characters/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadCharacter
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadCharacter = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/characters/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/faces/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadFace
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadFace = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/faces/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/parallaxes/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadParallax
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadParallax = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/parallaxes/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/pictures/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadPicture
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadPicture = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/pictures/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/sv_actors/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadSvActor
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadSvActor = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/sv_actors/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/sv_enemies/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadSvEnemy
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadSvEnemy = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/sv_enemies/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/system/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadSystem
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadSystem = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/system/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/tilesets/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadTileset
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadTileset = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/tilesets/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/titles1/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadTitle1
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadTitle1 = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/titles1/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/titles2/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadTitle2
- *
- * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadTitle2 = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/titles2/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает обложку окна из папки img/system/
- * Возвращает true, если Bitmap был изменен
- *
- * @method loadWindowskin
- *
- * @param {String || null} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.loadWindowskin = function(filename, listener, hue, smooth) {
-	return this.loadSystem(filename || 'Window', listener, hue, smooth);
-};
-
-/**
  * Загружает Bitmap из папки
  * Возвращает true, если Bitmap был изменен
  *
@@ -3811,245 +5223,6 @@ DKTools_Sprite.prototype._loadGraphic = function() {
 //
 
 /**
- * Активирует спрайт
- *
- * @method activate
- */
-DKTools_Sprite.prototype.activate = function() {
-    this.setupActive(true);
-    this.updateActivateEvents();
-    this.updateInputData();
-};
-
-/**
- * Деактивирует спрайт
- *
- * @method deactivate
- */
-DKTools_Sprite.prototype.deactivate = function() {
-    this.setupActive(false);
-    this.updateDeactivateEvents();
-};
-
-/**
- * Показывает спрайт
- *
- * @method show
- *
- * @param {Number || null} duration - Длительность появления
- * @param {Boolean || null} activate - Активировать спрайта
- */
-DKTools_Sprite.prototype.show = function(duration, activate) {
-    if (duration > 0) {
-        var opacity = 255;
-        var handler = this._updateMove.bind(this, this.x, this.y, opacity, this.scale.x, this.scale.y);
-        var onStartHandler = function() {
-            this.setupVisible(true);
-        }.bind(this);
-        this.addEvent('wait', handler, duration, onStartHandler);
-    } else {
-        this.setupVisible(true);
-    }
-    if (activate) {
-        this.activate();
-    }
-};
-
-/**
- * Скрывает спрайт
- *
- * @method hide
- *
- * @param {Number || null} duration - Длительность исчезновения
- * @param {Boolean || null} blockDeactivate - Блокировка деактивации спрайта
-*/
-DKTools_Sprite.prototype.hide = function(duration, blockDeactivate) {
-    if (duration > 0) {
-        var opacity = 0;
-        var handler = this._updateMove.bind(this, this.x, this.y, opacity, this.scale.x, this.scale.y);
-        var onStartHandler = null;
-        var onEndHandler = function() {
-            this.setupVisible(false);
-        }.bind(this);
-        this.addEvent('wait', handler, duration, onStartHandler, onEndHandler);
-    } else {
-        this.setupVisible(false);
-    }
-    if (!blockDeactivate) {
-        this.deactivate();
-    }
-};
-
-//
-
-/**
- *
- *
- * @method _getSymbol
- * @private
- *
- * @param {String} symbol - Символ
- *
- * @return {Boolean}
- */
-DKTools_Sprite.prototype._getSymbol = function(symbol) {
-    return !!this._symbols[symbol];
-};
-
-/**
- *
- *
- * @method _getSymbols
- * @private
- *
- * @param object
- *
- * @return {Array | Boolean}
- */
-DKTools_Sprite.prototype._getSymbols = function(object) {
-    var symbols = [];
-    if (arguments.length > 1) {
-        for(var i = 0; i < arguments.length; i++) {
-            var symbol = object[i];
-            var value = this._getSymbol(symbol);
-            symbols.push(value);
-        }
-    } else {
-        if (object.constructor === Array) {
-            return this._getSymbols.apply(this, object);
-        } else {
-            var value = this._getSymbol(object);
-            symbols.push(value);
-        }
-    }
-    return symbols;
-};
-
-/**
- *
- *
- * @method _setSymbol
- * @private
- *
- * @param {String} symbol
- * @param {Boolean} value
- */
-DKTools_Sprite.prototype._setSymbol = function(symbol, value) {
-    value = Boolean(value);
-    var lastValue = this._getSymbol(symbol);
-    this._symbols[symbol] = value;
-    if (lastValue !== value) {
-        this.onSymbolChange(symbol, value);
-    }
-};
-
-/**
- *
- *
- * @method onSymbolChange
- *
- * @param symbol
- * @param value
- */
-DKTools_Sprite.prototype.onSymbolChange = function(symbol, value) {
-};
-
-DKTools_Sprite.prototype.switchSymbol = function(symbol) {
-    var newValue = !this._getSymbol(symbol);
-    this._setSymbol(symbol, newValue);
-};
-
-DKTools_Sprite.prototype.switchSymbols = function(object) {
-    if (arguments.length > 1) {
-        for(var i = 0; i < arguments.length; i++) {
-            var symbol = arguments[i];
-            this.switchSymbol(symbol);
-        }
-    } else {
-        if (object.constructor === Array) {
-            return this.switchSymbols.apply(this, object);
-        } else {
-            return this.switchSymbol(object);
-        }
-    }
-};
-
-/**
- *
- *
- * @method _enableSymbols
- * @private
- *
- * @param object
- */
-DKTools_Sprite.prototype._enableSymbols = function(object) {
-    if (arguments.length > 1) {
-        for(var i = 0; i < arguments.length; i++) {
-            var symbol = arguments[i];
-            this._setSymbol(symbol, true);
-        }
-    } else {
-        if (object.constructor === Array) {
-            return this._enableSymbols.apply(this, object);
-        } else {
-            return this._setSymbol(object, true);
-        }
-    }
-};
-
-/**
- *
- *
- * @method _disableSymbols
- * @private
- *
- * @param object
- */
-DKTools_Sprite.prototype._disableSymbols = function(object) {
-    if (arguments.length > 1) {
-        for(var i = 0; i < arguments.length; i++) {
-            var symbol = arguments[i];
-            this._setSymbol(symbol, false);
-        }
-    } else {
-        if (object.constructor === Array) {
-            return this._disableSymbols.apply(this, object);
-        } else {
-            return this._setSymbol(object, false);
-        }
-    }
-};
-
-/**
- *
- *
- * @method isEnabled
- * @return {Boolean}
- */
-DKTools_Sprite.prototype.isEnabled = function() {
-    var symbols = this._getSymbols.apply(this, arguments);
-    return symbols.conjunction();
-};
-
-/**
- *
- *
- * @method enable
- *
- */
-DKTools_Sprite.prototype.enable = DKTools_Sprite.prototype._enableSymbols;
-
-/**
- *
- *
- * @method disable
- *
- */
-DKTools_Sprite.prototype.disable = DKTools_Sprite.prototype._disableSymbols;
-
-//
-
-/**
  *
  *
  * @method canvasToLocalX
@@ -4070,29 +5243,6 @@ DKTools_Sprite.prototype.canvasToLocalX = Sprite_Button.prototype.canvasToLocalX
  * @return {Number}
  */
 DKTools_Sprite.prototype.canvasToLocalY = Sprite_Button.prototype.canvasToLocalY;
-
-/**
- * Копирует шрифт из source в target
- * Если какие-то значения отсутствуют, они берутся из standardFont
- *
- * @method _checkFont
- * @private
- *
- * @param {Array | null} [target] - Шрифт-цель
- * @param {Array | null} [source] - Шрифт-источник
- * @param {Array | null} [standardFont] - Стандартный шрифт
- *
- * @return {Array} Шрифт текста
- */
-DKTools_Sprite.prototype._checkFont = function(target, source, standardFont) {
-    standardFont = standardFont || this.standardFont();
-    target = target || [];
-    source = source || [];
-    for(var i = 0; i < 3; i++) {
-        target[i] = (source[i] == null ? standardFont[i] : source[i]);
-    }
-    return target;
-};
 
 // update methods
 
@@ -4184,221 +5334,8 @@ DKTools_Sprite.prototype.update = function() {
 
 // event methods
 
-/**
- * Проверяет контейнер с событиями, удаляя завершенные события
- *
- * @method _checkEventContainer
- * @private
- *
- * @param {String} type - Тип события
- *
- * @return {Array}
- */
-DKTools_Sprite.prototype._checkEventContainer = function(type) {
-    var events = [];
-    var callback = function(event) {
-        if (event && event.checkEvent()) {
-            events.push(event);
-        }
-    }.bind(this);
-    this.iterateEventContainer(type, callback);
-    return events;
-};
-
-/**
- * Проверяет события
- *
- * @method checkEvents
- */
-DKTools_Sprite.prototype.checkEvents = function() {
-    for(var type in this._events) {
-        this._events[type] = this._checkEventContainer(type);
-    }
-};
-
-/**
- * Удаляет событие из контейнера
- *
- * @method removeEvent
- *
- * @param {DKToolsEvent} event - Событие
- *
- * @return {Boolean} Возвращает true, если событие было удалено
- */
-DKTools_Sprite.prototype.removeEvent = function(event) {
-    var container = this.eventContainer(event);
-    var index = this.eventIndex(event);
-    if (index >= 0) {
-        container[index] = null;
-        return true;
-    }
-    return false;
-};
-
-/**
- *
- *
- * @method iterateEventContainer
- *
- * @param {String} type - Тип события
- * @param {Function} callback
- */
-DKTools_Sprite.prototype.iterateEventContainer = function(type, callback) {
-    var container = this.eventContainerByType(type);
-    container.forEach(callback);
-};
-
-/**
- *
- *
- * @method eventsIsPaused
- *
- * @param {String} type - Тип события
- *
- * @return {Boolean | null}
- */
-DKTools_Sprite.prototype.eventsIsPaused = function(type) {
-    var paused = [];
-    var callback = function(event) {
-        paused.push(event.isPaused());
-    }.bind(this);
-    this.iterateEventContainer(type, callback);
-    return paused.conjunction();
-};
-
-/**
- *
- *
- * @method pauseEvents
- *
- * @param {String} type - Тип события
- * @param {Number} duration - Длительность паузы
- */
-DKTools_Sprite.prototype.pauseEvents = function(type, duration) {
-    var callback = function(event) {
-        event.pause(duration);
-    }.bind(this);
-    this.iterateEventContainer(type, callback);
-};
-
-/**
- *
- *
- * @method continueEvents
- * @param {String} type - Тип события
- */
-DKTools_Sprite.prototype.continueEvents = function(type) {
-    var callback = function(event) {
-        event.continue();
-    }.bind(this);
-    this.iterateEventContainer(type, callback);
-};
-
-/**
- * Обновляет события
- *
- * @method updateEvents
- */
-DKTools_Sprite.prototype.updateEvents = function() {
-    this.checkEvents();
-    if (!this.hasEvents()) {
-        return;
-    }
-    if (this.isWaiting()) {
-        this.updateWaitEvents();
-        return;
-    }
-    this.updateUpdateEvents();
-};
-
-/**
- * Обновляет событие
- *
- * @method updateEvent
- * @param {DKToolsEvent} event - Событие
- */
-DKTools_Sprite.prototype.updateEvent = function(event) {
-    if (!event) {
-        return;
-    }
-    event.update();
-};
-
-/**
- * Обновляет события из контейнера
- *
- * @method updateEventContainer
- * @param {String} type - Тип события
- */
-DKTools_Sprite.prototype.updateEventContainer = function(type) {
-    var callback = function(event) {
-        this.updateEvent(event);
-    }.bind(this);
-    this.iterateEventContainer(type, callback);
-};
-
-DKTools_Sprite.prototype.updateWaitEvents = function() {
-    var container = this.eventContainerByType('wait');
-    var event = container[0];
-    this.updateEvent(event);
-};
-
-DKTools_Sprite.prototype.updateUpdateEvents = function() {
-    this.updateEventContainer('update');
-};
-
-DKTools_Sprite.prototype.updateStartEvents = function() {
-    if (!this.isStarted()) {
-        return;
-    }
-    this.updateEventContainer('start');
-};
-
 DKTools_Sprite.prototype.updateUpdateBitmapEvents = function() {
     this.updateEventContainer('updateBitmap');
-};
-
-DKTools_Sprite.prototype.updateReadyEvents = function() {
-    if (!this.isReady()) {
-        return;
-    }
-    this.updateEventContainer('ready');
-};
-
-DKTools_Sprite.prototype.updateFreeEvents = function() {
-    if (this.isBusy()) {
-        return;
-    }
-    this.updateEventContainer('free');
-};
-
-DKTools_Sprite.prototype.updateActivateEvents = function() {
-    this.updateEventContainer('activate');
-};
-
-DKTools_Sprite.prototype.updateDeactivateEvents = function() {
-    this.updateEventContainer('deactivate');
-};
-
-DKTools_Sprite.prototype.updateMouseEnterEvents = function() {
-    this.updateEventContainer('mouseEnter');
-};
-
-DKTools_Sprite.prototype.updateMouseStayEvents = function() {
-    this.updateEventContainer('mouseStay');
-};
-
-DKTools_Sprite.prototype.updateMouseLeaveEvents = function() {
-    if (this.isPressed()) {
-        this._entered = false;
-        this._touching = false;
-        this._clearEnteredTime();
-        this._clearPressedTime();
-        this.updateFrame();
-        this.updateOpacity();
-        this.updateScale();
-    }
-    this.updateEventContainer('mouseLeave');
 };
 
 /**
@@ -4419,257 +5356,7 @@ DKTools_Sprite.prototype.updateLongPressEvents = function() {
     this.updateEventContainer('longPress');
 };
 
-DKTools_Sprite.prototype.updateWheelXEvents = function() {
-    this._wheelX = TouchInput.wheelX;
-    if (this._wheelX === 0) {
-        return;
-    }
-    this.updateEventContainer('wheelX');
-};
-
-DKTools_Sprite.prototype.updateWheelYEvents = function() {
-    this._wheelY = TouchInput.wheelY;
-    if (this._wheelY === 0) {
-        return;
-    }
-    this.updateEventContainer('wheelY');
-};
-
-DKTools_Sprite.prototype.updateWheelEvents = function() {
-    this.updateWheelXEvents();
-    this.updateWheelYEvents();
-};
-
 //
-
-/**
- * Создает контейнер для событий
- *
- * @method createEventContainer
- *
- * @param {String} type - Тип события
- *
- * @return {Array} Контейнер для событий
- */
-DKTools_Sprite.prototype.createEventContainer = function(type) {
-    this._events[type] = [];
-    return this._events[type];
-};
-
-/**
- * Возвращает контейнер для событий по типу события
- *
- * @method eventContainerByType
- *
- * @param {String} type - Тип события
- *
- * @return {Array} Контейнер для событий
- */
-DKTools_Sprite.prototype.eventContainerByType = function(type) {
-    var container = this._events[type];
-    if (container) {
-        return container;
-    } else {
-        return this.createEventContainer(type);
-    }
-};
-
-/**
- * Возвращает контейнер для событий по событию
- *
- * @method eventContainer
- *
- * @param {DKToolsEvent} event - Событие
- *
- * @return {Array} Контейнер для событий
- */
-DKTools_Sprite.prototype.eventContainer = function(event) {
-    var type = event.type;
-    return this.eventContainerByType(type);
-};
-
-/**
- * Возвращает индекс события в его контейнере
- *
- * @method eventIndex
- *
- * @param {DKToolsEvent} event - Событие
- *
- * @return {Number} Индекс события в его контейнере
- */
-DKTools_Sprite.prototype.eventIndex = function(event) {
-    var container = this.eventContainer(event);
-    return container.indexOf(event);
-};
-
-/**
- * Возвращает массив со всеми или событиями определенного типа
- *
- * @method events
- *
- * @param {String | null} [type] - Тип события
- *
- * @return {Array} Массив с событиями
- */
-DKTools_Sprite.prototype.events = function(type) {
-    if (type) {
-        return this.eventContainerByType(type);
-    }
-    var events = [];
-    for(type in this._events) {
-        var container = this.eventContainerByType(type);
-        events = events.concat(container);
-    }
-    return events;
-};
-
-/**
- * Проверяет существование события в спрайте
- *
- * @method hasEvent
- *
- * @param {DKToolsEvent} event - Событие
- *
- * @return {Boolean}
- */
-DKTools_Sprite.prototype.hasEvent = function(event) {
-    return this.eventIndex(event) >= 0;
-};
-
-/**
- * Проверяет существование событий определенного типа
- *
- * @method hasEvents
- *
- * @param {String | null} [type] - Тип события
- *
- * @return {Boolean}
- */
-DKTools_Sprite.prototype.hasEvents = function(type) {
-    return this.events(type).length > 0;
-};
-
-/**
- * Создает событие
- *
- * @method _createEvent
- * @private
- *
- * @param {String} type - Тип события
- * @param {Function | null} [handler] - Обработчик события
- * @param {Number | null} [duration] - Длительность события
- * @param {Function | null} [onStartHandler] - Обработчик начала работы события
- * @param {Function | null} [onEndHandler] - Обработчик окончания работы события
- *
- * @return {DKToolsEvent} Созданное событие
- */
-DKTools_Sprite.prototype._createEvent = function(type, handler, duration, onStartHandler, onEndHandler) {
-    return new DKToolsEvent(this, type, handler, duration, onStartHandler, onEndHandler);
-};
-
-/**
- * Добавляет событие
- *
- * @method addEvent
- *
- * @param {String} type - Тип события
- * @param {Function | null} [handler] - Обработчик события
- * @param {Number | null} [duration] - Длительность события
- * @param {Function | null} [onStartHandler] - Обработчик начала работы события
- * @param {Function | null} [onEndHandler] - Обработчик окончания работы события
- *
- * @return {DKToolsEvent}
- */
-DKTools_Sprite.prototype.addEvent = function(type, handler, duration, onStartHandler, onEndHandler) {
-    var event = this._createEvent(type, handler, duration, onStartHandler, onEndHandler);
-    var container = this.eventContainer(event);
-    container.push(event);
-    return event;
-};
-
-/**
- * Добавляет событие с бесконечной длительностью
- *
- * @method addEventHandler
- *
- * @param {String} type - Тип события
- * @param {Function | null} [handler] - Обработчик события
- *
- * @return {DKToolsEvent}
- */
-DKTools_Sprite.prototype.addEventHandler = function(type, handler) {
-    var duration = -1;
-    return this.addEvent(type, handler, duration);
-};
-
-/**
- * Добавляет одноразовое событие
- *
- * @method addEventListener
- *
- * @param {String} type - Тип события
- * @param {Function | null} [handler] - Обработчик события
- *
- * @return {DKToolsEvent}
- */
-DKTools_Sprite.prototype.addEventListener = function(type, handler) {
-    var duration = 1;
-    return this.addEvent(type, handler, duration);
-};
-
-//
-
-/**
- * Создает маршрут передвижения спрайта
- *
- * @method moveRoute
- *
- * @param {Object[]} route - Массив с объектами маршрута
- * @param {Number | null} [route.duration = 1] - Длительность передвижения
- * @param {Number | null} [route.onEndWait = 0] - Длительность ожидания после передвижения
- * @param {Number | null} [route.x = this.x] - Координата X передвижения
- * @param {Number | null} [route.y = this.y] - Координата Y передвижения
- * @param {Number | null} [route.opacity = this.opacity] - Прозрачность передвижения
- * @param {Number | null} [route.scaleX = this.scale.x] - Масштабирование передвижения по X
- * @param {Number | null} [route.scaleY = this.scale.y] - Масштабирование передвижения по Y
- *
- * @return {Array} Массив с событиями
- */
-DKTools_Sprite.prototype.moveRoute = function(route) {
-    if (!route) {
-        return [];
-    }
-    var events = [];
-    for(var i = 0; i < route.length; i++) {
-        var object = route[i];
-        var duration = object.duration || 1;
-        var onEndWaitDuration = object.onEndWait || 0;
-        var newX = (object.x == null ? this.x : object.x);
-        var newY = (object.y == null ? this.y : object.y);
-        var newOpacity = (object.opacity == null ? this.opacity : object.opacity);
-        var newScaleX = object.scaleX || this.scale.x;
-        var newScaleY = object.scaleY || this.scale.y;
-        var event = this.addEvent('wait', this._updateMove.bind(this, newX, newY, newOpacity, newScaleX, newScaleY), duration);
-        events.push(event);
-        if (onEndWaitDuration > 0) {
-            this.wait(onEndWaitDuration);
-        }
-    }
-    return events;
-};
-
-/**
- * Заставляет спрайт ждать
- *
- * @method wait
- * @param {Number} duration - Время ожидания в фреймах
- * @param {Function | null} [onEndHandler] - Обработчик окончания работы события
- */
-DKTools_Sprite.prototype.wait = function(duration, onEndHandler) {
-    var handler = null;
-    var onStartHandler = null;
-    return this.addEvent('wait', handler, duration, onStartHandler, onEndHandler);
-};
 
 /**
  * Обновляет перемещение спрайта
@@ -4696,6 +5383,10 @@ DKTools_Sprite.prototype._updateMove = function(newX, newY, newOpacity, newScale
     this.setupScale(scaleX, scaleY);
 };
 
+DKTools_Sprite.prototype.updateAll = function() {
+    this.updateBitmap();
+};
+
 /**
  * Обновляет Bitmap спрайта
  *
@@ -4705,9 +5396,9 @@ DKTools_Sprite.prototype.updateBitmap = function() {
     if (this.isFixed() || !this.clear()) {
         return;
     }
-	this.updateBackground();
 	this.updateFont();
-	this.updateTextColor();
+    this.updateTextColor();
+    this.updateBackground();
     this.updateUpdateBitmapEvents();
 };
 
@@ -4748,9 +5439,9 @@ DKTools_Sprite.prototype.updateTextColor = function() {
  * @method updateFrame
  */
 DKTools_Sprite.prototype.updateFrame = function() {
-    var frame = this.isPressed() ? this._hotFrame : this._coldFrame;
+    var frame = (this.isPressed() ? this._hotFrame : this._coldFrame);
     if (frame) {
-        this.setFrame(frame.x, frame.y, frame.width, frame.height);
+        this.setFrame(frame);
     }
 };
 
@@ -4760,7 +5451,7 @@ DKTools_Sprite.prototype.updateFrame = function() {
  * @method updateScale
  */
 DKTools_Sprite.prototype.updateScale = function() {
-    var scale = this.isPressed() ? this._hotScale : this._coldScale;
+    var scale = (this.isPressed() ? this._hotScale : this._coldScale);
     if (scale) {
         this.setupScale(scale);
     }
@@ -4772,20 +5463,10 @@ DKTools_Sprite.prototype.updateScale = function() {
  * @method updateOpacity
  */
 DKTools_Sprite.prototype.updateOpacity = function() {
-    var opacity = this.isPressed() ? this._hotOpacity : this._coldOpacity;
+    var opacity = (this.isPressed() ? this._hotOpacity : this._coldOpacity);
     if (opacity != null) {
         this.setupOpacity(opacity);
     }
-};
-
-/**
- * Обновляет данные ввода
- *
- * @method updateInputData
- */
-DKTools_Sprite.prototype.updateInputData = function() {
-    Input.update();
-    TouchInput.update();
 };
 
 
@@ -11094,21 +11775,23 @@ Object.defineProperty(DKTools_Slider.prototype, 'baseSpriteClass', {
 //===========================================================================
 // NOT READY
 //===========================================================================
-// DK Tools Window Base
+// DK Tools Window
 //===========================================================================
 
-function DKTools_Window_Base() {
+function DKTools_Window() {
 	this.initialize.apply(this, arguments);
 }
 
-DKTools_Window_Base.prototype = Object.create(Window_Base.prototype);
-DKTools_Window_Base.prototype.constructor = DKTools_Window_Base;
+DKTools_Window.prototype = Object.create(Window_Base.prototype);
+DKToolsUtils.mixin(DKTools_Window.prototype, DKTools_Base.prototype);
+DKTools_Window.prototype.constructor = DKTools_Window;
 
-DKTools_Window_Base._counter = 0;
+DKTools_Window._counter = 0;
 
 // properties
 
-Object.defineProperties(DKTools_Window_Base.prototype, {
+Object.defineProperties(DKTools_Window.prototype, {
+
     bitmap: {
         get: function() {
             return this.contents;
@@ -11120,7 +11803,7 @@ Object.defineProperties(DKTools_Window_Base.prototype, {
 // initialize method
 
 /**
- * @class DKTools_Window_Base
+ * @class DKTools_Window
  *
  * @constructor
  *
@@ -11129,17 +11812,36 @@ Object.defineProperties(DKTools_Window_Base.prototype, {
  * @param {Number} width - Ширина окна
  * @param {Number} height - Высота окна
  */
-DKTools_Window_Base.prototype.initialize = function(object, y, width, height) {
-	//width = (width ? width.clamp(this.minWidth(), this.maxWidth()) : this.minWidth());
-	//height = (height ? height.clamp(this.minHeight(), this.maxHeight()) : this.minHeight());
-	this.clearAll();
+DKTools_Window.prototype.initialize = function(object, y, width, height) {
+    Window.prototype.initialize.call(this);
+    this.clearAll();
+    this.move(object, y);
+    this.setupAll(object);
+    this.setupSize(width, height);
+    this.updatePadding();
+    DKTools_Window._counter++;
+};
 
-	//Window_Base.prototype.initialize.call(this, x || 0, y || 0, width, height);
+// standard methods
 
-    //this.move()
-    this.setupAll();
-    DKTools_Window_Base._counter++;
-	this._started = false;
+/**
+ * Возвращает стандартную ширину текста
+ *
+ * @method standardTextWidth
+ * @return {Number} Стандартная ширина текста
+ */
+DKTools_Window.prototype.standardDrawWidth = function() {
+    return this.bitmap.height;
+};
+
+/**
+ * Возвращает стандартную высоту текста
+ *
+ * @method standardTextHeight
+ * @return {Number} Стандартная высота текста
+ */
+DKTools_Window.prototype.standardDrawHeight = function() {
+    return this.bitmap.width;
 };
 
 /**
@@ -11148,7 +11850,7 @@ DKTools_Window_Base.prototype.initialize = function(object, y, width, height) {
  * @method standardSpriteY
  * @return Number
 */
-DKTools_Window_Base.prototype.standardSpriteX = function() {
+DKTools_Window.prototype.standardSpriteX = function() {
 	return this.standardPadding();
 };
 
@@ -11158,18 +11860,26 @@ DKTools_Window_Base.prototype.standardSpriteX = function() {
  * @method standardSpriteY
  * @return Number
 */
-DKTools_Window_Base.prototype.standardSpriteY = function() {
+DKTools_Window.prototype.standardSpriteY = function() {
 	return this.standardPadding();
 };
 
+DKTools_Window.prototype.standardWindowOpacity = function() {
+    return 255;
+};
+
+DKTools_Window.prototype.standardContentsOpacity = function() {
+    return 255;
+};
+
 /**
- * Возвращает стандартную обложку окна
- 
- * @method standardWindowskin
- * @return String
-*/
-DKTools_Window_Base.prototype.standardWindowskin = function() {
-	return 'Window'; // сделать через параметры
+ * Возвращает стандартную прозрачность
+
+ * @method standardOpacity
+ * @return Array
+ */
+DKTools_Window.prototype.standardOpacity = function() {
+    return [this.standardWindowOpacity(), this.standardContentsOpacity(), this.standardBackOpacity()];
 };
 
 /**
@@ -11178,94 +11888,12 @@ DKTools_Window_Base.prototype.standardWindowskin = function() {
  * @method standardTone
  * @return Array
 */
-DKTools_Window_Base.prototype.standardTone = function() {
-	return $gameSystem.windowTone(); // сделать через параметры ?
+DKTools_Window.prototype.standardTone = function() {
+	return $gameSystem.windowTone();
 };
 
-/**
- * Возвращает стандартное имя шрифта
- 
- * @method standardFontName
- * @return String
-*/
-DKTools_Window_Base.prototype.standardFontName = function() {
-	return 'GameFont'; // сделать через параметры
-};
-
-/**
- * Возвращает стандартное значение для курсива
- 
- * @method standardFontItalic
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.standardFontItalic = function() {
-	return false; // сделать через параметры
-};
-
-/**
- * Возвращает стандартный размер шрифта
- 
- * @method standardFontSize
- * @return Number
-*/
-DKTools_Window_Base.prototype.standardFontSize = function() {
-	return 28; // сделать через параметры
-};
-
-/**
- * Возвращает стандартный шрифт
- 
- * @method standardFont
- * @return Array
-*/
-DKTools_Window_Base.prototype.standardFont = function() {
-	return [this.standardFontName(), this.standardFontItalic(), this.standardFontSize()];
-};
-
-/**
- * Возвращает стандартное выравнивание
- 
- * @method standardAlign
- * @return String
-*/
-DKTools_Window_Base.prototype.standardAlign = function() {
-	return 'center'; // сделать через параметры
-};
-
-/**
- * Возвращает стандартный цвет текста
- 
- * @method standardTextColor
- * @return String
-*/
-DKTools_Window_Base.prototype.standardTextColor = function() {
-	return '#ffffff'; // сделать через параметры
-};
-
-DKTools_Window_Base.prototype.standardWindowOpacity = function() {
-	return 255; // сделать через параметры
-};
-
-DKTools_Window_Base.prototype.standardContentsOpacity = function() {
-	return 255; // сделать через параметры
-};
-
-DKTools_Window_Base.prototype.standardBackOpacity = function() {
-	return 192; // сделать через параметры
-};
-
-/**
- * Возвращает стандартную прозрачность
- 
- * @method standardOpacity
- * @return Array
-*/
-DKTools_Window_Base.prototype.standardOpacity = function() {
-	return [this.standardWindowOpacity(), this.standardContentsOpacity(), this.standardBackOpacity()];
-};
-
-DKTools_Window_Base.prototype.standardPaintOpacity = function() {
-	return 255; // сделать через параметры
+DKTools_Window.prototype.standardPaintOpacity = function() {
+	return 255;
 };
 
 // setup methods
@@ -11280,90 +11908,23 @@ DKTools_Window_Base.prototype.standardPaintOpacity = function() {
  * @param {Array || null} tone - Тон окна
  * @param {String || null} windowskin - Обложка окна
 */
-DKTools_Window_Base.prototype.setupAll = function(textColor, font, opacity, tone, windowskin, paint_opacity) {
-	this.setupTextColor(textColor);
-	this.setupFont(font);
-	this.setupOpacity(opacity);
-	this.setupTone(tone);
-	this.setupWindowskin(windowskin);
-	this.setupPaintOpacity(paint_opacity);
+DKTools_Window.prototype.setupAll = function(object) {
+    object = object || {};
+    DKTools_Base.prototype.setupAll.call(this, object);
+	this.setupTone(object.tone);
+	this.setupPaintOpacity(object.paintOpacity);
 };
 
-/**
- * Устанавливает ID окна
- 
- * @method setupId
- * @param {Number || String || null} id - ID окна
-*/
-DKTools_Window_Base.prototype.setupId = function(id) {
-	this.id = (id == null ? null : id);
+DKTools_Window.prototype.setupWidth = function(width) {
+    var minWidth = this.minWidth();
+    var maxWidth = this.maxWidth();
+    this.width = (width ? width.clamp(minWidth, maxWidth) : minWidth);
 };
 
-/**
- * Устанавливает активность окна
- 
- * @method setupActive
- * @param {Boolean || null} active - Активность окна
-*/
-DKTools_Window_Base.prototype.setupActive = function(active) {
-	this.active = (active == null ? true : active);
-};
-
-/**
- * Устанавливает выравнивание текста
-
- * @method setupAlign
- * @param {String || null} align - Выравнивание текста
-*/
-DKTools_Window_Base.prototype.setupAlign = DKTools_Sprite.prototype.setupAlign;
-//DKTools_Window_Base.prototype.setupAlign = function(align) {
-//	this._align = align || this.standardAlign();
-//};
-
-/**
- * Устанавливает X текста
-
- * @method setupTextX
- * @param {Number || null} x - X текста
-*/
-DKTools_Window_Base.prototype.setupTextX = DKTools_Sprite.prototype.setupTextX;
-//DKTools_Window_Base.prototype.setupTextX = function(x) {
-//	this.text_x = (x == null ? this.standardTextX() : x);
-//};
-
-/**
- * Устанавливает Y текста
-
- * @method setupTextY
- * @param {Number || null} y - Y текста
-*/
-DKTools_Window_Base.prototype.setupTextY = DKTools_Sprite.prototype.setupTextY;
-//DKTools_Window_Base.prototype.setupTextY = function(y) {
-//	this.text_y = (y == null ? this.standardTextY() : y);
-//};
-
-/**
- * Устанавливает цвет текста
-
- * @method setupTextColor
- * @param {String || null} color - Цвет текста
- */
-DKTools_Window_Base.prototype.setupTextColor = function(color) {
-	this._textColor = color || this.standardTextColor();
-};
-
-/**
- * Устанавливает шрифт текста
-
- * @method setupFont
- * @param {Array || null} font - Шрифт текста
- */
-DKTools_Window_Base.prototype.setupFont = function(font) {
-	var standard_font = this.standardFont();
-	font = font || [];
-	this.window_font = [];
-	for(var i = 0; i < 3; i++)
-		this.window_font[i] = (font[i] == null ? standard_font[i] : font[i]);
+DKTools_Window.prototype.setupHeight = function(height) {
+    var minHeight = this.minHeight();
+    var maxHeight = this.maxHeight();
+    this.height = (height ? height.clamp(minHeight, maxHeight) : minHeight);
 };
 
 /**
@@ -11372,12 +11933,8 @@ DKTools_Window_Base.prototype.setupFont = function(font) {
  * @method setupTone
  * @param {Array || null} tone - Тон окна
 */
-DKTools_Window_Base.prototype.setupTone = function(tone) {
-	var standard_tone = this.standardTone();
-	tone = tone || [];
-	this.window_tone = [];
-	for(var i = 0; i < 3; i++)
-		this.window_tone[i] = (tone[i] == null ? standard_tone[i] : tone[i]);
+DKTools_Window.prototype.setupTone = function(tone) {
+    this._tone = this._checkFont(this._tone, tone, this.standardTone());
 };
 
 /**
@@ -11386,12 +11943,8 @@ DKTools_Window_Base.prototype.setupTone = function(tone) {
  * @method setupOpacity
  * @param {Array || null} opacity - Прозрачность окна
 */
-DKTools_Window_Base.prototype.setupOpacity = function(opacity) {
-	var standard_opacity = this.standardOpacity();
-	opacity = opacity || [];
-	this.window_opacity = [];
-	for(var i = 0; i < 3; i++)
-		this.window_opacity[i] = (opacity[i] == null ? standard_opacity[i] : opacity[i]);
+DKTools_Window.prototype.setupOpacity = function(opacity) {
+    this._opacity = this._checkFont(this._opacity, opacity, this.standardOpacity());
 };
 
 /**
@@ -11400,18 +11953,8 @@ DKTools_Window_Base.prototype.setupOpacity = function(opacity) {
  * @method setupPaintOpacity
  * @param {Number || null} opacity - Прозрачность рисования окна
 */
-DKTools_Window_Base.prototype.setupPaintOpacity = function(opacity) {
-	this.paint_opacity = (opacity == null ? this.standardPaintOpacity() : opacity);
-};
-
-/**
- * Устанавливает обложку окна
-
- * @method setupWindowskin
- * @param {String || null} windowskin - Обложка окна
-*/
-DKTools_Window_Base.prototype.setupWindowskin = function(windowskin) {
-	this.window_windowskin = windowskin || this.standardWindowskin();
+DKTools_Window.prototype.setupPaintOpacity = function(opacity) {
+	this._paintOpacity = (opacity == null ? this.standardPaintOpacity() : opacity);
 };
 
 // set methods
@@ -11429,113 +11972,20 @@ DKTools_Window_Base.prototype.setupWindowskin = function(windowskin) {
  * @param {String || null} windowskin - Обложка окна
  * @return Number
 */
-DKTools_Window_Base.prototype.setAll = function(object, blockStart) {
+DKTools_Window.prototype.setAll = function(object, blockStart) {
 	object = object || {};
 	var block = true;
-	var changed = 0;
-	if (this.setAlign(object.align, block)) changed++;
-	if (this.setTextX(object.text_x, block)) changed++;
-	if (this.setTextY(object.text_y, block)) changed++;
-	if (this.setTextColor(object.textColor, block)) changed++;
-	if (this.setFont(object.font, block)) changed++;
-	if (this.setTone(object.tone, block)) changed++;
-	if (this.setOpacity(object.opacity, block)) changed++;
-	if (this.setPaintOpacity(object.paint_opacity, block)) changed++;
-	if (this.setWindowskin(object.windowskin, block)) changed++;
-	if (changed && !blockStart) this.start();
+	var changed = DKTools_Base.prototype.setAll.call(this, obecjt);
+	if (this.setTone(object.tone, block)) {
+        changed++;
+    }
+	if (this.setPaintOpacity(object.paintOpacity, block)) {
+        changed++;
+    }
+	if (changed && !blockStart) {
+        this.start();
+    }
 	return changed;
-};
-
-/**
- * Изменяет ширину окна
- * Возвращает true, если изменение произошло
- 
- * @method setWidth
- * @param {Number || null} width - Ширина окна
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.setWidth = function(width) {
-	return this.resize(width, this.height);
-};
-
-/**
- * Изменяет высоту окна
- * Возвращает true, если изменение произошло
- 
- * @method setHeight
- * @param {Number || null} height - Высота окна
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.setHeight = function(height) {
-	return this.resize(this.width, height);
-};
-
-/**
- * Изменяет выравнивание текста
- * Возвращает true, если изменение произошло
-
- * @method setAlign
- * @param {String || null} align - Выравнивание текста
- * @param {Boolean || null} block -
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.setAlign = DKTools_Sprite.prototype.setAlign;
-
-/**
- * Изменяет X текста
- * Возвращает true, если изменение произошло
-
- * @method setTextX
- * @param {Number || null} x - X текста
- * @param {Boolean || null} block -
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.setTextX = DKTools_Sprite.prototype.setTextX;
-
-/**
- * Изменяет Y текста
- * Возвращает true, если изменение произошло
-
- * @method setTextX
- * @param {Number || null} y - Y текста
- * @param {Boolean || null} block -
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.setTextY = DKTools_Sprite.prototype.setTextY;
-
-/**
- * Изменяет цвет текста
- * Возвращает true, если изменение произошло
-
- * @method setTextColor
- * @param {String || null} color - Цвет текста
- * @param {Boolean || null} block -
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.setTextColor = function(color, block) {
-	if (this._textColor === color) return false;
-	var lastColor = this._textColor;
-	this.setupTextColor(color);
-	if (lastColor === this._textColor) return false;
-	if (!block) this.updateWindow();
-	return true;
-};
-
-/**
- * Изменяет шрифт текста
- * Возвращает true, если изменение произошло
-
- * @method setFont
- * @param {Array || null} font - Шрифт текста
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.setFont = function(font, block) {
-	font = font || this.standardFont();
-	if (this.window_font[0] === font[0] && this.window_font[1] === font[1] && this.window_font[2] === font[2]) return false;
-	this.setupFont(font);
-	if (this.window_font[0] === font[0] && this.window_font[1] === font[1] && this.window_font[2] === font[2]) return false;
-	if (!block) this.updateWindow(); // сделать start ?
-	return true;
 };
 
 /**
@@ -11546,13 +11996,20 @@ DKTools_Window_Base.prototype.setFont = function(font, block) {
  * @param {Array || null} tone - Тон окна
  * @return Boolean
  */
-DKTools_Window_Base.prototype.setTone = function(tone, block) {
-	tone = tone || this.standardTone();
-	if (this.window_tone[0] === tone[0] && this.window_tone[1] === tone[1] && this.window_tone[2] === tone[2]) return false;
-	this.setupTone(tone);
-	if (this.window_tone[0] === font[0] && this.window_tone[1] === font[1] && this.window_tone[2] === font[2]) return false;
-	if (!block) this.updateWindow();
-	return true;
+DKTools_Window.prototype.setTone = function(tone, blockUpdate) {
+    tone = tone || this.standardTone();
+    if (this._tone.equals(tone)) {
+        return false;
+    }
+    var lastTone = this._tone;
+    this.setupTone(tone);
+    if (this._tone.equals(lastTone)) {
+        return false;
+    }
+    if (!blockUpdate) {
+        this.updateWindow();
+    }
+    return true;
 };
 
 /**
@@ -11563,13 +12020,20 @@ DKTools_Window_Base.prototype.setTone = function(tone, block) {
  * @param {Array || null} opacity - Прозрачность окна
  * @return Boolean
  */
-DKTools_Window_Base.prototype.setOpacity = function(opacity, block) {
+DKTools_Window.prototype.setOpacity = function(opacity, blockUpdate) {
 	opacity = opacity || this.standardOpacity();
-	if (this.window_opacity[0] === opacity[0] && this.window_opacity[1] === opacity[1] && this.window_opacity[2] === opacity[2]) return false;
-	this.setupOpacity(opacity);
-	if (this.window_opacity[0] === opacity[0] && this.window_opacity[1] === opacity[1] && this.window_opacity[2] === opacity[2]) return false;
-	if (!block) this.updateWindow();
-	return true;
+    if (this._opacity.equals(opacity)) {
+        return false;
+    }
+    var lastOpacity = this._opacity;
+    this.setupOpacity(opacity);
+    if (this._opacity.equals(lastOpacity)) {
+        return false;
+    }
+    if (!blockUpdate) {
+        this.updateWindow();
+    }
+    return true;
 };
 
 /**
@@ -11580,191 +12044,38 @@ DKTools_Window_Base.prototype.setOpacity = function(opacity, block) {
  * @param {Boolean || null} block -
  * @return Boolean
 */
-DKTools_Window_Base.prototype.setPaintOpacity = function(opacity, block) {
-	if (this.paint_opacity === opacity) return false;
-	var lastOpacity = this.paint_opacity;
+DKTools_Window.prototype.setPaintOpacity = function(opacity, block) {
+	if (this._paintOpacity === opacity) {
+        return false;
+    }
+	var lastOpacity = this._paintOpacity;
 	this.setupPaintOpacity(opacity);
-	if (lastOpacity === this.paint_opacity) return false;
-	if (!block) this.updateWindow();
-	//if (!block) this.updatePaintOpacity();
+	if (lastOpacity === this._paintOpacity) {
+        return false;
+    }
+	if (!block) {
+        //this.updateWindow();
+        this.updatePaintOpacity();
+    }
 	return true;
-};
-
-/**
- * Изменяет обложку окна
- * Возвращает true, если изменение произошло
- 
- * @method setWindowskin
- * @param {String || null} windowskin - Обложка окна
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.setWindowskin = function(windowskin, block) {
-	if (this.window_windowskin === windowskin) return false;
-	var last_windowskin = this.window_windowskin;
-	this.setupWindowskin(windowskin);
-	if (last_windowskin === this.window_windowskin) return false;
-	if (!block) this.loadWindowskin();
-	return true;
-};
-
-/**
- * Устанавливает функцию, вызываемую при обновлении спрайта
-
- * @method setUpdateHandler
- * @param {Function} method - Функция, вызываемая при обновлении спрайта
- */
-DKTools_Window_Base.prototype.setUpdateHandler = function(method) {
-	this.update_handler = method;
-};
-
-/**
- * Устанавливает функцию, вызываемую для обновления анимации окна
-
- * @method setUpdateAnimationHandler
- * @param {Function} method - Функция, вызываемая для обновления анимации окна
-*/
-DKTools_Window_Base.prototype.setUpdateAnimationHandler = function(method) {
-	this.update_animation_handler = method;
-};
-
-/**
- * Устанавливает функцию, вызываемую при полном открытии окна
-
- * @method setOpenHandler
- * @param {Function} method - Функция, вызываемая при полном открытии окна
-*/
-DKTools_Window_Base.prototype.setOpenHandler = function(method) {
-	this.open_handler = method;
-};
-
-/**
- * Устанавливает функцию, вызываемую при полном закрытии окна
-
- * @method setCloseHandler
- * @param {Function} method - Функция, вызываемая при полном закрытии окна
-*/
-DKTools_Window_Base.prototype.setCloseHandler = function(method) {
-	this.close_handler = method;
-};
-
-/**
- * Устанавливает функцию, вызываемую при запуске работы окна
-
- * @method setStartHandler
- * @param {Function} method - Функция, вызываемая при запуске работы окна
-*/
-DKTools_Window_Base.prototype.setStartHandler = function(method) {
-	this._startHandler = method;
 };
 
 // other methods
 
-/**
- * Запускает работу окна
-
- * @method start
- */
-DKTools_Window_Base.prototype.start = function() {
-	this.updateWindow();
-	this.started = true;
-	this.callStartListeners();
-	this.callStartHandler();
+DKTools_Window.prototype.createAll = function() {
+    this.createWindowskin();
+    this.createContents();
 };
 
-/**
- * Очищает Rect, если contents есть
- * Возвращает true, если contents есть
-
- * @method clearRect
- * @param {Number || Rectangle || null} object - Координата X (если Number) или область (если Rectangle)
- * @param {Number || null} y - Координата Y (если object - Number)
- * @param {Number || null} width - Ширина области (если object - Number)
- * @param {Number || null} height - Высота области (если object - Number)
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.clearRect = function(object, y, width, height) {
-	if (!this.contents) return false;
-	var x;
-	if (object && object.constructor === Number) x = object;
-	if (object && object.constructor === Rectangle)
-	{
-		x = object.x;
-		y = object.y;
-		width = object.width;
-		height = object.height;
-	}
-	this.contents.clearRect(x || 0, y || 0, width || this.contents.width, height || this.contents.height);
-	return true;
+DKTools_Window.prototype.createWindowskin = function() {
+    this.windowskin = this.loadWindowskin();
 };
 
-/**
- * Очищает contents, если он есть
- * Возвращает true, если contents есть
-
- * @method clear
- * @return Boolean
- */
-DKTools_Window_Base.prototype.clear = function() {
-	return this.clearRect();
+DKTools_Window.prototype.createContents = function() {
+    this.contents = new Bitmap(this.contentsWidth(), this.contentsHeight());
 };
 
-/**
- * Перемещает окно
-
- * @method move
- * @param {Number || null} x - Координата X (The x coordinate for the upper-left corner)
- * @param {Number || null} y - Координата Y (The y coordinate for the upper-left corner)
- * @param {Number || null} width - Ширина окна (The width of the window)
- * @param {Number || null} height - Высота окна (The height of the window)
- */
-DKTools_Window_Base.prototype.move = function(x, y, width, height) {
-	width = width || this.width;
-	height = height || this.height;
-	Window_Base.prototype.move.call(this, x, y, width, height);
-};
-
-/**
- * Устанавливает высоту и ширину окна, если они отличаются от текущих
- * Возвращает true, если изменение произошло
- * Sets the width and height of the window, if they differ from the current
- * Returns true, if the change occurred
- *
- * @method resize
- * @param {Number || null} width - Ширина окна (The width of the window)
- * @param {Number || null} height - Высота окна (The height of the window)
- * @param {Boolean || null} block -
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.resize = function(width, height, block) {
-	if (!width) width = this.minWidth();
-	if (!height) height = this.minHeight();
-	if (this.width === width && this.height === height) return false;
-	var lastWidth = this.width;
-	var lastHeight = this.height;
-	width = (width ? width.clamp(this.minWidth(), this.maxWidth()) : Math.max(this.minWidth(), this.width));
-	height = (height ? height.clamp(this.minHeight(), this.maxHeight()) : Math.max(this.minHeight(), this.height));
-	this.move(this.x, this.y, width, height);
-	if (lastWidth === this.width && lastHeight === this.height) return false;
-	this.createContents();
-	this.updateContents();
-	if (!block) this.start();
-	return true;
-};
-
-/**
- * Клонирует текущее окно
-
- * BETA
- * @method clone
- * @param {Boolean || null} block - Блокировка функции start
- * @return DKTools_Window_Base
- */
-DKTools_Window_Base.prototype.clone = function(block) {
-	var window = new DKTools_Window_Base(this.x, this.y, this.width, this.height);
-	window.setupAll(this.textColor, this.window_font, this.window_opacity, this.window_tone, this.window_windowskin);
-	if (!block) window.start();
-	return window;
-};
+//DKTools_Window.prototype.createBitmap = DKTools_Window.prototype.createContents;
 
 /**
  * Проверяет ширину и высоту окна на соответствие минимальным значениям
@@ -11773,16 +12084,16 @@ DKTools_Window_Base.prototype.clone = function(block) {
  * @method checkSize
  * @return Boolean
  */
-DKTools_Window_Base.prototype.checkSize = function() {
+DKTools_Window.prototype.checkSize = function() {
 	var minWidth = this.minWidth();
 	var minHeight = this.minHeight();
 	var changed = 0;
-	if (this._bitmapWidth < minWidth)
+	if (this.width < minWidth)
 	{
 		this.setupWidth(minWidth);
 		changed++;
 	}
-	if (this._bitmapHeight < minHeight)
+	if (this.height < minHeight)
 	{
 		this.setupHeight(minHeight);
 		changed++;
@@ -11791,23 +12102,14 @@ DKTools_Window_Base.prototype.checkSize = function() {
 };
 
 /**
- * Возвращает Bitmap из объекта или загружает его
-
- * @method bitmapFromObject
- * @param {Object || null} object -
- * @return Bitmap || null
-*/
-DKTools_Window_Base.prototype.bitmapFromObject = DKTools_Sprite.prototype.bitmapFromObject;
-
-/**
  * Возвращает минимальную ширину окна
  * Returns the minimum width of the window
  *
  * @method minWidth
  * @return Number
 */
-DKTools_Window_Base.prototype.minWidth = function() {
-	return this.standardPadding() * 2 + 64;
+DKTools_Window.prototype.minWidth = function() {
+	return this.standardPadding() * 2;
 };
 
 /**
@@ -11817,479 +12119,14 @@ DKTools_Window_Base.prototype.minWidth = function() {
  * @method minHeight
  * @return Number
  */
-DKTools_Window_Base.prototype.minHeight = function() {
-	return this.standardPadding() * 2 + this.lineHeight();
+DKTools_Window.prototype.minHeight = function() {
+	return this.standardPadding() * 2;
 };
 
-/**
- * Возвращает максимальную ширину окна
- *
- * @method maxWidth
- * @return Number
- */
-DKTools_Window_Base.prototype.maxWidth = function() {
-	return Graphics.boxWidth;
+DKTools_Window.prototype.resetFontSettings = function() {
 };
 
-/**
- * Возвращает максимальную высоту окна
- *
- * @method maxHeight
- * @return Number
- */
-DKTools_Window_Base.prototype.maxHeight = function() {
-	return Graphics.boxHeight;
-};
-
-DKTools_Window_Base.prototype.resetFontSettings = function() {
-};
-
-DKTools_Window_Base.prototype.resetTextColor = function() {
-};
-
-/**
- * Возвращает true, если работа окна была запущена
-
- * @method isStarted
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.isStarted = function() {
-	return this.started;
-};
-
-/**
- * Очищает "слушателей" старта окна
-
- * @method clearStartListeners
-*/
-DKTools_Window_Base.prototype.clearStartListeners = function() {
-	this._startListeners = [];
-};
-
-/**
- * Добавляет "слушателя" старта окна
-
- * @method addStartListener
- * @param {Function} listener - "Слушатель" старта окна
-*/
-DKTools_Window_Base.prototype.addStartListener = function(listener) {
-	this.isStarted() ? listener(this.id) : this._startListeners.push(listener);
-};
-
-/**
- * Вызывает "слушателей" старта окна
-
- * @method callStartListeners
-*/
-DKTools_Window_Base.prototype.callStartListeners = function() {
-	if (!this.isStarted()) return;
-	while(this._startListeners.length > 0)
-		this._startListeners.shift()(this.id);
-};
-
-/**
- * Вызывает обработчик старта окна
-
- * @method callStartHandler
-*/
-DKTools_Window_Base.prototype.callStartHandler = function() {
-	if (this.isStarted() && this._startHandler)	this._startHandler(this.id);
-};
-
-/**
- * Заливает область цветом
- * Возвращает true, если contents существует
-
- * @method fillRect
- * @param {String || null} color - Цвет
- * @param {Number || Rectangle || null} object - Координата X (если Number) или область (если Rectangle)
- * @param {Number || null} y - Координата Y
- * @param {Number || null} width - Ширина области
- * @param {Number || null} height - Высота области
- * @return Boolean
- */
-DKTools_Window_Base.prototype.fillRect = function(color, object, y, width, height) {
-	if (!this.contents) return false;
-	var x;
-	if (object && object.constructor === Number) x = object;
-	if (object && object.constructor === Rectangle)
-	{
-		x = object.x;
-		y = object.y;
-		width = object.width;
-		height = object.height;
-	}
-	this.contents.fillRect(x || 0, y || 0, width || this.contentsWidth(), height || this.contentsHeight(), color || '#ffffff');
-	return true;
-};
-
-/**
- * Заливает весь Bitmap цветом
- * Возвращает true, если contents существует
-
- * @method fillAll
- * @param {String || null} color - Цвет
- * @return Boolean
- */
-DKTools_Window_Base.prototype.fillAll = function(color) {
-	return this.fillRect(color);
-};
-
-/**
- * Заливает область градиентом
- * Возвращает true, если contents существует
-
- * @method gradientFillRect
- * @param {String || null} color1 - Цвет 1
- * @param {String || null} color2 - Цвет 2
- * @param {Boolean || null} vertical - Вертикальный градиент
- * @param {Number || Rectangle || null} object - Координата X (если Number) или область (если Rectangle)
- * @param {Number || null} y - Координата Y
- * @param {Number || null} width - Ширина области
- * @param {Number || null} height - Высота области
- * @return Boolean
- */
-DKTools_Window_Base.prototype.gradientFillRect = function(color1, color2, vertical, object, y, width, height) {
-	if (!this.contents) return false;
-	var x;
-	if (object && object.constructor === Number) x = object;
-	if (object && object.constructor === Rectangle)
-	{
-		x = object.x;
-		y = object.y;
-		width = object.width;
-		height = object.height;
-	}
-	this.contents.gradientFillRect(x || 0, y || 0, width || this.contentsWidth(), height || this.contentsHeight(), color1, color2, vertical);
-	return true;
-};
-
-/**
- * Заливает весь Bitmap градиентом
- * Возвращает true, если contents существует
-
- * @method gradientFillAll
- * @param {String || null} color1 - Цвет 1
- * @param {String || null} color2 - Цвет 2
- * @param {Boolean || null} vertical - Вертикальный градиент
- * @return Boolean
- */
-DKTools_Window_Base.prototype.gradientFillAll = function(color1, color2, vertical) {
-	return this.gradientFillAll(color1, color2, vertical);
-};
-
-DKTools_Window_Base.prototype.drawTextHeight = function() {
-	return this.lineHeight();
-};
-
-/**
- * Рисует текст
- * Возвращает true, если contents существует
-
- * @method drawText
- * @param {String || null} text - Текст
- * @param {String || null} align - Выравнивание текста
- * @param {Number || Rectangle || null} object - Координата X (если Number) или область (если Rectangle)
- * @param {Number || null} y - Координата Y
- * @param {Number || null} width - Ширина области
- * @param {Number || null} height - Высота области
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.drawText = function(text, align, object, y, width, height) {
-	if (!this.contents) return false;
-	var x;
-	if (object && object.constructor === Number) x = object;
-	if (object && object.constructor === Rectangle)
-	{
-		x = object.x;
-		y = object.y;
-		width = object.width;
-		height = object.height;
-	}
-	// совместимость стандартных функций с новым drawText
-	// Идет смещение параметров
-	// align - x
-	// object - y
-	// y - width
-	// width - align
-	if (align && align.constructor === Number && width && width.constructor === String)
-	{
-		Window_Base.prototype.drawText.call(this, text, align, object, y, width);
-	}
-	// мб сделать this.text_width и this.text_height вместо this.contentsWidth() и this.drawTextHeight()
-	this.contents.drawText(text, x || this.text_x || 0, y || this.text_y || 0, width || this.contentsWidth(), height || this.drawTextHeight(), align || this._align || 'left');
-	// this.contents.drawText(text, x || 0, y || 0, width || this.contentsWidth(), height || this.lineHeight(), align || 'left');
-	return true;
-};
-
-/**
- * Рисует круг
- * Возвращает true, если contents существует
-
- * @method drawCircle
- * @param {Number || null} radius - Радиус
- * @param {String || null} color - Цвет
- * @param {Number || null} x - Координата X
- * @param {Number || null} y - Координата Y
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.drawCircle = function(radius, color, x, y) {
-	if (!this.contents) return false;
-	this.contents.drawCircle(x || radius || 0, y || radius || 0, radius || 1, color || '#ffffff');
-	return true;
-};
-
-/**
- * Рисует кусок из bitmap в contents
- * Возвращает true, если contents существует
-
- * @method drawBitmap
- * @param {Object} object -
- * @param {Bitmap || Object} object - Bitmap или { folder, filename, listener (опционально), hue (опционально), smooth (опционально) }
- * @param {Number || Rectangle} x1 - Координата X (если Number) или область (если Rectangle)
- * @param {Number || Rectangle} y1 - Координата Y (если x1 - Number) или область (если x1 - Rectangle)
- * @param {Number || null} width1 - Ширина области из Bitmap (если x1, y1 - Number)
- * @param {Number || null} height1 - Высота области из Bitmap (если x1, y1 - Number)
- * @param {Number || Rectangle || null} x2 - Координата X (если Number и x1 - Number) или область (если Rectangle и x1 - Number)
- * @param {Number || null} y2 - Координата Y (если x1, y1, x2 - Number)
- * @param {Number || null} width2 - Ширина рисуемой области (если x1, y1, x2 - Number) (опционально) (равно width1)
- * @param {Number || null} height2 - Высота рисуемой области (если x1, y1, x2 - Number) (опционально) (равно height1)
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.drawBitmap = function(object) {
-	object = object || {};
-	if (!this.contents || !object.bitmap) return false;
-	var bitmap = this.bitmapFromObject(object.bitmap);
-	var sx = object.x1, sy = object.y1, sw = object.width1, sh = object.height1;
-	var dx = object.x2, dy = object.y2, dw = object.width2, dh = object.height2;
-	if (object.rect1 && object.rect1.constructor === Object)
-	{
-		sx = object.rect1.x;
-		sy = object.rect1.y;
-		sw = object.rect1.width;
-		sh = object.rect1.height;
-	}
-	if (object.rect2 && object.rect2.constructor === Object)
-	{
-		dx = object.rect2.x;
-		dy = object.rect2.y;
-		dw = object.rect2.width;
-		dh = object.rect2.height;
-	}
-	bitmap.addLoadListener(function(bitmap, sx, sy, sw, sh, dx, dy, dw, dh) {
-		this.contents.blt(bitmap, sx, sy, sw, sh, dx, dy, dw, dh);
-	}.bind(this, bitmap, sx, sy, sw, sh, dx, dy, dw, dh));
-	return true;
-};
-
-/**
- * Загружает Bitmap из папки img/animations/
- * Возвращает true, если bitmap был изменен
-
- * @method loadAnimation
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
-*/
-DKTools_Window_Base.prototype.loadAnimation = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/animations/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/battlebacks1/
- * Возвращает true, если bitmap был изменен
-
- * @method loadBattleback1
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
-*/
-DKTools_Window_Base.prototype.loadBattleback1 = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/battlebacks1/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/battlebacks2/
- * Возвращает true, если bitmap был изменен
-
- * @method loadBattleback2
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
-*/
-DKTools_Window_Base.prototype.loadBattleback2 = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/battlebacks2/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/enemies/
- * Возвращает true, если bitmap был изменен
-
- * @method loadEnemy
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Boolean
-*/
-DKTools_Window_Base.prototype.loadEnemy = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/enemies/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/characters/
- * Возвращает true, если bitmap был изменен
-
- * @method loadCharacter
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
-*/
-DKTools_Window_Base.prototype.loadCharacter = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/characters/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/faces/
- * Возвращает true, если bitmap был изменен
-
- * @method loadFace
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
-*/
-DKTools_Window_Base.prototype.loadFace = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/faces/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/parallaxes/
- * Возвращает true, если bitmap был изменен
-
- * @method loadParallax
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
-*/
-DKTools_Window_Base.prototype.loadParallax = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/parallaxes/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/pictures/
- * Возвращает true, если bitmap был изменен
-
- * @method loadPicture
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
-*/
-DKTools_Window_Base.prototype.loadPicture = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/pictures/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/sv_actors/
- * Возвращает true, если bitmap был изменен
-
- * @method loadSvActor
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
-*/
-DKTools_Window_Base.prototype.loadSvActor = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/sv_actors/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/sv_enemies/
- * Возвращает true, если bitmap был изменен
-
- * @method loadSvEnemy
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
-*/
-DKTools_Window_Base.prototype.loadSvEnemy = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/sv_enemies/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/system/
- * Возвращает true, если bitmap был изменен
-
- * @method loadSystem
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
-*/
-DKTools_Window_Base.prototype.loadSystem = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/system/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/tilesets/
- * Возвращает true, если bitmap был изменен
-
- * @method loadTileset
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
-*/
-DKTools_Window_Base.prototype.loadTileset = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/tilesets/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/titles1/
- * Возвращает true, если bitmap был изменен
-
- * @method loadTitle1
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
- */
-DKTools_Window_Base.prototype.loadTitle1 = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/titles1/', filename, listener, hue, smooth);
-};
-
-/**
- * Загружает Bitmap из папки img/titles2/
- * Возвращает true, если bitmap был изменен
-
- * @method loadTitle2
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
-*/
-DKTools_Window_Base.prototype.loadTitle2 = function(filename, listener, hue, smooth) {
-	return this.loadBitmap('img/titles2/', filename, listener, hue, smooth);
+DKTools_Window.prototype.resetTextColor = function() {
 };
 
 /**
@@ -12304,71 +12141,34 @@ DKTools_Window_Base.prototype.loadTitle2 = function(filename, listener, hue, smo
  * @param {Boolean || null} smooth - Гладкий
  * @return Bitmap
 */
-DKTools_Window_Base.prototype.loadBitmap = function(folder, filename, listener, hue, smooth) {
+DKTools_Window.prototype.loadBitmap = function(folder, filename, listener, hue, smooth) {
 	var bitmap = ImageManager.loadBitmap(folder, filename, hue, smooth);
-	if (listener) bitmap.addLoadListener(listener);
+	if (listener) {
+        bitmap.addLoadListener(listener);
+    }
 	return bitmap;
 };
 
-/**
- * Загружает обложку окна из папки img/system/
-
- * @method loadWindowskin
- * @param {String || null} filename - Название обложки окна
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
-*/
-DKTools_Window_Base.prototype.loadWindowskin = function(filename, listener, hue, smooth) {
-	this.windowskin = this.loadSystem(filename || this.window_windowskin || this.standardWindowskin(), listener, hue, smooth);
-};
-
-/**
- * Запускает анимацию
-
- * @method startAnimation
- */
-DKTools_Window_Base.prototype.startAnimation = function() {
-	this._updateAnimation = true;
-};
-
-/**
- * Останавливает анимацию
-
- * @method stopAnimation
- */
-DKTools_Window_Base.prototype.stopAnimation = function() {
-	this._updateAnimation = false;
-};
-
-/**
- * Возвращает true, если анимация обновляется
-
- * @method isAnimationUpdating
- * @return Boolean
- */
-DKTools_Window_Base.prototype.isAnimationUpdating = function() {
-	return this._updateAnimation;
-};
-
-DKTools_Window_Base.prototype.changeTextColor = function(color) {
+DKTools_Window.prototype.changeTextColor = function(color) {
 	if (this.setTextColor(color, true)) this.updateTextColor();
 };
 
-DKTools_Window_Base.prototype.changePaintOpacity = function(object) {
+DKTools_Window.prototype.changePaintOpacity = function(object) {
 	// совместимость со стандартным changePaintOpacity
 	if (object != null && object.constructor === Boolean) return Window_Base.prototype.changePaintOpacity.call(this, object);
 	if (this.setPaintOpacity(object, true)) this.updatePaintOpacity();
 };
 
-/**
- * Скрывает и деактивирует окно
+DKTools_Window.prototype.updateOpenEvents = function() {
+    this.updateEventContainer('open');
+};
 
- * @method hide
-*/
-DKTools_Window_Base.prototype.hide = function() {
-	Window_Base.prototype.hide.call(this);
-	this.deactivate();
+DKTools_Window.prototype.updateCloseEvents = function() {
+    this.updateEventContainer('close');
+};
+
+DKTools_Window.prototype.updateAll = function() {
+    this.updateWindow();
 };
 
 /**
@@ -12376,7 +12176,7 @@ DKTools_Window_Base.prototype.hide = function() {
 
  * @method updateWindow
 */
-DKTools_Window_Base.prototype.updateWindow = function() {
+DKTools_Window.prototype.updateWindow = function() {
 	this.updateTone();
 	this.updateOpacity();
 	this.updateContents();
@@ -12387,11 +12187,11 @@ DKTools_Window_Base.prototype.updateWindow = function() {
 
  * @method updateContents
 */
-DKTools_Window_Base.prototype.updateContents = function() {
-	if (!this.clear()) return;
-	this.updateTextColor();
-	this.updateFont();
-	this.updatePaintOpacity();
+DKTools_Window.prototype.updateContents = function() {
+    this.updateFont();
+    this.updateTextColor();
+    this.updatePaintOpacity();
+    this.updateBackground();
 };
 
 /**
@@ -12399,9 +12199,8 @@ DKTools_Window_Base.prototype.updateContents = function() {
 
  * @method updateTone
 */
-DKTools_Window_Base.prototype.updateTone = function() {
-	this.window_tone = this.window_tone || $gameSystem.windowTone(); // совместимость с initialize Window_Base, которая вызывает updateTone()
-	Window_Base.prototype.setTone.call(this, this.window_tone[0], this.window_tone[1], this.window_tone[2]);
+DKTools_Window.prototype.updateTone = function() {
+	Window.prototype.setTone.call(this, this._tone[0], this._tone[1], this._tone[2]);
 };
 
 /**
@@ -12409,30 +12208,10 @@ DKTools_Window_Base.prototype.updateTone = function() {
 
  * @method updateOpacity
 */
-DKTools_Window_Base.prototype.updateOpacity = function() {
-	this.opacity = this.window_opacity[0];
-	this.contentsOpacity = this.window_opacity[1];
-	this.backOpacity = this.window_opacity[2];
-};
-
-/**
- * Обновление цвета текста окна
-
- * @method updateTextColor
-*/
-DKTools_Window_Base.prototype.updateTextColor = function() {
-	this.contents.textColor = this._textColor;
-};
-
-/**
- * Обновление шрифта текста окна
-
- * @method updateFont
-*/
-DKTools_Window_Base.prototype.updateFont = function() {
-	this.contents.fontFace = this.window_font[0];
-	this.contents.fontItalic = this.window_font[1];
-	this.contents.fontSize = this.window_font[2];
+DKTools_Window.prototype.updateOpacity = function() {
+	this.opacity = this._opacity[0];
+	this.contentsOpacity = this._opacity[1];
+	this.backOpacity = this._opacity[2];
 };
 
 /**
@@ -12440,8 +12219,8 @@ DKTools_Window_Base.prototype.updateFont = function() {
 
  * @method updatePaintOpacity
 */
-DKTools_Window_Base.prototype.updatePaintOpacity = function() {
-	this.contents.paintOpacity = this.paint_opacity;
+DKTools_Window.prototype.updatePaintOpacity = function() {
+	this.contents.paintOpacity = this._paintOpacity;
 };
 
 /**
@@ -12449,13 +12228,14 @@ DKTools_Window_Base.prototype.updatePaintOpacity = function() {
 
  * @method updateOpen
 */
-DKTools_Window_Base.prototype.updateOpen = function() {
-	if (!this._opening) return;
+DKTools_Window.prototype.updateOpen = function() {
+	if (!this._opening) {
+        return;
+    }
 	this.openness += 32;
-	if (this.isOpen())
-	{
+	if (this.isOpen()) {
 		this._opening = false;
-		this.callOpenHandler();
+        this.updateOpenEvents();
 	}
 };
 
@@ -12464,13 +12244,14 @@ DKTools_Window_Base.prototype.updateOpen = function() {
 
  * @method updateClose
 */
-DKTools_Window_Base.prototype.updateClose = function() {
-	if (!this._closing) return;
+DKTools_Window.prototype.updateClose = function() {
+	if (!this._closing) {
+        return;
+    }
 	this.openness -= 32;
-	if (this.isClosed())
-	{
+	if (this.isClosed()) {
 		this._closing = false;
-		this.callCloseHandler();
+        this.updateCloseEvents();
 	}
 };
 
@@ -12479,29 +12260,17 @@ DKTools_Window_Base.prototype.updateClose = function() {
 
  * @method update
  */
-DKTools_Window_Base.prototype.update = function() {
+DKTools_Window.prototype.update = function() {
 	Window.prototype.update.call(this);
+    //DKTools_Sprite.prototype.update.call(this);
+    // или
+    //this.processTouch();
+    //this.updateEvents();
+    //this.updateReadyEvents();
+    //this.updateFreeEvents();
 	this.updateOpen();
 	this.updateClose();
 	this.updateBackgroundDimmer();
-	this.callUpdateHandler();
-	this.callUpdateAnimationHandler();
-};
-
-DKTools_Window_Base.prototype.callUpdateHandler = function() {
-	if (this.update_handler) this.update_handler(this.id);
-};
-
-DKTools_Window_Base.prototype.callUpdateAnimationHandler = function() {
-	if (this._updateAnimation && this.update_animation_handler) this.update_animation_handler(this.id);
-};
-
-DKTools_Window_Base.prototype.callOpenHandler = function() {
-	if (this.open_handler) this.open_handler(this.id);
-};
-
-DKTools_Window_Base.prototype.callCloseHandler = function() {
-	if (this.close_handler) this.close_handler(this.id);
 };
 
 
@@ -12558,7 +12327,7 @@ function DKTools_Window_Command() {
 DKTools_Window_Command.prototype = Object.create(Window_Command.prototype);
 // решить проблему с конструктором
 DKTools_Window_Command.prototype.constructor = DKTools_Window_Command;
-DKToolsUtils.mixin(DKTools_Window_Command.prototype, DKTools_Window_Base.prototype);
+DKToolsUtils.mixin(DKTools_Window_Command.prototype, DKTools_Window.prototype);
 DKTools_Window_Command.prototype.constructor = DKTools_Window_Command;
 
 DKTools_Window_Command.prototype.initialize = function(x, y, width, height) {
@@ -12638,7 +12407,7 @@ DKTools_Window_Command.prototype.setDrawItemHandler = function(method) {
 // other methods
 
 DKTools_Window_Command.prototype.start = function() {
-	DKTools_Window_Base.prototype.start.call(this);
+	DKTools_Window.prototype.start.call(this);
 	this.refresh();
 	this.select(0);
 };
@@ -12786,8 +12555,8 @@ DKTools_Window_HorzCommand.prototype.itemTextAlign = function() {
 
 
 //===========================================================================
-// Элементы, основанные на DKTools_Window_Base
-// Elements based on DKTools_Window_Base
+// Элементы, основанные на DKTools_Window
+// Elements based on DKTools_Window
 //===========================================================================
 
 
