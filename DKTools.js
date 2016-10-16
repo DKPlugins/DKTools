@@ -1495,6 +1495,13 @@ Object.defineProperties(DKTools_Base.prototype, {
         configurable: true
     },
 
+    enteredTime: {
+        get: function() {
+            return this._enteredTime;
+        },
+        configurable: true
+    },
+
     mouseX : {
         get: function() {
             return this.canvasToLocalX(TouchInput.mouseX);
@@ -1507,12 +1514,62 @@ Object.defineProperties(DKTools_Base.prototype, {
             return this.canvasToLocalY(TouchInput.mouseY);
         },
         configurable: true
+    },
+
+    wheelX: {
+        get: function() {
+            return this._wheelX;
+        },
+        configurable: true
+    },
+
+    wheelY: {
+        get: function() {
+            return this._wheelY;
+        },
+        configurable: true
     }
 
 });
 
+// initialize method
+
+DKTools_Base.prototype.initialize = function(object, y, width, height) {
+    this.clearAll();
+    if (object) {
+        if (object.constructor === Object) {
+            x = object.x;
+            y = object.y || y;
+            width = object.width || width;
+            height = object.height || height;
+        }
+    }
+    this.move(object, y);
+    this.setupAll(object);
+    this.setupSize(width, height);
+};
 
 // standard methods
+
+/**
+ * Возвращает стандартную ширину текста
+ *
+ * @method standardDrawWidth
+ * @return {Number} Стандартная ширина текста
+ */
+DKTools_Base.prototype.standardDrawWidth = function() {
+    return this.bitmap.width;
+};
+
+/**
+ * Возвращает стандартную высоту текста
+ *
+ * @method standardDrawHeight
+ * @return {Number} Стандартная высота текста
+ */
+DKTools_Base.prototype.standardDrawHeight = function() {
+    return this.bitmap.height;
+};
 
 /**
  * Возвращает стандартную видимость спрайта
@@ -1652,22 +1709,6 @@ DKTools_Base.prototype.setupAll = function(object) {
 };
 
 /**
- * Устанавливает размер Bitmap
- *
- * @method setupSize
- *
- * @param {Number | null} [object = null] - Ширина Bitmap
- * @param {Number | null} [height = null] - Высота Bitmap
- */
-DKTools_Base.prototype.setupSize = function(object, height) {
-    if (object && object.constructor === Object) {
-        return this.setupSize(object.width, object.height);
-    }
-    this.setupWidth(object);
-    this.setupHeight(height);
-};
-
-/**
  * Устанавливает ID спрайта
  *
  * @method setupId
@@ -1734,7 +1775,7 @@ DKTools_Base.prototype.setupBackgroundColor = function(color) {
  * @param {Array | null} [font = null] - Шрифт текста
  */
 DKTools_Base.prototype.setupFont = function(font) {
-    this._font = this._checkFont(this._font, font);
+    this._font = this._checkArray(font, this.standardFont());
 };
 
 // set methods
@@ -2082,60 +2123,26 @@ DKTools_Base.prototype.clone = function(blockStart) {
 };
 
 /**
- * Перемещает спрайт
- *
- * @method move
- *
- * @param {Number | Point | Object | null} [object] - Координата X или Point, или Объект типа {}
- * @param {Number | null} [newY] - Координата Y
- * @param {Number | null} [duration] - Длительность перемещения
- * @param {Number | null} [newOpacity] - Новая прозрачность
- * @param {Number | null} [newScaleX] - Новое масштабирование по X
- * @param {Number | null} [newScaleY] - Новое масштабирование по Y
- *
- * @param {Number | null} [object.x] - Координата X
- * @param {Number | null} [object.y] - Координата Y
- */
-//DKTools_Base.prototype.move = function(object, newY, duration, newOpacity, newScaleX, newScaleY) {
-//    if (object && (object.constructor === Point || object.constructor === Object)) {
-//        return Sprite.prototype.move.call(this, object.x || 0, object.y || 0);
-//    }
-//    duration = duration || 0;
-//    if (duration > 0) {
-//        var x = (object == null ? this.x : object);
-//        newY = (newY == null ? this.y : newY);
-//        newOpacity = (newOpacity == null ? this.opacity : newOpacity);
-//        newScaleX = newScaleX || this.scale.x;
-//        newScaleY = newScaleY || this.scale.y;
-//        return this.addEvent('wait', this._updateMove.bind(this, x, newY, newOpacity, newScaleX, newScaleY), duration);
-//    } else {
-//        var x = object || 0;
-//        newY = newY || 0;
-//        Sprite.prototype.move.call(this, x, newY);
-//    }
-//};
-
-/**
  * Проверяет ширину и высоту Bitmap на соответствие минимальным значениям
  * Возвращает true, если изменение произошло
  *
  * @method checkSize
  * @return Number
  */
-//DKTools_Base.prototype.checkSize = function() {
-//    var minWidth = this.minWidth();
-//    var minHeight = this.minHeight();
-//    var changed = 0;
-//    if (this._bitmapWidth < minWidth) {
-//        this.setupWidth(minWidth);
-//        changed++;
-//    }
-//    if (this._bitmapHeight < minHeight) {
-//        this.setupHeight(minHeight);
-//        changed++;
-//    }
-//    return changed;
-//};
+DKTools_Base.prototype.checkSize = function() {
+    var minWidth = this.minWidth();
+    var minHeight = this.minHeight();
+    var changed = 0;
+    if (this.width < minWidth) {
+        this.setupWidth(minWidth);
+        changed++;
+    }
+    if (this.height < minHeight) {
+        this.setupHeight(minHeight);
+        changed++;
+    }
+    return changed;
+};
 
 /**
  * Возвращает Bitmap из объекта или загружает его
@@ -2514,37 +2521,6 @@ DKTools_Base.prototype.gradientFillAll = function(color1, color2, vertical) {
     return this.gradientFillAll(color1, color2, vertical);
 };
 
-//if (DKToolsUtils.debug) {
-//
-//    DKTools_Sprite.prototype.strokeRect = function(color, object, y, width, height) {
-//        if (!this.hasBitmap()) return false;
-//        var x = object;
-//        if (object && object.constructor === Rectangle) {
-//            x = object.x;
-//            y = object.y;
-//            width = object.width;
-//            height = object.height;
-//        }
-//        this.bitmap.strokeRect(x || 0, y || 0, width || this._bitmapWidth, height || this._bitmapHeight, color || '#ffffff');
-//        return true;
-//    };
-//
-//    DKTools_Sprite.prototype.fillArc = function () {
-//    };
-//
-//    DKTools_Sprite.prototype.strokeArc = function () {
-//    };
-//
-//    DKTools_Sprite.prototype.drawLine = function (x1, y1, x2, y2, color) {
-//        if (!this.hasBitmap()) {
-//            return false;
-//        }
-//        this.bitmap.drawLine(x1, y1, x2, y2, color);
-//        return true;
-//    };
-//
-//}
-
 /**
  * Рисует текст
  * Возвращает true, если Bitmap существует
@@ -2582,122 +2558,6 @@ DKTools_Base.prototype.drawText = function(text, align, object, y, width, height
     this.bitmap.drawText(text, x, y, width, height, align);
     return true;
 };
-
-//if (DKToolsUtils.debug) {
-//
-//    DKTools_Sprite.prototype.drawTextEx = function(text, x, y) {
-//        if (text) {
-//            var textState = {
-//                index: 0,
-//                x: x,
-//                y: y,
-//                left: x
-//            };
-//            textState.text = this.convertEscapeCharacters(text);
-//            textState.height = this.calcTextHeight(textState, false);
-//            while (textState.index < textState.text.length) {
-//                this.processCharacter(textState);
-//            }
-//            return textState.x - x;
-//        } else {
-//            return 0;
-//        }
-//    };
-//
-//    DKTools_Sprite.prototype.convertEscapeCharacters = Window_Base.prototype.convertEscapeCharacters;
-//
-//    DKTools_Sprite.prototype.actorName = Window_Base.prototype.actorName;
-//
-//    DKTools_Sprite.prototype.partyMemberName = Window_Base.prototype.partyMemberName;
-//
-//    DKTools_Sprite.prototype.processCharacter = Window_Base.prototype.processCharacter;
-//
-//    DKTools_Sprite.prototype.processNormalCharacter = function(textState) {
-//        var text = textState.text[textState.index++];
-//        var width = this.textWidth(text);
-//        var align = 'left';
-//        this.drawText(text, align, textState.x, textState.y, width * 2, textState.height);
-//        textState.x += width;
-//    };
-//
-//    DKTools_Sprite.prototype.processNewLine = Window_Base.prototype.processNewLine;
-//
-//    DKTools_Sprite.prototype.processNewPage = Window_Base.prototype.processNewPage;
-//
-//    DKTools_Sprite.prototype.obtainEscapeCode = Window_Base.prototype.obtainEscapeCode;
-//
-//    DKTools_Sprite.prototype.obtainEscapeParam = Window_Base.prototype.obtainEscapeParam;
-//
-//    DKTools_Sprite.prototype.processEscapeCharacter = function(code, textState) {
-//        switch (code) {
-//            case 'C':
-//                //this.changeTextColor(this.textColor(this.obtainEscapeParam(textState)));
-//                break;
-//            case 'I':
-//                this.processDrawIcon(this.obtainEscapeParam(textState), textState);
-//                break;
-//            case '{':
-//                this.makeFontBigger();
-//                break;
-//            case '}':
-//                this.makeFontSmaller();
-//                break;
-//        }
-//    };
-//
-//    DKTools_Sprite.prototype.processDrawIcon = Window_Base.prototype.processDrawIcon;
-//
-//    DKTools_Sprite.prototype.makeFontBigger = function() {
-//        if (this.bitmap && this.bitmap.fontSize <= 96) {
-//            this.bitmap.fontSize += 12;
-//        }
-//    };
-//
-//    DKTools_Sprite.prototype.makeFontSmaller = function() {
-//        if (this.bitmap && this.bitmap.fontSize >= 24) {
-//            this.bitmap.fontSize -= 12;
-//        }
-//    };
-//
-//    DKTools_Sprite.prototype.calcTextHeight = function(textState, all) {
-//        var lastFontSize = this.bitmap.fontSize;
-//        var textHeight = 0;
-//        var lines = textState.text.slice(textState.index).split('\n');
-//        var maxLines = all ? lines.length : 1;
-//
-//        for (var i = 0; i < maxLines; i++) {
-//            var maxFontSize = this.bitmap.fontSize;
-//            var regExp = /\x1b[\{\}]/g;
-//            for (;;) {
-//                var array = regExp.exec(lines[i]);
-//                if (array) {
-//                    if (array[0] === '\x1b{') {
-//                        this.makeFontBigger();
-//                    }
-//                    if (array[0] === '\x1b}') {
-//                        this.makeFontSmaller();
-//                    }
-//                    if (maxFontSize < this.bitmap.fontSize) {
-//                        maxFontSize = this.bitmap.fontSize;
-//                    }
-//                } else {
-//                    break;
-//                }
-//            }
-//            textHeight += maxFontSize + 8;
-//        }
-//
-//        this.bitmap.fontSize = lastFontSize;
-//        return textHeight;
-//    };
-//
-//    //DKTools_Sprite.prototype.autoText = function(text, duration) {
-//    //    this.addEventListener('wait', function() {
-//    //
-//    //    }.bind(this));
-//    //};
-//
-//}
 
 /**
  * Рисует круг
@@ -2817,23 +2677,23 @@ DKTools_Base.prototype.drawBitmap = function(object, x1, y1, w1, h1, x2, y2, w2,
  *
  * @return Boolean
  */
-//DKTools_Base.prototype.drawIcon = function(iconIndex, object, y) {
-//    if (!this.hasBitmap() || iconIndex == null) {
-//        return false;
-//    }
-//    if (object && (object.constructor === Point || object.constructor === Object)) {
-//        return this.drawIcon(iconIndex, object.x, object.y);
-//    }
-//    var x = object || 0;
-//    y = y || 0;
-//    var bitmap = ImageManager.loadSystem('IconSet');
-//    var pw = Window_Base._iconWidth;
-//    var ph = Window_Base._iconHeight;
-//    var sx = iconIndex % 16 * pw;
-//    var sy = Math.floor(iconIndex / 16) * ph;
-//    this.bitmap.blt(bitmap, sx, sy, pw, ph, x, y);
-//    return true;
-//};
+DKTools_Base.prototype.drawIcon = function(iconIndex, object, y) {
+    if (!this.hasBitmap() || iconIndex == null) {
+        return false;
+    }
+    if (object && (object.constructor === Point || object.constructor === Object)) {
+        return this.drawIcon(iconIndex, object.x, object.y);
+    }
+    var x = object || 0;
+    y = y || 0;
+    var bitmap = ImageManager.loadSystem('IconSet');
+    var pw = Window_Base._iconWidth;
+    var ph = Window_Base._iconHeight;
+    var sx = iconIndex % 16 * pw;
+    var sy = Math.floor(iconIndex / 16) * ph;
+    this.bitmap.blt(bitmap, sx, sy, pw, ph, x, y);
+    return true;
+};
 
 /**
  * Рисует лицо персонажа
@@ -2856,29 +2716,29 @@ DKTools_Base.prototype.drawBitmap = function(object, x1, y1, w1, h1, x2, y2, w2,
  *
  * @return Boolean
  */
-//DKTools_Base.prototype.drawFace = function(faceName, faceIndex, object, y, width, height) {
-//    if (!this.hasBitmap() || faceName == null || faceIndex == null) {
-//        return false;
-//    }
-//    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
-//        return this.drawFace(faceName, faceIndex, object.x, object.y, object.width, object.height);
-//    }
-//    var x = object || 0;
-//    y = y || 0;
-//    width = width || Window_Base._faceWidth;
-//    height = height || Window_Base._faceHeight;
-//    var bitmap = ImageManager.loadFace(faceName);
-//    var pw = Window_Base._faceWidth;
-//    var ph = Window_Base._faceHeight;
-//    var sw = Math.min(width, pw);
-//    var sh = Math.min(height, ph);
-//    var dx = Math.floor(x + Math.max(width - pw, 0) / 2);
-//    var dy = Math.floor(y + Math.max(height - ph, 0) / 2);
-//    var sx = faceIndex % 4 * pw + (pw - sw) / 2;
-//    var sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
-//    this.bitmap.blt(bitmap, sx, sy, sw, sh, dx, dy);
-//    return true;
-//};
+DKTools_Base.prototype.drawFace = function(faceName, faceIndex, object, y, width, height) {
+    if (!this.hasBitmap() || faceName == null || faceIndex == null) {
+        return false;
+    }
+    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
+        return this.drawFace(faceName, faceIndex, object.x, object.y, object.width, object.height);
+    }
+    var x = object || 0;
+    y = y || 0;
+    width = width || Window_Base._faceWidth;
+    height = height || Window_Base._faceHeight;
+    var bitmap = ImageManager.loadFace(faceName);
+    var pw = Window_Base._faceWidth;
+    var ph = Window_Base._faceHeight;
+    var sw = Math.min(width, pw);
+    var sh = Math.min(height, ph);
+    var dx = Math.floor(x + Math.max(width - pw, 0) / 2);
+    var dy = Math.floor(y + Math.max(height - ph, 0) / 2);
+    var sx = faceIndex % 4 * pw + (pw - sw) / 2;
+    var sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
+    this.bitmap.blt(bitmap, sx, sy, sw, sh, dx, dy);
+    return true;
+};
 
 /**
  * Рисует персонажа
@@ -2897,25 +2757,25 @@ DKTools_Base.prototype.drawBitmap = function(object, x1, y1, w1, h1, x2, y2, w2,
  *
  * @return Boolean
  */
-//DKTools_Base.prototype.drawCharacter = function(characterName, characterIndex, object, y) {
-//    if (!this.hasBitmap()) {
-//        return false;
-//    }
-//    if (object && (object.constructor === Point || object.constructor === Object)) {
-//        return this.drawCharacter(characterName, characterIndex, object.x, object.y);
-//    }
-//    var x = object || 0;
-//    y = y || 0;
-//    var bitmap = ImageManager.loadCharacter(characterName);
-//    var big = ImageManager.isBigCharacter(characterName);
-//    var pw = bitmap.width / (big ? 3 : 12);
-//    var ph = bitmap.height / (big ? 4 : 8);
-//    var n = characterIndex;
-//    var sx = (n % 4 * 3 + 1) * pw;
-//    var sy = (Math.floor(n / 4) * 4) * ph;
-//    this.bitmap.blt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph);
-//    return true;
-//};
+DKTools_Base.prototype.drawCharacter = function(characterName, characterIndex, object, y) {
+    if (!this.hasBitmap()) {
+        return false;
+    }
+    if (object && (object.constructor === Point || object.constructor === Object)) {
+        return this.drawCharacter(characterName, characterIndex, object.x, object.y);
+    }
+    var x = object || 0;
+    y = y || 0;
+    var bitmap = ImageManager.loadCharacter(characterName);
+    var big = ImageManager.isBigCharacter(characterName);
+    var pw = bitmap.width / (big ? 3 : 12);
+    var ph = bitmap.height / (big ? 4 : 8);
+    var n = characterIndex;
+    var sx = (n % 4 * 3 + 1) * pw;
+    var sy = (Math.floor(n / 4) * 4) * ph;
+    this.bitmap.blt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph);
+    return true;
+};
 
 // load methods
 
@@ -3415,27 +3275,26 @@ DKTools_Base.prototype.disable = DKTools_Sprite.prototype._disableSymbols;
 
 //
 
-/**
- * Копирует шрифт из source в target
- * Если какие-то значения отсутствуют, они берутся из standardFont
- *
- * @method _checkFont
- * @private
- *
- * @param {Array | null} [target] - Шрифт-цель
- * @param {Array | null} [source] - Шрифт-источник
- * @param {Array | null} [standardFont] - Стандартный шрифт
- *
- * @return {Array} Шрифт текста
- */
-DKTools_Base.prototype._checkFont = function(target, source, standardFont) {
-    standardFont = standardFont || this.standardFont();
-    target = target || [];
+DKTools_Base.prototype._checkWidth = function(width) {
+    var minWidth = this.minWidth();
+    var maxWidth = this.maxWidth();
+    return (width ? width.clamp(minWidth, maxWidth) : minWidth);
+};
+
+DKTools_Base.prototype._checkHeight = function(height) {
+    var minHeight = this.minHeight();
+    var maxHeight = this.maxHeight();
+    return (height ? height.clamp(minHeight, maxHeight) : minHeight);
+};
+
+DKTools_Base.prototype._checkArray = function(source, standardArray) {
+    var array = [];
     source = source || [];
-    for(var i = 0; i < 3; i++) {
-        target[i] = (source[i] == null ? standardFont[i] : source[i]);
+    standardArray = standardArray || [];
+    for(var i = 0; i < standardArray.length; i++) {
+        array[i] = (source[i] == null ? standardArray[i] : source[i]);
     }
-    return target;
+    return array;
 };
 
 DKTools_Base.prototype._checkPoint = function(x, y, standardPoint) {
@@ -4032,7 +3891,7 @@ DKTools_Base.prototype.updateTextColor = function() {
  *
  * @method updateInputData
  */
-DKTools_Sprite.prototype.updateInputData = function() {
+DKTools_Base.prototype.updateInputData = function() {
     Input.update();
     TouchInput.update();
 };
@@ -4073,13 +3932,6 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         configurable: true
     },
 
-    enteredTime: {
-        get: function() {
-            return this._enteredTime;
-        },
-        configurable: true
-    },
-
     pressedTime: {
         get: function() {
             return this._pressedTime;
@@ -4099,21 +3951,8 @@ Object.defineProperties(DKTools_Sprite.prototype, {
             return this.canvasToLocalY(TouchInput.y);
         },
         configurable: true
-    },
-
-    wheelX: {
-        get: function() {
-            return this._wheelX;
-        },
-        configurable: true
-    },
-
-    wheelY: {
-        get: function() {
-            return this._wheelY;
-        },
-        configurable: true
     }
+
 });
 
 // initialize method
@@ -4144,49 +3983,21 @@ Object.defineProperties(DKTools_Sprite.prototype, {
 */
 DKTools_Sprite.prototype.initialize = function(object, y, width, height) {
 	Sprite.prototype.initialize.call(this);
-    this.clearAll();
-	var x = object, bitmap;
+    DKTools_Base.prototype.initialize.call(this, object, y, width, height);
+	var bitmap;
     if (object) {
         if (object.constructor === Object) {
-            x = object.x;
-            y = object.y || y;
-            width = object.width || width;
-            height = object.height || height;
             bitmap = object.bitmap;
-        }
-        if (object.constructor === Bitmap) {
+        } else if (object.constructor === Bitmap) {
             bitmap = object;
         }
     }
-	this.move(x, y);
-    this.setupAll(object);
-	this.setupSize(width, height);
 	this.setupBitmap(bitmap);
     this.setupLongPressInterval();
     DKTools_Sprite._counter++;
 };
 
 // standard methods
-
-/**
- * Возвращает стандартную ширину текста
- *
- * @method standardTextWidth
- * @return {Number} Стандартная ширина текста
- */
-DKTools_Sprite.prototype.standardDrawWidth = function() {
-    return this.height;
-};
-
-/**
- * Возвращает стандартную высоту текста
- *
- * @method standardTextHeight
- * @return {Number} Стандартная высота текста
- */
-DKTools_Sprite.prototype.standardDrawHeight = function() {
-    return this.width;
-};
 
 /**
  * Возвращает стандартный интервал длительного нажатия
@@ -4317,6 +4128,22 @@ DKTools_Sprite.prototype.setupHeight = function(height) {
     var minHeight = this.minHeight();
     var maxHeight = this.maxHeight();
 	this._bitmapHeight = (height ? height.clamp(minHeight, maxHeight) : minHeight);
+};
+
+/**
+ * Устанавливает размер Bitmap
+ *
+ * @method setupSize
+ *
+ * @param {Number | null} [object = null] - Ширина Bitmap
+ * @param {Number | null} [height = null] - Высота Bitmap
+ */
+DKTools_Sprite.prototype.setupSize = function(object, height) {
+    if (object && object.constructor === Object) {
+        return this.setupSize(object.width, object.height);
+    }
+    this.setupWidth(object);
+    this.setupHeight(height);
 };
 
 /**
@@ -4704,28 +4531,6 @@ DKTools_Sprite.prototype.move = function(object, newY, duration, newOpacity, new
 };
 
 /**
- * Проверяет ширину и высоту Bitmap на соответствие минимальным значениям
- * Возвращает true, если изменение произошло
- * 
- * @method checkSize
- * @return Number
-*/
-DKTools_Sprite.prototype.checkSize = function() {
-	var minWidth = this.minWidth();
-	var minHeight = this.minHeight();
-	var changed = 0;
-	if (this._bitmapWidth < minWidth) {
-		this.setupWidth(minWidth);
-		changed++;
-	}
-	if (this._bitmapHeight < minHeight) {
-		this.setupHeight(minHeight);
-		changed++;
-	}
-	return changed;
-};
-
-/**
  * Возвращает минимальную ширину Bitmap
  * Returns the minimum width of the Bitmap
  *
@@ -5067,118 +4872,6 @@ if (DKToolsUtils.debug) {
 
 }
 
-/**
- * Рисует иконку из IconSet
- * Возвращает true, если Bitmap существует
- *
- * @method drawIcon
- *
- * @param {Number} iconIndex - ID иконки
- * @param {Number || Point || Object || null} object - Координата X или Point, или Объект типа {}
- * @param {Number || null} y - Координата Y
- *
- * @return Boolean
-*/
-DKTools_Sprite.prototype.drawIcon = function(iconIndex, object, y) {
-    if (!this.hasBitmap() || iconIndex == null) {
-        return false;
-    }
-    if (object && (object.constructor === Point || object.constructor === Object)) {
-        return this.drawIcon(iconIndex, object.x, object.y);
-    }
-    var x = object || 0;
-    y = y || 0;
-    var bitmap = ImageManager.loadSystem('IconSet');
-    var pw = Window_Base._iconWidth;
-    var ph = Window_Base._iconHeight;
-    var sx = iconIndex % 16 * pw;
-    var sy = Math.floor(iconIndex / 16) * ph;
-    this.bitmap.blt(bitmap, sx, sy, pw, ph, x, y);
-    return true;
-};
-
-/**
- * Рисует лицо персонажа
- * Возвращает true, если Bitmap существует
- *
- * @method drawFace
- *
- * @param {String} faceName - Название файла
- * @param {Number} faceIndex - Номер лица
- * @param {Number || Rectangle || Object || null} object - Координата X или область, или Объект типа {}
- * @param {Number || null} y - Координата Y
- * @param {Number || null} width - Ширина области
- * @param {Number || null} height - Высота области
- *
- * object properties
- * @property {Number || null} x - Координата X
- * @property {Number || null} y - Координата Y
- * @property {Number || null} width - Ширина области
- * @property {Number || null} height - Высота области
- *
- * @return Boolean
- */
-DKTools_Sprite.prototype.drawFace = function(faceName, faceIndex, object, y, width, height) {
-    if (!this.hasBitmap() || faceName == null || faceIndex == null) {
-        return false;
-    }
-    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
-        return this.drawFace(faceName, faceIndex, object.x, object.y, object.width, object.height);
-    }
-    var x = object || 0;
-    y = y || 0;
-    width = width || Window_Base._faceWidth;
-    height = height || Window_Base._faceHeight;
-    var bitmap = ImageManager.loadFace(faceName);
-    var pw = Window_Base._faceWidth;
-    var ph = Window_Base._faceHeight;
-    var sw = Math.min(width, pw);
-    var sh = Math.min(height, ph);
-    var dx = Math.floor(x + Math.max(width - pw, 0) / 2);
-    var dy = Math.floor(y + Math.max(height - ph, 0) / 2);
-    var sx = faceIndex % 4 * pw + (pw - sw) / 2;
-    var sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
-    this.bitmap.blt(bitmap, sx, sy, sw, sh, dx, dy);
-    return true;
-};
-
-/**
- * Рисует персонажа
- * Возвращает true, если Bitmap существует
- *
- * @method drawCharacter
- *
- * @param {String} characterName - Название файла
- * @param {Number} characterIndex - Номер персонажа
- * @param {Number || Point || Object || null} object - Координата X или Point, или Объект типа {}
- * @param {Number || null} y - Координата Y
- *
- * object properties
- * @property {Number || null} x - Координата X
- * @property {Number || null} y - Координата Y
- *
- * @return Boolean
- */
-DKTools_Sprite.prototype.drawCharacter = function(characterName, characterIndex, object, y) {
-    if (!this.hasBitmap()) {
-        return false;
-    }
-    if (object && (object.constructor === Point || object.constructor === Object)) {
-        return this.drawCharacter(characterName, characterIndex, object.x, object.y);
-    }
-    var x = object || 0;
-    y = y || 0;
-    var bitmap = ImageManager.loadCharacter(characterName);
-    var big = ImageManager.isBigCharacter(characterName);
-    var pw = bitmap.width / (big ? 3 : 12);
-    var ph = bitmap.height / (big ? 4 : 8);
-    var n = characterIndex;
-    var sx = (n % 4 * 3 + 1) * pw;
-    var sy = (Math.floor(n / 4) * 4) * ph;
-    this.bitmap.blt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph);
-    return true;
-};
-
 // load methods
 
 /**
@@ -5393,9 +5086,10 @@ DKTools_Sprite.prototype.updateAll = function() {
  * @method updateBitmap
 */
 DKTools_Sprite.prototype.updateBitmap = function() {
-    if (this.isFixed() || !this.clear()) {
+    if (!this.hasBitmap() || this.isFixed()) {
         return;
     }
+    this.clear();
 	this.updateFont();
     this.updateTextColor();
     this.updateBackground();
@@ -11814,35 +11508,12 @@ Object.defineProperties(DKTools_Window.prototype, {
  */
 DKTools_Window.prototype.initialize = function(object, y, width, height) {
     Window.prototype.initialize.call(this);
-    this.clearAll();
-    this.move(object, y);
-    this.setupAll(object);
-    this.setupSize(width, height);
+    DKTools_Base.prototype.initialize.call(this, object, y, width, height);
     this.updatePadding();
     DKTools_Window._counter++;
 };
 
 // standard methods
-
-/**
- * Возвращает стандартную ширину текста
- *
- * @method standardTextWidth
- * @return {Number} Стандартная ширина текста
- */
-DKTools_Window.prototype.standardDrawWidth = function() {
-    return this.bitmap.height;
-};
-
-/**
- * Возвращает стандартную высоту текста
- *
- * @method standardTextHeight
- * @return {Number} Стандартная высота текста
- */
-DKTools_Window.prototype.standardDrawHeight = function() {
-    return this.bitmap.width;
-};
 
 /**
  * Возвращает стандартное значение коодинаты X для спрайта
@@ -11916,15 +11587,20 @@ DKTools_Window.prototype.setupAll = function(object) {
 };
 
 DKTools_Window.prototype.setupWidth = function(width) {
-    var minWidth = this.minWidth();
-    var maxWidth = this.maxWidth();
-    this.width = (width ? width.clamp(minWidth, maxWidth) : minWidth);
+    this.width = this._checkWidth(width);
 };
 
 DKTools_Window.prototype.setupHeight = function(height) {
-    var minHeight = this.minHeight();
-    var maxHeight = this.maxHeight();
-    this.height = (height ? height.clamp(minHeight, maxHeight) : minHeight);
+    this.height = this._checkHeight(height);
+};
+
+DKTools_Window.prototype.setupSize = function(object, height) {
+    if (object && object.constructor === Object) {
+        return this.setupSize(object.width, object.height);
+    }
+    object = this._checkWidth(object);
+    height = this._checkHeight(height);
+    Window.prototype.move.call(this, this.x, this.y, object, height);
 };
 
 /**
@@ -11934,7 +11610,7 @@ DKTools_Window.prototype.setupHeight = function(height) {
  * @param {Array || null} tone - Тон окна
 */
 DKTools_Window.prototype.setupTone = function(tone) {
-    this._tone = this._checkFont(this._tone, tone, this.standardTone());
+    this._tone = this._checkArray(tone, this.standardTone());
 };
 
 /**
@@ -11944,7 +11620,7 @@ DKTools_Window.prototype.setupTone = function(tone) {
  * @param {Array || null} opacity - Прозрачность окна
 */
 DKTools_Window.prototype.setupOpacity = function(opacity) {
-    this._opacity = this._checkFont(this._opacity, opacity, this.standardOpacity());
+    this._opacity = this._checkArray(opacity, this.standardOpacity());
 };
 
 /**
@@ -12007,7 +11683,7 @@ DKTools_Window.prototype.setTone = function(tone, blockUpdate) {
         return false;
     }
     if (!blockUpdate) {
-        this.updateWindow();
+        this.updateTone();
     }
     return true;
 };
@@ -12031,7 +11707,7 @@ DKTools_Window.prototype.setOpacity = function(opacity, blockUpdate) {
         return false;
     }
     if (!blockUpdate) {
-        this.updateWindow();
+        this.updateOpacity();
     }
     return true;
 };
@@ -12044,7 +11720,7 @@ DKTools_Window.prototype.setOpacity = function(opacity, blockUpdate) {
  * @param {Boolean || null} block -
  * @return Boolean
 */
-DKTools_Window.prototype.setPaintOpacity = function(opacity, block) {
+DKTools_Window.prototype.setPaintOpacity = function(opacity, blockUpdate) {
 	if (this._paintOpacity === opacity) {
         return false;
     }
@@ -12053,9 +11729,8 @@ DKTools_Window.prototype.setPaintOpacity = function(opacity, block) {
 	if (lastOpacity === this._paintOpacity) {
         return false;
     }
-	if (!block) {
-        //this.updateWindow();
-        this.updatePaintOpacity();
+	if (!blockUpdate) {
+        this.updateWindow();
     }
 	return true;
 };
@@ -12075,30 +11750,58 @@ DKTools_Window.prototype.createContents = function() {
     this.contents = new Bitmap(this.contentsWidth(), this.contentsHeight());
 };
 
-//DKTools_Window.prototype.createBitmap = DKTools_Window.prototype.createContents;
+/**
+ * Обновляет перемещение спрайта
+ *
+ * @method _updateMove
+ * @private
+ *
+ * @param {Number} newX - Новая координата X
+ * @param {Number} newY - Новая координата Y
+ * @param {Number} newOpacity - Новая прозрачность
+ * @param {Number} newScaleX - Новое масштабирование по X
+ * @param {Number} newScaleY - Новое масштабирование по Y
+ * @param {DKToolsEvent} event - Событие
+ */
+DKTools_Window.prototype._updateMove = function(newX, newY, newOpacity, event) {
+    var duration = event.duration;
+    var x = (this.x * (duration - 1) + newX) / duration;
+    var y = (this.y * (duration - 1) + newY) / duration;
+    var opacity = (this.opacity * (duration - 1) + newOpacity) / duration;
+    this.move(x, y);
+    this.setupOpacity(opacity);
+};
 
 /**
- * Проверяет ширину и высоту окна на соответствие минимальным значениям
- * Возвращает true, если изменение произошло
-
- * @method checkSize
- * @return Boolean
+ * Перемещает спрайт
+ *
+ * @method move
+ *
+ * @param {Number | Point | Object | null} [object] - Координата X или Point, или Объект типа {}
+ * @param {Number | null} [newY] - Координата Y
+ * @param {Number | null} [duration] - Длительность перемещения
+ * @param {Number | null} [newOpacity] - Новая прозрачность
+ * @param {Number | null} [newScaleX] - Новое масштабирование по X
+ * @param {Number | null} [newScaleY] - Новое масштабирование по Y
+ *
+ * @param {Number | null} [object.x] - Координата X
+ * @param {Number | null} [object.y] - Координата Y
  */
-DKTools_Window.prototype.checkSize = function() {
-	var minWidth = this.minWidth();
-	var minHeight = this.minHeight();
-	var changed = 0;
-	if (this.width < minWidth)
-	{
-		this.setupWidth(minWidth);
-		changed++;
-	}
-	if (this.height < minHeight)
-	{
-		this.setupHeight(minHeight);
-		changed++;
-	}
-	return changed;
+DKTools_Window.prototype.move = function(object, newY, duration, newOpacity) {
+    if (object && (object.constructor === Point || object.constructor === Object)) {
+        return Window.prototype.move.call(this, object.x, object.y, this.width, this.height);
+    }
+    duration = duration || 0;
+    if (duration > 0) {
+        var newX = (object == null ? this.x : object);
+        newY = (newY == null ? this.y : newY);
+        newOpacity = (newOpacity == null ? this.opacity : newOpacity);
+        return this.addEvent('wait', this._updateMove.bind(this, newX, newY, newOpacity), duration);
+    } else {
+        var newX = object || 0;
+        newY = newY || 0;
+        Window.prototype.move.call(this, newX, newY, this.width, this.height);
+    }
 };
 
 /**
@@ -12188,6 +11891,10 @@ DKTools_Window.prototype.updateWindow = function() {
  * @method updateContents
 */
 DKTools_Window.prototype.updateContents = function() {
+    if (!this.hasBitmap()) {
+        return;
+    }
+    this.clear();
     this.updateFont();
     this.updateTextColor();
     this.updatePaintOpacity();
