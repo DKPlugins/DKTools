@@ -42,19 +42,19 @@ var DKLocalization = DKLocalization || {};
  */
 
 DKLocalization.DKTools = {
-    update_required: {
+    updateRequired: {
         ru: 'Требуется обновить плагин "DKTools" до минимальной версии',
         en: 'Required to update the plugin "DKTools" to minimal version'
     },
-    installed_version: {
+    installedVersion: {
         ru: 'Установлено',
         en: 'Installed'
     },
-    checkbox_standard_checked_text: {
+    checkBoxStandardCheckedText: {
         ru: 'Да',
         en: 'Yes'
     },
-    checkbox_standard_unchecked_text: {
+    checkBoxStandardUncheckedText: {
         ru: 'Нет',
         en: 'No'
     }
@@ -64,7 +64,6 @@ DKLocalization.DKTools = {
 // End of plugin settings
 // Конец настройки плагина
 //===========================================================================
-
 
 /*:
 * @plugindesc v.0.92 beta
@@ -340,6 +339,12 @@ DKToolsUtils.boolean = {};
 DKToolsUtils.boolean.ru = ['нет', 'выключить', 'выкл', 'отключить', 'ложь', 'убрать'];
 DKToolsUtils.boolean.en = ['false', 'disable', 'deactivate', 'no', 'not', 'off'];
 
+/**
+ *
+ *
+ * @method booleanArray
+ * @return {Array}
+ */
 DKToolsUtils.booleanArray = function() {
     var array = [];
     for(var locale in DKToolsUtils.boolean) {
@@ -348,6 +353,15 @@ DKToolsUtils.booleanArray = function() {
     return array;
 };
 
+/**
+ *
+ *
+ * @method toBoolean
+ *
+ * @param {String | Number | null} value
+ *
+ * @return {Boolean}
+ */
 DKToolsUtils.toBoolean = function(value) {
     if (value == null || Number(value) === 0) {
         return false;
@@ -362,62 +376,115 @@ DKToolsUtils.toBoolean = function(value) {
     return true;
 };
 
+/**
+ *
+ *
+ * @method splitString
+ *
+ * @param {String} string
+ *
+ * @return {Array}
+ */
 DKToolsUtils.splitString = function(string) {
     string = string.replace(/\s*\,\s*/g, ',');
     return string.split(',');
 };
 
-DKToolsUtils.stringToNumberArray = function(object) {
-    if (!object) {
-        return [];
+/**
+ *
+ *
+ * @method stringToNumberArray
+ *
+ * @param {String} string
+ *
+ * @return {Array}
+ */
+DKToolsUtils.stringToNumberArray = function(string) {
+    if (string instanceof String) {
+        var array = this.splitString(string);
+        return array.map(function(value) {
+            return Number(value);
+        });
     }
-    if (object instanceof String) {
-        object = this.splitString(object);
-    }
-    return object.map(function(value) {
-        return Number(value);
-    });
+    return [];
 };
 
-DKToolsUtils.stringToBooleanArray = function(object) {
-    if (!object) {
-        return [];
+/**
+ *
+ *
+ * @method stringToBooleanArray
+ *
+ * @param {String} string
+ *
+ * @return {Array}
+ */
+DKToolsUtils.stringToBooleanArray = function(string) {
+    if (string instanceof String) {
+        var array = this.splitString(string);
+        return array.map(function(value) {
+            return this.toBoolean(value);
+        }, this);
     }
-    if (object instanceof String) {
-        object = this.splitString(object);
-    }
-    return object.map(function(value) {
-        return this.toBoolean(value);
-    }, this);
+    return [];
 };
 
-DKToolsUtils.stringToFontArray = function(object) {
-    var standardFontArray = this.standardFontArray();
-    if (!object || object.length === 0) {
-        return standardFontArray;
+/**
+ *
+ *
+ * @method stringToFontArray
+ *
+ * @param {String} string
+ *
+ * @return {Array}
+ */
+DKToolsUtils.stringToFontArray = function(string) {
+    var standardFont = this.standardFontArray();
+    var font = [];
+    if (string instanceof String) {
+        var array = this.splitString(string);
+        font[0] = (array[0] === '-1' ? standardFont[0] : array[0]);
+        font[1] = this.toBoolean(array[1]);
+        font[2] = (array[2] === '-1' ? standardFont[2] : Number(array[2]));
     }
-    if (object instanceof String) {
-        object = this.splitString(object);
-    }
-    var array = [];
-    array[0] = (object[0] === '-1' ? standardFontArray[0] : object[0]);
-    array[1] = this.toBoolean(object[1]);
-    array[2] = (object[2] === '-1' ? standardFontArray[2] : Number(object[2]));
-    return array;
+    return font;
 };
 
+/**
+ *
+ *
+ * @method standardFontName
+ * @return {String}
+ */
 DKToolsUtils.standardFontName = function() {
     return 'GameFont';
 };
 
+/**
+ *
+ *
+ * @method standardFontItalic
+ * @return {Boolean}
+ */
 DKToolsUtils.standardFontItalic = function() {
     return false;
 };
 
+/**
+ *
+ *
+ * @method standardFontSize
+ * @return {Number}
+ */
 DKToolsUtils.standardFontSize = function() {
     return 28;
 };
 
+/**
+ *
+ *
+ * @method standardFontArray
+ * @return {Array}
+ */
 DKToolsUtils.standardFontArray = function() {
     return [this.standardFontName(), this.standardFontItalic(), this.standardFontSize()];
 };
@@ -431,13 +498,17 @@ DKToolsUtils.standardFontArray = function() {
  * @param {Object} source - Откуда копируем
 */
 DKToolsUtils.mixin = function(target, source) {
-    var keys = Object.getOwnPropertyNames(source), key, prop;
+    var keys = Object.getOwnPropertyNames(source);
     keys.forEach(function(key) {
         var property = Object.getOwnPropertyDescriptor(source, key);
         Object.defineProperty(target, key, property);
     });
 };
 
+/**
+ * @method _checkVersion
+ * @private
+ */
 DKToolsUtils._checkVersion = function() {
     var data = [];
     for(var plugin in DKToolsVersion) {
@@ -445,7 +516,7 @@ DKToolsUtils._checkVersion = function() {
         data.push(version);
     }
     var max = Math.max.apply(Math, data);
-    var error = DKLocalizationManager.DKTools('#update_required#: %1 (#installed_version#: %2)', [max, DKVersion.DKTools]);
+    var error = DKLocalizationManager.DKTools('#updateRequired#: %1 (#installedVersion#: %2)', [max, DKVersion.DKTools]);
     if (max > DKVersion.DKTools) {
         throw new Error(error);
     }
@@ -471,10 +542,27 @@ function DKToolsInputManager() {
 
 DKToolsInputManager._ignoredKeyCodes = [8, 13, 27];
 
+/**
+ *
+ *
+ * @method _isIgnored
+ * @private
+ *
+ * @param {Number} keyCode
+ * @return {Boolean}
+ */
 DKToolsInputManager._isIgnored = function(keyCode) {
 	return DKToolsInputManager._ignoredKeyCodes.contains(keyCode);
 };
 
+/**
+ *
+ *
+ * @method _onKeyPress
+ * @private
+ *
+ * @param event
+ */
 DKToolsInputManager._onKeyPress = function(event) {
 	if (this._isIgnored(event.keyCode)) {
         return;
@@ -486,14 +574,31 @@ DKToolsInputManager._onKeyPress = function(event) {
     }
 };
 
+/**
+ *
+ *
+ * @method clear
+ */
 DKToolsInputManager.clear = function() {
 	this._text = '';
 };
 
+/**
+ *
+ *
+ * @method hasText
+ * @return {Boolean}
+ */
 DKToolsInputManager.hasText = function() {
 	return !!this._text;
 };
 
+/**
+ *
+ *
+ * @method getText
+ * @return {String}
+ */
 DKToolsInputManager.getText = function() {
 	if (!this.hasText()) {
         return '';
@@ -557,6 +662,12 @@ TouchInput.update = function() {
     DKTools_TouchInput_update.call(this);
 };
 
+/**
+ *
+ *
+ * @method isMouseMoved
+ * @return {Boolean}
+ */
 TouchInput.isMouseMoved = function() {
     return this._mouseMoved;
 };
@@ -577,113 +688,157 @@ TouchInput._onMouseMove = function(event) {
 // Bitmap
 //===========================================================================
 
-if (DKToolsUtils.debug) {
+/* NOT FOR RELEASE
 
-    /* NOT FOR RELEASE
+ Bitmap.prototype.rotate = function(angle) {
+ //var context = this._context;
+ //context.save();
+ //context.rotate(angle);
+ //context.restore();
+ //this._setDirty();
+ };
 
-     Bitmap.prototype.rotate = function(angle) {
-     //var context = this._context;
-     //context.save();
-     //context.rotate(angle);
-     //context.restore();
-     //this._setDirty();
-     };
+ Bitmap.prototype.strokeText = function(text, align, x, y, width, height) {
+ //var context = this._context;
+ //context.save();
+ //context.rotate(angle);
+ //context.restore();
+ //this._setDirty();
+ //if (text !== undefined)
+ //{
+ //    var tx = x;
+ //    var ty = y + lineHeight - (lineHeight - this.fontSize * 0.7) / 2;
+ //    var context = this._context;
+ //    var alpha = context.globalAlpha;
+ //    maxWidth = maxWidth || 0xffffffff;
+ //    if (align === 'center') {
+ //        tx += maxWidth / 2;
+ //    }
+ //    if (align === 'right') {
+ //        tx += maxWidth;
+ //    }
+ //    context.save();
+ //    context.font = this._makeFontNameText();
+ //    context.textAlign = align;
+ //    context.textBaseline = 'alphabetic';
+ //    context.globalAlpha = 1;
+ //    this._drawTextOutline(text, tx, ty, maxWidth);
+ //    context.globalAlpha = alpha;
+ //    this._drawTextBody(text, tx, ty, maxWidth);
+ //    context.restore();
+ //    this._setDirty();
+ //}
+ };
 
-     Bitmap.prototype.strokeText = function(text, align, x, y, width, height) {
-     //var context = this._context;
-     //context.save();
-     //context.rotate(angle);
-     //context.restore();
-     //this._setDirty();
-     //if (text !== undefined)
-     //{
-     //    var tx = x;
-     //    var ty = y + lineHeight - (lineHeight - this.fontSize * 0.7) / 2;
-     //    var context = this._context;
-     //    var alpha = context.globalAlpha;
-     //    maxWidth = maxWidth || 0xffffffff;
-     //    if (align === 'center') {
-     //        tx += maxWidth / 2;
-     //    }
-     //    if (align === 'right') {
-     //        tx += maxWidth;
-     //    }
-     //    context.save();
-     //    context.font = this._makeFontNameText();
-     //    context.textAlign = align;
-     //    context.textBaseline = 'alphabetic';
-     //    context.globalAlpha = 1;
-     //    this._drawTextOutline(text, tx, ty, maxWidth);
-     //    context.globalAlpha = alpha;
-     //    this._drawTextBody(text, tx, ty, maxWidth);
-     //    context.restore();
-     //    this._setDirty();
-     //}
-     };
+ Bitmap.prototype.setPixel = function(x, y, color) {
+ };
 
-     Bitmap.prototype.setPixel = function(x, y, color) {
-     };
+ Bitmap.prototype.radialFillRect = function(color1, color2, vertical, x, y, width, height, radius1, radius2) {
+ var context = this._context;
+ var grad;
+ if (vertical)
+ grad = context.createRadialGradient(x, y, radius1, x, y + height, radius2);
+ else
+ //grad = context.createRadialGradient(x, y, radius1, x + width, y, radius2);
+ grad = context.createRadialGradient((x + width) / 2, (y + height) / 2, 5, (x + width) / 2, (y + height) / 2, 100);
+ grad.addColorStop(0, color1);
+ grad.addColorStop(1, color2);
+ context.save();
+ context.fillStyle = grad;
+ context.fillRect(x, y, width, height);
+ context.restore();
+ this._setDirty();
+ };
 
-     Bitmap.prototype.radialFillRect = function(color1, color2, vertical, x, y, width, height, radius1, radius2) {
-     var context = this._context;
-     var grad;
-     if (vertical)
-     grad = context.createRadialGradient(x, y, radius1, x, y + height, radius2);
-     else
-     //grad = context.createRadialGradient(x, y, radius1, x + width, y, radius2);
-     grad = context.createRadialGradient((x + width) / 2, (y + height) / 2, 5, (x + width) / 2, (y + height) / 2, 100);
-     grad.addColorStop(0, color1);
-     grad.addColorStop(1, color2);
-     context.save();
-     context.fillStyle = grad;
-     context.fillRect(x, y, width, height);
-     context.restore();
-     this._setDirty();
-     };
+ */
 
-     */
+/**
+ *
+ *
+ * @method drawLine
+ *
+ * @param {Number} x1
+ * @param {Number} y1
+ * @param {Number} x2
+ * @param {Number} y2
+ * @param {String} color
+ */
+Bitmap.prototype.drawLine = function(x1, y1, x2, y2, color) {
+    var context = this._context;
+    context.save();
+    context.strokeStyle = color;
+    context.moveTo(x1, y1);
+    context.lineTo(x2, y2);
+    context.stroke();
+    context.restore();
+    this._setDirty();
+};
 
-    Bitmap.prototype.strokeRect = function (x, y, width, height, color) {
-        var context = this._context;
-        context.save();
-        context.strokeStyle = color;
-        context.strokeRect(x, y, width, height);
-        context.restore();
-        this._setDirty();
-    };
+/**
+ *
+ *
+ * @method strokeRect
+ *
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Number} width
+ * @param {Number} height
+ * @param {String} color
+ */
+Bitmap.prototype.strokeRect = function(x, y, width, height, color) {
+    var context = this._context;
+    context.save();
+    context.strokeStyle = color;
+    context.strokeRect(x, y, width, height);
+    context.restore();
+    this._setDirty();
+};
 
-    Bitmap.prototype.drawLine = function (x1, y1, x2, y2, color) {
-        var context = this._context;
-        context.save();
-        context.strokeStyle = color;
-        context.moveTo(x1, y1);
-        context.lineTo(x2, y2);
-        context.stroke();
-        context.restore();
-        this._setDirty();
-    };
+/**
+ *
+ *
+ * @method fillArc
+ *
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Number} radius
+ * @param {Number} startAngle
+ * @param {Number} endAngle
+ * @param {String} color
+ * @param {Boolean} antiClockwise
+ */
+Bitmap.prototype.fillArc = function (x, y, radius, startAngle, endAngle, color, antiClockwise) {
+    var context = this._context;
+    context.save();
+    context.fillStyle = color;
+    context.arc(x, y, radius, startAngle, endAngle, antiClockwise);
+    context.fill();
+    context.restore();
+    this._setDirty();
+};
 
-    Bitmap.prototype.fillArc = function (x, y, radius, start_angle, end_angle, color, anti_clock_wise) {
-        var context = this._context;
-        context.save();
-        context.fillStyle = color;
-        context.arc(x, y, radius, start_angle, end_angle, anti_clock_wise);
-        context.fill();
-        context.restore();
-        this._setDirty();
-    };
-
-    Bitmap.prototype.strokeArc = function (x, y, radius, start_angle, end_angle, color, anti_clock_wise) {
-        var context = this._context;
-        context.save();
-        context.strokeStyle = color;
-        context.arc(x, y, radius, start_angle, end_angle, anti_clock_wise);
-        context.stroke();
-        context.restore();
-        this._setDirty();
-    };
-
-}
+/**
+ *
+ *
+ * @method strokeArc
+ *
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Number} radius
+ * @param {Number} startAngle
+ * @param {Number} endAngle
+ * @param {String} color
+ * @param {Boolean} antiClockwise
+ */
+Bitmap.prototype.strokeArc = function (x, y, radius, startAngle, endAngle, color, antiClockwise) {
+    var context = this._context;
+    context.save();
+    context.strokeStyle = color;
+    context.arc(x, y, radius, startAngle, endAngle, antiClockwise);
+    context.stroke();
+    context.restore();
+    this._setDirty();
+};
 
 /**
  * Клонирует Bitmap
@@ -705,19 +860,46 @@ Bitmap.prototype.clone = function() {
 
 Point.emptyPoint = new Point(0, 0);
 
+/**
+ *
+ *
+ * @method isEmpty
+ * @return {Boolean}
+ */
 Point.prototype.isEmpty = function() {
     return this.x === 0 && this.y === 0;
 };
 
+/**
+ *
+ *
+ * @method toArray
+ * @return {Array}
+ */
 Point.prototype.toArray = function() {
     return [this.x, this.y];
 };
 
+/**
+ *
+ *
+ * @method equals
+ *
+ * @param {Point} point
+ *
+ * @return {Boolean}
+ */
 Point.prototype.equals = function(point) {
     point = point || Point.emptyPoint;
     return this.toArray().equals(point.toArray());
 };
 
+/**
+ *
+ *
+ * @method clone
+ * @return {Point}
+ */
 Point.prototype.clone = function() {
     return new Point(this.x, this.y);
 };
@@ -726,19 +908,46 @@ Point.prototype.clone = function() {
 // Rectangle
 //===========================================================================
 
+/**
+ *
+ *
+ * @method isEmpty
+ * @return {Boolean}
+ */
 Rectangle.prototype.isEmpty = function() {
     return this.x === 0 && this.y === 0 && this.width === 0 && this.height === 0;
 };
 
+/**
+ *
+ *
+ * @method toArray
+ * @return {Array}
+ */
 Rectangle.prototype.toArray = function() {
     return [this.x, this.y, this.width, this.height];
 };
 
+/**
+ *
+ *
+ * @method equals
+ *
+ * @param {Rectangle} rect
+ *
+ * @return {Boolean}
+ */
 Rectangle.prototype.equals = function(rect) {
     rect = rect || Rectangle.emptyRectangle;
     return this.toArray().equals(rect.toArray());
 };
 
+/**
+ *
+ *
+ * @method clone
+ * @return {Rectangle}
+ */
 Rectangle.prototype.clone = function() {
     return new Rectangle(this.x, this.y, this.width, this.height);
 };
@@ -1898,34 +2107,20 @@ DKTools_Base.prototype.setupAlign = function(align) {
 
 // set methods
 
-DKTools_Base.prototype._set = function(setupMethod, lastValue, newValue, onChangeMethod) {
-    if (lastValue instanceof Array && lastValue.equals(newValue) ||
-        lastValue === newValue) {
-            return false;
-    }
-    setupMethod.call(this, newValue);
-    if (lastValue instanceof Array && lastValue.equals(newValue) ||
-        lastValue === newValue) {
-            return false;
-    }
-    if (onChangeMethod) {
-        onChangeMethod.call(this);
-    }
-    return true;
-};
-
 DKTools_Base.prototype.set = function(paramType, newValue, onChangeType) {
     var funcType = paramType.charAt(0).toUpperCase() + paramType.substr(1);
     var setupMethod = this['setup%1'.format(funcType)];
-    var lastValue = this['_%1'.format(paramType)];
-    if (lastValue instanceof Array && lastValue.equals(newValue) ||
-        lastValue === newValue) {
-            return false;
+    var lastValueType = '_%1'.format(paramType);
+    if (!this.hasOwnProperty(lastValueType)) {
+        lastValueType = this['%1'.format(paramType)];
+    }
+    var lastValue = this[lastValueType];
+    if (lastValue instanceof Array && lastValue.equals(newValue) || lastValue === newValue) {
+        return false;
     }
     setupMethod.call(this, newValue);
-    if (lastValue instanceof Array && lastValue.equals(newValue) ||
-        lastValue === newValue) {
-            return false;
+    if (lastValue instanceof Array && lastValue.equals(newValue) || lastValue === newValue) {
+        return false;
     }
     switch(onChangeType) {
         case 0:
@@ -1963,165 +2158,28 @@ DKTools_Base.prototype.set = function(paramType, newValue, onChangeType) {
 DKTools_Base.prototype.setAll = function(object) {
     object = object || {};
     var changed = 0;
-    //var block = true;
-    this._activateSetAllMode();
     if (this.set('font', object.font)) {
         changed++;
     }
-    /*
-    if (this.setFont(object.font, block)) {
+    if (this.set('textColor', object.textColor)) {
         changed++;
     }
-    if (this.setTextColor(object.textColor, block)) {
+    if (this.set('paintOpacity', object.paintOpacity)) {
         changed++;
     }
-    if (this.setPaintOpacity(object.paintOpacity, block)) {
+    if (this.set('backgroundColor', object.backgroundColor)) {
         changed++;
     }
-    if (this.setBackgroundColor(object.backgroundColor, block)) {
+    if (this.set('text', object.text)) {
         changed++;
     }
-    if (this.setText(object.text, block)) {
+    if (this.set('align', object.align)) {
         changed++;
     }
-    if (this.setAlign(object.align, block)) {
+    if (this.set('opacity', object.opacity)) {
         changed++;
     }
-    if (this.setOpacity(object.opacity)) {
-        changed++;
-    }
-    */
-    this._deactivateSetAllMode();
     return changed;
-};
-
-/**
- * Изменяет видимость спрайта
- *
- * @method setVisible
- *
- * @param {Boolean | null} [visible = null] - Видимость спрайта
- *
- * @return {Boolean} Возвращает true, если изменение произошло
- */
-DKTools_Base.prototype.setVisible = function(visible) {
-    if (this.visible === visible) {
-        return false;
-    }
-    var lastVisible = this.visible;
-    this.setupVisible(visible);
-    return lastVisible !== this.visible;
-};
-
-/**
- * Изменяет активность спрайта
- *
- * @method setActive
- *
- * @param {Boolean | null} [active = null] - Активность спрайта
- *
- * @return {Boolean} Возвращает true, если изменение произошло
- */
-DKTools_Base.prototype.setActive = function(active) {
-    if (this.active === active) {
-        return false;
-    }
-    var lastActive = this.active;
-    this.setupActive(active);
-    return lastActive !== this.active;
-};
-
-/**
- * Изменяет шрифт текста
- * Возвращает true, если изменение произошло
- *
- * @method setFont
- *
- * @param {Array || null} font - Шрифт текста
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @return Boolean
- */
-DKTools_Base.prototype.setFont = function(font, blockStart) {
-    var onChangeMethod = (blockStart ? null : this.start);
-    return this._set(this.setupFont, this._font, font, onChangeMethod);
-};
-
-/**
- * Изменяет цвет текста
- * Возвращает true, если изменение произошло
- *
- * @method setTextColor
- *
- * @param {String || null} color - Цвет текста
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-DKTools_Base.prototype.setTextColor = function(color, blockRefresh) {
-    var onChangeMethod = (blockRefresh ? null : this.refreshAll);
-    return this._set(this.setupTextColor, this._textColor, color, onChangeMethod);
-};
-
-/**
- * Изменяет прозрачность рисования окна
-
- * @method setPaintOpacity
- * @param {Number || null} opacity - Прозрачность рисования окна
- * @param {Boolean || null} block -
- * @return Boolean
- */
-DKTools_Base.prototype.setPaintOpacity = function(opacity, blockRefresh) {
-    var onChangeMethod = (blockRefresh ? null : this.refreshAll);
-    return this._set(this.setupPaintOpacity, this._paintOpacity, opacity, onChangeMethod);
-};
-
-/**
- * Изменяет цвет фона
- * Возвращает true, если изменение произошло
- *
- * @method setBackgroundColor
- *
- * @param {String || null} color - Цвет фона
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-DKTools_Base.prototype.setBackgroundColor = function(color, blockRefresh) {
-    var onChangeMethod = (blockRefresh ? null : this.refreshAll);
-    return this._set(this.setupBackgroundColor, this._backgroundColor, color, onChangeMethod);
-};
-
-/**
- * Изменяет отображаемый текст
- * Возвращает true, если изменение произошло
- *
- * @method setText
- *
- * @param {String || null} text - Отображаемый текст
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @return Boolean
- */
-DKTools_Base.prototype.setText = function(text, blockStart) {
-    var onChangeMethod = (blockStart ? null : this.start);
-    return this._set(this.setupText, this._text, text, onChangeMethod);
-};
-
-/**
- * Изменяет выравнивание текста
- * Возвращает true, если изменение произошло
- *
- * @method setAlign
- *
- * @param {String || null} align - Выравнивание текста
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-DKTools_Base.prototype.setAlign = function(align, blockRefresh) {
-    var onChangeMethod = (blockRefresh ? null : this.start);
-    return this._set(this.setupAlign, this._align, align, onChangeMethod);
 };
 
 // other methods
@@ -2461,47 +2519,6 @@ DKTools_Base.prototype.maxHeight = function() {
 
 DKTools_Base.prototype.maxSize = function() {
     return { width: this.maxWidth(), height: this.maxHeight() };
-};
-
-// private methods
-
-/**
- * Возвращает true, если идет обработка функции setAll
- *
- * @method _isSetAllMode
- *
- * @private
- *
- * @return Boolean
- */
-DKTools_Base.prototype._isSetAllMode = function() {
-    return this._setAllMode;
-};
-
-/**
- * Включает режим обработки функции setAll
- *
- * @method _activateSetAllMode
- *
- * @private
- *
- * @return Boolean
- */
-DKTools_Base.prototype._activateSetAllMode = function() {
-    this._setAllMode = true;
-};
-
-/**
- * Выключает режим обработки функции setAll
- *
- * @method _deactivateSetAllMode
- *
- * @private
- *
- * @return Boolean
- */
-DKTools_Base.prototype._deactivateSetAllMode = function() {
-    this._setAllMode = false;
 };
 
 // has methods
@@ -5757,6 +5774,7 @@ DKTools_Container_Base.prototype.checkSize = function() {
     var minHeight = this.minHeight();
     if (!this.isResizable()) {
         this.setupSize(minWidth, minHeight);
+        // добавить return и в else вызывать метод родителя
     }
     var changed = 0;
     if (this._bitmapWidth < minWidth) {
@@ -6619,13 +6637,8 @@ DKTools_Selectable_Container_Base.prototype._setupEvents = function() {
         //this.updateElementsEvents();
     //}.bind(this));
     this.addEventHandler('click', this._onTouch.bind(this));
-    this.addEventHandler('wheelY', function() {
-        if (this.wheelY > 0) {
-            this.next();
-        } else {
-            this.prev();
-        }
-    }.bind(this));
+    this.addEventHandler('wheelX', this._onWheelX.bind(this));
+    this.addEventHandler('wheelY', this._onWheelY.bind(this));
 };
 
 DKTools_Selectable_Container_Base.prototype.setupAll = function(object) {
@@ -6839,7 +6852,7 @@ DKTools_Selectable_Container_Base.prototype.callHandler = function(index) {
 
 DKTools_Selectable_Container_Base.prototype._onTouch = function() {
     var lastIndex = this._index;
-    var hitIndex = this._hitTest(this.clickX, this.clickY);
+    var hitIndex = this.hitTest(this.clickX, this.clickY);
     if (hitIndex >= 0) {
         if (hitIndex === lastIndex && this.isOkEnabled()) {
             this.processOk();
@@ -6852,7 +6865,18 @@ DKTools_Selectable_Container_Base.prototype._onTouch = function() {
     }
 };
 
-DKTools_Selectable_Container_Base.prototype._hitTest = function(x, y) {
+DKTools_Selectable_Container_Base.prototype._onWheelX = function() {
+};
+
+DKTools_Selectable_Container_Base.prototype._onWheelY = function() {
+    if (this.wheelY > 0) {
+        this.next();
+    } else {
+        this.prev();
+    }
+};
+
+DKTools_Selectable_Container_Base.prototype.hitTest = function(x, y) {
     for(var index = 0; index < this.length; index++) {
         var rect = this.cursorRect(index);
         var right = rect.x + rect.width;
@@ -8165,6 +8189,8 @@ DKTools_Progress_Bar_Base.prototype.updateText = function() {
     }
     this.drawText(text);
 };
+
+//
 
 /**
  * Добавить к текущему значению
@@ -9925,8 +9951,8 @@ DKTools_CheckBox_Base.prototype.standardBackgroundColor = function() {
  */
 DKTools_CheckBox_Base.prototype.standardText = function() {
     var object = {
-        checked: DKLocalizationManager.DKTools('#checkbox_standard_checked_text#'),
-        unchecked: DKLocalizationManager.DKTools('#checkbox_standard_unchecked_text#')
+        checked: DKLocalizationManager.DKTools('#checkBoxStandardCheckedText#'),
+        unchecked: DKLocalizationManager.DKTools('#checkBoxStandardUncheckedText#')
     };
     return object;
 };
