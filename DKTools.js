@@ -1065,7 +1065,8 @@ Object.defineProperties(Array.prototype, {
                 return false;
             }
             for(var i = 0; i < this.length; i++) {
-                if (!(this[i] instanceof Number)) {
+                var value = this[i];
+                if (value != null && value.constructor !== Number) {
                     return false;
                 }
             }
@@ -2419,8 +2420,14 @@ DKTools_Base.prototype.start = function(activate) {
 };
 
 DKTools_Base.prototype.refreshAll = function() {
-    this.updateAll();
-    this.redrawAll();
+    if (this.canRefreshAll()) {
+        this.updateAll();
+        this.redrawAll();
+    }
+};
+
+DKTools_Base.prototype.updateAll = function() {
+    this.updateBitmap();
 };
 
 DKTools_Base.prototype.redrawAll = function() {
@@ -2626,13 +2633,7 @@ DKTools_Base.prototype.wait = function(duration, onEndHandler) {
     return this.addEvent('wait', handler, duration, onStartHandler, onEndHandler);
 };
 
-/**
- *
- *
- * @method canUpdateBitmap
- * @return {Boolean}
- */
-DKTools_Base.prototype.canUpdateBitmap = function() {
+DKTools_Base.prototype.canRefreshAll = function() {
     return this.hasBitmap();
 };
 
@@ -4123,9 +4124,6 @@ DKTools_Base.prototype.addEventListener = function(type, handler) {
  * @method updateBitmap
  */
 DKTools_Base.prototype.updateBitmap = function() {
-    if (!this.canUpdateBitmap()) {
-        return;
-    }
     this.updateFont();
     this.updateTextColor();
     this.updatePaintOpacity();
@@ -4280,8 +4278,14 @@ Object.defineProperties(DKTools_Sprite.prototype, {
 DKTools_Sprite.prototype.initialize = function(object, y, width, height) {
 	Sprite.prototype.initialize.call(this);
     DKTools_Base.prototype.initialize.call(this, object, y, width, height);
-    if (object instanceof Bitmap) {
-        this.setupBitmap(object);
+    if (object) {
+        var bitmap;
+        if (object instanceof Bitmap) {
+            bitmap = object;
+        } else if (object.constructor === Object) {
+            bitmap = object.bitmap;
+        }
+        this.setupBitmap(bitmap);
     }
     DKTools_Sprite._counter++;
 };
@@ -4857,7 +4861,7 @@ DKTools_Sprite.prototype.checkSize = function() {
 DKTools_Sprite.prototype.createBitmap = function() {
     if (this.hasGraphic()) {
         this._loadGraphic();
-    } else if (!this.isFixed()) {
+    } else if (!this.isFixedBitmap()) {
         this.bitmap = new Bitmap(this._bitmapWidth, this._bitmapHeight);
     }
 };
@@ -4893,6 +4897,9 @@ DKTools_Sprite.prototype._createVisibleEvent = function(duraion, visible) {
  * @return {Boolean} Возвращает true, если изменение произошло
  */
 DKTools_Sprite.prototype.resize = function(width, height, blockStart) {
+    if (!this.isResizable()) {
+        return false;
+    }
     if (width == null) {
         width = this.minWidth();
     }
@@ -4925,7 +4932,7 @@ DKTools_Sprite.prototype.object = function() {
     object.graphic = this._graphic;
     object.opacity = this.opacity;
     object.scale = this.scale;
-    if (this.hasBitmap() && this.isFixed()) {
+    if (this.hasBitmap() && this.isFixedBitmap()) {
         object.bitmap = this.bitmap.clone();
     }
     return object;
@@ -5036,8 +5043,8 @@ DKTools_Sprite.prototype.canvasToLocalX = Sprite_Button.prototype.canvasToLocalX
  */
 DKTools_Sprite.prototype.canvasToLocalY = Sprite_Button.prototype.canvasToLocalY;
 
-DKTools_Sprite.prototype.canUpdateBitmap = function() {
-    return DKTools_Base.prototype.canUpdateBitmap.call(this) && !this.isFixed();
+DKTools_Sprite.prototype.canRefreshAll = function() {
+    return DKTools_Base.prototype.canRefreshAll.call(this) && this.isResizable();
 };
 
 DKTools_Sprite.prototype.emulateClick = function() {
@@ -5153,11 +5160,15 @@ DKTools_Sprite.prototype.isPressed = function() {
  * Проверяет спрайт на установку Bitmap с помощью функции setupBitmap или setBitmap
  * Возвращает true, если Bitmap был установлен функцией setupBitmap или setBitmap, а не создан createBitmap
  * 
- * @method isFixed
+ * @method isFixedBitmap
  * @return {Boolean} Возвращает true, если Bitmap был установлен функцией setupBitmap или setBitmap
 */
-DKTools_Sprite.prototype.isFixed = function() {
+DKTools_Sprite.prototype.isFixedBitmap = function() {
     return this._fixedBitmap;
+};
+
+DKTools_Sprite.prototype.isResizable = function() {
+    return !this.hasGraphic() && !this.isFixedBitmap();
 };
 
 // load methods
@@ -5187,6 +5198,9 @@ DKTools_Sprite.prototype.loadBitmap = function(folder, filename, listener, hue, 
 	return false;
 };
 
+DKTools_Sprite.prototype._onGraphicLoadListener = function() {
+};
+
 /**
  * Загружает графику из названия файла графики
  *
@@ -5197,15 +5211,12 @@ DKTools_Sprite.prototype._loadGraphic = function() {
     if (this.hasGraphic()) {
         var folder = this.standardGraphicFolder();
         var filename = this.graphic;
-        this.loadBitmap(folder, filename);
+        var listener = this._onGraphicLoadListener.bind(this);
+        this.loadBitmap(folder, filename, listener);
     }
 };
 
 // event methods
-
-//DKTools_Sprite.prototype.updateUpdateBitmapEvents = function() {
-//    this.updateEventContainer('updateBitmap');
-//};
 
 DKTools_Sprite.prototype.updateMouseEnterEvents = function() {
     this.updateEventContainer('mouseEnter');
@@ -5432,6 +5443,126 @@ DKTools_Sprite.prototype._updateMove = function(newX, newY, newOpacity, newScale
 
 
 //===========================================================================
+// DK Tools Cursor
+//===========================================================================
+
+/**
+ * @class DKTools_Cursor
+ *
+ * @constructor
+ *
+ * @param {Number | Object | null} object - Координата X или Объект типа {}
+ * @param {Number | null} y - Координата Y
+ */
+function DKTools_Cursor() {
+    this.initialize.apply(this, arguments);
+}
+
+DKTools_Cursor.prototype = Object.create(DKTools_Sprite.prototype);
+DKTools_Cursor.prototype.constructor = DKTools_Cursor;
+
+// clear methods
+
+DKTools_Cursor.prototype._clearAll = function() {
+    DKTools_Sprite.prototype._clearAll.call(this);
+    this._clearCursorAnimation();
+};
+
+DKTools_Cursor.prototype._clearCursorAnimation = function() {
+    this._cursorAnimation = 0;
+};
+
+// standard methods
+
+DKTools_Cursor.prototype.standardGraphic = function() {
+    return this.standardWindowskin();
+};
+
+// setup methods
+
+DKTools_Cursor.prototype.setupIndex = function(index) {
+    this._index = index;
+};
+
+// set methods
+
+DKTools_Cursor.prototype.setIndex = function(index) {
+    if (this._index === index) {
+        return false;
+    }
+    var lastIndex = this._index;
+    this.setupIndex(index);
+    if (lastIndex === this._index) {
+        return false;
+    }
+    this.start();
+    return true;
+};
+
+// load methods
+
+DKTools_Cursor.prototype._onGraphicLoadListener = function() {
+    var target = this.parent;
+    var index = this._index;
+    var cursorRect = target.cursorRect(index);
+    var x = cursorRect.x;
+    var y = cursorRect.y;
+    var w = cursorRect.width;
+    var h = cursorRect.height;
+    var m = 4;
+    var ox = 0, oy = 0;
+    var w2 = Math.min(w, target.width);
+    var h2 = Math.min(h, target.height);
+    var skin = this.bitmap;
+
+    this.move(x, y);
+
+    if (w > 0 && h > 0) {
+        var bitmap = new Bitmap(w2, h2);
+        var p = 96;
+        var q = 48;
+        bitmap.blt(skin, p + m, p + m, q - m * 2, q - m * 2, ox + m, oy + m, w - m * 2, h - m * 2);
+        bitmap.blt(skin, p + m, p, q - m * 2, m, ox + m, oy, w - m * 2, m);
+        bitmap.blt(skin, p + m, p + q - m, q - m * 2, m, ox + m, oy + h - m, w - m * 2, m);
+        bitmap.blt(skin, p, p + m, m, q - m * 2, ox, oy + m, m, h - m * 2);
+        bitmap.blt(skin, p + q - m, p + m, m, q - m * 2, ox + w - m, oy + m, m, h - m * 2);
+        bitmap.blt(skin, p, p, m, m, ox, oy + 0, m, m);
+        bitmap.blt(skin, p + q - m, p, m, m, ox + w - m, oy, m, m);
+        bitmap.blt(skin, p, p + q - m, m, m, ox, oy + h - m, m, m);
+        bitmap.blt(skin, p + q - m, p + q - m, m, m, ox + w - m, oy + h - m, m, m);
+        this.setupBitmap(bitmap);
+    }
+};
+
+// update methods
+
+DKTools_Cursor.prototype.update = function() {
+    DKTools_Sprite.prototype.update.call(this);
+    this.updateCursorAnimation();
+};
+
+DKTools_Cursor.prototype.updateCursorAnimation = function() {
+    if (this.isVisibleAndActive()) {
+        this._cursorAnimation++;
+    }
+    var blinkCount = this._cursorAnimation % 40;
+    var element = this.parent.currentElement();
+    var cursorOpacity = (element ? element.opacity : this.opacity);
+    if (this.isVisibleAndActive()) {
+        if (blinkCount < 20) {
+            cursorOpacity -= blinkCount * 8;
+        } else {
+            cursorOpacity -= (40 - blinkCount) * 8;
+        }
+    }
+    this.alpha = cursorOpacity / 255;
+};
+
+
+
+
+
+//===========================================================================
 // DK Tools Container Base
 //===========================================================================
 
@@ -5464,6 +5595,17 @@ Object.defineProperty(DKTools_Container_Base.prototype, 'length', {
 	},
 	configurable: true
 });
+
+// initialize methods
+
+DKTools_Container_Base.prototype.initialize = function(object, y, fixedWidth, fixedHeight) {
+    if (object && object.constructor === Object) {
+        fixedWidth = object.fixedWidth || fixedWidth;
+        fixedHeight = object.fixedHeight || fixedHeight;
+    }
+    this.setupFixedSize(fixedWidth, fixedHeight);
+    DKTools_Sprite.prototype.initialize.call(this, object, y, fixedWidth, fixedHeight);
+};
 
 // clear methods
 
@@ -5590,7 +5732,6 @@ DKTools_Container_Base.prototype.standardReversed = function() {
 DKTools_Container_Base.prototype.setupAll = function(object) {
 	object = object || {};
 	DKTools_Sprite.prototype.setupAll.call(this, object);
-    this.setupConstSize(object.constWidth, object.constHeight); //
 	this.setupElements(object.elements);
 	this.setupPlacement(object.placement);
     this.setupRows(object.rows);
@@ -5599,20 +5740,20 @@ DKTools_Container_Base.prototype.setupAll = function(object) {
     this.setupReversed(object.reversed);
 };
 
-DKTools_Container_Base.prototype.setupConstWidth = function(width) {
-    this._constWidth = width || 0;
+DKTools_Container_Base.prototype.setupFixedWidth = function(width) {
+    this._fixedWidth = width || 0;
 };
 
-DKTools_Container_Base.prototype.setupConstHeight = function(height) {
-    this._constHeight = height || 0;
+DKTools_Container_Base.prototype.setupFixedHeight = function(height) {
+    this._fixedHeight = height || 0;
 };
 
-DKTools_Container_Base.prototype.setupConstSize = function(object, height) {
+DKTools_Container_Base.prototype.setupFixedSize = function(object, height) {
     if (object && object.constructor === Object) {
-        return this.setupConstSize(object.width, object.height);
+        return this.setupFixedSize(object.fixedWidth, object.fixedHeight);
     }
-    this.setupConstWidth(object);
-    this.setupConstHeight(height);
+    this.setupFixedWidth(object);
+    this.setupFixedHeight(height);
 };
 
 /**
@@ -6043,32 +6184,23 @@ DKTools_Container_Base.prototype.checkRowsAndCols = function() {
 DKTools_Container_Base.prototype.checkSize = function() {
     var minWidth = this.minWidth();
     var minHeight = this.minHeight();
-    if (!this.isResizable()) {
+    if (this.isFixedSize()) {
         this.setupSize(minWidth, minHeight);
-        // добавить return и в else вызывать метод родителя
+        return 2;
     }
-    var changed = 0;
-    if (this._bitmapWidth < minWidth) {
-        this.setupWidth(minWidth);
-        changed++;
-    }
-    if (this._bitmapHeight < minHeight) {
-        this.setupHeight(minHeight);
-        changed++;
-    }
-    return changed;
+    return DKTools_Sprite.prototype.checkSize.call(this);
 };
 
 DKTools_Container_Base.prototype.checkElements = function() {
-    if (this.isEmpty() || this.isResizable()) {
+    if (this.isEmpty() || !this.isFixedSize()) {
         return;
     }
-    var maxRows = this.maxRows();
-    var maxCols = this.maxCols();
+    var width = this._fixedWidth;
+    var height = this._fixedHeight;
     var xPadding = this._xPadding;
     var yPadding = this._yPadding;
-    var width = this._constWidth;
-    var height = this._constHeight;
+    var maxRows = this.maxRows();
+    var maxCols = this.maxCols();
     var paddingWidth = xPadding * (maxCols - 1);
     var paddingHeight = yPadding * (maxRows - 1);
     var elementsWidth = 0;
@@ -6085,21 +6217,21 @@ DKTools_Container_Base.prototype.checkElements = function() {
         var minWidth = element.minWidth();
         var minHeight = element.minHeight();
         if (minWidth > newElementWidth || minHeight > newElementHeight) {
-            throw new Error('Container constSize error. minSize = (%1, %2), newSize = (%3, %4)'.format(minWidth, minHeight, newElementWidth, newElementHeight));
+            throw new Error('Container Error: minSize = (%1, %2), newSize = (%3, %4)'.format(minWidth, minHeight, newElementWidth, newElementHeight));
         }
         element.resize(newElementWidth, newElementHeight);
     }.bind(this);
     this.iterateElements(callback);
 };
 
-DKTools_Container_Base.prototype.resizeByConstSize = function(width, height, blockStart) {
-    if (this._constWidth === width && this._constHeight === height) {
+DKTools_Container_Base.prototype.resizeByFixedSize = function(width, height, blockStart) {
+    if (this._fixedWidth === width && this._fixedHeight === height) {
         return false;
     }
-    var lastWidth = this._constWidth;
-    var lastHeight = this._constHeight;
-    this.setupConstSize(width, height);
-    if (lastWidth === this._constWidth && lastHeight === this._constHeight) {
+    var lastWidth = this._fixedWidth;
+    var lastHeight = this._fixedHeight;
+    this.setupFixedSize(width, height);
+    if (lastWidth === this._fixedWidth && lastHeight === this._fixedHeight) {
         return false;
     }
     if (!blockStart) {
@@ -6157,8 +6289,8 @@ DKTools_Container_Base.prototype.object = function() {
  * @return Number
 */
 DKTools_Container_Base.prototype.minWidth = function() {
-    if (!this.isResizable()) {
-        return this._constWidth;
+    if (this.isFixedSize()) {
+        return this._fixedWidth;
     }
     if (this.isEmpty() || !this.maxCols()) {
         return 1;
@@ -6178,8 +6310,8 @@ DKTools_Container_Base.prototype.minWidth = function() {
  * @return Number
 */
 DKTools_Container_Base.prototype.minHeight = function() {
-    if (!this.isResizable()) {
-        return this._constHeight;
+    if (this.isFixedSize()) {
+        return this._fixedHeight;
     }
     if (this.isEmpty() || !this.maxRows()) {
         return 1;
@@ -6236,9 +6368,13 @@ DKTools_Container_Base.prototype.reverse = function() {
 
 // is methods
 
-DKTools_Container_Base.prototype.isResizable = function() {
-    return this._constWidth === 0 && this._constHeight === 0;
+DKTools_Container_Base.prototype.isFixedSize = function() {
+    return this._fixedWidth > 0 && this._fixedHeight > 0;
 };
+
+//DKTools_Container_Base.prototype.isResizable = function() {
+//    return DKTools_Sprite.prototype.isResizable.call(this) && !this.isFixedSize();
+//};
 
 /**
  * Возвращает true, если элементы располагаются вертикально
@@ -6376,13 +6512,12 @@ DKTools_Container_Base.prototype.addElement = function(object, blockStart) {
 	if (!object) {
         return false;
     }
-	if (object.constructor === Array) {
+	if (object instanceof Array) {
 		for(var i = 0; i < object.length; i++) {
             var element = object[i];
             this._elements.push(element);
         }
-	}
-	else {
+	} else {
         this._elements.push(object);
     }
 	if (!blockStart) {
@@ -6471,7 +6606,7 @@ DKTools_Container_Base.prototype.startElements = function(blockStart) {
 DKTools_Container_Base.prototype.resizeElements = function(width, height, blockStart) {
 	var callback = function(element) {
 		element.resize(width, height);
-	};
+    }.bind(this);
 	this.iterateElements(callback);
 	if (!blockStart) {
         this.start();
@@ -6609,6 +6744,22 @@ DKTools_Container_Base.prototype.col = function(col) {
     return elements;
 };
 
+DKTools_Container_Base.prototype.fixedRowHeight = function() {
+    var height = this._fixedHeight;
+    var yPadding = this._yPadding;
+    var maxRows = this.maxRows();
+    var paddingHeight = yPadding * (maxRows - 1);
+    return (height - paddingHeight) / maxRows;
+};
+
+DKTools_Container_Base.prototype.fixedColWidth = function() {
+    var width = this._fixedWidth;
+    var xPadding = this._xPadding;
+    var maxCols = this.maxCols();
+    var paddingWidth = xPadding * (maxCols - 1);
+    return (width - paddingWidth) / maxCols;
+};
+
 /**
  * Возвращает высоту ряда (максимальную высоту элементов ряда)
  *
@@ -6619,16 +6770,18 @@ DKTools_Container_Base.prototype.col = function(col) {
  * @return Number
  */
 DKTools_Container_Base.prototype.rowHeight = function(row) {
+    if (this.isFixedSize()) {
+        return this.fixedRowHeight();
+    }
     var elements = this.row(row);
     var array = [];
     for(var i = 0; i < elements.length; i++) {
         var element = elements[i];
-        if (!element) {
-            continue;
+        if (element) {
+            array.push(element.height);
         }
-        array.push(element.height);
     }
-    return Math.max.apply(Math, array);
+    return array.max();
 };
 
 /**
@@ -6641,16 +6794,18 @@ DKTools_Container_Base.prototype.rowHeight = function(row) {
  * @return Number
  */
 DKTools_Container_Base.prototype.colWidth = function(col) {
+    if (this.isFixedSize()) {
+        return this.fixedColWidth();
+    }
     var elements = this.col(col);
     var array = [];
     for(var i = 0; i < elements.length; i++) {
         var element = elements[i];
-        if (!element) {
-            continue;
+        if (element) {
+            array.push(element.width);
         }
-        array.push(element.width);
     }
-    return Math.max.apply(Math, array);
+    return array.max();
 };
 
 /**
@@ -6714,32 +6869,6 @@ DKTools_Container_Base.prototype.elementRow = function(element) {
 DKTools_Container_Base.prototype.elementCol = function(element) {
     var index = this.elementIndex(element);
     return (index % this.maxCols()) + 1;
-};
-
-DKTools_Container_Base.prototype.calculateXPaddingByWidth = function(width, change) {
-    var maxCols = this.maxCols() - 1;
-    var padding = (width - (this.width - maxCols * this._xPadding)) / maxCols;
-    if (change && padding >= 0) {
-        this.setXPadding(padding);
-    }
-    return padding;
-};
-
-DKTools_Container_Base.prototype.calculateYPaddingByHeight = function(height, change) {
-    var maxRows = this.maxRows() - 1;
-    var padding = (height - (this.height - maxRows * this._yPadding)) / maxRows;
-    if (change && padding >= 0) {
-        this.setYPadding(padding);
-    }
-    return padding;
-};
-
-DKTools_Container_Base.prototype.calculatePaddingBySize = function(width, height, change) {
-    var xPadding = this.calculateXPaddingByWidth(width);
-    var yPadding = this.calculateYPaddingByHeight(height);
-    if (change && xPadding >= 0 && yPadding >= 0) {
-        this.setPadding(xPadding, yPadding);
-    }
 };
 
 // align methods
@@ -6874,12 +7003,7 @@ DKTools_Selectable_Container_Base.prototype.constructor = DKTools_Selectable_Con
 
 DKTools_Selectable_Container_Base.prototype._clearAll = function() {
     DKTools_Container_Base.prototype._clearAll.call(this);
-    this._clearHandlers();
     this._clearCursorAnimation();
-};
-
-DKTools_Selectable_Container_Base.prototype._clearHandlers = function() {
-    this._handlers = [];
 };
 
 DKTools_Selectable_Container_Base.prototype._clearCursorAnimation = function() {
@@ -6901,6 +7025,7 @@ DKTools_Selectable_Container_Base.prototype.standardIndex = function() {
 DKTools_Selectable_Container_Base.prototype._setupEvents = function() {
     DKTools_Container_Base.prototype._setupEvents.call(this);
     this.addEventListener('start', function() {
+        //this._cursorSprite.start();
         this.addChild(this._cursorSprite);
     }.bind(this));
     //this.addEventListener('ready', function() {
@@ -6924,10 +7049,6 @@ DKTools_Selectable_Container_Base.prototype.setupIndex = function(index) {
 
 // set methods
 
-DKTools_Selectable_Container_Base.prototype.setHandler = function(id, method) {
-    this._handlers[id] = method;
-};
-
 // other methods
 
 DKTools_Selectable_Container_Base.prototype.start = function() {
@@ -6944,6 +7065,8 @@ DKTools_Selectable_Container_Base.prototype._createAll = function() {
 
 DKTools_Selectable_Container_Base.prototype._createCursorSprite = function() {
     this._cursorSprite = new DKTools_Sprite();
+    this._cursorSprite.setupGraphic(this.standardWindowskin());
+    this._cursorSprite._onGraphicLoadListener = this._updateCursorRect.bind(this._cursorSprite);
 };
 
 //
@@ -6952,7 +7075,6 @@ DKTools_Selectable_Container_Base.prototype._createCursorSprite = function() {
 
 DKTools_Selectable_Container_Base.prototype._clearAll = function() {
     DKTools_Container_Base.prototype._clearAll.call(this);
-    this._clearHandlers();
     this._clearCursorAnimation();
     this._topRow = 0;
     this._topCol = 0;
@@ -7091,21 +7213,6 @@ DKTools_Selectable_Container_Base.prototype.currentElement = function() {
     return this.element(this._index);
 };
 
-DKTools_Selectable_Container_Base.prototype.updateElementsEvents = function() {
-    var callback = function(element) {
-        element.addEventHandler('click', function() {
-            if (this.isVisibleAndActive()) {
-                var lastIndex = this._index;
-                this.select(element.id);
-                if (lastIndex !== this._index) {
-                    this.playCursorSound();
-                }
-            }
-        }.bind(this));
-    }.bind(this);
-    this.iterateElements(callback);
-};
-
 DKTools_Selectable_Container_Base.prototype.index = function() {
     return this._index;
 };
@@ -7113,12 +7220,6 @@ DKTools_Selectable_Container_Base.prototype.index = function() {
 DKTools_Selectable_Container_Base.prototype.select = function(index) {
     this.setupIndex(index);
     this.updateCursor();
-};
-
-DKTools_Selectable_Container_Base.prototype.callHandler = function(index) {
-    if (this.isHandled(index)) {
-        this._handlers[index]();
-    }
 };
 
 DKTools_Selectable_Container_Base.prototype._onTouch = function() {
@@ -7173,7 +7274,7 @@ DKTools_Selectable_Container_Base.prototype.cursorRect = function(index) {
     if (index >= 0) {
         var element = this.element(index);
         if (element) {
-            return new Rectangle(element.x, element.y, element.width, element.height);
+            return element.positionToRect();
         }
     }
     return Rectangle.emptyRectangle;
@@ -7234,10 +7335,6 @@ DKTools_Selectable_Container_Base.prototype.playCursorSound = function() {
 };
 
 // is methods
-
-DKTools_Selectable_Container_Base.prototype.isHandled = function(index) {
-    return !!this._handlers[index];
-};
 
 DKTools_Selectable_Container_Base.prototype.isHorizontal = function() {
     return true;
@@ -7332,25 +7429,24 @@ DKTools_Selectable_Container_Base.prototype.update = function() {
     this.processHandling();
 };
 
-DKTools_Selectable_Container_Base.prototype.updateCursor = function() {
-    var cursorRect = this.cursorRect(this._index);
+DKTools_Selectable_Container_Base.prototype._updateCursorRect = function() {
+    var target = this.parent;
+    var index = target._index;
+    var cursorRect = target.cursorRect(index);
     var x = cursorRect.x;
     var y = cursorRect.y;
     var w = cursorRect.width;
     var h = cursorRect.height;
     var m = 4;
-    var ox = 0;
-    var oy = 0;
-    var w2 = Math.min(w, this.width);
-    var h2 = Math.min(h, this.height);
-    var skin = ImageManager.loadSystem('Window');
+    var ox = 0, oy = 0;
+    var w2 = Math.min(w, target.width);
+    var h2 = Math.min(h, target.height);
+    var skin = this.bitmap;
 
-    this._cursorSprite.setupSize(w2, h2);
-    this._cursorSprite.start();
-    this._cursorSprite.move(x, y);
+    this.move(x, y);
 
     if (w > 0 && h > 0) {
-        var bitmap = this._cursorSprite.bitmap;
+        var bitmap = new Bitmap(w2, h2);
         var p = 96;
         var q = 48;
         bitmap.blt(skin, p + m, p + m, q - m * 2, q - m * 2, ox + m, oy + m, w - m * 2, h - m * 2);
@@ -7362,8 +7458,46 @@ DKTools_Selectable_Container_Base.prototype.updateCursor = function() {
         bitmap.blt(skin, p + q - m, p, m, m, ox + w - m, oy, m, m);
         bitmap.blt(skin, p, p + q - m, m, m, ox, oy + h - m, m, m);
         bitmap.blt(skin, p + q - m, p + q - m, m, m, ox + w - m, oy + h - m, m, m);
+        this.setupBitmap(bitmap);
     }
 };
+
+DKTools_Selectable_Container_Base.prototype.updateCursor = function() {
+    this._cursorSprite.start();
+};
+
+//DKTools_Selectable_Container_Base.prototype.updateCursor = function() {
+//    var cursorRect = this.cursorRect(this._index);
+//    var x = cursorRect.x;
+//    var y = cursorRect.y;
+//    var w = cursorRect.width;
+//    var h = cursorRect.height;
+//    var m = 4;
+//    var ox = 0;
+//    var oy = 0;
+//    var w2 = Math.min(w, this.width);
+//    var h2 = Math.min(h, this.height);
+//    var skin = ImageManager.loadSystem('Window');
+//
+//    this._cursorSprite.setupSize(w2, h2);
+//    this._cursorSprite.start();
+//    this._cursorSprite.move(x, y);
+//
+//    if (w > 0 && h > 0) {
+//        var bitmap = this._cursorSprite.bitmap;
+//        var p = 96;
+//        var q = 48;
+//        bitmap.blt(skin, p + m, p + m, q - m * 2, q - m * 2, ox + m, oy + m, w - m * 2, h - m * 2);
+//        bitmap.blt(skin, p + m, p, q - m * 2, m, ox + m, oy, w - m * 2, m);
+//        bitmap.blt(skin, p + m, p + q - m, q - m * 2, m, ox + m, oy + h - m, w - m * 2, m);
+//        bitmap.blt(skin, p, p + m, m, q - m * 2, ox, oy + m, m, h - m * 2);
+//        bitmap.blt(skin, p + q - m, p + m, m, q - m * 2, ox + w - m, oy + m, m, h - m * 2);
+//        bitmap.blt(skin, p, p, m, m, ox, oy + 0, m, m);
+//        bitmap.blt(skin, p + q - m, p, m, m, ox + w - m, oy, m, m);
+//        bitmap.blt(skin, p, p + q - m, m, m, ox, oy + h - m, m, m);
+//        bitmap.blt(skin, p + q - m, p + q - m, m, m, ox + w - m, oy + h - m, m, m);
+//    }
+//};
 
 DKTools_Selectable_Container_Base.prototype.updateCursorAnimation = function() {
     if (this.isVisibleAndActive()) {
@@ -7371,7 +7505,7 @@ DKTools_Selectable_Container_Base.prototype.updateCursorAnimation = function() {
     }
     var blinkCount = this._cursorAnimation % 40;
     var element = this.currentElement();
-    var cursorOpacity = (element ? element.opacity : this.paintOpacity);
+    var cursorOpacity = (element ? element.opacity : this.opacity);
     if (this.isVisibleAndActive()) {
         if (blinkCount < 20) {
             cursorOpacity -= blinkCount * 8;
@@ -7911,32 +8045,36 @@ DKTools_Container.prototype.elements = function() {
     return elements;
 };
 
-DKTools_Container.prototype.checkElements = function() {
-    if (this.isEmpty() || this.isResizable()) {
-        return;
-    }
-    var text = this._textSprite;
-    var base = this._baseSprite;
-    var minWidth = Math.max(text.minWidth(), base.minWidth());
-    var minHeight = Math.max(text.minHeight(), base.minHeight());
-    var width = this._constWidth;
-    var height = this._constHeight;
-    if (this.isHorizontalPlacement()) {
-        minWidth = text.minWidth() + base.minWidth();
-        var padding = (width - text.width - base.width);
-    } else if (this.isVerticalPlacement()) {
-        var padding = (height - text.height - base.height);
-        minHeight = text.minHeight() + base.minHeight();
-    }
-    if (minWidth > width || minHeight > height) {
-        throw new Error('Container constSize error. minSize = (%1, %2), newSize = (%3, %4)'.format(minWidth, minHeight, width, height));
-    }
-    if (this.isHorizontalPlacement()) {
-        this.setXPadding(padding);
-    } else if (this.isVerticalPlacement()) {
-        this.setYPadding(padding);
-    }
-};
+//DKTools_Container.prototype.checkElements = function() {
+//    if (this.isEmpty() || !this.isFixedSize()) {
+//        return;
+//    }
+//    var width = this._fixedWidth;
+//    var height = this._fixedHeight;
+//    var textSprite = this._textSprite;
+//    var baseSprite = this._baseSprite;
+//    var minWidth = Math.max(textSprite.minWidth(), baseSprite.minWidth());
+//    var minHeight = Math.max(textSprite.minHeight(), baseSprite.minHeight());
+//    if (this.isHorizontalPlacement()) {
+//        minWidth = textSprite.minWidth() + baseSprite.minWidth();
+//        var padding = (width - textSprite.width - baseSprite.width);
+//    } else if (this.isVerticalPlacement()) {
+//        var padding = (height - textSprite.height - baseSprite.height);
+//        minHeight = textSprite.minHeight() + baseSprite.minHeight();
+//    }
+//    if (minWidth > width || minHeight > height) {
+//        throw new Error('Container Error: minSize = (%1, %2), newSize = (%3, %4)'.format(minWidth, minHeight, width, height));
+//    }
+//    if (padding <= 0) {
+//        p(padding);
+//        return;
+//    }
+//    if (this.isHorizontalPlacement()) {
+//        this.setXPadding(padding);
+//    } else if (this.isVerticalPlacement()) {
+//        this.setYPadding(padding);
+//    }
+//};
 
 // clone methods
 
@@ -10693,7 +10831,7 @@ DKTools_CheckBox_Base.prototype.setGraphic = function(object, blockStart) {
  *
  * @return Boolean
  */
-DKTools_CheckBox_Base.prototype.setChecked = function(checked/*, blockUpdate*/) {
+DKTools_CheckBox_Base.prototype.setChecked = function(checked, blockStart) {
     if (this._checked === checked || this.isChecked() === checked) {
         return false;
     }
@@ -10702,10 +10840,9 @@ DKTools_CheckBox_Base.prototype.setChecked = function(checked/*, blockUpdate*/) 
     if (lastChecked === this._checked) {
         return false;
     }
-    this.start();
-    //if (!blockUpdate) {
-    //    this.updateBitmap();
-    //}
+    if (!blockStart) {
+        this.start();
+    }
     return true;
 };
 
@@ -12765,21 +12902,10 @@ DKTools_Window.prototype.updateCloseEvents = function() {
 // update methods
 
 DKTools_Window.prototype.updateAll = function() {
-    this.updateWindow();
+    this.updateTone();
+    this.updateOpacity();
+    DKTools_Base.prototype.updateAll.call(this);
 };
-
-/**
- * Обновляет окно
-
- * @method updateWindow
-*/
-DKTools_Window.prototype.updateWindow = function() {
-	this.updateTone();
-	this.updateOpacity();
-	this.updateContents();
-};
-
-DKTools_Window.prototype.updateContents = DKTools_Base.prototype.updateBitmap;
 
 /**
  * Обновление тона окна
