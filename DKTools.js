@@ -1065,8 +1065,7 @@ Object.defineProperties(Array.prototype, {
                 return false;
             }
             for(var i = 0; i < this.length; i++) {
-                var value = this[i];
-                if (value != null && value.constructor !== Number) {
+                if (this[i].constructor !== Number) {
                     return false;
                 }
             }
@@ -1088,7 +1087,7 @@ Object.defineProperties(Array.prototype, {
                 return false;
             }
             for(var i = 0; i < this.length; i++) {
-                if (!(this[i] instanceof Boolean)) {
+                if (this[i].constructor !== Boolean) {
                     return false;
                 }
             }
@@ -1737,13 +1736,6 @@ Object.defineProperties(DKTools_Base.prototype, {
         configurable: true
     },
 
-    enteredTime: {
-        get: function() {
-            return this._enteredTime;
-        },
-        configurable: true
-    },
-
     mouseX : {
         get: function() {
             return this.canvasToLocalX(TouchInput.mouseX);
@@ -1758,20 +1750,6 @@ Object.defineProperties(DKTools_Base.prototype, {
         configurable: true
     },
 
-    wheelX: {
-        get: function() {
-            return this._wheelX;
-        },
-        configurable: true
-    },
-
-    wheelY: {
-        get: function() {
-            return this._wheelY;
-        },
-        configurable: true
-    }
-
 });
 
 // initialize methods
@@ -1780,12 +1758,16 @@ DKTools_Base.prototype.initialize = function(object, y, width, height) {
     this._clearAll();
     this._setupAll();
     this._createAll();
-    var x = object;
-    if (object && object.constructor === Object) {
-        x = object.x;
-        y = object.y || y;
-        width = object.width || width;
-        height = object.height || height;
+    var x;
+    if (object) {
+        if (object.constructor === Object) {
+            x = object.x;
+            y = object.y || y;
+            width = object.width || width;
+            height = object.height || height;
+        } else if (object.constructor === Number) {
+            x = object;
+        }
     }
     this.move(x, y);
     this.setupAll(object);
@@ -2419,6 +2401,22 @@ DKTools_Base.prototype.start = function(activate) {
     }
 };
 
+// check methods
+
+DKTools_Base.prototype.checkAll = function() {
+    this.checkSize();
+};
+
+// create methods
+
+DKTools_Base.prototype._createAll = function() {
+};
+
+DKTools_Base.prototype.createAll = function() {
+};
+
+//
+
 DKTools_Base.prototype.refreshAll = function() {
     if (this.canRefreshAll()) {
         this.updateAll();
@@ -2433,21 +2431,6 @@ DKTools_Base.prototype.updateAll = function() {
 DKTools_Base.prototype.redrawAll = function() {
     this.clear();
     this.drawAll();
-};
-
-// check methods
-
-DKTools_Base.prototype.checkAll = function() {
-    this.checkSize();
-};
-
-// create methods
-
-DKTools_Base.prototype._createAll = function() {
-};
-
-DKTools_Base.prototype.createAll = function() {
-    this.createBitmap();
 };
 
 // active methods
@@ -3687,7 +3670,7 @@ DKTools_Base.prototype.isEnabled = function() {
  * @method enable
  *
  */
-DKTools_Base.prototype.enable = DKTools_Sprite.prototype._enableSymbols;
+DKTools_Base.prototype.enable = DKTools_Base.prototype._enableSymbols;
 
 /**
  *
@@ -3695,7 +3678,7 @@ DKTools_Base.prototype.enable = DKTools_Sprite.prototype._enableSymbols;
  * @method disable
  *
  */
-DKTools_Base.prototype.disable = DKTools_Sprite.prototype._disableSymbols;
+DKTools_Base.prototype.disable = DKTools_Base.prototype._disableSymbols;
 
 // _check methods
 
@@ -4226,6 +4209,13 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         configurable: true
     },
 
+    enteredTime: {
+        get: function() {
+            return this._enteredTime;
+        },
+        configurable: true
+    },
+
     pressedTime: {
         get: function() {
             return this._pressedTime;
@@ -4243,6 +4233,20 @@ Object.defineProperties(DKTools_Sprite.prototype, {
     clickY : {
         get: function() {
             return this.canvasToLocalY(TouchInput.y);
+        },
+        configurable: true
+    },
+
+    wheelX: {
+        get: function() {
+            return this._wheelX;
+        },
+        configurable: true
+    },
+
+    wheelY: {
+        get: function() {
+            return this._wheelY;
         },
         configurable: true
     }
@@ -4851,6 +4855,11 @@ DKTools_Sprite.prototype.checkSize = function() {
 };
 
 // create methods
+
+DKTools_Sprite.prototype.createAll = function() {
+    DKTools_Base.prototype.createAll.call(this);
+    this.createBitmap();
+};
 
 /**
  * Загружает изображения из названия файла графики
@@ -5563,6 +5572,53 @@ DKTools_Cursor.prototype.updateCursorAnimation = function() {
 
 
 //===========================================================================
+// DK Tools Viewport
+//===========================================================================
+
+function DKTools_Viewport() {
+    this.initialize.apply(this, arguments);
+}
+
+DKTools_Viewport.prototype = Object.create(DKTools_Sprite.prototype);
+DKTools_Viewport.prototype.constructor = DKTools_Viewport;
+
+// clear methods
+
+DKTools_Viewport.prototype._clearAll = function() {
+    DKTools_Sprite.prototype._clearAll.call(this);
+    this._clearOrigin();
+};
+
+DKTools_Viewport.prototype._clearOrigin = function() {
+    this.origin = new Point();
+};
+
+// update methods
+
+DKTools_Viewport.prototype.update = function() {
+    DKTools_Sprite.prototype.update.call(this);
+    this.children.forEach(function(child) {
+        var width = this.width - child.x/* + this.origin.x*/;
+        var height = this.height - child.y/* + this.origin.y*/;
+        var x = 0;
+        if (child.x < 0) {
+            x = child.x;
+        }
+        var y = 0;
+        if (child.y < 0) {
+            y = child.y;
+            width = child.width - (child.x + child.width - this.width);
+            height = child.height - (child.y + child.height - this.height);
+        }
+        child.setFrame(x, y, width, height);
+    }.bind(this));
+};
+
+
+
+
+
+//===========================================================================
 // DK Tools Container Base
 //===========================================================================
 
@@ -5616,7 +5672,7 @@ DKTools_Container_Base.prototype.initialize = function(object, y, fixedWidth, fi
  */
 DKTools_Container_Base.prototype._clearAll = function() {
     DKTools_Sprite.prototype._clearAll.call(this);
-    this.clearElements();
+    this._clearElements();
 };
 
 /**
@@ -5624,7 +5680,7 @@ DKTools_Container_Base.prototype._clearAll = function() {
  *
  * @method clearElements
  */
-DKTools_Container_Base.prototype.clearElements = function() {
+DKTools_Container_Base.prototype._clearElements = function() {
     this._elements = [];
 };
 
@@ -6281,6 +6337,15 @@ DKTools_Container_Base.prototype.object = function() {
 };
 
 // uncategorized methods
+
+/**
+ * Очищает список элементов контейнера
+ *
+ * @method clearElements
+ */
+DKTools_Container_Base.prototype.clearElements = function() {
+    return this.setElements();
+};
 
 /**
  * Возвращает минимальную ширину Bitmap
@@ -7025,13 +7090,8 @@ DKTools_Selectable_Container_Base.prototype.standardIndex = function() {
 DKTools_Selectable_Container_Base.prototype._setupEvents = function() {
     DKTools_Container_Base.prototype._setupEvents.call(this);
     this.addEventListener('start', function() {
-        //this._cursorSprite.start();
         this.addChild(this._cursorSprite);
     }.bind(this));
-    //this.addEventListener('ready', function() {
-    //    this.updateElementsId();
-        //this.updateElementsEvents();
-    //}.bind(this));
     this.addEventHandler('click', this._onTouch.bind(this));
     this.addEventHandler('wheelX', this._onWheelX.bind(this));
     this.addEventHandler('wheelY', this._onWheelY.bind(this));
@@ -7040,7 +7100,7 @@ DKTools_Selectable_Container_Base.prototype._setupEvents = function() {
 DKTools_Selectable_Container_Base.prototype.setupAll = function(object) {
     object = object || {};
     DKTools_Container_Base.prototype.setupAll.call(this, object);
-    this.setupIndex();
+    this.setupIndex(object.index);
 };
 
 DKTools_Selectable_Container_Base.prototype.setupIndex = function(index) {
@@ -7048,6 +7108,34 @@ DKTools_Selectable_Container_Base.prototype.setupIndex = function(index) {
 };
 
 // set methods
+
+DKTools_Selectable_Container_Base.prototype.setAll = function(object, blockStart) {
+    object = object || {};
+    var block = true;
+    var changed = DKTools_Container_Base.prototype.setAll.call(this, object, block);
+    if (this.setIndex(object.index, block)) {
+        changed++;
+    }
+    if (changed && !blockStart) {
+        this.start();
+    }
+    return changed;
+};
+
+DKTools_Selectable_Container_Base.prototype.setIndex = function(index, blockSelect) {
+    if (this._index === index) {
+        return false;
+    }
+    var lastIndex = this._index;
+    this.setupIndex(index);
+    if (lastIndex === this._index) {
+        return false;
+    }
+    if (!blockSelect) {
+        this.reselect();
+    }
+    return true;
+};
 
 // other methods
 
@@ -7210,7 +7298,7 @@ DKTools_Selectable_Container_Base.prototype.currentCol = function() {
 };
 
 DKTools_Selectable_Container_Base.prototype.currentElement = function() {
-    return this.element(this._index);
+    return this.element(this.index());
 };
 
 DKTools_Selectable_Container_Base.prototype.index = function() {
@@ -7375,7 +7463,7 @@ DKTools_Selectable_Container_Base.prototype.isCancelTriggered = function() {
 
 DKTools_Selectable_Container_Base.prototype.processCursorMove = function() {
     if (this.isCursorMovable()) {
-        var index = this._index;
+        var index = this.index();
         if (Input.isRepeated('down')) {
             this.cursorDown(Input.isTriggered('down'));
         }
@@ -7388,7 +7476,7 @@ DKTools_Selectable_Container_Base.prototype.processCursorMove = function() {
         if (Input.isRepeated('left')) {
             this.cursorLeft(Input.isTriggered('left'));
         }
-        if (index !== this._index) {
+        if (index !== this.index()) {
             this.playCursorSound();
         }
     }
@@ -7411,6 +7499,7 @@ DKTools_Selectable_Container_Base.prototype.processOk = function() {
         this.updateEventContainer('ok');
     } else {
         this.playBuzzerSound();
+        this.updateEventContainer('buzzer');
     }
 };
 
@@ -9026,6 +9115,19 @@ DKTools_Input_Base._numbers = '1234567890';
  * @property position
  * @type Number
  */
+Object.defineProperty(DKTools_Input_Base.prototype, 'length', {
+    get: function() {
+        return this._text.length;
+    },
+    configurable: true
+});
+
+/**
+ * Позиция каретки ввода
+ *
+ * @property position
+ * @type Number
+ */
 Object.defineProperty(DKTools_Input_Base.prototype, 'caretPosition', {
     get: function() {
         return this._caret.position;
@@ -9579,7 +9681,7 @@ DKTools_Input_Base.prototype.clearInput = function(blockStart) {
 DKTools_Input_Base.prototype.onSymbolChange = function(symbol, value) {
     DKTools_Sprite.prototype.onSymbolChange.call(this, symbol, value);
     if (symbol === 'password') {
-        this.updateBitmap();
+        this.redrawAll();
     }
 };
 
@@ -9796,7 +9898,7 @@ DKTools_Input_Base.prototype.processInput = function() {
     }
 	this.caretPosition += input.length;
     this.updateInputEvents();
-	this._needUpdate = true;
+	this._needRedraw = true;
 };
 
 /**
@@ -9820,7 +9922,7 @@ DKTools_Input_Base.prototype.processBackspace = function() {
 	}
     this.caretPosition--;
 	this.updateInputEvents();
-	this._needUpdate = true;
+	this._needRedraw = true;
 };
 
 /**
@@ -9838,7 +9940,7 @@ DKTools_Input_Base.prototype.processDelete = function() {
 	var text2 = text.substring(position + 1);
 	this.setupText(text1 + text2);
     this.updateInputEvents();
-	this._needUpdate = true;
+	this._needRedraw = true;
 };
 
 /**
@@ -9851,7 +9953,7 @@ DKTools_Input_Base.prototype.processOk = function() {
         return;
     }
     this.updateOkEvents();
-	this._needUpdate = true;
+	this._needRedraw = true;
 };
 
 /**
@@ -9864,7 +9966,7 @@ DKTools_Input_Base.prototype.processCancel = function() {
         return;
     }
     this.updateCancelEvents();
-	this._needUpdate = true;
+	this._needRedraw = true;
 };
 
 /**
@@ -9877,7 +9979,7 @@ DKTools_Input_Base.prototype.processCaretLeft = function() {
         return;
     }
 	this.caretPosition--;
-	this._needUpdate = true;
+	this._needRedraw = true;
 };
 
 /**
@@ -9890,7 +9992,7 @@ DKTools_Input_Base.prototype.processCaretRight = function() {
         return;
     }
 	this.caretPosition++;
-	this._needUpdate = true;
+	this._needRedraw = true;
 };
 
 /**
@@ -9913,7 +10015,7 @@ DKTools_Input_Base.prototype.processCaretVisible = function() {
     }
     this._clearCaretCounter();
     this.setupCaretVisible(!this._caret.visible);
-    this._needUpdate = true;
+    this._needRedraw = true;
 };
 
 // events mehtods
@@ -9949,8 +10051,8 @@ DKTools_Input_Base.prototype.update = function() {
         this.processCancel();
         this.processCaretMove();
         this.processCaretVisible();
-        if (this._needUpdate) {
-            this.updateBitmap();
+        if (this._needRedraw) {
+            this.redrawAll();
         }
     }
 };
@@ -12414,10 +12516,42 @@ Object.defineProperties(DKTools_Window.prototype, {
  * @param {Number} height - Высота окна
  */
 DKTools_Window.prototype.initialize = function(object, y, width, height) {
-    Window.prototype.initialize.call(this);
+    PIXI.Container.call(this);
     DKTools_Base.prototype.initialize.call(this, object, y, width, height);
-    this.updatePadding();
+    this._createAllParts();
+    this._createWindowskin();
     DKTools_Window._counter++;
+};
+
+// clear methods
+
+DKTools_Window.prototype._clearAll = function() {
+    DKTools_Base.prototype._clearAll.call(this);
+    this._clearOpenness();
+    this._clearPadding();
+    this._clearMargin();
+    this._clearColorTone();
+    this._clearOrigin();
+};
+
+DKTools_Window.prototype._clearOpenness = function() {
+    this._openness = 255;
+};
+
+DKTools_Window.prototype._clearPadding = function() {
+    this._padding = this.standardPadding();
+};
+
+DKTools_Window.prototype._clearMargin = function() {
+    this._margin = 4;
+};
+
+DKTools_Window.prototype._clearColorTone = function() {
+    this._colorTone = [0, 0, 0];
+};
+
+DKTools_Window.prototype._clearOrigin = function() {
+    this.origin = new Point();
 };
 
 // standard methods
@@ -12639,23 +12773,55 @@ DKTools_Window.prototype.updateTransform = function() {
 };
 
 DKTools_Window.prototype._createAllParts = function() {
-    this._windowSpriteContainer = new PIXI.Container();
-    this._windowBackSprite = new Sprite();
-    this._windowFrameSprite = new Sprite();
+    this._createWindowSpriteContainer();
+    this._createBackSprite();
+    this._createFrameSprite();
     this._createContentsSprite();
+    this._createArrowSprites();
+    this._createPauseSignSprite();
+    this.addSpritesToChild();
+};
+
+DKTools_Window.prototype._createWindowSpriteContainer = function() {
+    this._windowSpriteContainer = new PIXI.Container();
+};
+
+DKTools_Window.prototype._createBackSprite = function() {
+    this._windowBackSprite = new Sprite();
+    this._windowBackSprite.alpha = this.standardBackOpacity() / 255;
+};
+
+DKTools_Window.prototype._createFrameSprite = function() {
+    this._windowFrameSprite = new Sprite();
+};
+
+DKTools_Window.prototype._createDownArrowSprite = function() {
     this._downArrowSprite = new Sprite();
+};
+
+DKTools_Window.prototype._createUpArrowSprite = function() {
     this._upArrowSprite = new Sprite();
+};
+
+DKTools_Window.prototype._createArrowSprites = function() {
+    this._createDownArrowSprite();
+    this._createUpArrowSprite();
+};
+
+DKTools_Window.prototype._createPauseSignSprite = function() {
     this._windowPauseSignSprite = new Sprite();
-    this._windowBackSprite.bitmap = new Bitmap(1, 1);
-    this._windowBackSprite.alpha = 192 / 255;
+};
+
+DKTools_Window.prototype.addSpritesToChild = function() {
+    this._windowSpriteContainer.addChild(this._windowBackSprite, this._windowFrameSprite);
     this.addChild(this._windowSpriteContainer);
-    this._windowSpriteContainer.addChild(this._windowBackSprite);
-    this._windowSpriteContainer.addChild(this._windowFrameSprite);
     this.addChild(this._windowContentsSprite);
     this.addChild(this._downArrowSprite);
     this.addChild(this._upArrowSprite);
     this.addChild(this._windowPauseSignSprite);
 };
+
+// _refresh methods
 
 DKTools_Window.prototype._refreshAllParts = function() {
     this._refreshBack();
@@ -12665,26 +12831,66 @@ DKTools_Window.prototype._refreshAllParts = function() {
     this._refreshPauseSign();
 };
 
+DKTools_Window.prototype._refreshBack = function() {
+    if (this._windowBackSprite) {
+        Window.prototype._refreshBack.call(this);
+    }
+};
+
+DKTools_Window.prototype._refreshFrame = function() {
+    if (this._windowFrameSprite) {
+        Window.prototype._refreshFrame.call(this);
+    }
+};
+
+DKTools_Window.prototype._refreshContents = function() {
+    if (this._windowContentsSprite) {
+        Window.prototype._refreshContents.call(this);
+    }
+};
+
+DKTools_Window.prototype._refreshArrows = function() {
+    if (this._downArrowSprite && this._upArrowSprite) {
+        Window.prototype._refreshArrows.call(this);
+    }
+};
+
+DKTools_Window.prototype._refreshPauseSign = function() {
+    if (this._windowPauseSignSprite) {
+        Window.prototype._refreshPauseSign.call(this);
+    }
+};
+
+//
+
 DKTools_Window.prototype._createContentsSprite = function() {
     this._windowContentsSprite = new DKTools_Sprite();
+    this._windowContentsSprite.setupSize(this.contentsWidth(), this.contentsHeight());
+    this._windowContentsSprite.start();
 };
 
 // create methods
 
-DKTools_Window.prototype._createAll = function() {
-    DKTools_Base.prototype._createAll.call(this);
-    this._createWindowskin();
-};
+//DKTools_Window.prototype._createAll = function() {
+//    DKTools_Base.prototype._createAll.call(this);
+    //this._createWindowskin();
+//};
 
 DKTools_Window.prototype._createWindowskin = function() {
     this.windowskin = this.loadWindowskin();
 };
 
-DKTools_Window.prototype.createBitmap = function() {
-    this._windowContentsSprite.resize(this.contentsWidth(), this.contentsHeight());
-};
+//DKTools_Window.prototype.createAll = function() {
+    //this._createAllParts();
+    //this._createWindowskin();
+    //DKTools_Base.prototype.createAll.call(this);
+//};
 
-DKTools_Window.prototype.createContents = DKTools_Window.prototype.createBitmap;
+//DKTools_Window.prototype.createBitmap = function() {
+//    this._windowContentsSprite.resize(this.contentsWidth(), this.contentsHeight());
+//};
+//
+//DKTools_Window.prototype.createContents = DKTools_Window.prototype.createBitmap;
 
 DKTools_Window.prototype._createVisibleEvent = function(duraion, visible) {
     var callback = function() {
