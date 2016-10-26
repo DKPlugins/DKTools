@@ -1983,9 +1983,13 @@ DKTools_Base.prototype.standardWindowskin = function() {
 
 DKTools_Base.prototype._setupAll = function() {
     this._setupEvents();
+    this._setupSymbols();
 };
 
 DKTools_Base.prototype._setupEvents = function() {
+};
+
+DKTools_Base.prototype._setupSymbols = function() {
 };
 
 // setup methods
@@ -4878,7 +4882,7 @@ DKTools_Sprite.prototype.checkSize = function() {
 
 // _create methods
 
-DKTools_Sprite.prototype._createVisibleEvent = function(duraion, visible) {
+DKTools_Sprite.prototype._createVisibleEvent = function(duration, visible) {
     var callback = function() {
         this.setupVisible(visible);
     }.bind(this);
@@ -5124,6 +5128,14 @@ DKTools_Sprite.prototype.removeGraphic = function() {
 };
 
 // is methods
+
+DKTools_Sprite.prototype.isSprite = function() {
+    return true;
+};
+
+DKTools_Sprite.prototype.isWindow = function() {
+    return false;
+};
 
 /**
  * Возвращает true, если спрайт является контейнером
@@ -7638,7 +7650,7 @@ DKTools_Selectable_Container_Base.prototype.updateCursorAnimation = function() {
             cursorOpacity -= (40 - blinkCount) * 8;
         }
     }
-    this._cursorSprite.alpha = cursorOpacity / 255;
+    this._cursorSprite.opacity = cursorOpacity;
 };
 
 
@@ -9277,6 +9289,13 @@ DKTools_Input_Base.prototype.standardCaretVisible = function() {
 */
 DKTools_Input_Base.prototype.standardCaretPosition = function() {
     return this.length;
+};
+
+// _setup methods
+
+DKTools_Input_Base.prototype._setupSymbols = function() {
+    DKTools_Sprite.prototype._setupSymbols.call(this);
+    this.enable('alphabet', 'numbers', 'symbols', 'space');
 };
 
 // setup methods
@@ -12563,11 +12582,16 @@ DKTools_Window.prototype.initialize = function(object, y, width, height) {
 
 DKTools_Window.prototype._clearAll = function() {
     DKTools_Base.prototype._clearAll.call(this);
+    this._clearIsWindow();
     this._clearOpenness();
     this._clearPadding();
     this._clearMargin();
     this._clearColorTone();
     this._clearOrigin();
+};
+
+DKTools_Window.prototype._clearIsWindow = function() {
+    this._isWindow = true;
 };
 
 DKTools_Window.prototype._clearOpenness = function() {
@@ -12802,7 +12826,7 @@ DKTools_Window.prototype.setTone = function(tone, blockUpdate) {
 // _create methods
 
 DKTools_Window.prototype._createAllParts = function() {
-    this._createWindowSpriteContainer();
+    this._createSpriteContainer();
     this._createBackSprite();
     this._createFrameSprite();
     this._createContentsSprite();
@@ -12811,13 +12835,13 @@ DKTools_Window.prototype._createAllParts = function() {
     this._addSpritesToChild();
 };
 
-DKTools_Window.prototype._createWindowSpriteContainer = function() {
+DKTools_Window.prototype._createSpriteContainer = function() {
     this._windowSpriteContainer = new PIXI.Container();
 };
 
 DKTools_Window.prototype._createBackSprite = function() {
     this._windowBackSprite = new Sprite();
-    this._windowBackSprite.alpha = this.standardBackOpacity() / 255;
+    this._windowBackSprite.opacity = this.standardBackOpacity();
 };
 
 DKTools_Window.prototype._createFrameSprite = function() {
@@ -12831,6 +12855,8 @@ DKTools_Window.prototype._createContentsSprite = function() {
 DKTools_Window.prototype._createArrowSprites = function() {
     this._createDownArrowSprite();
     this._createUpArrowSprite();
+    this._createLeftArrowSprite();
+    this._createRightArrowSprite();
 };
 
 DKTools_Window.prototype._createDownArrowSprite = function() {
@@ -12841,6 +12867,14 @@ DKTools_Window.prototype._createUpArrowSprite = function() {
     this._upArrowSprite = new Sprite();
 };
 
+DKTools_Window.prototype._createLeftArrowSprite = function() {
+    this._leftArrowSprite = new Sprite();
+};
+
+DKTools_Window.prototype._createRightArrowSprite = function() {
+    this._rightArrowSprite = new Sprite();
+};
+
 DKTools_Window.prototype._createPauseSignSprite = function() {
     this._windowPauseSignSprite = new Sprite();
 };
@@ -12849,7 +12883,7 @@ DKTools_Window.prototype._createWindowskin = function() {
     this.windowskin = this.loadWindowskin();
 };
 
-DKTools_Window.prototype._createVisibleEvent = function(duraion, visible) {
+DKTools_Window.prototype._createVisibleEvent = function(duration, visible) {
     var callback = function() {
         this.setupVisible(visible);
     }.bind(this);
@@ -12877,31 +12911,63 @@ DKTools_Window.prototype._refreshAllParts = function() {
 };
 
 DKTools_Window.prototype._refreshBack = function() {
-    if (this._windowBackSprite) {
+    if (this.hasBackSprite()) {
         Window.prototype._refreshBack.call(this);
     }
 };
 
 DKTools_Window.prototype._refreshFrame = function() {
-    if (this._windowFrameSprite) {
+    if (this.hasFrameSprite()) {
         Window.prototype._refreshFrame.call(this);
     }
 };
 
 DKTools_Window.prototype._refreshContents = function() {
-    if (this._windowContentsSprite) {
+    if (this.hasContentsSprite()) {
         Window.prototype._refreshContents.call(this);
     }
 };
 
 DKTools_Window.prototype._refreshArrows = function() {
-    if (this._downArrowSprite && this._upArrowSprite) {
-        Window.prototype._refreshArrows.call(this);
+    var w = this._width;
+    var h = this._height;
+    var bitmap = this._windowskin;
+    var p = 24;
+    var q = p / 2;
+    var sx = 96 + p;
+    var sy = 0 + p;
+    if (this.hasDownArrowSprite()) {
+        this._downArrowSprite.bitmap = bitmap;
+        this._downArrowSprite.anchor.x = 0.5;
+        this._downArrowSprite.anchor.y = 0.5;
+        this._downArrowSprite.setFrame(sx + q, sy + q + p, p, q);
+        this._downArrowSprite.move(w / 2, h - q);
+    }
+    if (this.hasUpArrowSprite()) {
+        this._upArrowSprite.bitmap = bitmap;
+        this._upArrowSprite.anchor.x = 0.5;
+        this._upArrowSprite.anchor.y = 0.5;
+        this._upArrowSprite.setFrame(sx + q, sy, p, q);
+        this._upArrowSprite.move(w / 2, q);
+    }
+    if (this.hasLeftArrowSprite()) {
+        this._leftArrowSprite.bitmap = bitmap;
+        this._leftArrowSprite.anchor.x = 0.5;
+        this._leftArrowSprite.anchor.y = 0.5;
+        this._leftArrowSprite.setFrame(sx, sy + q, q, p);
+        this._leftArrowSprite.move(q, h / 2);
+    }
+    if (this.hasRightArrowSprite()) {
+        this._rightArrowSprite.bitmap = bitmap;
+        this._rightArrowSprite.anchor.x = 0.5;
+        this._rightArrowSprite.anchor.y = 0.5;
+        this._rightArrowSprite.setFrame(sx + q + p, sy + q, q, p);
+        this._rightArrowSprite.move(w - q, h / 2);
     }
 };
 
 DKTools_Window.prototype._refreshPauseSign = function() {
-    if (this._windowPauseSignSprite) {
+    if (this.hasPauseSignSprite()) {
         Window.prototype._refreshPauseSign.call(this);
     }
 };
@@ -12909,26 +12975,26 @@ DKTools_Window.prototype._refreshPauseSign = function() {
 // _add methods
 
 DKTools_Window.prototype._addSpritesToChild = function() {
-    this._addWindowSpriteContainerToChild();
-    this._addWindowContentsSpriteToChild();
+    this._addSpriteContainerToChild();
+    this._addContentsSpriteToChild();
     this._addArrowSpritesToChild();
     this._addWindowPauseSignSpriteToChild();
 };
 
-DKTools_Window.prototype._addWindowSpriteContainerToChild = function() {
-    if (this._windowSpriteContainer) {
-        if (this._windowBackSprite) {
+DKTools_Window.prototype._addSpriteContainerToChild = function() {
+    if (this.hasSpriteContainer()) {
+        if (this.hasBackSprite()) {
             this._windowSpriteContainer.addChild(this._windowBackSprite);
         }
-        if (this._windowFrameSprite) {
+        if (this.hasFrameSprite()) {
             this._windowSpriteContainer.addChild(this._windowFrameSprite);
         }
         this.addChild(this._windowSpriteContainer);
     }
 };
 
-DKTools_Window.prototype._addWindowContentsSpriteToChild = function() {
-    if (this._windowContentsSprite) {
+DKTools_Window.prototype._addContentsSpriteToChild = function() {
+    if (this.hasContentsSprite()) {
         this.addChild(this._windowContentsSprite);
     }
 };
@@ -12936,22 +13002,36 @@ DKTools_Window.prototype._addWindowContentsSpriteToChild = function() {
 DKTools_Window.prototype._addArrowSpritesToChild = function() {
     this._addDownArrowSpriteToChild();
     this._addUpArrowSpriteToChild();
+    this._addLeftArrowSpriteToChild();
+    this._addRightArrowSpriteToChild();
 };
 
 DKTools_Window.prototype._addDownArrowSpriteToChild = function() {
-    if (this._downArrowSprite) {
+    if (this.hasDownArrowSprite()) {
         this.addChild(this._downArrowSprite);
     }
 };
 
 DKTools_Window.prototype._addUpArrowSpriteToChild = function() {
-    if (this._upArrowSprite) {
+    if (this.hasUpArrowSprite()) {
         this.addChild(this._upArrowSprite);
     }
 };
 
+DKTools_Window.prototype._addLeftArrowSpriteToChild = function() {
+    if (this.hasLeftArrowSprite()) {
+        this.addChild(this._leftArrowSprite);
+    }
+};
+
+DKTools_Window.prototype._addRightArrowSpriteToChild = function() {
+    if (this.hasRightArrowSprite()) {
+        this.addChild(this._rightArrowSprite);
+    }
+};
+
 DKTools_Window.prototype._addWindowPauseSignSpriteToChild = function() {
-    if (this._windowPauseSignSprite) {
+    if (this.hasPauseSignSprite()) {
         this.addChild(this._windowPauseSignSprite);
     }
 };
@@ -12965,12 +13045,6 @@ DKTools_Window.prototype.createAll = function() {
 
 DKTools_Window.prototype.createContents = function() {
     this._windowContentsSprite.resize(this.contentsWidth(), this.contentsHeight());
-};
-
-// is method
-
-DKTools_Window.prototype.isOpenAndActive = function() {
-    return this.isOpen() && this.isActive();
 };
 
 // check methods
@@ -12995,6 +13069,63 @@ DKTools_Window.prototype.checkSize = function() {
         changed++;
     }
     return changed;
+};
+
+// is method
+
+DKTools_Window.prototype.isSprite = function() {
+    return false;
+};
+
+DKTools_Window.prototype.isWindow = function() {
+    return this._isWindow;
+};
+
+DKTools_Window.prototype.isOpenAndActive = function() {
+    return this.isOpen() && this.isActive();
+};
+
+// has methods
+
+DKTools_Window.prototype.hasSpriteContainer = function() {
+    return !!this._windowSpriteContainer;
+};
+
+DKTools_Window.prototype.hasBackSprite = function() {
+    return !!this._windowBackSprite;
+};
+
+DKTools_Window.prototype.hasFrameSprite = function() {
+    return !!this._windowFrameSprite;
+};
+
+DKTools_Window.prototype.hasContentsSprite = function() {
+    return !!this._windowContentsSprite;
+};
+
+DKTools_Window.prototype.hasArrowSprites = function() {
+    return this.hasDownArrowSprite() && this.hasUpArrowSprite() &&
+            this.hasLeftArrowSprite() && this.hasRightArrowSprite();
+};
+
+DKTools_Window.prototype.hasDownArrowSprite = function() {
+    return !!this._downArrowSprite;
+};
+
+DKTools_Window.prototype.hasUpArrowSprite = function() {
+    return !!this._upArrowSprite;
+};
+
+DKTools_Window.prototype.hasLeftArrowSprite = function() {
+    return !!this._leftArrowSprite;
+};
+
+DKTools_Window.prototype.hasRightArrowSprite = function() {
+    return !!this._rightArrowSprite;
+};
+
+DKTools_Window.prototype.hasPauseSignSprite = function() {
+    return !!this._windowPauseSignSprite;
 };
 
 // move methods
@@ -13088,14 +13219,6 @@ DKTools_Window.prototype.minHeight = function() {
 	return this.standardPadding() * 2 + DKTools_Base.prototype.minHeight.call(this);
 };
 
-// reset methods
-
-DKTools_Window.prototype.resetFontSettings = function() {
-};
-
-DKTools_Window.prototype.resetTextColor = function() {
-};
-
 // load methods
 
 /**
@@ -13116,6 +13239,14 @@ DKTools_Window.prototype.loadBitmap = function(folder, filename, listener, hue, 
         bitmap.addLoadListener(listener);
     }
 	return bitmap;
+};
+
+// reset methods
+
+DKTools_Window.prototype.resetFontSettings = function() {
+};
+
+DKTools_Window.prototype.resetTextColor = function() {
 };
 
 // change methods
@@ -13170,19 +13301,29 @@ DKTools_Window.prototype._updateMove = function(newX, newY, newOpacity, event) {
 };
 
 DKTools_Window.prototype._updateContents = function() {
-    if (this._windowContentsSprite) {
+    if (this.hasContentsSprite()) {
         Window.prototype._updateContents.call(this);
     }
 };
 
 DKTools_Window.prototype._updateArrows = function() {
-    if (this._downArrowSprite && this._upArrowSprite) {
-        Window.prototype._updateArrows.call(this);
+    var isOpen = this.isOpen();
+    if (this.hasDownArrowSprite()) {
+        this._downArrowSprite.visible = isOpen && this.downArrowVisible;
+    }
+    if (this.hasUpArrowSprite()) {
+        this._upArrowSprite.visible = isOpen && this.upArrowVisible;
+    }
+    if (this.hasLeftArrowSprite()) {
+        this._leftArrowSprite.visible = isOpen && this.leftArrowVisible;
+    }
+    if (this.hasRightArrowSprite()) {
+        this._rightArrowSprite.visible = isOpen && this.rightArrowVisible;
     }
 };
 
 DKTools_Window.prototype._updatePauseSign = function() {
-    if (this._windowPauseSignSprite) {
+    if (this.hasPauseSignSprite()) {
         Window.prototype._updatePauseSign.call(this);
     }
 };
@@ -13197,9 +13338,11 @@ DKTools_Window.prototype.updateAll = function() {
 };
 
 DKTools_Window.prototype.updateContents = function() {
-    this.updateFont();
-    this.updateTextColor();
-    this.updatePaintOpacity();
+    if (this.hasContentsSprite()) {
+        this.updateFont();
+        this.updateTextColor();
+        this.updatePaintOpacity();
+    }
 };
 
 DKTools_Window.prototype.updateTransform = function() {
@@ -13215,7 +13358,9 @@ DKTools_Window.prototype.updateTransform = function() {
  * @method updateTone
 */
 DKTools_Window.prototype.updateTone = function() {
-	Window.prototype.setTone.call(this, this._tone[0], this._tone[1], this._tone[2]);
+    if (this.hasBackSprite()) {
+        Window.prototype.setTone.apply(this, this._tone);
+    }
 };
 
 /**
@@ -13224,9 +13369,15 @@ DKTools_Window.prototype.updateTone = function() {
  * @method updateOpacity
 */
 DKTools_Window.prototype.updateOpacity = function() {
-	this.opacity = this._opacity[0];
-	this.contentsOpacity = this._opacity[1];
-	this.backOpacity = this._opacity[2];
+    if (this.hasSpriteContainer()) {
+        this.opacity = this._opacity[0];
+    }
+    if (this.hasContentsSprite()) {
+        this.contentsOpacity = this._opacity[1];
+    }
+	if (this.hasBackSprite()) {
+        this.backOpacity = this._opacity[2];
+    }
 };
 
 /**
