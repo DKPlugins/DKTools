@@ -122,6 +122,10 @@ DKLocalization.DKTools = {
  * @desc Plugin language (ru - russian, en - english)
  * @default en
 
+ * @param Open Console
+ * @desc Open a debug console (true or false)
+ * @default false
+
 */
 
 /*:ru
@@ -218,6 +222,10 @@ DKLocalization.DKTools = {
  * @param Plugin Language
  * @desc Язык плагина (ru - русский, en - английский)
  * @default ru
+
+ * @param Open Console
+ * @desc Открыть отладочную консоль (true - да, false - нет)
+ * @default false
  
 */
 
@@ -233,6 +241,8 @@ var DKToolsParam = {};
 DKToolsParam.param = PluginManager.parameters('DKTools');
 
 var DKLocale = DKLocale || DKToolsParam.param['Plugin Language'];
+
+DKToolsParam.openConsole = DKToolsParam.param['Open Console'];
 
 //===========================================================================
 // DK Localization Manager
@@ -334,10 +344,19 @@ function DKToolsUtils() {
 // Функции могут быть с багами
 DKToolsUtils.debug = false;
 
-// Массив слов для перевода строки в Boolean
-DKToolsUtils.boolean = {};
-DKToolsUtils.boolean.ru = ['нет', 'выключить', 'выкл', 'отключить', 'ложь', 'убрать'];
-DKToolsUtils.boolean.en = ['false', 'disable', 'deactivate', 'no', 'not', 'off'];
+DKToolsUtils.booleanFalse = {};
+DKToolsUtils.booleanFalse.ru = ['нет', 'выключить', 'выкл', 'отключить', 'ложь', 'убрать'];
+DKToolsUtils.booleanFalse.en = ['false', 'disable', 'deactivate', 'no', 'not', 'off'];
+
+/**
+ * @method initialize
+ */
+DKToolsUtils.initialize = function() {
+    this._checkVersion();
+    if (this.toBoolean(DKToolsParam.openConsole)) {
+        this.openConsole();
+    }
+};
 
 /**
  *
@@ -347,8 +366,8 @@ DKToolsUtils.boolean.en = ['false', 'disable', 'deactivate', 'no', 'not', 'off']
  */
 DKToolsUtils.booleanArray = function() {
     var array = [];
-    for(var locale in DKToolsUtils.boolean) {
-        array = array.concat(DKToolsUtils.boolean[locale]);
+    for(var locale in this.booleanFalse) {
+        array = array.concat(this.booleanFalse[locale]);
     }
     return array;
 };
@@ -367,13 +386,8 @@ DKToolsUtils.toBoolean = function(value) {
         return false;
     }
     value = value.toLowerCase();
-    var array = this.booleanArray();
-    for(var i = 0; i < array.length; i++) {
-        if (array[i] === value) {
-            return false;
-        }
-    }
-    return true;
+    var booleanFalse = this.booleanArray();
+    return !booleanFalse.contains(value);
 };
 
 /**
@@ -400,7 +414,7 @@ DKToolsUtils.splitString = function(string) {
  * @return {Array}
  */
 DKToolsUtils.stringToNumberArray = function(string) {
-    if (string instanceof String) {
+    if (string && string.constructor === String) {
         var array = this.splitString(string);
         return array.map(function(value) {
             return Number(value);
@@ -419,7 +433,7 @@ DKToolsUtils.stringToNumberArray = function(string) {
  * @return {Array}
  */
 DKToolsUtils.stringToBooleanArray = function(string) {
-    if (string instanceof String) {
+    if (string && string.constructor === String) {
         var array = this.splitString(string);
         return array.map(function(value) {
             return this.toBoolean(value);
@@ -440,7 +454,7 @@ DKToolsUtils.stringToBooleanArray = function(string) {
 DKToolsUtils.stringToFontArray = function(string) {
     var standardFont = this.standardFontArray();
     var font = [];
-    if (string instanceof String) {
+    if (string && string.constructor === String) {
         var array = this.splitString(string);
         font[0] = (array[0] === '-1' ? standardFont[0] : array[0]);
         font[1] = this.toBoolean(array[1]);
@@ -506,6 +520,17 @@ DKToolsUtils.mixin = function(target, source) {
 };
 
 /**
+ * @method openConsole
+ */
+DKToolsUtils.openConsole = function() {
+    if (Utils.isNwjs() && Utils.isOptionValid('test')) {
+        var debugWindow = require('nw.gui').Window.get().showDevTools();
+        debugWindow.moveTo(0, 0);
+        window.focus();
+    }
+};
+
+/**
  * @method _checkVersion
  * @private
  */
@@ -529,7 +554,7 @@ DKToolsUtils._checkVersion = function() {
 var DKTools_SceneManager_initialize = SceneManager.initialize;
 SceneManager.initialize = function() {
     DKTools_SceneManager_initialize.call(this);
-    DKToolsUtils._checkVersion();
+    DKToolsUtils.initialize();
 };
 
 //===========================================================================
@@ -1774,7 +1799,7 @@ DKTools_Base.prototype.initialize = function(object, y, width, height) {
     this.setupSize(width, height);
 };
 
-// clear methods
+// _clear methods
 
 /**
  * Очищает все данные спрайта
@@ -1785,6 +1810,17 @@ DKTools_Base.prototype._clearAll = function() {
     this.clearEvents();
     this._clearSymbols();
 };
+
+/**
+ * Очищает параметры спрайта
+ *
+ * @method clearSymbols
+ */
+DKTools_Base.prototype._clearSymbols = function() {
+    this._symbols = {};
+};
+
+// clear methods
 
 /**
  * Очищает события спрайта
@@ -1805,15 +1841,6 @@ DKTools_Base.prototype.clearEvents = function(object) {
     } else {
         this._events = {};
     }
-};
-
-/**
- * Очищает параметры спрайта
- *
- * @method clearSymbols
- */
-DKTools_Base.prototype._clearSymbols = function() {
-    this._symbols = {};
 };
 
 // standard methods
@@ -1952,7 +1979,7 @@ DKTools_Base.prototype.standardWindowskin = function() {
     return 'Window';
 };
 
-// setup methods
+// _setup methods
 
 DKTools_Base.prototype._setupAll = function() {
     this._setupEvents();
@@ -1960,6 +1987,8 @@ DKTools_Base.prototype._setupAll = function() {
 
 DKTools_Base.prototype._setupEvents = function() {
 };
+
+// setup methods
 
 //DKTools_Base.prototype.setup = function(type, value) {
 //    type = type.charAt(0).toUpperCase() + type.substr(1);
@@ -2407,15 +2436,20 @@ DKTools_Base.prototype.checkAll = function() {
     this.checkSize();
 };
 
-// create methods
+DKTools_Base.prototype.checkSize = function() {
+};
+
+// _create methods
 
 DKTools_Base.prototype._createAll = function() {
 };
 
+// create methods
+
 DKTools_Base.prototype.createAll = function() {
 };
 
-//
+// refresh methods
 
 DKTools_Base.prototype.refreshAll = function() {
     if (this.canRefreshAll()) {
@@ -2425,7 +2459,6 @@ DKTools_Base.prototype.refreshAll = function() {
 };
 
 DKTools_Base.prototype.updateAll = function() {
-    this.updateBitmap();
 };
 
 DKTools_Base.prototype.redrawAll = function() {
@@ -4102,17 +4135,6 @@ DKTools_Base.prototype.addEventListener = function(type, handler) {
 // update methods
 
 /**
- * Обновляет Bitmap спрайта
- *
- * @method updateBitmap
- */
-DKTools_Base.prototype.updateBitmap = function() {
-    this.updateFont();
-    this.updateTextColor();
-    this.updatePaintOpacity();
-};
-
-/**
  * Обновляет шрифт текста
  *
  * @method updateFont
@@ -4854,6 +4876,25 @@ DKTools_Sprite.prototype.checkSize = function() {
     return changed;
 };
 
+// _create methods
+
+DKTools_Sprite.prototype._createVisibleEvent = function(duraion, visible) {
+    var callback = function() {
+        this.setupVisible(visible);
+    }.bind(this);
+    if (visible) {
+        var opacity = 255;
+        var onStartHandler = callback;
+        var onEndHandler = null;
+    } else {
+        var opacity = 0;
+        var onStartHandler = null;
+        var onEndHandler = callback;
+    }
+    var handler = this._updateMove.bind(this, this.x, this.y, opacity, this.scale.x, this.scale.y);
+    this.addEvent('wait', handler, duration, onStartHandler, onEndHandler);
+};
+
 // create methods
 
 DKTools_Sprite.prototype.createAll = function() {
@@ -4873,23 +4914,6 @@ DKTools_Sprite.prototype.createBitmap = function() {
     } else if (!this.isFixedBitmap()) {
         this.bitmap = new Bitmap(this._bitmapWidth, this._bitmapHeight);
     }
-};
-
-DKTools_Sprite.prototype._createVisibleEvent = function(duraion, visible) {
-    var callback = function() {
-        this.setupVisible(visible);
-    }.bind(this);
-    if (visible) {
-        var opacity = 255;
-        var onStartHandler = callback;
-        var onEndHandler = null;
-    } else {
-        var opacity = 0;
-        var onStartHandler = null;
-        var onEndHandler = callback;
-    }
-    var handler = this._updateMove.bind(this, this.x, this.y, opacity, this.scale.x, this.scale.y);
-    this.addEvent('wait', handler, duration, onStartHandler, onEndHandler);
 };
 
 // uncategorized methods
@@ -5053,7 +5077,7 @@ DKTools_Sprite.prototype.canvasToLocalX = Sprite_Button.prototype.canvasToLocalX
 DKTools_Sprite.prototype.canvasToLocalY = Sprite_Button.prototype.canvasToLocalY;
 
 DKTools_Sprite.prototype.canRefreshAll = function() {
-    return DKTools_Base.prototype.canRefreshAll.call(this) && this.isResizable();
+    return DKTools_Base.prototype.canRefreshAll.call(this) && !this.hasGraphic() && !this.isFixedBitmap();
 };
 
 DKTools_Sprite.prototype.emulateClick = function() {
@@ -5290,7 +5314,19 @@ DKTools_Sprite.prototype.updateWheelEvents = function() {
 // update methods
 
 DKTools_Sprite.prototype.updateAll = function() {
+    DKTools_Base.prototype.updateAll.call(this);
     this.updateBitmap();
+};
+
+/**
+ * Обновляет Bitmap спрайта
+ *
+ * @method updateBitmap
+ */
+DKTools_Sprite.prototype.updateBitmap = function() {
+    this.updateFont();
+    this.updateTextColor();
+    this.updatePaintOpacity();
 };
 
 /**
@@ -5610,7 +5646,7 @@ DKTools_Viewport.prototype.update = function() {
             width = child.width - (child.x + child.width - this.width);
             height = child.height - (child.y + child.height - this.height);
         }
-        child.setFrame(x, y, width, height);
+        //child.setFrame(x, y, width, height);
     }.bind(this));
 };
 
@@ -9387,11 +9423,11 @@ DKTools_Input_Base.prototype.setAll = function(object, blockStart) {
  *
  * @return Boolean
 */
-DKTools_Input_Base.prototype.setText = function(text, blockUpdate) {
+DKTools_Input_Base.prototype.setText = function(text, blockRefresh) {
     if (DKTools_Sprite.prototype.setText.call(this, text, true)) {
         this.setupCaretPosition();
-        if (!blockUpdate) {
-            this.updateBitmap();
+        if (!blockRefresh) {
+            this.refreshAll();
         }
         return true;
     }
@@ -9651,7 +9687,7 @@ DKTools_Input_Base.prototype.caretIsVisible = function() {
 */
 DKTools_Input_Base.prototype.showCaret = function() {
     this.setupCaretVisible(true);
-    this.updateBitmap();
+    this.refreshAll();
 };
 
 /**
@@ -9661,7 +9697,7 @@ DKTools_Input_Base.prototype.showCaret = function() {
 */
 DKTools_Input_Base.prototype.hideCaret = function() {
     this.setupCaretVisible(false);
-    this.updateBitmap();
+    this.refreshAll();
 };
 
 //
@@ -9898,7 +9934,7 @@ DKTools_Input_Base.prototype.processInput = function() {
     }
 	this.caretPosition += input.length;
     this.updateInputEvents();
-	this._needRedraw = true;
+	this._needRefresh = true;
 };
 
 /**
@@ -9922,7 +9958,7 @@ DKTools_Input_Base.prototype.processBackspace = function() {
 	}
     this.caretPosition--;
 	this.updateInputEvents();
-	this._needRedraw = true;
+	this._needRefresh = true;
 };
 
 /**
@@ -9940,7 +9976,7 @@ DKTools_Input_Base.prototype.processDelete = function() {
 	var text2 = text.substring(position + 1);
 	this.setupText(text1 + text2);
     this.updateInputEvents();
-	this._needRedraw = true;
+	this._needRefresh = true;
 };
 
 /**
@@ -9953,7 +9989,7 @@ DKTools_Input_Base.prototype.processOk = function() {
         return;
     }
     this.updateOkEvents();
-	this._needRedraw = true;
+	this._needRefresh = true;
 };
 
 /**
@@ -9966,7 +10002,7 @@ DKTools_Input_Base.prototype.processCancel = function() {
         return;
     }
     this.updateCancelEvents();
-	this._needRedraw = true;
+	this._needRefresh = true;
 };
 
 /**
@@ -9979,7 +10015,7 @@ DKTools_Input_Base.prototype.processCaretLeft = function() {
         return;
     }
 	this.caretPosition--;
-	this._needRedraw = true;
+	this._needRefresh = true;
 };
 
 /**
@@ -9992,7 +10028,7 @@ DKTools_Input_Base.prototype.processCaretRight = function() {
         return;
     }
 	this.caretPosition++;
-	this._needRedraw = true;
+	this._needRefresh = true;
 };
 
 /**
@@ -10015,14 +10051,14 @@ DKTools_Input_Base.prototype.processCaretVisible = function() {
     }
     this._clearCaretCounter();
     this.setupCaretVisible(!this._caret.visible);
-    this._needRedraw = true;
+    this._needRefresh = true;
 };
 
 // events mehtods
 
 DKTools_Input_Base.prototype.updateOkEvents = function() {
-    this.updateEventContainer('ok');
     this.deactivate();
+    this.updateEventContainer('ok');
 };
 
 DKTools_Input_Base.prototype.updateInputEvents = function() {
@@ -10030,8 +10066,8 @@ DKTools_Input_Base.prototype.updateInputEvents = function() {
 };
 
 DKTools_Input_Base.prototype.updateCancelEvents = function() {
-    this.updateEventContainer('cancel');
     this.deactivate();
+    this.updateEventContainer('cancel');
 };
 
 // update methods
@@ -10051,8 +10087,8 @@ DKTools_Input_Base.prototype.update = function() {
         this.processCancel();
         this.processCaretMove();
         this.processCaretVisible();
-        if (this._needRedraw) {
-            this.redrawAll();
+        if (this._needRefresh) {
+            this.refreshAll();
         }
     }
 };
@@ -12523,7 +12559,7 @@ DKTools_Window.prototype.initialize = function(object, y, width, height) {
     DKTools_Window._counter++;
 };
 
-// clear methods
+// _clear methods
 
 DKTools_Window.prototype._clearAll = function() {
     DKTools_Base.prototype._clearAll.call(this);
@@ -12763,14 +12799,7 @@ DKTools_Window.prototype.setTone = function(tone, blockUpdate) {
     return true;
 };
 
-// other methods
-
-DKTools_Window.prototype.updateTransform = function() {
-    this._updateArrows();
-    this._updatePauseSign();
-    this._updateContents();
-    PIXI.Container.prototype.updateTransform.call(this);
-};
+// _create methods
 
 DKTools_Window.prototype._createAllParts = function() {
     this._createWindowSpriteContainer();
@@ -12779,7 +12808,7 @@ DKTools_Window.prototype._createAllParts = function() {
     this._createContentsSprite();
     this._createArrowSprites();
     this._createPauseSignSprite();
-    this.addSpritesToChild();
+    this._addSpritesToChild();
 };
 
 DKTools_Window.prototype._createWindowSpriteContainer = function() {
@@ -12795,6 +12824,15 @@ DKTools_Window.prototype._createFrameSprite = function() {
     this._windowFrameSprite = new Sprite();
 };
 
+DKTools_Window.prototype._createContentsSprite = function() {
+    this._windowContentsSprite = new DKTools_Sprite();
+};
+
+DKTools_Window.prototype._createArrowSprites = function() {
+    this._createDownArrowSprite();
+    this._createUpArrowSprite();
+};
+
 DKTools_Window.prototype._createDownArrowSprite = function() {
     this._downArrowSprite = new Sprite();
 };
@@ -12803,22 +12841,29 @@ DKTools_Window.prototype._createUpArrowSprite = function() {
     this._upArrowSprite = new Sprite();
 };
 
-DKTools_Window.prototype._createArrowSprites = function() {
-    this._createDownArrowSprite();
-    this._createUpArrowSprite();
-};
-
 DKTools_Window.prototype._createPauseSignSprite = function() {
     this._windowPauseSignSprite = new Sprite();
 };
 
-DKTools_Window.prototype.addSpritesToChild = function() {
-    this._windowSpriteContainer.addChild(this._windowBackSprite, this._windowFrameSprite);
-    this.addChild(this._windowSpriteContainer);
-    this.addChild(this._windowContentsSprite);
-    this.addChild(this._downArrowSprite);
-    this.addChild(this._upArrowSprite);
-    this.addChild(this._windowPauseSignSprite);
+DKTools_Window.prototype._createWindowskin = function() {
+    this.windowskin = this.loadWindowskin();
+};
+
+DKTools_Window.prototype._createVisibleEvent = function(duraion, visible) {
+    var callback = function() {
+        this.setupVisible(visible);
+    }.bind(this);
+    if (visible) {
+        var opacity = 255;
+        var onStartHandler = callback;
+        var onEndHandler = null;
+    } else {
+        var opacity = 0;
+        var onStartHandler = null;
+        var onEndHandler = callback;
+    }
+    var handler = this._updateMove.bind(this, this.x, this.y, opacity);
+    this.addEvent('wait', handler, duration, onStartHandler, onEndHandler);
 };
 
 // _refresh methods
@@ -12861,52 +12906,65 @@ DKTools_Window.prototype._refreshPauseSign = function() {
     }
 };
 
-//
+// _add methods
 
-DKTools_Window.prototype._createContentsSprite = function() {
-    this._windowContentsSprite = new DKTools_Sprite();
-    this._windowContentsSprite.setupSize(this.contentsWidth(), this.contentsHeight());
-    this._windowContentsSprite.start();
+DKTools_Window.prototype._addSpritesToChild = function() {
+    this._addWindowSpriteContainerToChild();
+    this._addWindowContentsSpriteToChild();
+    this._addArrowSpritesToChild();
+    this._addWindowPauseSignSpriteToChild();
+};
+
+DKTools_Window.prototype._addWindowSpriteContainerToChild = function() {
+    if (this._windowSpriteContainer) {
+        if (this._windowBackSprite) {
+            this._windowSpriteContainer.addChild(this._windowBackSprite);
+        }
+        if (this._windowFrameSprite) {
+            this._windowSpriteContainer.addChild(this._windowFrameSprite);
+        }
+        this.addChild(this._windowSpriteContainer);
+    }
+};
+
+DKTools_Window.prototype._addWindowContentsSpriteToChild = function() {
+    if (this._windowContentsSprite) {
+        this.addChild(this._windowContentsSprite);
+    }
+};
+
+DKTools_Window.prototype._addArrowSpritesToChild = function() {
+    this._addDownArrowSpriteToChild();
+    this._addUpArrowSpriteToChild();
+};
+
+DKTools_Window.prototype._addDownArrowSpriteToChild = function() {
+    if (this._downArrowSprite) {
+        this.addChild(this._downArrowSprite);
+    }
+};
+
+DKTools_Window.prototype._addUpArrowSpriteToChild = function() {
+    if (this._upArrowSprite) {
+        this.addChild(this._upArrowSprite);
+    }
+};
+
+DKTools_Window.prototype._addWindowPauseSignSpriteToChild = function() {
+    if (this._windowPauseSignSprite) {
+        this.addChild(this._windowPauseSignSprite);
+    }
 };
 
 // create methods
 
-//DKTools_Window.prototype._createAll = function() {
-//    DKTools_Base.prototype._createAll.call(this);
-    //this._createWindowskin();
-//};
-
-DKTools_Window.prototype._createWindowskin = function() {
-    this.windowskin = this.loadWindowskin();
+DKTools_Window.prototype.createAll = function() {
+    DKTools_Base.prototype.createAll.call(this);
+    this.createContents();
 };
 
-//DKTools_Window.prototype.createAll = function() {
-    //this._createAllParts();
-    //this._createWindowskin();
-    //DKTools_Base.prototype.createAll.call(this);
-//};
-
-//DKTools_Window.prototype.createBitmap = function() {
-//    this._windowContentsSprite.resize(this.contentsWidth(), this.contentsHeight());
-//};
-//
-//DKTools_Window.prototype.createContents = DKTools_Window.prototype.createBitmap;
-
-DKTools_Window.prototype._createVisibleEvent = function(duraion, visible) {
-    var callback = function() {
-        this.setupVisible(visible);
-    }.bind(this);
-    if (visible) {
-        var opacity = 255;
-        var onStartHandler = callback;
-        var onEndHandler = null;
-    } else {
-        var opacity = 0;
-        var onStartHandler = null;
-        var onEndHandler = callback;
-    }
-    var handler = this._updateMove.bind(this, this.x, this.y, opacity);
-    this.addEvent('wait', handler, duration, onStartHandler, onEndHandler);
+DKTools_Window.prototype.createContents = function() {
+    this._windowContentsSprite.resize(this.contentsWidth(), this.contentsHeight());
 };
 
 // is method
@@ -12939,29 +12997,7 @@ DKTools_Window.prototype.checkSize = function() {
     return changed;
 };
 
-//
-
-/**
- * Обновляет перемещение спрайта
- *
- * @method _updateMove
- * @private
- *
- * @param {Number} newX - Новая координата X
- * @param {Number} newY - Новая координата Y
- * @param {Number} newOpacity - Новая прозрачность
- * @param {Number} newScaleX - Новое масштабирование по X
- * @param {Number} newScaleY - Новое масштабирование по Y
- * @param {DKToolsEvent} event - Событие
- */
-DKTools_Window.prototype._updateMove = function(newX, newY, newOpacity, event) {
-    var duration = event.duration;
-    var x = (this.x * (duration - 1) + newX) / duration;
-    var y = (this.y * (duration - 1) + newY) / duration;
-    var opacity = (this.opacity * (duration - 1) + newOpacity) / duration;
-    this.move(x, y);
-    this.setupOpacity(opacity);
-};
+// move methods
 
 /**
  * Перемещает спрайт
@@ -12994,6 +13030,8 @@ DKTools_Window.prototype.move = function(object, newY, duration, newOpacity) {
         Window.prototype.move.call(this, newX, newY, this.width, this.height);
     }
 };
+
+// size methods
 
 /**
  * Устанавливает ширину и высоту Bitmap, если они отличаются от текущих
@@ -13050,6 +13088,8 @@ DKTools_Window.prototype.minHeight = function() {
 	return this.standardPadding() * 2 + DKTools_Base.prototype.minHeight.call(this);
 };
 
+// reset methods
+
 DKTools_Window.prototype.resetFontSettings = function() {
 };
 
@@ -13078,7 +13118,7 @@ DKTools_Window.prototype.loadBitmap = function(folder, filename, listener, hue, 
 	return bitmap;
 };
 
-//
+// change methods
 
 DKTools_Window.prototype.changeTextColor = function(color) {
 	//if (this.setTextColor(color, true)) this.updateTextColor();
@@ -13105,12 +13145,68 @@ DKTools_Window.prototype.updateCloseEvents = function() {
     this.updateEventContainer('close');
 };
 
+// _update methods
+
+/**
+ * Обновляет перемещение спрайта
+ *
+ * @method _updateMove
+ * @private
+ *
+ * @param {Number} newX - Новая координата X
+ * @param {Number} newY - Новая координата Y
+ * @param {Number} newOpacity - Новая прозрачность
+ * @param {Number} newScaleX - Новое масштабирование по X
+ * @param {Number} newScaleY - Новое масштабирование по Y
+ * @param {DKToolsEvent} event - Событие
+ */
+DKTools_Window.prototype._updateMove = function(newX, newY, newOpacity, event) {
+    var duration = event.duration;
+    var x = (this.x * (duration - 1) + newX) / duration;
+    var y = (this.y * (duration - 1) + newY) / duration;
+    var opacity = (this.opacity * (duration - 1) + newOpacity) / duration;
+    this.move(x, y);
+    this.setupOpacity(opacity);
+};
+
+DKTools_Window.prototype._updateContents = function() {
+    if (this._windowContentsSprite) {
+        Window.prototype._updateContents.call(this);
+    }
+};
+
+DKTools_Window.prototype._updateArrows = function() {
+    if (this._downArrowSprite && this._upArrowSprite) {
+        Window.prototype._updateArrows.call(this);
+    }
+};
+
+DKTools_Window.prototype._updatePauseSign = function() {
+    if (this._windowPauseSignSprite) {
+        Window.prototype._updatePauseSign.call(this);
+    }
+};
+
 // update methods
 
 DKTools_Window.prototype.updateAll = function() {
+    DKTools_Base.prototype.updateAll.call(this);
     this.updateTone();
     this.updateOpacity();
-    DKTools_Base.prototype.updateAll.call(this);
+    this.updateContents();
+};
+
+DKTools_Window.prototype.updateContents = function() {
+    this.updateFont();
+    this.updateTextColor();
+    this.updatePaintOpacity();
+};
+
+DKTools_Window.prototype.updateTransform = function() {
+    this._updateContents();
+    this._updateArrows();
+    this._updatePauseSign();
+    PIXI.Container.prototype.updateTransform.call(this);
 };
 
 /**
@@ -13182,6 +13278,12 @@ DKTools_Window.prototype.update = function() {
 
 
 
+//===========================================================================
+// NOT READY
+//===========================================================================
+// DK Tools Window Selectable Test
+//===========================================================================
+
 /**
  * @class DKTools_Window_Selectable
  * @constructor
@@ -13207,8 +13309,14 @@ DKTools_Window_Selectable_Test.prototype._createContentsSprite = function() {
 
 
 
+//===========================================================================
+// NOT READY
+//===========================================================================
+// DK Tools Window Tab Test
+//===========================================================================
+
 /**
- * @class DKTools_Window_Selectable
+ * @class DKTools_Window_Tab_Test
  * @constructor
  * @param {Number} x - Координата X (The x coordinate for the upper-left corner)
  * @param {Number} y - Координата Y (The y coordinate for the upper-left corner)
@@ -13227,6 +13335,8 @@ DKTools_Window_Tab_Test.prototype.constructor = DKTools_Window_Tab_Test;
 DKTools_Window_Tab_Test.prototype._createContentsSprite = function() {
     this._windowContentsSprite = new DKTools_Container_Base();
 };
+
+
 
 
 
