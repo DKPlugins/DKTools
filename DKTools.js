@@ -5528,48 +5528,48 @@ function DKTools_Viewport() {
 DKTools_Viewport.prototype = Object.create(DKTools_Sprite.prototype);
 DKTools_Viewport.prototype.constructor = DKTools_Viewport;
 
-// clear methods
+// get methods
 
-DKTools_Viewport.prototype._clearAll = function() {
-    DKTools_Sprite.prototype._clearAll.call(this);
-    this._clearOrigin();
-};
-
-DKTools_Viewport.prototype._clearOrigin = function() {
-    this.origin = new Point();
+DKTools_Viewport.prototype.getChildFrame = function(child) {
+    var x = 0;
+    var y = 0;
+    var width = 0;
+    var height = 0;
+    if (child.x + child.realWidth <= this.width) {
+        width = child.realWidth;
+    }
+    if (child.y + child.realHeight <= this.height) {
+        height = child.realHeight;
+    }
+    if (child.x < 0) {
+        x = child.x;
+        width = child.realWidth;
+    }
+    if (child.y < 0) {
+        y = child.y;
+        height = child.realHeight;
+    }
+    if (child.x < this.width && child.x + child.realWidth > this.width) {
+        width = this.width - child.x;
+    }
+    if (child.y < this.height && child.y + child.realHeight > this.height) {
+        height = this.height - child.y;
+    }
+    return new Rectangle(x, y, width, height);
 };
 
 // update methods
 
+DKTools_Viewport.prototype.updateChildsFrame = function() {
+    this.children.forEach(function(child) {
+        var frame = this.getChildFrame(child);
+        child.setFrame(frame);
+    }.bind(this));
+};
+
 DKTools_Viewport.prototype.update = function() {
     DKTools_Sprite.prototype.update.call(this);
-    this.children.forEach(function(child) {
-        var x = 0;
-        var y = 0;
-        var width = 0;
-        var height = 0;
-        if (child.x + child.realWidth <= this.width) {
-            width = child.realWidth;
-        }
-        if (child.y + child.realHeight <= this.height) {
-            height = child.realHeight;
-        }
-        if (child.x < 0) {
-            x = child.x/* + 1*/;
-            width = /*child.x + */child.realWidth;
-        }
-        if (child.y < 0) {
-            y = child.y/* + 1*/;
-            height = /*child.y + */child.realHeight;
-        }
-        if (child.x < this.width && child.x + child.realWidth > this.width) {
-            width = this.width - child.x/* + 1*/;
-        }
-        if (child.y < this.height && child.y + child.realHeight > this.height) {
-            height = this.height - child.y/* + 1*/;
-        }
-        child.setFrame(x, y, width, height);
-    }.bind(this));
+    this.updateChildsFrame();
 };
 
 
@@ -6778,22 +6778,6 @@ DKTools_Container_Base.prototype.col = function(col) {
     return elements;
 };
 
-DKTools_Container_Base.prototype.fixedRowHeight = function() {
-    var height = this._fixedHeight;
-    var yPadding = this._yPadding;
-    var maxRows = this.maxRows();
-    var paddingHeight = yPadding * (maxRows - 1);
-    return (height - paddingHeight) / maxRows;
-};
-
-DKTools_Container_Base.prototype.fixedColWidth = function() {
-    var width = this._fixedWidth;
-    var xPadding = this._xPadding;
-    var maxCols = this.maxCols();
-    var paddingWidth = xPadding * (maxCols - 1);
-    return (width - paddingWidth) / maxCols;
-};
-
 /**
  * Возвращает высоту ряда (максимальную высоту элементов ряда)
  *
@@ -6805,7 +6789,7 @@ DKTools_Container_Base.prototype.fixedColWidth = function() {
  */
 DKTools_Container_Base.prototype.rowHeight = function(row) {
     if (this.isFixedSize()) {
-        return this.fixedRowHeight();
+        return this.elementFixedHeight();
     }
     var elements = this.row(row);
     var array = [];
@@ -6829,7 +6813,7 @@ DKTools_Container_Base.prototype.rowHeight = function(row) {
  */
 DKTools_Container_Base.prototype.colWidth = function(col) {
     if (this.isFixedSize()) {
-        return this.fixedColWidth();
+        return this.elementFixedWidth();
     }
     var elements = this.col(col);
     var array = [];
@@ -7054,6 +7038,14 @@ DKTools_Selectable_Container_Base.prototype.standardIndex = function() {
     return 0;
 };
 
+DKTools_Selectable_Container_Base.prototype.standardVisibleRows = function() {
+    return 0;
+};
+
+DKTools_Selectable_Container_Base.prototype.standardVisibleCols = function() {
+    return 0;
+};
+
 // setup methods
 
 DKTools_Selectable_Container_Base.prototype._setupEvents = function() {
@@ -7070,10 +7062,20 @@ DKTools_Selectable_Container_Base.prototype.setupAll = function(object) {
     object = object || {};
     DKTools_Container_Base.prototype.setupAll.call(this, object);
     this.setupIndex(object.index);
+    this.setupVisibleRows(object.visibleRows);
+    this.setupVisibleCols(object.visibleCols);
 };
 
 DKTools_Selectable_Container_Base.prototype.setupIndex = function(index) {
     this._index = (index == null ? this.standardIndex() : index);
+};
+
+DKTools_Selectable_Container_Base.prototype.setupVisibleRows = function(rows) {
+    this._visibleRows = (rows == null ? this.standardVisibleRows() : rows);
+};
+
+DKTools_Selectable_Container_Base.prototype.setupVisibleCols = function(cols) {
+    this._visibleCols = (cols == null ? this.standardVisibleCols() : cols);
 };
 
 // set methods
@@ -7113,6 +7115,45 @@ DKTools_Selectable_Container_Base.prototype.start = function() {
     this.reselect();
 };
 
+// check methods
+
+DKTools_Selectable_Container_Base.prototype.checkRowsAndCols = function() {
+    DKTools_Container_Base.prototype.checkRowsAndCols.call(this);
+    this.checkVisibleRowsAndCols();
+};
+
+DKTools_Selectable_Container_Base.prototype.checkVisibleRowsAndCols = function() {
+    var rows, cols;
+    var maxRows = this.maxRows();
+    var maxCols = this.maxCols();
+    var visibleRows = this.visibleRows();
+    var visibleCols = this.visibleCols();
+    var minElements = this._minElements();
+    if (visibleRows !== 0 && visibleCols !== 0) {
+        return false;
+    }
+    if (visibleRows === 0 && visibleCols === 0) {
+        if (this.isHorizontalPlacement()) {
+            rows = 1;
+            cols = maxCols;
+        } else if (this.isVerticalPlacement()) {
+            rows = maxRows;
+            cols = 1;
+        }
+    } else {
+        if (visibleRows !== 0) {
+            rows = visibleRows;
+            cols = Math.max(Math.ceil(minElements / maxRows), 1);
+        } else {
+            rows = Math.max(Math.ceil(minElements / maxCols), 1);
+            cols = visibleCols;
+        }
+    }
+    this.setupVisibleRows(rows);
+    this.setupVisibleCols(cols);
+    return true;
+};
+
 // create methods
 
 DKTools_Selectable_Container_Base.prototype._createAll = function() {
@@ -7128,13 +7169,10 @@ DKTools_Selectable_Container_Base.prototype._createCursorSprite = function() {
 
 //
 
-/*
-
 DKTools_Selectable_Container_Base.prototype._clearAll = function() {
     DKTools_Container_Base.prototype._clearAll.call(this);
     this._clearCursorAnimation();
-    this._topRow = 0;
-    this._topCol = 0;
+    this._top = 0;
 };
 
 DKTools_Selectable_Container_Base.prototype.nowRow = function() {
@@ -7145,74 +7183,66 @@ DKTools_Selectable_Container_Base.prototype.nowCol = function() {
     return this.index();
 };
 
-DKTools_Selectable_Container_Base.prototype.setBottomRow = function(row) {
-    this.setTopRow(row - (this.visibleRows() - 1));
-};
-
-DKTools_Selectable_Container_Base.prototype.bottomRow = function() {
-    return Math.max(0, this.topRow() + this.visibleRows() - 1);
-};
-
-DKTools_Selectable_Container_Base.prototype.setBottomCol = function(col) {
-    this.setTopCol(col - (this.visibleCols() - 1));
-};
-
-DKTools_Selectable_Container_Base.prototype.bottomCol = function() {
-    return Math.max(0, this.topCol() + this.visibleCols() - 1);
+DKTools_Selectable_Container_Base.prototype.bottomTop = function() {
+    if (this.isHorizontalPlacement()) {
+        return Math.max(0, this.top() + this.visibleCols() - 1);
+    } else if (this.isVerticalPlacement()) {
+        return Math.max(0, this.top() + this.visibleRows() - 1);
+    }
 };
 
 DKTools_Selectable_Container_Base.prototype.ensureCursorVisible = function() {
-    if (this.isVertical()) {
-        var row = this.nowRow();
-        if (row < this.topRow()) {
-            this.setTopRow(row);
-        } else if (row > this.bottomRow()) {
-            this.setBottomRow(row);
-        }
-    } else if (this.isHorizontal()) {
+    if (this.isHorizontalPlacement()) {
         var col = this.nowCol();
-        if (col < this.topCol()) {
-            this.setTopCol(col);
-        } else if (col > this.bottomCol()) {
-            this.setBottomCol(col);
+        if (col < this.top()) {
+            this.setTop(col);
+        } else if (col > this.bottomTop()) {
+            this.setTop(col - this.visibleCols() + 1);
+        }
+    } else if (this.isVerticalPlacement()) {
+        var row = this.nowRow();
+        if (row < this.top()) {
+            this.setTop(row);
+        } else if (row > this.bottomTop()) {
+            this.setTop(row - this.visibleRows() + 1);
         }
     }
+    //if (this.isVertical()) {
+    //    var row = this.nowRow();
+    //    if (row < this.topRow()) {
+    //        this.setTopRow(row);
+    //    } else if (row > this.bottomRow()) {
+    //        this.setBottomRow(row);
+    //    }
+    //} else if (this.isHorizontal()) {
+    //    var col = this.nowCol();
+    //    if (col < this.topCol()) {
+    //        this.setTopCol(col);
+    //    } else if (col > this.bottomCol()) {
+    //        this.setBottomCol(col);
+    //    }
+    //}
 };
 
-DKTools_Selectable_Container_Base.prototype.setTopRow = function(row) {
-    this._topRow = row;
+DKTools_Selectable_Container_Base.prototype.top = function() {
+    return this._top;
 };
 
-DKTools_Selectable_Container_Base.prototype.setTopCol = function(col) {
-    this._topCol = col;
-};
-
-DKTools_Selectable_Container_Base.prototype.visibleRows = function() {
-    return 1;
-};
-
-DKTools_Selectable_Container_Base.prototype.visibleCols = function() {
-    return 2;
-};
-
-DKTools_Selectable_Container_Base.prototype.visibleElements = function() {
-    return this.visibleRows() * this.visibleCols();
-};
-
-DKTools_Selectable_Container_Base.prototype.topRow = function() {
-    return this._topRow;
-};
-
-DKTools_Selectable_Container_Base.prototype.topCol = function() {
-    return this._topCol;
+DKTools_Selectable_Container_Base.prototype.setTop = function(top) {
+    this._top = top;
 };
 
 DKTools_Selectable_Container_Base.prototype.topIndex = function() {
-    if (this.isVertical()) {
-        return this.topRow() * this.maxCols();
-    } else if (this.isHorizontal()) {
-        return this.topCol();// * this.visibleCols();
+    if (this.isHorizontalPlacement()) {
+        return this.top() * this.maxCols();
+    } else if (this.isVerticalPlacement()) {
+        return this.top() * this.maxCols();
     }
+    //if (this.isVertical()) {
+    //    return this.topRow() * this.maxCols();
+    //} else if (this.isHorizontal()) {
+    //    return this.topCol();// * this.visibleCols();
+    //}
 };
 
 DKTools_Selectable_Container_Base.prototype.select = function(index) {
@@ -7248,7 +7278,27 @@ DKTools_Selectable_Container_Base.prototype.updatePlacement = function() {
     }
 };
 
-*/
+DKTools_Selectable_Container_Base.prototype.visibleRows = function() {
+    return this._visibleRows;
+};
+
+DKTools_Selectable_Container_Base.prototype.visibleCols = function() {
+    return this._visibleCols;
+};
+
+DKTools_Selectable_Container_Base.prototype.visibleElements = function() {
+    return this.visibleRows() * this.visibleCols();
+};
+
+DKTools_Selectable_Container_Base.prototype.maxTop = function() {
+    if (this.isHorizontalPlacement()) {
+        return this.maxRows() - this.visibleRows();
+    } else if (this.isVerticalPlacement()) {
+        return this.maxCols() - this.visibleCols();
+    }
+};
+
+//
 
 DKTools_Selectable_Container_Base.prototype.deselect = function() {
     this.select(-1);
@@ -7274,10 +7324,10 @@ DKTools_Selectable_Container_Base.prototype.index = function() {
     return this._index;
 };
 
-DKTools_Selectable_Container_Base.prototype.select = function(index) {
-    this.setupIndex(index);
-    this.updateCursor();
-};
+//DKTools_Selectable_Container_Base.prototype.select = function(index) {
+//    this.setupIndex(index);
+//    this.updateCursor();
+//};
 
 DKTools_Selectable_Container_Base.prototype._onTouch = function() {
     var lastIndex = this._index;
@@ -7393,15 +7443,15 @@ DKTools_Selectable_Container_Base.prototype.playCursorSound = function() {
 
 // is methods
 
-DKTools_Selectable_Container_Base.prototype.isHorizontal = function() {
-    return true;
+//DKTools_Selectable_Container_Base.prototype.isHorizontal = function() {
+//    return true;
     //return this.maxRows() === 1;
-};
+//};
 
-DKTools_Selectable_Container_Base.prototype.isVertical = function() {
-    return false;
+//DKTools_Selectable_Container_Base.prototype.isVertical = function() {
+//    return false;
     //return this.maxCols() === 1;
-};
+//};
 
 DKTools_Selectable_Container_Base.prototype.isCursorMovable = function() {
     return (this.isVisibleAndActive() && !this._cursorFixed &&
@@ -9840,8 +9890,8 @@ DKTools_Input_Base.prototype._getInput = function() {
     var input = DKToolsInputManager.getText();
     var text = '';
     for(var i = 0; i < input.length; i++) {
-        var symbol = input[i].toLowerCase();
-        if (this._checkSymbol(symbol)) {
+        var symbol = input[i];
+        if (this._checkSymbol(symbol.toLowerCase())) {
             text += symbol;
         }
     }
