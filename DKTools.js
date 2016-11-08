@@ -1238,6 +1238,32 @@ Object.defineProperties(Array.prototype, {
         }
     },
 
+    sum: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            if (!this.isNumberArray()) {
+                return Number.NaN;
+            }
+            var sum = 0;
+            this.forEach(function(value) {
+                sum += value;
+            }.bind(this));
+            return sum;
+        }
+    },
+
+    average: {
+        configurable: true,
+        enumerable: false,
+        value: function() {
+            if (!this.isNumberArray()) {
+                return Number.NaN;
+            }
+            return this.sum() / this.length;
+        }
+    },
+
     /**
      * Выполняет логическую операцию дизъюнкция для булевого массива
      *
@@ -1422,7 +1448,7 @@ DKToolsEvent.prototype.initialize = function(target, type, handler, duration, on
     this._pauseDuration = 0;
 };
 
-// has methods
+// _has methods
 
 /**
  * Проверяет обработчик события
@@ -1460,7 +1486,7 @@ DKToolsEvent.prototype._hasOnEndHandler = function() {
     return !!this._onEndHandler;
 };
 
-// can methods
+// _can methods
 
 /**
  * Проверяет обработчик начала работы события на возможность вызова
@@ -1486,7 +1512,7 @@ DKToolsEvent.prototype._canCallOnEndHandler = function() {
     return this._hasOnEndHandler() && this.duration === 0;
 };
 
-// call methods
+// _call methods
 
 /**
  * Вызывает обработчик события
@@ -1524,7 +1550,7 @@ DKToolsEvent.prototype._callOnEndHandler = function() {
     }
 };
 
-// check methods
+// _check methods
 
 /**
  * Проверяет длительность события
@@ -1549,6 +1575,8 @@ DKToolsEvent.prototype._checkDuration = function() {
 DKToolsEvent.prototype._checkPauseDuration = function() {
     return this._pauseDuration > 0;
 };
+
+// check methods
 
 /**
  * Проверяет событие на возможность работы
@@ -1605,6 +1633,8 @@ DKToolsEvent.prototype.remove = function() {
     this._target.removeEvent(this);
 };
 
+// add methods
+
 /**
  * Добавляет длительность события
  *
@@ -1629,7 +1659,7 @@ DKToolsEvent.prototype.addPauseDuration = function(duration) {
     }
 };
 
-// update methods
+// _update methods
 
 /**
  * Обновляет длительность события
@@ -1654,6 +1684,8 @@ DKToolsEvent.prototype._updatePauseDuration = function() {
         this._pauseDuration--;
     }
 };
+
+// update methods
 
 /**
  * Обновляет событие
@@ -1843,6 +1875,24 @@ DKTools_Base.prototype.clearEvents = function(object) {
     }
 };
 
+// _setup methods
+
+DKTools_Base.prototype._setupAll = function() {
+    this._setupEvents();
+    this._setupSymbols();
+};
+
+DKTools_Base.prototype._setupEvents = function() {
+};
+
+DKTools_Base.prototype._setupSymbols = function() {
+};
+
+// _create methods
+
+DKTools_Base.prototype._createAll = function() {
+};
+
 // standard methods
 
 /**
@@ -1979,26 +2029,7 @@ DKTools_Base.prototype.standardWindowskin = function() {
     return 'Window';
 };
 
-// _setup methods
-
-DKTools_Base.prototype._setupAll = function() {
-    this._setupEvents();
-    this._setupSymbols();
-};
-
-DKTools_Base.prototype._setupEvents = function() {
-};
-
-DKTools_Base.prototype._setupSymbols = function() {
-};
-
 // setup methods
-
-//DKTools_Base.prototype.setup = function(type, value) {
-//    type = type.charAt(0).toUpperCase() + type.substr(1);
-//    var func = 'setup%1'.format(type);
-//    this[func](value);
-//};
 
 /**
  * Устанавливает все параметры спрайта
@@ -2122,64 +2153,6 @@ DKTools_Base.prototype.setupAlign = function(align) {
 };
 
 // set methods
-
-//DKTools_Base.prototype.set = function(paramType, newValue, onChangeType) {
-//    var funcType = paramType.charAt(0).toUpperCase() + paramType.substr(1);
-//    var setupMethod = this['setup%1'.format(funcType)];
-//    var lastValueType = '_%1'.format(paramType);
-//    if (!this.hasOwnProperty(lastValueType)) {
-//        lastValueType = this['%1'.format(paramType)];
-//    }
-//    var lastValue = this[lastValueType];
-//    if (lastValue instanceof Array && lastValue.equals(newValue) || lastValue === newValue) {
-//        return false;
-//    }
-//    setupMethod.call(this, newValue);
-//    if (lastValue instanceof Array && lastValue.equals(newValue) || lastValue === newValue) {
-//        return false;
-//    }
-//    switch(onChangeType) {
-//        case 0:
-//            this.start();
-//        case 1:
-//            this.refreshAll();
-//            break;
-//        case 2:
-//            this.updateAll();
-//            break;
-//        case 3:
-//            this.redrawAll();
-//            break;
-//    }
-//    return true;
-//};
-
-//DKTools_Base.prototype.setAll = function(object) {
-//    object = object || {};
-//    var changed = 0;
-//    if (this.set('font', object.font)) {
-//        changed++;
-//    }
-//    if (this.set('textColor', object.textColor)) {
-//        changed++;
-//    }
-//    if (this.set('paintOpacity', object.paintOpacity)) {
-//        changed++;
-//    }
-//    if (this.set('backgroundColor', object.backgroundColor)) {
-//        changed++;
-//    }
-//    if (this.set('text', object.text)) {
-//        changed++;
-//    }
-//    if (this.set('align', object.align)) {
-//        changed++;
-//    }
-//    if (this.set('opacity', object.opacity)) {
-//        changed++;
-//    }
-//    return changed;
-//};
 
 /**
  * Изменяет все параметры спрайта
@@ -2427,6 +2400,7 @@ DKTools_Base.prototype.start = function(activate) {
     this._started = true;
     this.updateStartEvents();
     this.checkAll();
+    this.removeAll();
     this.createAll();
     this.refreshAll();
     if (activate) {
@@ -2443,9 +2417,9 @@ DKTools_Base.prototype.checkAll = function() {
 DKTools_Base.prototype.checkSize = function() {
 };
 
-// _create methods
+// remove methods
 
-DKTools_Base.prototype._createAll = function() {
+DKTools_Base.prototype.removeAll = function() {
 };
 
 // create methods
@@ -2480,7 +2454,6 @@ DKTools_Base.prototype.redrawAll = function() {
 DKTools_Base.prototype.activate = function() {
     this.setupActive(true);
     this.updateActivateEvents();
-    this.updateInputData();
 };
 
 /**
@@ -2491,7 +2464,6 @@ DKTools_Base.prototype.activate = function() {
 DKTools_Base.prototype.deactivate = function() {
     this.setupActive(false);
     this.updateDeactivateEvents();
-    this.updateInputData();
 };
 
 // visible methods
@@ -4136,7 +4108,17 @@ DKTools_Base.prototype.addEventListener = function(type, handler) {
     return this.addEvent(type, handler, duration);
 };
 
+// process methods
+
+DKTools_Base.prototype.processAll = function() {
+};
+
 // update methods
+
+DKTools_Base.prototype.update = function() {
+    this.processAll();
+    this.updateEvents();
+};
 
 /**
  * Обновляет шрифт текста
@@ -4249,6 +4231,19 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         configurable: true
     },
 
+    touched: {
+        get: function() {
+            return this._touched;
+        },
+        set: function(value) {
+            if (this._touched !== value) {
+                this._touched = value;
+                this._onTouchedChange();
+            }
+        },
+        configurable: true
+    },
+
     clickX : {
         get: function() {
             return this.canvasToLocalX(TouchInput.x);
@@ -4343,8 +4338,15 @@ DKTools_Sprite.prototype.initialize = function(object, y, width, height) {
  */
 DKTools_Sprite.prototype._clearAll = function() {
     DKTools_Base.prototype._clearAll.call(this);
+    this._clearEntered();
     this._clearEnteredTime();
+    this._clearClicked();
     this._clearPressedTime();
+    this._clearTouched();
+};
+
+DKTools_Sprite.prototype._clearEntered = function() {
+    this._entered = false;
 };
 
 /**
@@ -4357,6 +4359,10 @@ DKTools_Sprite.prototype._clearEnteredTime = function() {
     this._enteredTime = 0;
 };
 
+DKTools_Sprite.prototype._clearClicked = function() {
+    this._clicked = false;
+};
+
 /**
  * Сбрасывает счетчик нажатия спрайта
  *
@@ -4365,6 +4371,10 @@ DKTools_Sprite.prototype._clearEnteredTime = function() {
  */
 DKTools_Sprite.prototype._clearPressedTime = function() {
     this._pressedTime = 0;
+};
+
+DKTools_Sprite.prototype._clearTouched = function() {
+    this.touched = false;
 };
 
 // standard methods
@@ -5102,12 +5112,10 @@ DKTools_Sprite.prototype.emulateClick = function() {
     this.clearEvents('wait');
     this.addEventListener('update', function() {
         this.addEvent('wait', function() {
-            this._touching = true;
-            this.updateOpacity();
+            this.touched = false;
         }.bind(this), 8);
         this.addEvent('wait', function() {
-            this._touching = false;
-            this.updateOpacity();
+            this.touched = true;
         }.bind(this), 8);
     }.bind(this));
 };
@@ -5195,6 +5203,10 @@ DKTools_Sprite.prototype.isTouched = function() {
     return this.isInside(this.clickX, this.clickY);
 };
 
+DKTools_Sprite.prototype.isClicked = function() {
+    return this._clicked;
+};
+
 /**
  * Проверяет спрайт на длительное нажатие
  *
@@ -5212,7 +5224,7 @@ DKTools_Sprite.prototype.isLongPressed = function() {
  * @return {Boolean} Возвращает true, если спрайт был нажат один раз или нажимается длительное время
  */
 DKTools_Sprite.prototype.isPressed = function() {
-    return this._touching || this.isLongPressed();
+    return this.isClicked() || this.isLongPressed();
 };
 
 /**
@@ -5287,13 +5299,11 @@ DKTools_Sprite.prototype.updateMouseStayEvents = function() {
 
 DKTools_Sprite.prototype.updateMouseLeaveEvents = function() {
     if (this.isPressed()) {
-        this._entered = false;
-        this._touching = false;
+        this._clearEntered();
         this._clearEnteredTime();
+        this._clearClicked();
         this._clearPressedTime();
-        this.updateFrame();
-        this.updateOpacity();
-        this.updateScale();
+        this._clearTouched();
     }
     this.updateEventContainer('mouseLeave');
 };
@@ -5339,22 +5349,36 @@ DKTools_Sprite.prototype.updateWheelEvents = function() {
 
 // process methods
 
+DKTools_Sprite.prototype.processAll = function() {
+    DKTools_Base.prototype.processAll.call(this);
+    if (Utils.isMobileDevice()) {
+        this.processTouch();
+    } else {
+        this.processEnter();
+    }
+};
+
+DKTools_Sprite.prototype.processEnter = function() {
+    if (this.isVisibleAndActive()) {
+        this.updateEnter();
+    } else {
+        this._clearEntered();
+        this._clearEnteredTime();
+    }
+};
+
 /**
  * Обрабатывает обновление нахождения в спрайте и нажатия на спрайт
  *
  * @method processTouch
  */
 DKTools_Sprite.prototype.processTouch = function() {
-    if (this.isVisibleAndActive() || this.isEnabled('deactivatedTouches')) {
-        this.updateEnter();
-        if (Utils.isMobileDevice()) {
-            this.updateTouch();
-        }
+    if (this.isVisibleAndActive() || this.isEnabled('deactivatedTouch')) {
+        this.updateTouch();
     } else {
-        this._entered = false;
-        this._touching = false;
-        this._clearEnteredTime();
+        this._clearClicked();
         this._clearPressedTime();
+        this._clearTouched();
     }
 };
 
@@ -5410,36 +5434,7 @@ DKTools_Sprite.prototype.updateBitmap = function() {
  */
 DKTools_Sprite.prototype.update = function() {
     Sprite.prototype.update.call(this);
-    this.processTouch();
-    this.updateEvents();
-};
-
-/**
- * Обновляет нажатие на спрайт
- *
- * @method updateTouch
- */
-DKTools_Sprite.prototype.updateTouch = function() {
-    if (TouchInput.isPressed() && this.isTouched()) {
-        if (TouchInput.isTriggered()) {
-            this._touching = true;
-        } else {
-            this._pressedTime++;
-            if (this.isLongPressed()) {
-                this._touching = false;
-                this.updateLongPressEvents();
-            }
-        }
-    } else {
-        if (this._touching && TouchInput.isReleased()) {
-            this._touching = false;
-            this.updateClickEvents();
-        }
-        this._clearPressedTime();
-    }
-    this.updateFrame();
-    this.updateOpacity();
-    this.updateScale();
+    DKTools_Base.prototype.update.call(this);
 };
 
 /**
@@ -5456,9 +5451,7 @@ DKTools_Sprite.prototype.updateEnter = function() {
             this.updateMouseEnterEvents();
         } else {
             this.updateMouseStayEvents();
-            if (!Utils.isMobileDevice()) {
-                this.updateTouch();
-            }
+            this.processTouch();
         }
     } else {
         if (this._entered) {
@@ -5469,6 +5462,39 @@ DKTools_Sprite.prototype.updateEnter = function() {
 };
 
 /**
+ * Обновляет нажатие на спрайт
+ *
+ * @method updateTouch
+ */
+DKTools_Sprite.prototype.updateTouch = function() {
+    if (TouchInput.isPressed() && this.isTouched()) {
+        if (TouchInput.isTriggered()) {
+            this._clicked = true;
+            this.touched = true;
+        }
+        if (this.isClicked()) {
+            this._pressedTime++;
+            if (this.isLongPressed()) {
+                this.updateLongPressEvents();
+            }
+        }
+    } else {
+        if (this.isClicked() && !this.isLongPressed() && TouchInput.isReleased()) {
+            this.updateClickEvents();
+        }
+        this._clearClicked();
+        this._clearPressedTime();
+        this._clearTouched();
+    }
+};
+
+DKTools_Sprite.prototype._onTouchedChange = function() {
+    this.updateFrame();
+    this.updateOpacity();
+    this.updateScale();
+};
+
+/**
  * Обновляет рамку спрайта
  *
  * @method updateFrame
@@ -5476,7 +5502,7 @@ DKTools_Sprite.prototype.updateEnter = function() {
 DKTools_Sprite.prototype.updateFrame = function() {
     var frame = (this.isPressed() ? this._hotFrame : this._coldFrame);
     if (frame) {
-        this.setFrame(frame);
+        this.setupFrame(frame);
     }
 };
 
@@ -5530,40 +5556,126 @@ DKTools_Viewport.prototype.constructor = DKTools_Viewport;
 
 // get methods
 
-DKTools_Viewport.prototype.getChildFrame = function(child) {
-    var x = 0;
-    var y = 0;
-    var width = 0;
-    var height = 0;
-    if (child.x + child.realWidth <= this.width) {
-        width = child.realWidth;
+DKTools_Viewport.prototype.getLocationType = function(child) {
+    if (child.x < 0 && child.x + child.width > 0 && child.y < 0 && child.y + child.height > 0) {
+        return 1;
     }
-    if (child.y + child.realHeight <= this.height) {
-        height = child.realHeight;
+    if (child.x >= 0 && child.x + child.width <= this.width && child.y < 0 && child.y + child.height > 0) {
+        return 2;
     }
-    if (child.x < 0) {
-        x = child.x;
-        width = child.realWidth;
+    if (child.x > 0 && child.x + child.width > this.width && child.y < 0 && child.y + child.height > 0) {
+        return 3;
     }
-    if (child.y < 0) {
-        y = child.y;
-        height = child.realHeight;
+    if (child.x < 0 && child.x + child.width > 0 && child.y >= 0 && child.y + child.height > 0 && child.y + child.height <= this.height) {
+        return 4;
     }
-    if (child.x < this.width && child.x + child.realWidth > this.width) {
-        width = this.width - child.x;
+    if (child.x >= 0 && child.y >= 0 && child.x + child.width <= this.width && child.y + child.height <= this.height) {
+        return 5;
     }
-    if (child.y < this.height && child.y + child.realHeight > this.height) {
-        height = this.height - child.y;
+    if (child.x > 0 && child.x + child.width > this.width && child.y >= 0 && child.y + child.height <= this.height) {
+        return 6;
     }
-    return new Rectangle(x, y, width, height);
+    if (child.x < 0 && child.x + child.width > 0 && child.y > 0 && child.y + child.height > this.height) {
+        return 7;
+    }
+    if (child.x >= 0 && child.x + child.width <= this.width && child.y > 0 && child.y + child.height > this.height) {
+        return 8;
+    }
+    if (child.x > 0 && child.x <= this.width && child.x + child.width > this.width && child.y > 0 && child.y <= this.height && child.y + child.height > this.height) {
+        return 9;
+    }
+    if (child.x > this.width || child.y > this.height || child.x + child.width < 0 || child.y + child.height < 0) {
+        return 10;
+    }
+    if (child.x < 0 && child.y < 0 && child.x + child.width > this.width && child.y + child.height > this.height) {
+        return 11;
+    }
+    p(child.positionToRect());
+};
+
+DKTools_Viewport.prototype.getClearRect = function(locationType, child) {
+    var abs = Math.abs;
+    var rects = [];
+    switch (locationType) {
+        case 1:
+            rects[0] = new Rectangle(0, 0, child.width, abs(child.y));
+            rects[1] = new Rectangle(0, 0, abs(child.x), child.height);
+            break;
+        case 2:
+            rects[0] = new Rectangle(0, 0, child.width, abs(child.y));
+            break;
+        case 3:
+            rects[0] = new Rectangle(0, 0, child.width, abs(child.y));
+            var width = child.x + child.width - this.width;
+            var x = child.width - width;
+            rects[1] = new Rectangle(x, 0, width, child.height);
+            break;
+        case 4:
+            rects[0] = new Rectangle(0, 0, abs(child.x), child.height);
+            break;
+        case 5:
+            rects[0] = Rectangle.emptyRectangle.clone();
+            break;
+        case 6:
+            var getRects = this.getClearRect(3, child);
+            rects[0] = getRects[1];
+            break;
+        case 7:
+            rects[0] = new Rectangle(0, 0, abs(child.x), child.height);
+            var height = child.y + child.height - this.height;
+            var y = child.height - height;
+            rects[1] = new Rectangle(0, y, child.width, height);
+            break;
+        case 8:
+            var getRects = this.getClearRect(7, child);
+            rects[0] = getRects[1];
+            break;
+        case 9:
+            var getRects = this.getClearRect(3, child);
+            rects[0] = getRects[1];
+            getRects = this.getClearRect(7, child);
+            rects[1] = getRects[1];
+            break;
+        case 10:
+            rects[0] = new Rectangle(0, 0, child.width, child.height);
+            break;
+        case 11:
+            rects[0] = new Rectangle(0, 0, child.width, abs(child.y));
+            var getRects = this.getClearRect(3, child);
+            rects[1] = getRects[1];
+            rects[2] = new Rectangle(0, 0, abs(child.x), child.height);
+            getRects = this.getClearRect(7, child);
+            rects[3] = getRects[1];
+            break;
+    }
+    return rects;
+};
+
+//
+
+DKTools_Viewport.prototype.restoreBitmap = function(child) {
+    if (child.hasGraphic()) {
+        child.removeGraphic();
+        child.start();
+    } else {
+        child.redrawAll();
+    }
 };
 
 // update methods
 
 DKTools_Viewport.prototype.updateChildsFrame = function() {
     this.children.forEach(function(child) {
-        var frame = this.getChildFrame(child);
-        child.setFrame(frame);
+        var locationType = this.getLocationType(child);
+        p(locationType);
+        this.restoreBitmap(child);
+        var clearRects = this.getClearRect(locationType, child);
+        for(var i = 0; i < clearRects.length; i++) {
+            var rect = clearRects[i];
+            if (!rect.isEmpty()) {
+                child.clearRect(rect);
+            }
+        }
     }.bind(this));
 };
 
@@ -7030,6 +7142,10 @@ DKTools_Selectable_Container_Base.prototype._clearCursorAnimation = function() {
 
 // standard methods
 
+DKTools_Selectable_Container_Base.prototype.standardPlacement = function() {
+    return 'vertical';
+};
+
 DKTools_Selectable_Container_Base.prototype.standardActive = function() {
     return true;
 };
@@ -7172,15 +7288,67 @@ DKTools_Selectable_Container_Base.prototype._createCursorSprite = function() {
 DKTools_Selectable_Container_Base.prototype._clearAll = function() {
     DKTools_Container_Base.prototype._clearAll.call(this);
     this._clearCursorAnimation();
+    this._clearTop();
+};
+
+DKTools_Selectable_Container_Base.prototype._clearTop = function() {
     this._top = 0;
 };
 
+/**
+ * Возвращает минимальную ширину Bitmap
+ *
+ * @method minWidth
+ * @return Number
+ */
+DKTools_Selectable_Container_Base.prototype.minWidth = function() {
+    if (this.isFixedSize()) {
+        return this._fixedWidth;
+    }
+    if (this.isEmpty() || !this.maxCols()) {
+        return 1;
+    }
+    if (this.maxCols() === this.visibleCols()) {
+        return DKTools_Container_Base.prototype.minWidth.call(this);
+    }
+    var width = 0;
+    var visibleCols = this.visibleCols() + 1;
+    for(var i = 1; i < visibleCols; i++) {
+        width += this.colWidth(i) + this._xPadding;
+    }
+    return width - this._xPadding;
+};
+
+/**
+ * Возвращает минимальную высоту Bitmap
+ *
+ * @method minHeight
+ * @return Number
+ */
+DKTools_Selectable_Container_Base.prototype.minHeight = function() {
+    if (this.isFixedSize()) {
+        return this._fixedHeight;
+    }
+    if (this.isEmpty() || !this.maxRows()) {
+        return 1;
+    }
+    if (this.maxRows() === this.visibleRows()) {
+        return DKTools_Container_Base.prototype.minHeight.call(this);
+    }
+    var height = 0;
+    var visibleRows = this.visibleRows() + 1;
+    for(var i = 1; i < visibleRows; i++) {
+        height += this.rowHeight(i) + this._yPadding;
+    }
+    return height - this._yPadding;
+};
+
 DKTools_Selectable_Container_Base.prototype.nowRow = function() {
-    return Math.floor(this.index() / this.maxCols());
+    return /*Math.max(1, */Math.floor(this.index() / this.maxCols())//);
 };
 
 DKTools_Selectable_Container_Base.prototype.nowCol = function() {
-    return this.index();
+    return /*Math.max(1, */this.index() % this.maxCols()//);
 };
 
 DKTools_Selectable_Container_Base.prototype.bottomTop = function() {
@@ -7196,32 +7364,21 @@ DKTools_Selectable_Container_Base.prototype.ensureCursorVisible = function() {
         var col = this.nowCol();
         if (col < this.top()) {
             this.setTop(col);
+            this.updatePlacement();
         } else if (col > this.bottomTop()) {
             this.setTop(col - this.visibleCols() + 1);
+            this.updatePlacement();
         }
     } else if (this.isVerticalPlacement()) {
         var row = this.nowRow();
         if (row < this.top()) {
             this.setTop(row);
+            this.updatePlacement();
         } else if (row > this.bottomTop()) {
             this.setTop(row - this.visibleRows() + 1);
+            this.updatePlacement();
         }
     }
-    //if (this.isVertical()) {
-    //    var row = this.nowRow();
-    //    if (row < this.topRow()) {
-    //        this.setTopRow(row);
-    //    } else if (row > this.bottomRow()) {
-    //        this.setBottomRow(row);
-    //    }
-    //} else if (this.isHorizontal()) {
-    //    var col = this.nowCol();
-    //    if (col < this.topCol()) {
-    //        this.setTopCol(col);
-    //    } else if (col > this.bottomCol()) {
-    //        this.setBottomCol(col);
-    //    }
-    //}
 };
 
 DKTools_Selectable_Container_Base.prototype.top = function() {
@@ -7233,22 +7390,18 @@ DKTools_Selectable_Container_Base.prototype.setTop = function(top) {
 };
 
 DKTools_Selectable_Container_Base.prototype.topIndex = function() {
-    if (this.isHorizontalPlacement()) {
-        return this.top() * this.maxCols();
-    } else if (this.isVerticalPlacement()) {
-        return this.top() * this.maxCols();
-    }
-    //if (this.isVertical()) {
-    //    return this.topRow() * this.maxCols();
-    //} else if (this.isHorizontal()) {
-    //    return this.topCol();// * this.visibleCols();
+    //if (this.isHorizontalPlacement()) {
+    //    return this.top() * this.maxCols();
+    //} else if (this.isVerticalPlacement()) {
+    //    return this.top() * this.maxCols();
     //}
+    return this.top() * this.visibleCols();
 };
 
 DKTools_Selectable_Container_Base.prototype.select = function(index) {
     this.setupIndex(index);
     this.ensureCursorVisible();
-    this.updatePlacement();
+    //this.updatePlacement();
     this.updateCursor();
 };
 
@@ -7261,9 +7414,13 @@ DKTools_Selectable_Container_Base.prototype.updatePlacement = function() {
     var topIndex = this.topIndex();
     var visibleRows = this.visibleRows() + 1;
     var visibleCols = this.visibleCols() + 1;
+    //p(topIndex);
     for(var row = 1; row < visibleRows; row++) {
         for(var col = 1; col < visibleCols; col++) {
             var index = topIndex + id;
+            if (this.length === index) {
+                return;
+            }
             var element = this.element(index);
             var x = this.colX(col);
             var y = this.rowY(row);
@@ -7271,9 +7428,9 @@ DKTools_Selectable_Container_Base.prototype.updatePlacement = function() {
             element.show();
             element.activate();
             id++;
-            if (this.length === id) {
-                return;
-            }
+            //if (this.length === id) {
+            //    return;
+            //}
         }
     }
 };
@@ -7305,7 +7462,7 @@ DKTools_Selectable_Container_Base.prototype.deselect = function() {
 };
 
 DKTools_Selectable_Container_Base.prototype.reselect = function() {
-    this.select(this._index);
+    this.select(this.index());
 };
 
 DKTools_Selectable_Container_Base.prototype.currentRow = function() {
@@ -7443,16 +7600,6 @@ DKTools_Selectable_Container_Base.prototype.playCursorSound = function() {
 
 // is methods
 
-//DKTools_Selectable_Container_Base.prototype.isHorizontal = function() {
-//    return true;
-    //return this.maxRows() === 1;
-//};
-
-//DKTools_Selectable_Container_Base.prototype.isVertical = function() {
-//    return false;
-    //return this.maxCols() === 1;
-//};
-
 DKTools_Selectable_Container_Base.prototype.isCursorMovable = function() {
     return (this.isVisibleAndActive() && !this._cursorFixed &&
             !this._cursorAll && this.length > 0);
@@ -7539,7 +7686,7 @@ DKTools_Selectable_Container_Base.prototype.update = function() {
 
 DKTools_Selectable_Container_Base.prototype._updateCursorRect = function() {
     var target = this.parent;
-    var index = target._index;
+    var index = target.index();
     var cursorRect = target.cursorRect(index);
     var x = cursorRect.x;
     var y = cursorRect.y;
@@ -12205,7 +12352,7 @@ DKTools_Slider_Base.prototype.start = function() {
     this.addChild(this._handleSprite);
     this.checkValue();
     this.updateHandlePosition();
-	this.updateInputData();
+	//this.updateInputData();
 };
 
 DKTools_Slider_Base.prototype.object = function() {
@@ -12469,8 +12616,6 @@ Object.defineProperty(DKTools_Slider.prototype, 'baseSpriteClass', {
 
 
 //===========================================================================
-// NOT READY
-//===========================================================================
 // DK Tools Window
 //===========================================================================
 
@@ -12605,6 +12750,10 @@ DKTools_Window.prototype.standardSpriteX = function() {
 */
 DKTools_Window.prototype.standardSpriteY = function() {
 	return this.standardPadding();
+};
+
+DKTools_Window.prototype.standardFrameVisible = function() {
+    return true;
 };
 
 DKTools_Window.prototype.standardWindowOpacity = function() {
@@ -12803,7 +12952,7 @@ DKTools_Window.prototype._createAllParts = function() {
     this._createContentsSprite();
     this._createArrowSprites();
     this._createPauseSignSprite();
-    this._addSpritesToChild();
+    this._addAllPartsToChild();
 };
 
 DKTools_Window.prototype._createSpriteContainer = function() {
@@ -12811,12 +12960,17 @@ DKTools_Window.prototype._createSpriteContainer = function() {
 };
 
 DKTools_Window.prototype._createBackSprite = function() {
-    this._windowBackSprite = new Sprite();
-    this._windowBackSprite.opacity = this.standardBackOpacity();
+    if (this.needsBackSprite()) {
+        this._windowBackSprite = new Sprite();
+        this._windowBackSprite.opacity = this.standardBackOpacity();
+    }
 };
 
 DKTools_Window.prototype._createFrameSprite = function() {
-    this._windowFrameSprite = new Sprite();
+    if (this.needsFrameSprite()) {
+        this._windowFrameSprite = new Sprite();
+        this._windowFrameSprite.visible = this.standardFrameVisible();
+    }
 };
 
 DKTools_Window.prototype._createContentsSprite = function() {
@@ -12824,30 +12978,42 @@ DKTools_Window.prototype._createContentsSprite = function() {
 };
 
 DKTools_Window.prototype._createArrowSprites = function() {
-    this._createDownArrowSprite();
-    this._createUpArrowSprite();
-    this._createLeftArrowSprite();
-    this._createRightArrowSprite();
+    if (this.needsArrowSprites()) {
+        this._createDownArrowSprite();
+        this._createUpArrowSprite();
+        this._createLeftArrowSprite();
+        this._createRightArrowSprite();
+    }
 };
 
 DKTools_Window.prototype._createDownArrowSprite = function() {
-    this._downArrowSprite = new Sprite();
+    if (this.needsDownArrowSprite()) {
+        this._downArrowSprite = new Sprite();
+    }
 };
 
 DKTools_Window.prototype._createUpArrowSprite = function() {
-    this._upArrowSprite = new Sprite();
+    if (this.needsUpArrowSprite()) {
+        this._upArrowSprite = new Sprite();
+    }
 };
 
 DKTools_Window.prototype._createLeftArrowSprite = function() {
-    this._leftArrowSprite = new Sprite();
+    if (this.needsLeftArrowSprite()) {
+        this._leftArrowSprite = new Sprite();
+    }
 };
 
 DKTools_Window.prototype._createRightArrowSprite = function() {
-    this._rightArrowSprite = new Sprite();
+    if (this.needsRightArrowSprite()) {
+        this._rightArrowSprite = new Sprite();
+    }
 };
 
 DKTools_Window.prototype._createPauseSignSprite = function() {
-    this._windowPauseSignSprite = new Sprite();
+    if (this.needsPauseSignSprite()) {
+        this._windowPauseSignSprite = new Sprite();
+    }
 };
 
 DKTools_Window.prototype._createWindowskin = function() {
@@ -12869,6 +13035,40 @@ DKTools_Window.prototype._createVisibleEvent = function(duration, visible) {
     }
     var handler = this._updateMove.bind(this, this.x, this.y, opacity);
     this.addEvent('wait', handler, duration, onStartHandler, onEndHandler);
+};
+
+// needs methods
+
+DKTools_Window.prototype.needsBackSprite = function() {
+    return true;
+};
+
+DKTools_Window.prototype.needsFrameSprite = function() {
+    return true;
+};
+
+DKTools_Window.prototype.needsArrowSprites = function() {
+    return true;
+};
+
+DKTools_Window.prototype.needsDownArrowSprite = function() {
+    return true;
+};
+
+DKTools_Window.prototype.needsUpArrowSprite = function() {
+    return true;
+};
+
+DKTools_Window.prototype.needsLeftArrowSprite = function() {
+    return true;
+};
+
+DKTools_Window.prototype.needsRightArrowSprite = function() {
+    return true;
+};
+
+DKTools_Window.prototype.needsPauseSignSprite = function() {
+    return true;
 };
 
 // _refresh methods
@@ -12945,7 +13145,7 @@ DKTools_Window.prototype._refreshPauseSign = function() {
 
 // _add methods
 
-DKTools_Window.prototype._addSpritesToChild = function() {
+DKTools_Window.prototype._addAllPartsToChild = function() {
     this._addSpriteContainerToChild();
     this._addContentsSpriteToChild();
     this._addArrowSpritesToChild();
@@ -13015,7 +13215,9 @@ DKTools_Window.prototype.createAll = function() {
 };
 
 DKTools_Window.prototype.createContents = function() {
-    this._windowContentsSprite.resize(this.contentsWidth(), this.contentsHeight());
+    if (this.hasContentsSprite()) {
+        this._windowContentsSprite.resize(this.contentsWidth(), this.contentsHeight());
+    }
 };
 
 // check methods
@@ -13052,8 +13254,26 @@ DKTools_Window.prototype.isWindow = function() {
     return this._isWindow;
 };
 
+DKTools_Window.prototype.isOpenAndVisible = function() {
+    return this.isOpen() && this.isVisible();
+};
+
 DKTools_Window.prototype.isOpenAndActive = function() {
     return this.isOpen() && this.isActive();
+};
+
+// frame visible methods
+
+DKTools_Window.prototype.showFrame = function() {
+    if (this.hasFrameSprite()) {
+        this._windowFrameSprite.visible = true;
+    }
+};
+
+DKTools_Window.prototype.hideFrame = function() {
+    if (this.hasFrameSprite()) {
+        this._windowFrameSprite.visible = false;
+    }
 };
 
 // has methods
@@ -13224,17 +13444,17 @@ DKTools_Window.prototype.resetTextColor = function() {
 
 DKTools_Window.prototype.changeTextColor = function(color) {
 	//if (this.setTextColor(color, true)) this.updateTextColor();
-    return this.setTextColor(color, true);
+    //return this.setTextColor(color, true);
 };
 
 DKTools_Window.prototype.changePaintOpacity = function(object) {
 	// совместимость со стандартным changePaintOpacity
-	if (object != null && object.constructor === Boolean) {
-        return Window_Base.prototype.changePaintOpacity.call(this, object);
-    }
-	if (this.setPaintOpacity(object, true)) {
-        this.updatePaintOpacity();
-    }
+	//if (object != null && object.constructor === Boolean) {
+     //   return Window_Base.prototype.changePaintOpacity.call(this, object);
+    //}
+	//if (this.setPaintOpacity(object, true)) {
+     //   this.updatePaintOpacity();
+    //}
 };
 
 // events methods
@@ -13390,7 +13610,7 @@ DKTools_Window.prototype.updateClose = function() {
  */
 DKTools_Window.prototype.update = function() {
 	Window.prototype.update.call(this);
-    this.updateEvents();
+    DKTools_Base.prototype.update.call(this);
 	this.updateOpen();
 	this.updateClose();
 	this.updateBackgroundDimmer();
