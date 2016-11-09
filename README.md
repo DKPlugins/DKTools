@@ -24,22 +24,22 @@ Use "addChild" function for add element to your scene.
 2. DKTools_Viewport - 
 3. DKTools_Container_Base - Stores and processes the elements.
 4. DKTools_Selectable_Container_Base - 
-5. DKTools_Text_Container - Based on DKTools_Container_Base. Stores and processes the elements. First element - DKTools_Text.
-6. DKTools_Container - Based on DKTools_Text_Container. Stores and processes only two elements. First element - DKTools_Text.
+5. DKTools_Text_Container - Based on DKTools_Container_Base. Stores and processes the elements. First element - DKTools_Sprite.
+6. DKTools_Container - Based on DKTools_Text_Container. Stores and processes only two elements. First element - DKTools_Sprite.
 7. DKTools_Progress_Bar_Base - Progress bar.
-8. DKTools_Progress_Bar - Based on DKTools_Container. First element - DKTools_Text. Second - DKTools_Progress_Bar_Base.
+8. DKTools_Progress_Bar - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_Progress_Bar_Base.
 9. DKTools_Input_Base - Element for input text from keyboard
-10. DKTools_Input - Based on DKTools_Container. First element - DKTools_Text. Second - DKTools_Input_Base.
+10. DKTools_Input - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_Input_Base.
 11. DKTools_CheckBox_Base - CheckBox.
-12. DKTools_CheckBox - Based on DKTools_Container. First element - DKTools_Text. Second - DKTools_CheckBox_Base.
+12. DKTools_CheckBox - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_CheckBox_Base.
 13. DKTools_Radio_Button_Base - Based on DKTools_Container_Base. Contains DKTools_CheckBox elements as buttons.
-14. DKTools_Radio_Button - Based on DKTools_Container. First element - DKTools_Text. Second - DKTools_Radio_Button_Base.
+14. DKTools_Radio_Button - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_Radio_Button_Base.
 15. DKTools_Clicker_Base - Simple "clicker". Сycles through the images by clicking on the sprite.
-16. DKTools_Clicker - Based on DKTools_Container. First element - DKTools_Text. Second - DKTools_Clicker_Base.
+16. DKTools_Clicker - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_Clicker_Base.
 17. DKTools_ColorPicker_Base - ColorPicker.
-18. DKTools_ColorPicker - Based on DKTools_Container. First element - DKTools_Text. Second - DKTools_ColorPicker_Base.
+18. DKTools_ColorPicker - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_ColorPicker_Base.
 19. DKTools_Slider_Base - Slider.
-20. DKTools_Slider - Based on DKTools_Container. First element - DKTools_Text. Second - DKTools_Slider_Base.
+20. DKTools_Slider - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_Slider_Base.
 21. DKTools_Window - Based on standard Window_Base. Base class for other elements. Contain all required functions.
 
 **Warning:** not all elements are ready
