@@ -23,7 +23,7 @@ VALUE должно быть числом (количество золота)
 ### **Синтаксис для команд item, weapon, armor**
 NAME ID OPERATION VALUE
 
-NAME должно быть названием команды (item, weapon, armor)
+NAME должно быть названием команды (item, weapon или armor)
 
 ID должно быть числом (номер предмета в Базе Данных)
 
