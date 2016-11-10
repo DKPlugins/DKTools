@@ -1320,8 +1320,11 @@ GameConsoleCommandManager._CATEGORIES = {
 	battle: GameConsoleBattleCategory,
 	scene: GameConsoleSceneCategory,
 	plugin: GameConsolePluginCategory,
-	game_time: GameConsoleGameTimeCategory
 };
+
+if (Imported.DKCore_Game_Time) {
+	GameConsoleCommandManager._CATEGORIES['game_time'] = GameConsoleGameTimeCategory;
+}
 
 GameConsoleCommandManager.IS_CATEGORY = 0;
 GameConsoleCommandManager.IS_COMMAND = 1;
