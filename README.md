@@ -52,7 +52,7 @@ Use "addChild" function for add element to your scene.
 # **FAQ**
 **Q: What is "DKTools_Sprite" ?**
 
-**A:** This is a class, who contain standard Sprite functions, Sprite_Button functions and many new functions. The most significant features are: avoid errors when changing parameters, event support, new features for click and mouse (long press, mouse enter/stay on element and mouse leave from element.
+**A:** This is a class, which contain a standard Sprite functions, Sprite_Button functions and many new functions. The most significant features are: avoid errors when changing parameters, event support, new features for click and mouse (long press, mouse enter/stay on element and mouse leave from element.
  
  
 **Q: What is "Event support" ?**
