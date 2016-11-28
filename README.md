@@ -11,7 +11,7 @@
 Create element from DKTools through "new" operator, like: var object = new DKTools_Sprite(x, y, width);
  
 2. Set parameters through "setup" functions
-Each element contain "setup" functions, who set the parameters. All functions have default parameters.
+Each element contain "setup" functions, which set the parameters. All functions have default parameters.
  
 3. Start element
 Call start function of element.
