@@ -23,7 +23,7 @@ Supported languages: Russian, English
 var DKLocalization = DKLocalization || {};
 
 //===========================================================================
-// Plugin settings
+// Settings of the plugin
 // Настройки плагина
 //===========================================================================
 
@@ -61,7 +61,7 @@ DKLocalization.DKTools = {
 };
 
 //===========================================================================
-// End of plugin settings
+// End of the plugin settings
 // Конец настройки плагина
 //===========================================================================
 
@@ -714,14 +714,6 @@ TouchInput._onMouseMove = function(event) {
 //===========================================================================
 
 /* NOT FOR RELEASE
-
- Bitmap.prototype.rotate = function(angle) {
- //var context = this._context;
- //context.save();
- //context.rotate(angle);
- //context.restore();
- //this._setDirty();
- };
 
  Bitmap.prototype.strokeText = function(text, align, x, y, width, height) {
  //var context = this._context;
@@ -1839,8 +1831,12 @@ DKTools_Base.prototype.initialize = function(object, y, width, height) {
  * @method clearAll
  */
 DKTools_Base.prototype._clearAll = function() {
-    this.clearEvents();
+    this._clearEvents();
     this._clearSymbols();
+};
+
+DKTools_Base.prototype._clearEvents = function() {
+    this.clearEvents();
 };
 
 /**
@@ -2555,6 +2551,28 @@ DKTools_Base.prototype.clone = function(blockStart) {
 
 // uncategorized methods
 
+/**
+ *
+ *
+ * @method canvasToLocalX
+ *
+ * @param {Number} x
+ *
+ * @return {Number}
+ */
+DKTools_Base.prototype.canvasToLocalX = Window_Base.prototype.canvasToLocalX;
+
+/**
+ *
+ *
+ * @method canvasToLocalY
+ *
+ * @param {Number} y
+ *
+ * @return {Number}
+ */
+DKTools_Base.prototype.canvasToLocalY = Window_Base.prototype.canvasToLocalY;
+
 DKTools_Base.prototype.positionToRect = function() {
     return { x: this.x, y: this.y, width: this.width, height: this.height };
 };
@@ -2644,10 +2662,10 @@ DKTools_Base.prototype.canRefreshAll = function() {
  * @return Bitmap || null
  */
 DKTools_Base.prototype.bitmapFromObject = function(object) {
-    var bitmap = object || null;
     if (!object) {
-        return bitmap;
+        return null;
     }
+    var bitmap = object || null;
     if (object.constructor === Object) {
         bitmap = ImageManager.loadBitmap(object.folder, object.filename, object.hue, object.smooth);
         if (object.listener) {
@@ -2792,7 +2810,14 @@ DKTools_Base.prototype.isVisible = function() {
  * @return Boolean
  */
 DKTools_Base.prototype.isActive = function() {
-    return Sprite_Button.prototype.isActive.call(this) && this.active;
+    var node = this;
+    while (node) {
+        if (!node.visible) {
+            return false;
+        }
+        node = node.parent;
+    }
+    return this.active;
 };
 
 /**
@@ -4204,6 +4229,35 @@ DKTools_Sprite._counter = 0;
 
 Object.defineProperties(DKTools_Sprite.prototype, {
 
+    frame: {
+        get: function() {
+            return this._frame;
+        },
+        configurable: true
+    },
+
+    width: {
+        get: function() {
+            return this._frame.width * this.scale.x;
+        },
+        set: function(value) {
+            this._frame.width = value;
+            this._refresh();
+        },
+        configurable: true
+    },
+
+    height: {
+        get: function() {
+            return this._frame.height * this.scale.y;
+        },
+        set: function(value) {
+            this._frame.height = value;
+            this._refresh();
+        },
+        configurable: true
+    },
+
     /**
      * Название файла графики
      *
@@ -4238,7 +4292,7 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         set: function(value) {
             if (this._touched !== value) {
                 this._touched = value;
-                this._onTouchedChange();
+                this._updateTouched();
             }
         },
         configurable: true
@@ -4271,20 +4325,6 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         },
         configurable: true
     },
-
-    realWidth: {
-        get: function() {
-            return this.bitmap.width;
-        },
-        configurable: true
-    },
-
-    realHeight: {
-        get: function() {
-            return this.bitmap.height;
-        },
-        configurable: true
-    }
 
 });
 
@@ -4329,7 +4369,7 @@ DKTools_Sprite.prototype.initialize = function(object, y, width, height) {
     DKTools_Sprite._counter++;
 };
 
-// clear methods
+// _clear methods
 
 /**
  * Очищает все данные спрайта
@@ -4625,6 +4665,7 @@ DKTools_Sprite.prototype.setupColdFrame = function(object, y, width, height) {
     var standardFrame = this.standardColdFrame();
     var frame = this._checkRectangle(object, y, width, height, standardFrame);
     this._coldFrame = (frame.isEmpty() ? null : frame);
+    this._updateTouched();
 };
 
 /**
@@ -4649,6 +4690,7 @@ DKTools_Sprite.prototype.setupHotFrame = function(object, y, width, height) {
     var standardFrame = this.standardHotFrame();
     var frame = this._checkRectangle(object, y, width, height, standardFrame);
     this._hotFrame = (frame.isEmpty() ? null : frame);
+    this._updateTouched();
 };
 
 /**
@@ -4669,6 +4711,7 @@ DKTools_Sprite.prototype.setupColdScale = function(object, y) {
     var standardScale = this.standardColdScale();
     var scale = this._checkPoint(object, y, standardScale);
     this._coldScale = (scale.isEmpty() ? null : scale);
+    this._updateTouched();
 };
 
 /**
@@ -4689,6 +4732,7 @@ DKTools_Sprite.prototype.setupHotScale = function(object, y) {
     var standardScale = this.standardHotScale();
     var scale = this._checkPoint(object, y, standardScale);
     this._hotScale = (scale.isEmpty() ? null : scale);
+    this._updateTouched();
 };
 
 /**
@@ -4699,6 +4743,7 @@ DKTools_Sprite.prototype.setupHotScale = function(object, y) {
  */
 DKTools_Sprite.prototype.setupColdOpacity = function(opacity) {
     this._coldOpacity = (opacity == null ? this.standardColdOpacity() : opacity);
+    this._updateTouched();
 };
 
 /**
@@ -4709,6 +4754,7 @@ DKTools_Sprite.prototype.setupColdOpacity = function(opacity) {
  */
 DKTools_Sprite.prototype.setupHotOpacity = function(opacity) {
     this._hotOpacity = (opacity == null ? this.standardHotOpacity() : opacity);
+    this._updateTouched();
 };
 
 // set methods
@@ -5020,17 +5066,28 @@ DKTools_Sprite.prototype.move = function(object, newY, duration, newOpacity, new
     }
     duration = duration || 0;
     if (duration > 0) {
-        var x = (object == null ? this.x : object);
+        var newX = (object == null ? this.x : object);
         newY = (newY == null ? this.y : newY);
         newOpacity = (newOpacity == null ? this.opacity : newOpacity);
         newScaleX = newScaleX || this.scale.x;
         newScaleY = newScaleY || this.scale.y;
-        return this.addEvent('wait', this._updateMove.bind(this, x, newY, newOpacity, newScaleX, newScaleY), duration);
+        return this.addEvent('wait', this._updateMove.bind(this, newX, newY, newOpacity, newScaleX, newScaleY), duration);
     } else {
-        var x = object || 0;
+        var newX = object || 0;
         newY = newY || 0;
-        Sprite.prototype.move.call(this, x, newY);
+        Sprite.prototype.move.call(this, newX, newY);
     }
+};
+
+DKTools_Sprite.prototype.moveFrame = function(duration, object, newY, newWidth, newHeight) {
+    if (object && object.constructor === Rectangle) {
+        return this.moveFrame(duration, object.x, object.y, object.width, object.height);
+    }
+    var newX = (object == null ? this.frame.x : object);
+    newY = (newY == null ? this.frame.y : newY);
+    newWidth = (newWidth == null ? this.frame.width : newWidth);
+    newHeight = (newHeight == null ? this.frame.height : newHeight);
+    return this.addEvent('wait', this._updateMoveFrame.bind(this, newX, newY, newWidth, newHeight), duration);
 };
 
 /**
@@ -5081,28 +5138,6 @@ DKTools_Sprite.prototype.moveRoute = function(route) {
 DKTools_Sprite.prototype.hasGraphic = function() {
     return !!this._graphic;
 };
-
-/**
- *
- *
- * @method canvasToLocalX
- *
- * @param {Number} x
- *
- * @return {Number}
- */
-DKTools_Sprite.prototype.canvasToLocalX = Sprite_Button.prototype.canvasToLocalX;
-
-/**
- *
- *
- * @method canvasToLocalY
- *
- * @param {Number} y
- *
- * @return {Number}
- */
-DKTools_Sprite.prototype.canvasToLocalY = Sprite_Button.prototype.canvasToLocalY;
 
 DKTools_Sprite.prototype.canRefreshAll = function() {
     return DKTools_Base.prototype.canRefreshAll.call(this) && !this.hasGraphic() && !this.isFixedBitmap();
@@ -5180,7 +5215,7 @@ DKTools_Sprite.prototype.isContainer = function() {
  * @return {Boolean}
  */
 DKTools_Sprite.prototype.isInside = function(x, y) {
-    return x >= 0 && y >= 0 && x <= this.width * this.scale.x && y <= this.height * this.scale.y;
+    return x >= 0 && y >= 0 && x <= this.width && y <= this.height;
 };
 
 /**
@@ -5284,6 +5319,8 @@ DKTools_Sprite.prototype._loadGraphic = function() {
         var filename = this.graphic;
         var listener = this._onGraphicLoadListener.bind(this);
         this.loadBitmap(folder, filename, listener);
+        this._updateTouched();
+        this.updateReadyEvents();
     }
 };
 
@@ -5409,6 +5446,15 @@ DKTools_Sprite.prototype._updateMove = function(newX, newY, newOpacity, newScale
     this.setupScale(scaleX, scaleY);
 };
 
+DKTools_Sprite.prototype._updateMoveFrame = function(newX, newY, newWidth, newHeight, event) {
+    var duration = event.duration;
+    var x = (this._frame.x * (duration - 1) + newX) / duration;
+    var y = (this._frame.y * (duration - 1) + newY) / duration;
+    var width = (this._frame.width * (duration - 1) + newWidth) / duration;
+    var height = (this._frame.height * (duration - 1) + newHeight) / duration;
+    this.setFrame(x, y, width, height);
+};
+
 // update methods
 
 DKTools_Sprite.prototype.updateAll = function() {
@@ -5488,7 +5534,7 @@ DKTools_Sprite.prototype.updateTouch = function() {
     }
 };
 
-DKTools_Sprite.prototype._onTouchedChange = function() {
+DKTools_Sprite.prototype._updateTouched = function() {
     this.updateFrame();
     this.updateOpacity();
     this.updateScale();
@@ -5538,151 +5584,6 @@ DKTools_Sprite.prototype.updateOpacity = function() {
 // Elements based on DKTools_Sprite
 // Элементы, основанные на DKTools_Sprite
 //===========================================================================
-
-
-
-
-
-//===========================================================================
-// DK Tools Viewport
-//===========================================================================
-
-function DKTools_Viewport() {
-    this.initialize.apply(this, arguments);
-}
-
-DKTools_Viewport.prototype = Object.create(DKTools_Sprite.prototype);
-DKTools_Viewport.prototype.constructor = DKTools_Viewport;
-
-// get methods
-
-DKTools_Viewport.prototype.getLocationType = function(child) {
-    if (child.x < 0 && child.x + child.width > 0 && child.y < 0 && child.y + child.height > 0) {
-        return 1;
-    }
-    if (child.x >= 0 && child.x + child.width <= this.width && child.y < 0 && child.y + child.height > 0) {
-        return 2;
-    }
-    if (child.x > 0 && child.x + child.width > this.width && child.y < 0 && child.y + child.height > 0) {
-        return 3;
-    }
-    if (child.x < 0 && child.x + child.width > 0 && child.y >= 0 && child.y + child.height > 0 && child.y + child.height <= this.height) {
-        return 4;
-    }
-    if (child.x >= 0 && child.y >= 0 && child.x + child.width <= this.width && child.y + child.height <= this.height) {
-        return 5;
-    }
-    if (child.x > 0 && child.x + child.width > this.width && child.y >= 0 && child.y + child.height <= this.height) {
-        return 6;
-    }
-    if (child.x < 0 && child.x + child.width > 0 && child.y > 0 && child.y + child.height > this.height) {
-        return 7;
-    }
-    if (child.x >= 0 && child.x + child.width <= this.width && child.y > 0 && child.y + child.height > this.height) {
-        return 8;
-    }
-    if (child.x > 0 && child.x <= this.width && child.x + child.width > this.width && child.y > 0 && child.y <= this.height && child.y + child.height > this.height) {
-        return 9;
-    }
-    if (child.x > this.width || child.y > this.height || child.x + child.width < 0 || child.y + child.height < 0) {
-        return 10;
-    }
-    if (child.x < 0 && child.y < 0 && child.x + child.width > this.width && child.y + child.height > this.height) {
-        return 11;
-    }
-    p(child.positionToRect());
-};
-
-DKTools_Viewport.prototype.getClearRect = function(locationType, child) {
-    var abs = Math.abs;
-    var rects = [];
-    switch (locationType) {
-        case 1:
-            rects[0] = new Rectangle(0, 0, child.width, abs(child.y));
-            rects[1] = new Rectangle(0, 0, abs(child.x), child.height);
-            break;
-        case 2:
-            rects[0] = new Rectangle(0, 0, child.width, abs(child.y));
-            break;
-        case 3:
-            rects[0] = new Rectangle(0, 0, child.width, abs(child.y));
-            var width = child.x + child.width - this.width;
-            var x = child.width - width;
-            rects[1] = new Rectangle(x, 0, width, child.height);
-            break;
-        case 4:
-            rects[0] = new Rectangle(0, 0, abs(child.x), child.height);
-            break;
-        case 5:
-            rects[0] = Rectangle.emptyRectangle.clone();
-            break;
-        case 6:
-            var getRects = this.getClearRect(3, child);
-            rects[0] = getRects[1];
-            break;
-        case 7:
-            rects[0] = new Rectangle(0, 0, abs(child.x), child.height);
-            var height = child.y + child.height - this.height;
-            var y = child.height - height;
-            rects[1] = new Rectangle(0, y, child.width, height);
-            break;
-        case 8:
-            var getRects = this.getClearRect(7, child);
-            rects[0] = getRects[1];
-            break;
-        case 9:
-            var getRects = this.getClearRect(3, child);
-            rects[0] = getRects[1];
-            getRects = this.getClearRect(7, child);
-            rects[1] = getRects[1];
-            break;
-        case 10:
-            rects[0] = new Rectangle(0, 0, child.width, child.height);
-            break;
-        case 11:
-            rects[0] = new Rectangle(0, 0, child.width, abs(child.y));
-            var getRects = this.getClearRect(3, child);
-            rects[1] = getRects[1];
-            rects[2] = new Rectangle(0, 0, abs(child.x), child.height);
-            getRects = this.getClearRect(7, child);
-            rects[3] = getRects[1];
-            break;
-    }
-    return rects;
-};
-
-//
-
-DKTools_Viewport.prototype.restoreBitmap = function(child) {
-    if (child.hasGraphic()) {
-        child.removeGraphic();
-        child.start();
-    } else {
-        child.redrawAll();
-    }
-};
-
-// update methods
-
-DKTools_Viewport.prototype.updateChildsFrame = function() {
-    this.children.forEach(function(child) {
-        var locationType = this.getLocationType(child);
-        p(locationType);
-        this.restoreBitmap(child);
-        var clearRects = this.getClearRect(locationType, child);
-        for(var i = 0; i < clearRects.length; i++) {
-            var rect = clearRects[i];
-            if (!rect.isEmpty()) {
-                child.clearRect(rect);
-            }
-        }
-    }.bind(this));
-};
-
-DKTools_Viewport.prototype.update = function() {
-    DKTools_Sprite.prototype.update.call(this);
-    this.updateChildsFrame();
-};
 
 
 
@@ -8703,7 +8604,7 @@ DKTools_Progress_Bar_Base.prototype.minWidth = function() {
  * @return Number
 */
 DKTools_Progress_Bar_Base.prototype.minHeight = function() {
-	return 36;
+	return this.lineHeight();
 };
 
 /**
@@ -12752,6 +12653,10 @@ DKTools_Window.prototype.standardSpriteY = function() {
 	return this.standardPadding();
 };
 
+DKTools_Window.prototype.standardSpritePosition = function() {
+    return new Point(this.standardSpriteX(), this.standardSpriteY());
+};
+
 DKTools_Window.prototype.standardFrameVisible = function() {
     return true;
 };
@@ -13603,6 +13508,9 @@ DKTools_Window.prototype.updateClose = function() {
 	}
 };
 
+DKTools_Window.prototype.updateArrows = function() {
+};
+
 /**
  * Обновляет окно
  *
@@ -13614,6 +13522,7 @@ DKTools_Window.prototype.update = function() {
 	this.updateOpen();
 	this.updateClose();
 	this.updateBackgroundDimmer();
+    this.updateArrows();
 };
 
 
@@ -13652,365 +13561,10 @@ DKTools_Window_Selectable_Test.prototype._createContentsSprite = function() {
 
 
 //===========================================================================
-// NOT READY
-//===========================================================================
-// DK Tools Window Tab Test
-//===========================================================================
-
-/**
- * @class DKTools_Window_Tab_Test
- * @constructor
- * @param {Number} x - Координата X (The x coordinate for the upper-left corner)
- * @param {Number} y - Координата Y (The y coordinate for the upper-left corner)
- * @param {Number} width - Ширина окна (The width of the window)
- * @param {Number} height - Высота окна (The height of the window)
- */
-function DKTools_Window_Tab_Test() {
-    this.initialize.apply(this, arguments);
-}
-
-DKTools_Window_Tab_Test.prototype = Object.create(DKTools_Window.prototype);
-DKTools_Window_Tab_Test.prototype.constructor = DKTools_Window_Tab_Test;
-
-// create methods
-
-DKTools_Window_Tab_Test.prototype._createContentsSprite = function() {
-    this._windowContentsSprite = new DKTools_Container_Base();
-};
-
-
-
-
-
-//===========================================================================
-// NOT READY
-//===========================================================================
-// DK Tools Window Selectable
-//===========================================================================
-
-/**
- * @class DKTools_Window_Selectable
- * @constructor
- * @param {Number} x - Координата X (The x coordinate for the upper-left corner)
- * @param {Number} y - Координата Y (The y coordinate for the upper-left corner)
- * @param {Number} width - Ширина окна (The width of the window)
- * @param {Number} height - Высота окна (The height of the window)
-*/
-function DKTools_Window_Selectable() {
-	this.initialize.apply(this, arguments);
-}
-
-DKTools_Window_Selectable.prototype = Object.create(DKTools_Window.prototype);
-DKTools_Window_Selectable.prototype.constructor = DKTools_Window_Selectable;
-
-// standard methods
-
-DKTools_Window_Selectable.prototype.standardActive = function() {
-    return false;
-};
-
-/**
- * Возвращает стандартное значение рядов
- *
- * @method standardRows
- * @return Number
- */
-DKTools_Window_Selectable.prototype.standardRows = DKTools_Container_Base.prototype.standardRows;
-
-/**
- * Возвращает стандартное количество столбцов
- *
- * @method standardCols
- * @return Number
- */
-DKTools_Window_Selectable.prototype.standardCols = DKTools_Container_Base.prototype.standardCols;
-
-DKTools_Window_Selectable.prototype.standardIndex = function() {
-    return -1;
-};
-
-// setup methods
-
-DKTools_Window_Selectable.prototype.setupAll = function(object) {
-    object = object || {};
-    DKTools_Window.prototype.setupAll.call(this, object);
-    this.setupRows(object.rows);
-    this.setupCols(object.cols);
-    this.setupIndex(object.index);
-};
-
-DKTools_Window_Selectable.prototype.setupRows = DKTools_Container_Base.prototype.setupRows;
-
-DKTools_Window_Selectable.prototype.setupCols = DKTools_Container_Base.prototype.setupCols;
-
-DKTools_Window_Selectable.prototype.setupIndex = function(index) {
-    this._index = (index == null ? this.standardIndex() : index);
-};
-
-// set methods
-
-DKTools_Window_Selectable.prototype.setAll = function(object, blockStart) {
-};
-
-DKTools_Window_Selectable.prototype.setIndex = function(index) {
-};
-
-DKTools_Window_Selectable.prototype.setCursorFixed = function(cursorFixed) {
-};
-
-DKTools_Window_Selectable.prototype.setCursorAll = function(cursorAll) {
-};
-
-DKTools_Window_Selectable.prototype.setHelpWindow = function(window) {
-    this._helpWindow = window;
-};
-
-// other methods
-
-DKTools_Window_Selectable.prototype.clearAll = function() {
-    DKTools_Window.prototype.clearAll.call(this);
-    this.clearHandlers();
-    this.clearHelpWindow();
-    this._scrollX = 0;
-    this._scrollY = 0;
-};
-
-DKTools_Window_Selectable.prototype.clearHandlers = function() {
-    this._handlers = {};
-};
-
-DKTools_Window_Selectable.prototype.clearHelpWindow = function() {
-    this._helpWindow = null;
-};
-
-//
-
-DKTools_Window_Selectable.prototype._setupEvents = function() {
-    this.contentsSprite.addEventHandler('click', this._onTouch.bind(this));
-};
-
-DKTools_Window_Selectable.prototype._onTouch = function(event) {
-    var lastIndex = this.index();
-    var x = this.clickX;
-    var y = this.clickY;
-    var hitIndex = this.hitTest(x, y);
-    if (hitIndex >= 0) {
-        p(hitIndex);
-    //    if (hitIndex === this.index()) {
-    //        if (triggered && this.isTouchOkEnabled()) {
-    //            this.processOk();
-    //        }
-    //    } else if (this.isCursorMovable()) {
-    //        this.select(hitIndex);
-    //    }
-    //} else if (this._stayCount >= 10) {
-    //    if (y < this.padding) {
-    //        this.cursorUp();
-    //    } else if (y >= this.height - this.padding) {
-    //        this.cursorDown();
-    //    }
-    }
-    if (this.index() !== lastIndex) {
-        this.playCursorSound();
-    }
-};
-
-DKTools_Window_Selectable.prototype.hitTest = function(x, y) {
-    var topIndex = this.topIndex();
-    for (var i = 0; i < this.maxPageItems(); i++) {
-        var index = topIndex + i;
-        if (index < this.maxItems()) {
-            var rect = this.itemRect(index);
-            var right = rect.x + rect.width;
-            var bottom = rect.y + rect.height;
-            if (x >= rect.x && y >= rect.y && x < right && y < bottom) {
-                return index;
-            }
-        }
-    }
-    return -1;
-};
-
-DKTools_Window_Selectable.prototype.itemWidth = Window_Selectable.prototype.itemWidth;
-DKTools_Window_Selectable.prototype.itemHeight = Window_Selectable.prototype.itemHeight;
-DKTools_Window_Selectable.prototype.topRow = Window_Selectable.prototype.topRow;
-DKTools_Window_Selectable.prototype.maxTopRow = Window_Selectable.prototype.maxTopRow;
-DKTools_Window_Selectable.prototype.setTopRow = Window_Selectable.prototype.setTopRow;
-DKTools_Window_Selectable.prototype.resetScroll = Window_Selectable.prototype.resetScroll;
-DKTools_Window_Selectable.prototype.maxPageRows = Window_Selectable.prototype.maxPageRows;
-DKTools_Window_Selectable.prototype.maxPageItems = Window_Selectable.prototype.maxPageItems;
-DKTools_Window_Selectable.prototype.isHorizontal = Window_Selectable.prototype.isHorizontal;
-DKTools_Window_Selectable.prototype.bottomRow = Window_Selectable.prototype.bottomRow;
-DKTools_Window_Selectable.prototype.setBottomRow = Window_Selectable.prototype.setBottomRow;
-DKTools_Window_Selectable.prototype.topIndex = Window_Selectable.prototype.topIndex;
-DKTools_Window_Selectable.prototype.itemRect = Window_Selectable.prototype.itemRect;
-DKTools_Window_Selectable.prototype.itemRectForText = Window_Selectable.prototype.itemRectForText;
-
-DKTools_Window_Selectable.prototype.maxItems = Window_Selectable.prototype.maxItems;
-
-DKTools_Window_Selectable.prototype.spacing = Window_Selectable.prototype.spacing;
-
-DKTools_Window_Selectable.prototype.maxRows = function() {
-    return this._rows;
-};
-
-DKTools_Window_Selectable.prototype.maxCols = function() {
-    return this._cols;
-};
-
-DKTools_Window_Selectable.prototype.index = Window_Selectable.prototype.index;
-
-
-DKTools_Window_Selectable.prototype.cursorFixed = Window_Selectable.prototype.cursorFixed;
-
-DKTools_Window_Selectable.prototype.cursorAll = Window_Selectable.prototype.cursorAll;
-
-DKTools_Window_Selectable.prototype.row = function(index) {
-    var index = (index == null ? this.index() : index);
-    return Math.floor(index / this.maxCols());
-};
-
-DKTools_Window_Selectable.prototype.select = function(index) {
-    this.setupIndex(index);
-    this.updateCursor();
-    this.callUpdateHelp();
-};
-
-DKTools_Window_Selectable.prototype.reselect = Window_Selectable.prototype.reselect;
-
-DKTools_Window_Selectable.prototype.deselect = Window_Selectable.prototype.deselect;
-
-DKTools_Window_Selectable.prototype.activate = function() {
-    DKTools_Window.prototype.activate.call(this);
-    this.reselect();
-};
-
-DKTools_Window_Selectable.prototype.deactivate = function() {
-    DKTools_Window.prototype.deactivate.call(this);
-    this.reselect();
-};
-
-//DKTools_Window_Selectable.prototype.updateCursor = function() {
-//};
-
-DKTools_Window_Selectable.prototype.playOkSound = Window_Selectable.prototype.playOkSound;
-
-DKTools_Window_Selectable.prototype.playBuzzerSound = Window_Selectable.prototype.playBuzzerSound;
-
-DKTools_Window_Selectable.prototype.playCursorSound = function() {
-    SoundManager.playCursor();
-};
-
-//
-
-DKTools_Window_Selectable.prototype.hasHelpWindow = function() {
-    return !!this._helpWindow;
-};
-
-DKTools_Window_Selectable.prototype.callUpdateHelp = function() {
-    if (this.hasHelpWindow()) {
-        this._helpWindow.update(); // ??? update ? refresh ? only my windows ?
-    }
-};
-
-DKTools_Window_Selectable.prototype.showHelpWindow = function() {
-    if (this.hasHelpWindow()) {
-        this._helpWindow.show();
-    }
-};
-
-DKTools_Window_Selectable.prototype.hideHelpWindow = function() {
-    if (this.hasHelpWindow()) {
-        this._helpWindow.hide();
-    }
-};
-
-// draw methods
-
-DKTools_Window_Selectable.prototype.drawItem = function(item) {
-};
-
-DKTools_Window_Selectable.prototype.drawAllItems = function() {
-    var topIndex = this.topIndex();
-    for (var i = 0; i < this.maxPageItems(); i++) {
-        var index = topIndex + i;
-        if (index < this.maxItems()) {
-            this.drawItem(index);
-        }
-    }
-};
-
-DKTools_Window_Selectable.prototype.clearItem = function(index) { // добавить сам item
-    var rect = this.itemRect(index);
-    this.clearRect(rect);
-};
-
-DKTools_Window_Selectable.prototype.redrawItem = Window_Selectable.prototype.redrawItem;
-
-DKTools_Window_Selectable.prototype.redrawCurrentItem = Window_Selectable.prototype.redrawCurrentItem;
-
-DKTools_Window_Selectable.prototype.refresh = function() {
-    if (this.hasBitmap()) {
-        this.clear(); // мб добавить updateBitmap
-        this.drawAllItems();
-    }
-};
-
-// is method
-
-DKTools_Window_Selectable.prototype.isCursorMovable = Window_Selectable.prototype.isCursorMovable;
-
-//
-
-DKTools_Window_Selectable.prototype.isCursorVisible = Window_Selectable.prototype.isCursorVisible;
-
-DKTools_Window_Selectable.prototype.updateCursor = Window_Selectable.prototype.updateCursor;
-
-DKTools_Window_Selectable.prototype.update = function() {
-    DKTools_Window.prototype.update.call(this);
-    //this.updateArrows();
-    this.processCursorMove();
-    //this.processHandling();
-    //this.processWheel();
-    //this.processTouch();
-    //this._stayCount++;
-};
-
-DKTools_Window_Selectable.prototype.processCursorMove = function() {
-    if (this.isCursorMovable()) {
-        var lastIndex = this.index();
-        //if (Input.isRepeated('down')) {
-        //    this.cursorDown(Input.isTriggered('down'));
-        //}
-        //if (Input.isRepeated('up')) {
-        //    this.cursorUp(Input.isTriggered('up'));
-        //}
-        //if (Input.isRepeated('right')) {
-        //    this.cursorRight(Input.isTriggered('right'));
-        //}
-        //if (Input.isRepeated('left')) {
-        //    this.cursorLeft(Input.isTriggered('left'));
-        //}
-        //if (!this.isHandled('pagedown') && Input.isTriggered('pagedown')) {
-        //    this.cursorPagedown();
-        //}
-        //if (!this.isHandled('pageup') && Input.isTriggered('pageup')) {
-        //    this.cursorPageup();
-        //}
-        if (this.index() !== lastIndex) {
-            this.playCursor();
-        }
-    }
-};
-
-
-
-
-
-//===========================================================================
 // Элементы, основанные на DKTools_Window
 // Elements based on DKTools_Window
 //===========================================================================
+
 
 
 
@@ -14021,41 +13575,80 @@ DKTools_Window_Selectable.prototype.processCursorMove = function() {
 // DK Tools Scene
 //===========================================================================
 
-function DKTools_Scene_Base() {
+function DKTools_Scene() {
 	this.initialize.apply(this, arguments);
 }
 
-DKTools_Scene_Base.prototype = Object.create(Scene_Base.prototype);
-DKTools_Scene_Base.prototype.constructor = DKTools_Scene_Base;
+DKTools_Scene.prototype = Object.create(Scene_Base.prototype);
+DKTools_Scene.prototype.constructor = DKTools_Scene;
 
 // create methods
 
-DKTools_Scene_Base.prototype.create = function() {
+DKTools_Scene.prototype.create = function() {
 	this.createBackground();
 	this.createWindowLayer();
 	this.createAllWindows();
 };
 
-DKTools_Scene_Base.prototype.createBackground = function() {
+DKTools_Scene.prototype.createBackground = function() {
 };
 
-DKTools_Scene_Base.prototype.createAllWindows = function() {
+DKTools_Scene.prototype.createAllWindows = function() {
 };
 
 // remove methods
 
-DKTools_Scene_Base.prototype.removeWindow = function(window) {
-	this._windowLayer.removeChild(window);
+DKTools_Scene.prototype.removeWindow = function(window) {
+    if (this.hasWindowLayer()) {
+        this._windowLayer.removeChild(window);
+    }
+
+};
+
+// has methods
+
+DKTools_Scene.prototype.hasWindowLayer = function() {
+    return !!this._windowLayer;
+};
+
+// is methods
+
+DKTools_Scene.prototype.isBusy = function() {
+    var busy = Scene_Base.prototype.isBusy.call(this);
+    var callback = function(child) {
+        if (child.isBusy && !child.isBusy()) {
+            busy = false;
+        }
+    }.bind(this);
+    this.iterateChildren(callback);
+    return busy;
+};
+
+DKTools_Scene.prototype.isReady = function() {
+    var ready = Scene_Base.prototype.isReady.call(this);
+    var callback = function(child) {
+        if (child.isReady && !child.isReady()) {
+            ready = false;
+        }
+    }.bind(this);
+    this.iterateChildren(callback);
+    return ready;
+};
+
+// other methods
+
+DKTools_Scene.prototype.iterateChildren = function(callback) {
+    this.children.forEach(callback);
 };
 
 // update methods
 
-DKTools_Scene_Base.prototype.update = function() {
+DKTools_Scene.prototype.update = function() {
     Scene_Base.prototype.update.call(this);
     this.updateEvents();
 };
 
-DKTools_Scene_Base.prototype.updateEvents = function() {
+DKTools_Scene.prototype.updateEvents = function() {
     // input events
     // if Input.isTriggered(symbol) updateEvent...
 };
