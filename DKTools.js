@@ -49,14 +49,6 @@ DKLocalization.DKTools = {
     installedVersion: {
         ru: 'Установлено',
         en: 'Installed'
-    },
-    checkBoxStandardCheckedText: {
-        ru: 'Да',
-        en: 'Yes'
-    },
-    checkBoxStandardUncheckedText: {
-        ru: 'Нет',
-        en: 'No'
     }
 };
 
@@ -344,9 +336,13 @@ function DKToolsUtils() {
 // Функции могут быть с багами
 DKToolsUtils.debug = false;
 
-DKToolsUtils.booleanFalse = {};
-DKToolsUtils.booleanFalse.ru = ['нет', 'выключить', 'выкл', 'отключить', 'ложь', 'убрать'];
-DKToolsUtils.booleanFalse.en = ['false', 'disable', 'deactivate', 'no', 'not', 'off'];
+/**
+ * @type {Object}
+ */
+DKToolsUtils.booleanFalse = {
+    ru: ['нет', 'выключить', 'выкл', 'отключить', 'ложь', 'убрать'],
+    en: ['false', 'disable', 'deactivate', 'no', 'not', 'off']
+};
 
 /**
  * @method initialize
@@ -373,13 +369,11 @@ DKToolsUtils.booleanArray = function() {
 };
 
 /**
- *
+ * Переводит строку или число в Boolean
  *
  * @method toBoolean
- *
- * @param {String | Number | null} value
- *
- * @return {Boolean}
+ * @param {String | Number} value
+ * @return {Boolean} Строка или число в Boolean
  */
 DKToolsUtils.toBoolean = function(value) {
     if (value == null || Number(value) === 0) {
@@ -391,13 +385,11 @@ DKToolsUtils.toBoolean = function(value) {
 };
 
 /**
- *
+ * Разделяет строку на массив строк по запятым
  *
  * @method splitString
- *
- * @param {String} string
- *
- * @return {Array}
+ * @param {String} string - Строка
+ * @return {String[]} Массив строк
  */
 DKToolsUtils.splitString = function(string) {
     string = string.replace(/\s*\,\s*/g, ',');
@@ -405,13 +397,11 @@ DKToolsUtils.splitString = function(string) {
 };
 
 /**
- *
+ * Разделяет строку на массив чисел по запятым
  *
  * @method stringToNumberArray
- *
- * @param {String} string
- *
- * @return {Array}
+ * @param {String} string - Строка
+ * @return {Number[]} Массив чисел
  */
 DKToolsUtils.stringToNumberArray = function(string) {
     if (string && string.constructor === String) {
@@ -424,13 +414,11 @@ DKToolsUtils.stringToNumberArray = function(string) {
 };
 
 /**
- *
+ * Разделяет строку на массив Boolean по запятым
  *
  * @method stringToBooleanArray
- *
- * @param {String} string
- *
- * @return {Array}
+ * @param {String} string - Строка
+ * @return {Boolean[]} Массив Boolean
  */
 DKToolsUtils.stringToBooleanArray = function(string) {
     if (string && string.constructor === String) {
@@ -443,13 +431,11 @@ DKToolsUtils.stringToBooleanArray = function(string) {
 };
 
 /**
- *
+ * Возвращает массив шрифта из строки
  *
  * @method stringToFontArray
- *
- * @param {String} string
- *
- * @return {Array}
+ * @param {String} string - Строка
+ * @return {Array} Массив шрифта из строки
  */
 DKToolsUtils.stringToFontArray = function(string) {
     var standardFont = this.standardFontArray();
@@ -464,40 +450,40 @@ DKToolsUtils.stringToFontArray = function(string) {
 };
 
 /**
- *
+ * Возвращает стандартное имя шрифта
  *
  * @method standardFontName
- * @return {String}
+ * @return {String} Стандартное имя шрифта
  */
 DKToolsUtils.standardFontName = function() {
     return 'GameFont';
 };
 
 /**
- *
+ * Возвращает стандартное значение для курсива
  *
  * @method standardFontItalic
- * @return {Boolean}
+ * @return {Boolean} Стандартное значение для курсива
  */
 DKToolsUtils.standardFontItalic = function() {
     return false;
 };
 
 /**
- *
+ * Возвращает стандартный размер шрифта
  *
  * @method standardFontSize
- * @return {Number}
+ * @return {Number} Стандартный размер шрифта
  */
 DKToolsUtils.standardFontSize = function() {
     return 28;
 };
 
 /**
- *
+ * Возвращает стандартный шрифт текста
  *
  * @method standardFontArray
- * @return {Array}
+ * @return {Array} Стандартный шрифт текста
  */
 DKToolsUtils.standardFontArray = function() {
     return [this.standardFontName(), this.standardFontItalic(), this.standardFontSize()];
@@ -520,6 +506,8 @@ DKToolsUtils.mixin = function(target, source) {
 };
 
 /**
+ * Открывает консоль
+ *
  * @method openConsole
  */
 DKToolsUtils.openConsole = function() {
@@ -531,8 +519,10 @@ DKToolsUtils.openConsole = function() {
 };
 
 /**
- * @method _checkVersion
+ * Проверяет минимальную версию плагина
+ *
  * @private
+ * @method _checkVersion
  */
 DKToolsUtils._checkVersion = function() {
     var data = [];
@@ -565,28 +555,32 @@ function DKToolsInputManager() {
 	throw new Error('This is a static class (Это статический класс!)');
 }
 
+/**
+ * Игнорируемые клавиши
+ *
+ * @private
+ * @type {Number[]}
+ */
 DKToolsInputManager._ignoredKeyCodes = [8, 13, 27];
 
 /**
  *
  *
- * @method _isIgnored
  * @private
- *
- * @param {Number} keyCode
+ * @method _isIgnored
+ * @param {Number} keyCode - Код клавиши
  * @return {Boolean}
  */
 DKToolsInputManager._isIgnored = function(keyCode) {
-	return DKToolsInputManager._ignoredKeyCodes.contains(keyCode);
+	return this._ignoredKeyCodes.contains(keyCode);
 };
 
 /**
+ * Обрабатывает нажатие клавиши клавиатуры
  *
- *
- * @method _onKeyPress
  * @private
- *
- * @param event
+ * @method _onKeyPress
+ * @param event - Событие
  */
 DKToolsInputManager._onKeyPress = function(event) {
 	if (this._isIgnored(event.keyCode)) {
@@ -600,7 +594,7 @@ DKToolsInputManager._onKeyPress = function(event) {
 };
 
 /**
- *
+ * Очищает введенный текст
  *
  * @method clear
  */
@@ -609,20 +603,20 @@ DKToolsInputManager.clear = function() {
 };
 
 /**
- *
+ * Возвращает true, если пользователь ввел какой-нибудь текст
  *
  * @method hasText
- * @return {Boolean}
+ * @return {Boolean} Пользователь ввел какой-нибудь текст
  */
 DKToolsInputManager.hasText = function() {
 	return !!this._text;
 };
 
 /**
- *
+ * Возвращает введенный текст
  *
  * @method getText
- * @return {String}
+ * @return {String} Введенный текст
  */
 DKToolsInputManager.getText = function() {
 	if (!this.hasText()) {
@@ -657,18 +651,31 @@ Input._setupEventHandlers = function () {
 // Touch Input
 //===========================================================================
 
-Object.defineProperty(TouchInput, 'mouseX', {
-    get: function() {
-        return this._mouseX;
-    },
-    configurable: true
-});
+Object.defineProperties(TouchInput, {
 
-Object.defineProperty(TouchInput, 'mouseY', {
-    get: function() {
-        return this._mouseY;
+    /**
+     * Координата X мыши
+     *
+     * @type {Number}
+     */
+    mouseX: {
+        get: function() {
+            return this._mouseX;
+        },
+        configurable: true
     },
-    configurable: true
+
+    /**
+     * Координата Y мыши
+     *
+     * @type {Number}
+     */
+    mouseY: {
+        get: function() {
+            return this._mouseY;
+        },
+        configurable: true
+    }
 });
 
 var DKTools_TouchInput_clear = TouchInput.clear;
@@ -770,20 +777,23 @@ TouchInput._onMouseMove = function(event) {
  */
 
 /**
- *
+ * Рисует линию
  *
  * @method drawLine
  *
- * @param {Number} x1
- * @param {Number} y1
- * @param {Number} x2
- * @param {Number} y2
- * @param {String} color
+ * @param {Number} x1 - Координата X начала линии
+ * @param {Number} y1 - Координата Y начала линии
+ * @param {Number} x2 - Координата X конца линии
+ * @param {Number} y2 - Координата Y конца линии
+ * @param {String} color - Цвет линии
+ * @param {Number} [lineWidth] - Ширина линии
  */
-Bitmap.prototype.drawLine = function(x1, y1, x2, y2, color) {
+Bitmap.prototype.drawLine = function(x1, y1, x2, y2, color, lineWidth) {
     var context = this._context;
     context.save();
+    context.lineWidth = lineWidth || 1;
     context.strokeStyle = color;
+    context.beginPath();
     context.moveTo(x1, y1);
     context.lineTo(x2, y2);
     context.stroke();
@@ -792,19 +802,21 @@ Bitmap.prototype.drawLine = function(x1, y1, x2, y2, color) {
 };
 
 /**
- *
+ * Рисует прямоугольник без заливки
  *
  * @method strokeRect
  *
- * @param {Number} x
- * @param {Number} y
- * @param {Number} width
- * @param {Number} height
- * @param {String} color
+ * @param {Number} x - Координата X
+ * @param {Number} y - Координата Y
+ * @param {Number} width - Ширина прямоугольника
+ * @param {Number} height - Высота прямоугольника
+ * @param {String} color - Цвет линии
+ * @param {Number} [lineWidth] - Ширина линии
  */
-Bitmap.prototype.strokeRect = function(x, y, width, height, color) {
+Bitmap.prototype.strokeRect = function(x, y, width, height, color, lineWidth) {
     var context = this._context;
     context.save();
+    context.lineWidth = lineWidth || 10;
     context.strokeStyle = color;
     context.strokeRect(x, y, width, height);
     context.restore();
@@ -812,22 +824,23 @@ Bitmap.prototype.strokeRect = function(x, y, width, height, color) {
 };
 
 /**
- *
+ * Рисует дугу и заливает ее цветом
  *
  * @method fillArc
  *
- * @param {Number} x
- * @param {Number} y
- * @param {Number} radius
- * @param {Number} startAngle
- * @param {Number} endAngle
- * @param {String} color
- * @param {Boolean} antiClockwise
+ * @param {Number} x - Координата X
+ * @param {Number} y - Координата Y
+ * @param {Number} radius - Радиус дуги
+ * @param {Number} startAngle - Стартовый угол
+ * @param {Number} endAngle - Конечный угол
+ * @param {String} color - Цвет заливки
+ * @param {Boolean} [antiClockwise] - Против часовой стрелки
  */
 Bitmap.prototype.fillArc = function (x, y, radius, startAngle, endAngle, color, antiClockwise) {
     var context = this._context;
     context.save();
     context.fillStyle = color;
+    context.beginPath();
     context.arc(x, y, radius, startAngle, endAngle, antiClockwise);
     context.fill();
     context.restore();
@@ -835,22 +848,25 @@ Bitmap.prototype.fillArc = function (x, y, radius, startAngle, endAngle, color, 
 };
 
 /**
- *
+ * Рисует дугу без заливки
  *
  * @method strokeArc
  *
- * @param {Number} x
- * @param {Number} y
- * @param {Number} radius
- * @param {Number} startAngle
- * @param {Number} endAngle
- * @param {String} color
- * @param {Boolean} antiClockwise
+ * @param {Number} x - Координата X
+ * @param {Number} y - Координата Y
+ * @param {Number} radius - Радиус дуги
+ * @param {Number} startAngle - Стартовый угол
+ * @param {Number} endAngle - Конечный угол
+ * @param {String} color - Цвет линии
+ * @param {Boolean} [antiClockwise] - Против часовой стрелки
+ * @param {Number} [lineWidth] - Ширина линии
  */
-Bitmap.prototype.strokeArc = function (x, y, radius, startAngle, endAngle, color, antiClockwise) {
+Bitmap.prototype.strokeArc = function (x, y, radius, startAngle, endAngle, color, antiClockwise, lineWidth) {
     var context = this._context;
     context.save();
+    context.lineWidth = lineWidth || 1;
     context.strokeStyle = color;
+    context.beginPath();
     context.arc(x, y, radius, startAngle, endAngle, antiClockwise);
     context.stroke();
     context.restore();
@@ -875,47 +891,60 @@ Bitmap.prototype.clone = function() {
 // Point
 //===========================================================================
 
+/**
+ * Пустой Point
+ *
+ * @type {Point}
+ */
 Point.emptyPoint = new Point(0, 0);
 
 /**
- *
- *
  * @method isEmpty
  * @return {Boolean}
  */
 Point.prototype.isEmpty = function() {
-    return this.x === 0 && this.y === 0;
+    return this.equals(Point.emptyPoint);
 };
 
 /**
- *
+ * Возвращает массив с координатами
  *
  * @method toArray
- * @return {Array}
+ * @return {Number[]} Массив с координатами
  */
 Point.prototype.toArray = function() {
     return [this.x, this.y];
 };
 
 /**
+ * Возвращает объект с координатами
  *
- *
- * @method equals
- *
- * @param {Point} point
- *
- * @return {Boolean}
+ * @method toObject
+ * @return {Object} Объект с координатами
  */
-Point.prototype.equals = function(point) {
-    point = point || Point.emptyPoint;
-    return this.toArray().equals(point.toArray());
+Point.prototype.toObject = function() {
+    return { x: this.x, y: this.y };
 };
 
 /**
+ * Сравнивает координаты
+ * Возвращает true, если координаты равны
  *
+ * @method equals
+ * @param {Point} point
+ * @return {Boolean} Координаты равны
+ */
+Point.prototype.equals = function(point) {
+    point = point || Point.emptyPoint;
+    return this.x === point.x && this.y === point.y;
+};
+
+/**
+ * Клонирует Point
+ * Возвращает клонированный Point
  *
  * @method clone
- * @return {Point}
+ * @return {Point} Клонированный Point
  */
 Point.prototype.clone = function() {
     return new Point(this.x, this.y);
@@ -926,44 +955,49 @@ Point.prototype.clone = function() {
 //===========================================================================
 
 /**
- *
- *
  * @method isEmpty
  * @return {Boolean}
  */
 Rectangle.prototype.isEmpty = function() {
-    return this.x === 0 && this.y === 0 && this.width === 0 && this.height === 0;
+    return this.equals(Rectangle.emptyRectangle);
 };
 
 /**
- *
+ * Возвращает массив с координатами
  *
  * @method toArray
- * @return {Array}
+ * @return {Number[]} Массив с координатами
  */
 Rectangle.prototype.toArray = function() {
     return [this.x, this.y, this.width, this.height];
 };
 
 /**
+ * Возвращает объект с координатами
  *
- *
+ * @method toObject
+ * @return {Object} Объект с координатами
+ */
+Rectangle.prototype.toObject = function() {
+    return { x: this.x, y: this.y, width: this.width, height: this.height };
+};
+
+/**
  * @method equals
- *
  * @param {Rectangle} rect
- *
  * @return {Boolean}
  */
 Rectangle.prototype.equals = function(rect) {
     rect = rect || Rectangle.emptyRectangle;
-    return this.toArray().equals(rect.toArray());
+    return this.x === rect.x && this.y === rect.y && this.width === rect.width && this.height === rect.height;
 };
 
 /**
- *
+ * Клонирует Rectangle
+ * Возвращает клонированный Rectangle
  *
  * @method clone
- * @return {Rectangle}
+ * @return {Rectangle} Клонированный Rectangle
  */
 Rectangle.prototype.clone = function() {
     return new Rectangle(this.x, this.y, this.width, this.height);
@@ -977,12 +1011,11 @@ Object.defineProperties(Array.prototype, {
 
     /**
      * Подсчитывает количество item в массиве
+     * Возвращает количество item в массиве
      *
-     * @method Array.prototype.count
-     *
+     * @method count
      * @param {*} item - Элемент, количество которого нужно найти
-     *
-     * @return {Number} Возвращает количество элементов item в массиве
+     * @return {Number} Количество item в массиве
      */
     count: {
         configurable: true,
@@ -1000,11 +1033,10 @@ Object.defineProperties(Array.prototype, {
 
     /**
      * Суммирует количество объектов в массиве
+     * Возвращает сумму количества объектов в массиве
      *
-     * @method Array.prototype.counts
-     *
-     * @param {...number} arguments
-     *
+     * @method counts
+     * @param {...Number} arguments
      * @return {Number} Сумма количества объектов в массиве
      */
     counts: {
@@ -1042,9 +1074,10 @@ Object.defineProperties(Array.prototype, {
 
     /**
      * Проверяет массив на пустоту
+     * Возвращает true, если массив пуст
      *
      * @method isEmpty
-     * @return {Boolean} Возвращает true, если массив пуст
+     * @return {Boolean} Массив пуст
      */
     isEmpty: {
         configurable: true,
@@ -1056,9 +1089,10 @@ Object.defineProperties(Array.prototype, {
 
     /**
      * Проверяет массив на содержание NaN, null и undefined
+     * Возвращает true, если массив содержит NaN, null или undefined
      *
      * @method isNeedCompact
-     * @return {Boolean} Возвращает true, если массив содержит NaN, null или undefined
+     * @return {Boolean} Массив содержит NaN, null или undefined
      */
     isNeedCompact: {
         configurable: true,
@@ -1069,10 +1103,11 @@ Object.defineProperties(Array.prototype, {
     },
 
     /**
-     * Проверяет, что массив является числовым
+     * Проверяет, что массив содержит только Number
+     * Возвращает true, если массив содержит только Number
      *
      * @method isNumberArray
-     * @return {Boolean} Возвращает true, если массив является числовым
+     * @return {Boolean} Массив содержит только Number
      */
     isNumberArray: {
         configurable: true,
@@ -1091,10 +1126,11 @@ Object.defineProperties(Array.prototype, {
     },
 
     /**
-     * Проверяет, что массив является булевым
+     * Проверяет, что массив содержит только Boolean
+     * Возвращает true, если массив содержит только Boolean
      *
      * @method isBooleanArray
-     * @return {Boolean} Возвращает true, если массив является булевым
+     * @return {Boolean} Массив содержит только Boolean
      */
     isBooleanArray: {
         configurable: true,
@@ -1113,10 +1149,11 @@ Object.defineProperties(Array.prototype, {
     },
 
     /**
-     * Проверяет, что массив является строковым
+     * Проверяет, что массив содержит только String
+     * Возвращает true, если массив содержит только String
      *
      * @method isStringArray
-     * @return {Boolean} Возвращает true, если массив является строковым
+     * @return {Boolean} Массив содержит только String
      */
     isStringArray: {
         configurable: true,
@@ -1136,6 +1173,7 @@ Object.defineProperties(Array.prototype, {
 
     /**
      * Сжимает массив, удаляя NaN, null и undefined
+     * Возвращает сжатый массив без NaN, null и undefined
      *
      * @method compact
      * @return {Array} Сжатый массив без NaN, null и undefined
@@ -1184,7 +1222,6 @@ Object.defineProperties(Array.prototype, {
      * Вставляет item в массив
      *
      * @method insert
-     *
      * @param {Number} index - Номер, куда вставить item
      * @param {*} item - Элемент, который нужно вставить
      */
@@ -1230,6 +1267,12 @@ Object.defineProperties(Array.prototype, {
         }
     },
 
+    /**
+     * Возвращает сумму чисел числового массива
+     *
+     * @method sum
+     * @return {Number} Сумма чисел числового массива
+     */
     sum: {
         configurable: true,
         enumerable: false,
@@ -1245,6 +1288,12 @@ Object.defineProperties(Array.prototype, {
         }
     },
 
+    /**
+     * Возвращает среднее арифметическое числового массива
+     *
+     * @method average
+     * @return {Number} Среднее арифметическое числового массива
+     */
     average: {
         configurable: true,
         enumerable: false,
@@ -1258,9 +1307,10 @@ Object.defineProperties(Array.prototype, {
 
     /**
      * Выполняет логическую операцию дизъюнкция для булевого массива
+     * Возвращает true, если массив содержит true
      *
      * @method disjunction
-     * @return {Boolean | null} Возвращает true, если массив содержит true
+     * @return {Boolean} Массив содержит true
      */
     disjunction: {
         configurable: true,
@@ -1275,9 +1325,10 @@ Object.defineProperties(Array.prototype, {
 
     /**
      * Выполняет логическую операцию конъюнкция для булевого массива
+     * Возвращает true, если массив не содержит false
      *
      * @method conjunction
-     * @return {Boolean | null} Возвращает true, если массив не содержит false
+     * @return {Boolean} Массив не содержит false
      */
     conjunction: {
         configurable: true,
@@ -1308,10 +1359,9 @@ function DKToolsEvent() {
 Object.defineProperties(DKToolsEvent.prototype, {
 
     /**
-     * Спрайт, для которого установлено событие
+     * Объект, для которого установлено событие
      *
-     * @property target
-     * @type DKToolsSprite
+     * @type {DKTools_Sprite | DKTools_Window | *}
      */
     target: {
         get: function() {
@@ -1323,8 +1373,7 @@ Object.defineProperties(DKToolsEvent.prototype, {
     /**
      * Тип события
      *
-     * @property type
-     * @type String
+     * @type {String}
      */
     type: {
         get: function() {
@@ -1336,8 +1385,7 @@ Object.defineProperties(DKToolsEvent.prototype, {
     /**
      * Обработчик события
      *
-     * @property handler
-     * @type Function || null
+     * @type {Function}
      */
     handler: {
         get: function() {
@@ -1349,8 +1397,7 @@ Object.defineProperties(DKToolsEvent.prototype, {
     /**
      * Длительность события
      *
-     * @property duration
-     * @type Number
+     * @type {Number}
      */
     duration: {
         get: function() {
@@ -1365,8 +1412,7 @@ Object.defineProperties(DKToolsEvent.prototype, {
     /**
      * Обработчик начала работы события
      *
-     * @property onStartHandler
-     * @type Function || null
+     * @type {Function}
      */
     onStartHandler: {
         get: function() {
@@ -1378,8 +1424,7 @@ Object.defineProperties(DKToolsEvent.prototype, {
     /**
      * Обработчик окончания работы события
      *
-     * @property onEndHandler
-     * @type Function || null
+     * @type {Function}
      */
     onEndHandler: {
         get: function() {
@@ -1391,8 +1436,7 @@ Object.defineProperties(DKToolsEvent.prototype, {
     /**
      * Начальная длительность события
      *
-     * @property startDuration
-     * @type Number
+     * @type {Number}
      */
     startDuration: {
         get: function() {
@@ -1404,8 +1448,7 @@ Object.defineProperties(DKToolsEvent.prototype, {
     /**
      * Длительность паузы события
      *
-     * @property pauseDuration
-     * @type Number
+     * @type {Number}
      */
     pauseDuration: {
         get: function() {
@@ -1424,10 +1467,10 @@ Object.defineProperties(DKToolsEvent.prototype, {
  *
  * @param {DKToolsSprite} target - Спрайт или Окно, для которого установлено событие
  * @param {String} type - Тип события
- * @param {Function | null} [handler = null] - Обработчик события
- * @param {Number | null} [duration = 1|-1] - Длительность события
- * @param {Function | null} [onStartHandler = null] - Обработчик начала работы события
- * @param {Function | null} [onEndHandler = null] - Обработчик окончания работы события
+ * @param {Function} [handler] - Обработчик события
+ * @param {Number} [duration = 1|-1] - Длительность события
+ * @param {Function} [onStartHandler] - Обработчик начала работы события
+ * @param {Function} [onEndHandler] - Обработчик окончания работы события
  */
 DKToolsEvent.prototype.initialize = function(target, type, handler, duration, onStartHandler, onEndHandler) {
     this._target = target;
@@ -1444,11 +1487,12 @@ DKToolsEvent.prototype.initialize = function(target, type, handler, duration, on
 
 /**
  * Проверяет обработчик события
+ * Возвращает true, если обработчик события установлен
  *
- * @method _hasHandler
  * @private
+ * @method _hasHandler
  *
- * @return {Boolean} Возвращает true, если обработчик события установлен
+ * @return {Boolean} Обработчик события установлен
  */
 DKToolsEvent.prototype._hasHandler = function() {
     return !!this._handler;
@@ -1456,11 +1500,12 @@ DKToolsEvent.prototype._hasHandler = function() {
 
 /**
  * Проверяет обработчик начала работы события
+ * Возвращает true, если обработчик начала работы события установлен
  *
- * @method _hasOnStartHandler
  * @private
+ * @method _hasOnStartHandler
  *
- * @return {Boolean} Возвращает true, если обработчик начала работы события установлен
+ * @return {Boolean} Обработчик начала работы события установлен
  */
 DKToolsEvent.prototype._hasOnStartHandler = function() {
     return !!this._onStartHandler;
@@ -1468,11 +1513,12 @@ DKToolsEvent.prototype._hasOnStartHandler = function() {
 
 /**
  * Проверяет обработчик окончания работы события
+ * Возвращает true, если обработчик окончания работы события установлен
  *
- * @method _hasOnEndHandler
  * @private
+ * @method _hasOnEndHandler
  *
- * @return {Boolean} Возвращает true, если обработчик окончания работы события установлен
+ * @return {Boolean} Обработчик окончания работы события установлен
  */
 DKToolsEvent.prototype._hasOnEndHandler = function() {
     return !!this._onEndHandler;
@@ -1482,11 +1528,12 @@ DKToolsEvent.prototype._hasOnEndHandler = function() {
 
 /**
  * Проверяет обработчик начала работы события на возможность вызова
+ * Возвращает true, если можно вызвать обработчик начала работы события
  *
- * @method _canCallOnStartHandler
  * @private
+ * @method _canCallOnStartHandler
  *
- * @return {Boolean} Возвращает true, если можно вызвать обработчик начала работы события
+ * @return {Boolean} Можно вызвать обработчик начала работы события
  */
 DKToolsEvent.prototype._canCallOnStartHandler = function() {
     return this._hasOnStartHandler() && this._startDuration === this._duration && this._duration !== -1;
@@ -1494,11 +1541,12 @@ DKToolsEvent.prototype._canCallOnStartHandler = function() {
 
 /**
  * Проверяет обработчик окончания работы события на возможность вызова
+ * Возвращает true, если можно вызвать обработчик окончания работы события
  *
- * @method _canCallOnEndHandler
  * @private
+ * @method _canCallOnEndHandler
  *
- * @return {Boolean} Возвращает true, если можно вызвать обработчик окончания работы события
+ * @return {Boolean} Можно вызвать обработчик окончания работы события
  */
 DKToolsEvent.prototype._canCallOnEndHandler = function() {
     return this._hasOnEndHandler() && this.duration === 0;
@@ -1509,8 +1557,8 @@ DKToolsEvent.prototype._canCallOnEndHandler = function() {
 /**
  * Вызывает обработчик события
  *
- * @method _callHandler
  * @private
+ * @method _callHandler
  */
 DKToolsEvent.prototype._callHandler = function() {
     if (this._hasHandler()) {
@@ -1521,8 +1569,8 @@ DKToolsEvent.prototype._callHandler = function() {
 /**
  * Вызывает обработчик начала работы события
  *
- * @method _callOnStartHandler
  * @private
+ * @method _callOnStartHandler
  */
 DKToolsEvent.prototype._callOnStartHandler = function() {
     if (this._canCallOnStartHandler()) {
@@ -1532,9 +1580,8 @@ DKToolsEvent.prototype._callOnStartHandler = function() {
 
 /**
  * Вызывает обработчик окончания работы события
- *
- * @method _callOnEndHandler
  * @private
+ * @method _callOnEndHandler
  */
 DKToolsEvent.prototype._callOnEndHandler = function() {
     if (this._canCallOnEndHandler()) {
@@ -1546,11 +1593,12 @@ DKToolsEvent.prototype._callOnEndHandler = function() {
 
 /**
  * Проверяет длительность события
+ * Возвращает true, если длительность события больше 0
  *
- * @method _checkDuration
  * @private
+ * @method _checkDuration
  *
- * @return {Boolean} Возвращает true, если длительность события больше 0
+ * @return {Boolean} Длительность события больше 0
  */
 DKToolsEvent.prototype._checkDuration = function() {
     return this._duration > 0;
@@ -1558,11 +1606,12 @@ DKToolsEvent.prototype._checkDuration = function() {
 
 /**
  * Проверяет длительность паузы события
+ * Возвращает true, если длительность паузы события больше 0
  *
- * @method _checkPauseDuration
  * @private
+ * @method _checkPauseDuration
  *
- * @return {Boolean} Возвращает true, если длительность паузы события больше 0
+ * @return {Boolean} Длительность паузы события больше 0
  */
 DKToolsEvent.prototype._checkPauseDuration = function() {
     return this._pauseDuration > 0;
@@ -1572,9 +1621,10 @@ DKToolsEvent.prototype._checkPauseDuration = function() {
 
 /**
  * Проверяет событие на возможность работы
+ * Возвращает true, если событие еще может работать
  *
  * @method checkEvent
- * @return {Boolean} Возвращает true, если событие еще может работать
+ * @return {Boolean} Событие еще может работать
  */
 DKToolsEvent.prototype.checkEvent = function() {
     if (this._duration === -1) {
@@ -1587,9 +1637,10 @@ DKToolsEvent.prototype.checkEvent = function() {
 
 /**
  * Проверяет событие на паузу
+ * Возвращает true, если событие приостановлено
  *
  * @method isPaused
- * @return {Boolean} Возвращает true, если событие приостановлено
+ * @return {Boolean} Событие приостановлено
  */
 DKToolsEvent.prototype.isPaused = function() {
     return this._pauseDuration === -1 || this._checkPauseDuration();
@@ -1656,8 +1707,8 @@ DKToolsEvent.prototype.addPauseDuration = function(duration) {
 /**
  * Обновляет длительность события
  *
- * @method _updateDuration
  * @private
+ * @method _updateDuration
  */
 DKToolsEvent.prototype._updateDuration = function() {
     if (this._checkDuration()) {
@@ -1668,8 +1719,8 @@ DKToolsEvent.prototype._updateDuration = function() {
 /**
  * Обновляет длительность паузы события
  *
- * @method _updatePauseDuration
  * @private
+ * @method _updatePauseDuration
  */
 DKToolsEvent.prototype._updatePauseDuration = function() {
     if (this._checkPauseDuration()) {
@@ -1716,8 +1767,7 @@ Object.defineProperties(DKTools_Base.prototype, {
     /**
      * Шрифт текста
      *
-     * @property font
-     * @type Array
+     * @type {Array}
      */
     font: {
         get: function() {
@@ -1729,8 +1779,7 @@ Object.defineProperties(DKTools_Base.prototype, {
     /**
      * Цвет текста
      *
-     * @property textColor
-     * @type String
+     * @type {String}
      */
     textColor: {
         get: function() {
@@ -1739,6 +1788,11 @@ Object.defineProperties(DKTools_Base.prototype, {
         configurable: true
     },
 
+    /**
+     * Прозрачность рисования
+     *
+     * @type {Number}
+     */
     paintOpacity: {
         get: function() {
             return this._paintOpacity;
@@ -1749,8 +1803,7 @@ Object.defineProperties(DKTools_Base.prototype, {
     /**
      * Цвет фона
      *
-     * @property backgroundColor
-     * @type String
+     * @type {String}
      */
     backgroundColor: {
         get: function() {
@@ -1762,8 +1815,7 @@ Object.defineProperties(DKTools_Base.prototype, {
     /**
      * Отображаемый текст
      *
-     * @property text
-     * @type String
+     * @type {String}
      */
     text: {
         get: function() {
@@ -1775,8 +1827,7 @@ Object.defineProperties(DKTools_Base.prototype, {
     /**
      * Выравнивание текста
      *
-     * @property align
-     * @type String
+     * @type {String}
      */
     align: {
         get: function() {
@@ -1785,6 +1836,11 @@ Object.defineProperties(DKTools_Base.prototype, {
         configurable: true
     },
 
+    /**
+     * Координата X мыши внутри объекта
+     *
+     * @type {Number}
+     */
     mouseX : {
         get: function() {
             return this.canvasToLocalX(TouchInput.mouseX);
@@ -1792,6 +1848,11 @@ Object.defineProperties(DKTools_Base.prototype, {
         configurable: true
     },
 
+    /**
+     * Координата Y мыши внутри объекта
+     *
+     * @type {Number}
+     */
     mouseY : {
         get: function() {
             return this.canvasToLocalY(TouchInput.mouseY);
@@ -1803,13 +1864,30 @@ Object.defineProperties(DKTools_Base.prototype, {
 
 // initialize methods
 
+/**
+ * @class DKTools_Base
+ *
+ * @constructor
+ *
+ * @param {Number | Rectangle | Object} [object] - Координата X или Rectangle, или Bitmap, или Объект типа {}
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [width] - Ширина
+ * @param {Number} [height] - Высота
+ *
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
+ * @param {Number} [object.width] - Ширина
+ * @param {Number} [object.height] - Высота
+ *
+ * @see object properties: DKTools_Base.prototype.setupAll
+ */
 DKTools_Base.prototype.initialize = function(object, y, width, height) {
     this._clearAll();
     this._setupAll();
     this._createAll();
     var x;
     if (object) {
-        if (object.constructor === Object) {
+        if (object.constructor === Rectangle || object.constructor === Object) {
             x = object.x;
             y = object.y || y;
             width = object.width || width;
@@ -1826,23 +1904,31 @@ DKTools_Base.prototype.initialize = function(object, y, width, height) {
 // _clear methods
 
 /**
- * Очищает все данные спрайта
+ * Очищает все данные
  *
- * @method clearAll
+ * @private
+ * @method _clearAll
  */
 DKTools_Base.prototype._clearAll = function() {
     this._clearEvents();
     this._clearSymbols();
 };
 
+/**
+ * Очищает события
+ *
+ * @private
+ * @method _clearEvents
+ */
 DKTools_Base.prototype._clearEvents = function() {
     this.clearEvents();
 };
 
 /**
- * Очищает параметры спрайта
+ * Очищает символы
  *
- * @method clearSymbols
+ * @private
+ * @method _clearSymbols
  */
 DKTools_Base.prototype._clearSymbols = function() {
     this._symbols = {};
@@ -1851,10 +1937,10 @@ DKTools_Base.prototype._clearSymbols = function() {
 // clear methods
 
 /**
- * Очищает события спрайта
+ * Очищает события
  *
  * @method clearEvents
- * @param {Array | String | null} [object = null] - Массив с типами событий или тип события
+ * @param {String[] | String} object - Массив с типами событий или тип события
  */
 DKTools_Base.prototype.clearEvents = function(object) {
     if (object) {
@@ -1871,61 +1957,134 @@ DKTools_Base.prototype.clearEvents = function(object) {
     }
 };
 
+/**
+ * Очищает Rect, если Bitmap есть
+ * Возвращает true, если Bitmap есть
+ *
+ * @method clearRect
+ *
+ * @param {Number | Rectangle} [object] - Координата X или Rectangle
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [width] - Ширина области
+ * @param {Number} [height] - Высота области
+ *
+ * @return {Boolean} Bitmap есть
+ */
+DKTools_Base.prototype.clearRect = function(object, y, width, height) {
+    if (!this.hasBitmap()) {
+        return false;
+    }
+    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
+        return this.clearRect(object.x, object.y, object.width, object.height);
+    }
+    var x = object || 0;
+    y = y || 0;
+    width = width || this.standardDrawWidth();
+    height = height || this.standardDrawHeight();
+    this.bitmap.clearRect(x, y, width, height);
+    return true;
+};
+
+/**
+ * Очищает весь Bitmap, если он есть
+ * Возвращает true, если Bitmap есть
+ *
+ * @method clear
+ * @return {Boolean} Bitmap есть
+ */
+DKTools_Base.prototype.clear = function() {
+    return this.clearRect();
+};
+
+/**
+ * Очищает отображаемый текст
+ *
+ * @method clearText
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
+ */
+DKTools_Base.prototype.clearText = function(blockStart) {
+    this.setText('', blockStart);
+};
+
 // _setup methods
 
+/**
+ * Устанавливает все данные
+ *
+ * @private
+ * @method _setupAll
+ */
 DKTools_Base.prototype._setupAll = function() {
     this._setupEvents();
     this._setupSymbols();
 };
 
+/**
+ * Устанавливает события
+ *
+ * @private
+ * @method _setupEvents
+ */
 DKTools_Base.prototype._setupEvents = function() {
 };
 
+/**
+ * Устанавливает символы
+ *
+ * @private
+ * @method _setupSymbols
+ */
 DKTools_Base.prototype._setupSymbols = function() {
 };
 
 // _create methods
 
+/**
+ * Создает необходимые объекты
+ *
+ * @private
+ * @method _createAll
+ */
 DKTools_Base.prototype._createAll = function() {
 };
 
 // standard methods
 
 /**
- * Возвращает стандартную ширину текста
+ * Возвращает стандартную ширину рисования
  *
  * @method standardDrawWidth
- * @return {Number} Стандартная ширина текста
+ * @return {Number} Стандартная ширина рисования
  */
 DKTools_Base.prototype.standardDrawWidth = function() {
     return this.bitmap.width;
 };
 
 /**
- * Возвращает стандартную высоту текста
+ * Возвращает стандартную высоту рисования
  *
  * @method standardDrawHeight
- * @return {Number} Стандартная высота текста
+ * @return {Number} Стандартная высота рисования
  */
 DKTools_Base.prototype.standardDrawHeight = function() {
     return this.bitmap.height;
 };
 
 /**
- * Возвращает стандартную видимость спрайта
+ * Возвращает стандартную видимость
  *
  * @method standardVisible
- * @return {Boolean} Стандартная видимость спрайта
+ * @return {Boolean} Стандартная видимость
  */
 DKTools_Base.prototype.standardVisible = function() {
     return true;
 };
 
 /**
- * Возвращает стандартное значение активности спрайта
+ * Возвращает стандартное значение активности
  *
  * @method standardActive
- * @return {Boolean} Стандартное значение активности спрайта
+ * @return {Boolean} Стандартное значение активности
  */
 DKTools_Base.prototype.standardActive = function() {
     return true;
@@ -1975,12 +2134,18 @@ DKTools_Base.prototype.standardFont = function() {
  * Возвращает стандартный цвет текста
  *
  * @method standardTextColor
- * @return {String} Стандартный цвет текста
+ * @returns {String} Стандартный цвет текста
  */
 DKTools_Base.prototype.standardTextColor = function() {
     return '#ffffff';
 };
 
+/**
+ * Возвращает стандартную прозрачность рисования
+ *
+ * @method standardPaintOpacity
+ * @returns {Number} Стандартная прозрачность рисования
+ */
 DKTools_Base.prototype.standardPaintOpacity = function() {
     return 255;
 };
@@ -1989,17 +2154,17 @@ DKTools_Base.prototype.standardPaintOpacity = function() {
  * Возвращает стандартный цвет фона
  *
  * @method standardBackgroundColor
- * @return {null} Стандартный цвет фона
+ * @return {String} Стандартный цвет фона
  */
 DKTools_Base.prototype.standardBackgroundColor = function() {
-    return null;
+    return '';
 };
 
 /**
  * Возвращает стандартный текст
  *
  * @method standardText
- * @return String
+ * @return {String} Стандартный текст
  */
 DKTools_Base.prototype.standardText = function() {
     return '';
@@ -2019,7 +2184,7 @@ DKTools_Base.prototype.standardAlign = function() {
  * Возвращает стандартную обложку окна
  *
  * @method standardWindowskin
- * @return {String}
+ * @return {String} Стандартная обложка окна
  */
 DKTools_Base.prototype.standardWindowskin = function() {
     return 'Window';
@@ -2028,21 +2193,22 @@ DKTools_Base.prototype.standardWindowskin = function() {
 // setup methods
 
 /**
- * Устанавливает все параметры спрайта
+ * Устанавливает все параметры
  *
  * @method setupAll
  *
- * @param {Object | null} [object = {}] - Объект типа {}
+ * @param {Object} [object] - Объект типа {}
  *
- * @param {Number | null} [object.id = null] - ID спрайта
- * @param {Boolean | null} [object.visible = null] - Видимость спрайта
- * @param {Boolean | null} [object.active = null] - Активность спрайта
- * @param {String | null} [object.textColor = null] - Цвет текста
- * @param {String | null} [object.align = null] - Выравнивание текста
- * @param {String | null} [object.backgroundColor = null] - Цвет фона
- * @param {Array | null} [object.font = null] - Шрифт текста
- * @param {Number | null} [object.opacity = null] - Прозрачность спрайта
- * @param {Object | Point | null} [object.scale = null] - Масштабирование спрайта
+ * @param {Number} [object.id] - ID спрайта
+ * @param {Boolean} [object.visible] - Видимость объекта
+ * @param {Boolean} [object.active] - Активность объекта
+ * @param {Array} [object.font] - Шрифт текста
+ * @param {String} [object.textColor] - Цвет текста
+ * @param {Number} [object.paintOpacity] - Прозрачность рисования
+ * @param {String} [object.backgroundColor] - Цвет фона
+ * @param {String} [object.text] - Текст
+ * @param {String} [object.align] - Выравнивание текста
+ * @param {Number} [object.opacity] - Прозрачность
  */
 DKTools_Base.prototype.setupAll = function(object) {
     object = object || {};
@@ -2059,30 +2225,30 @@ DKTools_Base.prototype.setupAll = function(object) {
 };
 
 /**
- * Устанавливает ID спрайта
+ * Устанавливает ID объекта
  *
  * @method setupId
- * @param {Number | String | null} [id = null] - ID спрайта
+ * @param {Number | String} [id] - ID объекта
  */
 DKTools_Base.prototype.setupId = function(id) {
     this.id = (id == null ? null : id);
 };
 
 /**
- * Устанавливает видимость спрайта
+ * Устанавливает видимость объекта
  *
  * @method setupVisible
- * @param {Boolean | null} [visible = null] - Видимость спрайта
+ * @param {Boolean} [visible] - Видимость объекта
  */
 DKTools_Base.prototype.setupVisible = function(visible) {
     this.visible = (visible == null ? this.standardVisible() : visible);
 };
 
 /**
- * Устанавливает активность спрайта
+ * Устанавливает активность объекта
  *
  * @method setupActive
- * @param {Boolean | null} [active = null] - Активность спрайта
+ * @param {Boolean} [active] - Активность объекта
  */
 DKTools_Base.prototype.setupActive = function(active) {
     this.active = (active == null ? this.standardActive() : active);
@@ -2092,7 +2258,7 @@ DKTools_Base.prototype.setupActive = function(active) {
  * Устанавливает шрифт текста
  *
  * @method setupFont
- * @param {Array | null} [font = null] - Шрифт текста
+ * @param {Array} [font] - Шрифт текста
  */
 DKTools_Base.prototype.setupFont = function(font) {
     this._font = this._checkArray(font, this.standardFont());
@@ -2102,17 +2268,17 @@ DKTools_Base.prototype.setupFont = function(font) {
  * Устанавливает цвет текста
  *
  * @method setupTextColor
- * @param {String | null} [textColor = null] - Цвет текста
+ * @param {String} [textColor] - Цвет текста
  */
 DKTools_Base.prototype.setupTextColor = function(textColor) {
     this._textColor = textColor || this.standardTextColor();
 };
 
 /**
- * Устанавливает прозрачность рисования окна
+ * Устанавливает прозрачность рисования
 
  * @method setupPaintOpacity
- * @param {Number || null} opacity - Прозрачность рисования окна
+ * @param {Number} opacity - Прозрачность рисования
  */
 DKTools_Base.prototype.setupPaintOpacity = function(opacity) {
     this._paintOpacity = (opacity == null ? this.standardPaintOpacity() : opacity);
@@ -2122,7 +2288,7 @@ DKTools_Base.prototype.setupPaintOpacity = function(opacity) {
  * Устанавливает цвет фона
  *
  * @method setupBackgroundColor
- * @param {String | null} [color = null] - Цвет фона
+ * @param {String} [color] - Цвет фона
  */
 DKTools_Base.prototype.setupBackgroundColor = function(color) {
     this._backgroundColor = (color == null ? this.standardBackgroundColor() : color);
@@ -2132,7 +2298,7 @@ DKTools_Base.prototype.setupBackgroundColor = function(color) {
  * Устанавливает отображаемый текст
  *
  * @method setupText
- * @param {String || null} text - Отображаемый текст
+ * @param {String} text - Отображаемый текст
  */
 DKTools_Base.prototype.setupText = function(text) {
     this._text = (text == null ? this.standardText() : String(text));
@@ -2142,7 +2308,7 @@ DKTools_Base.prototype.setupText = function(text) {
  * Устанавливает выравнивание текста
  *
  * @method setupAlign
- * @param {String | null} [align = null] - Выравнивание текста
+ * @param {String} [align] - Выравнивание текста
  */
 DKTools_Base.prototype.setupAlign = function(align) {
     this._align = align || this.standardAlign();
@@ -2151,19 +2317,20 @@ DKTools_Base.prototype.setupAlign = function(align) {
 // set methods
 
 /**
- * Изменяет все параметры спрайта
+ * Изменяет все параметры
+ * Возвращает количество измененных параметров
  *
  * @method setAll
  *
- * @param {Object | null} [object = {}] - Объект типа {}
- * @param {Boolean | null} [blockStart = null] - Блокировка вызова функции start
+ * @param {Object} [object] - Объект типа {}
  *
- * @param {String | null} [object.textColor = null] - Цвет текста
- * @param {String | null} [object.align = null] - Выравнивание текста
- * @param {String | null} [object.backgroundColor = null] - Цвет фона
- * @param {Array | null} [object.font = null] - Шрифт текста
- * @param {Number | null} [object.opacity = null] - Прозрачность спрайта
- * @param {Object | Point | null} [object.scale = null] - Масштабирование спрайта
+ * @param {Array} [object.font] - Шрифт текста
+ * @param {String} [object.textColor] - Цвет текста
+ * @param {Number} [object.paintOpacity] - Прозрачность рисования
+ * @param {String} [object.backgroundColor] - Цвет фона
+ * @param {String} [object.align] - Выравнивание текста
+ * @param {String} [object.text] - Текст
+ * @param {Number} [object.opacity] - Прозрачность
  *
  * @return {Number} Количество измененных параметров
  */
@@ -2196,13 +2363,12 @@ DKTools_Base.prototype.setAll = function(object) {
 };
 
 /**
- * Изменяет видимость спрайта
+ * Изменяет видимость объекта
+ * Возвращает true, если изменение произошло
  *
  * @method setVisible
- *
- * @param {Boolean | null} [visible = null] - Видимость спрайта
- *
- * @return {Boolean} Возвращает true, если изменение произошло
+ * @param {Boolean} [visible] - Видимость объекта
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Base.prototype.setVisible = function(visible) {
     if (this.visible === visible) {
@@ -2214,13 +2380,11 @@ DKTools_Base.prototype.setVisible = function(visible) {
 };
 
 /**
- * Изменяет активность спрайта
+ * Изменяет активность объекта
  *
  * @method setActive
- *
- * @param {Boolean | null} [active = null] - Активность спрайта
- *
- * @return {Boolean} Возвращает true, если изменение произошло
+ * @param {Boolean} [active] - Активность объекта
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Base.prototype.setActive = function(active) {
     if (this.active === active) {
@@ -2237,10 +2401,10 @@ DKTools_Base.prototype.setActive = function(active) {
  *
  * @method setFont
  *
- * @param {Array || null} font - Шрифт текста
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {Array} [font] - Шрифт текста
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Base.prototype.setFont = function(font, blockStart) {
     if (this._font.equals(font)) {
@@ -2263,10 +2427,10 @@ DKTools_Base.prototype.setFont = function(font, blockStart) {
  *
  * @method setTextColor
  *
- * @param {String || null} color - Цвет текста
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
+ * @param {String} [color] - Цвет текста
+ * @param {Boolean} [blockRefresh] - Блокировка вызова функции refreshAll
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Base.prototype.setTextColor = function(color, blockRefresh) {
     if (this._textColor === color) {
@@ -2284,12 +2448,15 @@ DKTools_Base.prototype.setTextColor = function(color, blockRefresh) {
 };
 
 /**
- * Изменяет прозрачность рисования окна
-
+ * Изменяет прозрачность рисования
+ * Возвращает true, если изменение произошло
+ *
  * @method setPaintOpacity
- * @param {Number || null} opacity - Прозрачность рисования окна
- * @param {Boolean || null} block -
- * @return Boolean
+ *
+ * @param {Number} [opacity] - Прозрачность рисования
+ * @param {Boolean} [blockRefresh] - Блокировка вызова функции refreshAll
+ *
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Base.prototype.setPaintOpacity = function(opacity, blockRefresh) {
     if (this._paintOpacity === opacity) {
@@ -2312,10 +2479,10 @@ DKTools_Base.prototype.setPaintOpacity = function(opacity, blockRefresh) {
  *
  * @method setBackgroundColor
  *
- * @param {String || null} color - Цвет фона
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
+ * @param {String} [color] - Цвет фона
+ * @param {Boolean} [blockRefresh] - Блокировка вызова функции refreshAll
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Base.prototype.setBackgroundColor = function(color, blockRefresh) {
     if (this._backgroundColor === color) {
@@ -2338,10 +2505,10 @@ DKTools_Base.prototype.setBackgroundColor = function(color, blockRefresh) {
  *
  * @method setText
  *
- * @param {String || null} text - Отображаемый текст
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {String} [text] - Отображаемый текст
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Base.prototype.setText = function(text, blockStart) {
     if (this._text === text) {
@@ -2364,10 +2531,10 @@ DKTools_Base.prototype.setText = function(text, blockStart) {
  *
  * @method setAlign
  *
- * @param {String || null} align - Выравнивание текста
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
+ * @param {String} [align] - Выравнивание текста
+ * @param {Boolean} [blockRefresh] - Блокировка вызова функции refreshAll
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Base.prototype.setAlign = function(align, blockRefresh) {
     if (this._align === align) {
@@ -2390,7 +2557,7 @@ DKTools_Base.prototype.setAlign = function(align, blockRefresh) {
  * Запускает работу спрайта
  *
  * @method start
- * @param {Boolean || null} activate - Активировать спрайт
+ * @param {Boolean} [activate] - Активировать
  */
 DKTools_Base.prototype.start = function(activate) {
     this._started = true;
@@ -2406,25 +2573,50 @@ DKTools_Base.prototype.start = function(activate) {
 
 // check methods
 
+/**
+ * Проверяет все
+ *
+ * @method checkAll
+ */
 DKTools_Base.prototype.checkAll = function() {
     this.checkSize();
 };
 
+/**
+ * Проверяет размер объекта
+ *
+ * @method checkSize
+ */
 DKTools_Base.prototype.checkSize = function() {
 };
 
 // remove methods
 
+/**
+ * Удаляет все объекты
+ *
+ * @method removeAll
+ */
 DKTools_Base.prototype.removeAll = function() {
 };
 
 // create methods
 
+/**
+ * Создает все объекты
+ *
+ * @method createAll
+ */
 DKTools_Base.prototype.createAll = function() {
 };
 
 // refresh methods
 
+/**
+ * Обновляет и перерисовывает все
+ *
+ * @method refreshAll
+ */
 DKTools_Base.prototype.refreshAll = function() {
     if (this.canRefreshAll()) {
         this.updateAll();
@@ -2432,9 +2624,13 @@ DKTools_Base.prototype.refreshAll = function() {
     }
 };
 
-DKTools_Base.prototype.updateAll = function() {
-};
+// redraw methods
 
+/**
+ * Перерисовывает все
+ *
+ * @method redrawAll
+ */
 DKTools_Base.prototype.redrawAll = function() {
     this.clear();
     this.drawAll();
@@ -2443,34 +2639,35 @@ DKTools_Base.prototype.redrawAll = function() {
 // active methods
 
 /**
- * Активирует спрайт
+ * Активирует объект
  *
  * @method activate
  */
 DKTools_Base.prototype.activate = function() {
-    this.setupActive(true);
-    this.updateActivateEvents();
+    if (this.setActive(true)) {
+        this.updateActivateEvents();
+    }
 };
 
 /**
- * Деактивирует спрайт
+ * Деактивирует объект
  *
  * @method deactivate
  */
 DKTools_Base.prototype.deactivate = function() {
-    this.setupActive(false);
-    this.updateDeactivateEvents();
+    if (this.setActive(false)) {
+        this.updateDeactivateEvents();
+    }
 };
 
 // visible methods
 
 /**
- * Показывает спрайт
+ * Показывает объект
  *
  * @method show
- *
- * @param {Number || null} duration - Длительность появления
- * @param {Boolean || null} activate - Активировать спрайта
+ * @param {Number} [duration] - Длительность появления
+ * @param {Boolean} [activate] - Активировать объект
  */
 DKTools_Base.prototype.show = function(duration, activate) {
     if (duration > 0) {
@@ -2485,12 +2682,11 @@ DKTools_Base.prototype.show = function(duration, activate) {
 };
 
 /**
- * Скрывает спрайт
+ * Скрывает объект
  *
  * @method hide
- *
- * @param {Number || null} duration - Длительность исчезновения
- * @param {Boolean || null} blockDeactivate - Блокировка деактивации спрайта
+ * @param {Number} [duration] - Длительность исчезновения
+ * @param {Boolean} [blockDeactivate] - Блокировка деактивации объекта
  */
 DKTools_Base.prototype.hide = function(duration, blockDeactivate) {
     if (duration > 0) {
@@ -2507,13 +2703,13 @@ DKTools_Base.prototype.hide = function(duration, blockDeactivate) {
 // clone mthods
 
 /**
- * Возвращает объект со всеми параметрами спрайта
+ * Возвращает объект со всеми параметрами
  *
  * @method object
- * @return {Object} Объект со всеми параметрами спрайта
+ * @return {Object} Объект со всеми параметрами
  */
 DKTools_Base.prototype.object = function() {
-    var object = {
+    return {
         x: this.x,
         y: this.y,
         width: this.width,
@@ -2528,17 +2724,14 @@ DKTools_Base.prototype.object = function() {
         text: this._text,
         align: this._align
     };
-    return object;
 };
 
 /**
- * Клонирует текущий спрайт
+ * Клонирует текущий объект
  *
  * @method clone
- *
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @return DKTools_Sprite
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
+ * @return {DKTools_Sprite | DKTools_Window | *} Клонированный объект
  */
 DKTools_Base.prototype.clone = function(blockStart) {
     var object = this.object();
@@ -2552,26 +2745,32 @@ DKTools_Base.prototype.clone = function(blockStart) {
 // uncategorized methods
 
 /**
- *
- *
  * @method canvasToLocalX
- *
  * @param {Number} x
- *
  * @return {Number}
  */
-DKTools_Base.prototype.canvasToLocalX = Window_Base.prototype.canvasToLocalX;
+DKTools_Base.prototype.canvasToLocalX = function(x) {
+    var node = this;
+    while (node) {
+        x -= node.x;
+        node = node.parent;
+    }
+    return x;
+};
 
 /**
- *
- *
  * @method canvasToLocalY
- *
  * @param {Number} y
- *
  * @return {Number}
  */
-DKTools_Base.prototype.canvasToLocalY = Window_Base.prototype.canvasToLocalY;
+DKTools_Base.prototype.canvasToLocalY = function(y) {
+    var node = this;
+    while (node) {
+        y -= node.y;
+        node = node.parent;
+    }
+    return y;
+};
 
 DKTools_Base.prototype.positionToRect = function() {
     return { x: this.x, y: this.y, width: this.width, height: this.height };
@@ -2582,60 +2781,11 @@ DKTools_Base.prototype.size = function() {
 };
 
 /**
- * Очищает Rect, если Bitmap есть
- * Возвращает true, если Bitmap есть
- *
- * @method clearRect
- *
- * @param {Number || Rectangle || null} object - Координата X или область
- * @param {Number || null} y - Координата Y
- * @param {Number || null} width - Ширина области
- * @param {Number || null} height - Высота области
- *
- * @return Boolean
- */
-DKTools_Base.prototype.clearRect = function(object, y, width, height) {
-    if (!this.hasBitmap()) {
-        return false;
-    }
-    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
-        return this.clearRect(object.x, object.y, object.width, object.height);
-    }
-    var x = object || 0;
-    y = y || 0;
-    width = width || this.standardDrawWidth();
-    height = height || this.standardDrawHeight();
-    this.bitmap.clearRect(x, y, width, height);
-    return true;
-};
-
-/**
- * Очищает весь Bitmap, если он есть
- * Возвращает true, если Bitmap есть
- *
- * @method clear
- * @return Boolean
- */
-DKTools_Base.prototype.clear = function() {
-    return this.clearRect();
-};
-
-/**
- * Очищает отображаемый текст
- *
- * @method clearText
- * @param {Boolean} blockStart - Блокировка вызова функции start
- */
-DKTools_Base.prototype.clearText = function(blockStart) {
-    this.setText('', blockStart);
-};
-
-/**
- * Заставляет спрайт ждать
+ * Заставляет объект ждать
  *
  * @method wait
  * @param {Number} duration - Время ожидания в фреймах
- * @param {Function | null} [onEndHandler] - Обработчик окончания работы события
+ * @param {Function} [onEndHandler] - Обработчик окончания работы события
  */
 DKTools_Base.prototype.wait = function(duration, onEndHandler) {
     var handler = null;
@@ -2643,6 +2793,12 @@ DKTools_Base.prototype.wait = function(duration, onEndHandler) {
     return this.addEvent('wait', handler, duration, onStartHandler, onEndHandler);
 };
 
+/**
+ * Возвращает true, если объект можно обновить и перерисовать
+ *
+ * @method canRefreshAll
+ * @returns {Boolean} Объект можно обновить и перерисовать
+ */
 DKTools_Base.prototype.canRefreshAll = function() {
     return this.hasBitmap();
 };
@@ -2651,15 +2807,16 @@ DKTools_Base.prototype.canRefreshAll = function() {
  * Возвращает Bitmap из объекта или загружает его
  *
  * @method bitmapFromObject
- * @param {Bitmap || Object || null} object - Bitmap или Объект типа {}
  *
- * @property {String} folder - Папка изображения
- * @property {String} filename - Название файла
- * @property {Function || null} listener - Метод обработки после загрузки Bitmap
- * @property {Number || null} hue - Оттенок
- * @property {Boolean || null} smooth - Сглаживание
+ * @param {Bitmap | Object} object - Bitmap или Объект типа {}
  *
- * @return Bitmap || null
+ * @param {String} object.folder - Путь к файлу
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
+ * @return {Bitmap | null} Bitmap из объекта или загруженный, или null
  */
 DKTools_Base.prototype.bitmapFromObject = function(object) {
     if (!object) {
@@ -2680,10 +2837,8 @@ DKTools_Base.prototype.bitmapFromObject = function(object) {
  * Returns the width of text
  *
  * @method textWidth
- *
- * @param {String} text - Текст, ширину которого требуется определить (Text width is to be determined)
- *
- * @return Number
+ * @param {String} text - Текст
+ * @return {Number} Ширина текста
  */
 DKTools_Base.prototype.textWidth = function(text) {
     if (text == null) {
@@ -2698,19 +2853,18 @@ DKTools_Base.prototype.textWidth = function(text) {
 };
 
 /**
- *
+ * Возвращает высоту линии
  *
  * @method lineHeight
- * @return {Number}
+ * @return {Number} Высота линии
  */
 DKTools_Base.prototype.lineHeight = Window_Base.prototype.lineHeight;
 
 /**
  * Возвращает минимальную ширину Bitmap
- * Returns the minimum width of the Bitmap
  *
  * @method minWidth
- * @return Number
+ * @return {Number} Минимальная ширина Bitmap
  */
 DKTools_Base.prototype.minWidth = function() {
     var minWidth = 0;
@@ -2722,10 +2876,9 @@ DKTools_Base.prototype.minWidth = function() {
 
 /**
  * Возвращает минимальную высоту Bitmap
- * Returns the minimum height of the Bitmap
  *
  * @method minHeight
- * @return Number
+ * @return {Number} Минимальная высота Bitmap
  */
 DKTools_Base.prototype.minHeight = function() {
     return (this.hasText() ? this.lineHeight() : 0);
@@ -2739,7 +2892,7 @@ DKTools_Base.prototype.minSize = function() {
  * Возвращает максимальную ширину Bitmap
  *
  * @method maxWidth
- * @return Number
+ * @return {Number} Максимальная ширина Bitmap
  */
 DKTools_Base.prototype.maxWidth = function() {
     return Graphics.boxWidth;
@@ -2749,7 +2902,7 @@ DKTools_Base.prototype.maxWidth = function() {
  * Возвращает максимальную высоту Bitmap
  *
  * @method maxHeight
- * @return Number
+ * @return {Number} Максимальная высота Bitmap
  */
 DKTools_Base.prototype.maxHeight = function() {
     return Graphics.boxHeight;
@@ -2762,30 +2915,33 @@ DKTools_Base.prototype.maxSize = function() {
 // has methods
 
 /**
- * Проверяет спрайт на наличие Bitmap
+ * Проверяет объект на наличие Bitmap
+ * Возвращает true, если Bitmap есть
  *
  * @method hasBitmap
- * @return {Boolean} Возвращает true, если Bitmap есть
+ * @return {Boolean} Bitmap есть
  */
 DKTools_Base.prototype.hasBitmap = function() {
     return !!this.bitmap;
 };
 
 /**
- *
+ * Проверяет объект на наличие цвета фона
+ * Возвращает true, если цвет фона установлен
  *
  * @method hasBackgroundColor
- * @return {Boolean}
+ * @return {Boolean} Цвет фона установлен
  */
 DKTools_Base.prototype.hasBackgroundColor = function() {
     return !!this.backgroundColor;
 };
 
 /**
- * Проверяет спрайт на наличие текста
+ * Проверяет объект на наличие текста
+ * Возвращает true, если текст установлен
  *
  * @method hasText
- * @return {Boolean} Возвращает true, если текст установлен
+ * @return {Boolean} Текст установлен
  */
 DKTools_Base.prototype.hasText = function() {
     return !!this.text;
@@ -2794,20 +2950,20 @@ DKTools_Base.prototype.hasText = function() {
 // is methods
 
 /**
- * Возвращает true, если спрайт виден
+ * Возвращает true, если объект виден
  *
  * @method isVisible
- * @return Boolean
+ * @return {Boolean} Объект виден
  */
 DKTools_Base.prototype.isVisible = function() {
     return this.visible;
 };
 
 /**
- * Возвращает true, если спрайт активен
+ * Возвращает true, если объект активен
  *
  * @method isActive
- * @return Boolean
+ * @return {Boolean} Объект активен
  */
 DKTools_Base.prototype.isActive = function() {
     var node = this;
@@ -2821,30 +2977,30 @@ DKTools_Base.prototype.isActive = function() {
 };
 
 /**
- * Возвращает true, если спрайт виден и активен
+ * Возвращает true, если объект виден и активен
  *
  * @method isVisibleAndActive
- * @return Boolean
+ * @return {Boolean} Объект виден и активен
  */
 DKTools_Base.prototype.isVisibleAndActive = function() {
     return this.isVisible() && this.isActive();
 };
 
 /**
- * Возвращает true, если работа спрайта была запущена
+ * Возвращает true, если работа объекта была запущена
  *
  * @method isStarted
- * @return Boolean
+ * @return {Boolean} Работа объекта была запущена
  */
 DKTools_Base.prototype.isStarted = function() {
     return this._started;
 };
 
 /**
- * Возвращает true, если у спрайта есть события-ожидания
+ * Возвращает true, если у объекта есть события-ожидания
  *
  * @method isWaiting
- * @return Boolean
+ * @return {Boolean} У объекта есть события-ожидания
  */
 DKTools_Base.prototype.isWaiting = function() {
     return this.hasEvents('wait');
@@ -2854,24 +3010,49 @@ DKTools_Base.prototype.isWaiting = function() {
  * Возвращает true, если Bitmap готов
  *
  * @method isReady
- * @return Boolean
+ * @return {Boolean} Bitmap готов
  */
 DKTools_Base.prototype.isReady = function () {
     return this.hasBitmap() ? this.bitmap.isReady() : false;
 };
 
 /**
- * Возвращает true, если спрайт занят
+ * Возвращает true, если объект занят
  *
  * @method isBusy
- * @return Boolean
+ * @return {Boolean} Объект занят
  */
 DKTools_Base.prototype.isBusy = function() {
     return this.isWaiting() && !this.isReady();
 };
 
+/**
+ * Возвращает true, если объект является спрайтом
+ *
+ * @method isSprite
+ * @return {Boolean} Объект является спрайтом
+ */
+DKTools_Base.prototype.isSprite = function() {
+    return false;
+};
+
+/**
+ * Возвращает true, если объект является окном
+ *
+ * @method isWindow
+ * @return {Boolean} Объект является окном
+ */
+DKTools_Base.prototype.isWindow = function() {
+    return false;
+};
+
 // draw methods
 
+/**
+ * Рисует все
+ *
+ * @method drawAll
+ */
 DKTools_Base.prototype.drawAll = function() {
     this.updateBackground();
     this.updateText();
@@ -2879,21 +3060,22 @@ DKTools_Base.prototype.drawAll = function() {
 
 /**
  * Заливает область цветом
+ * Возвращает true, если Bitmap существует
  *
  * @method fillRect
  *
- * @param {String | null} [color = #ffffff] - Цвет заливки
- * @param {Number | Rectangle | Object | null} [object = 0] - Координата X или Rectangle, или Объект типа {}
- * @param {Number | null} [y = 0] - Координата Y
- * @param {Number | null} [width = this._bitmapWidth] - Ширина области
- * @param {Number | null} [height = this._bitmapHeight] - Высота области
+ * @param {String} [color] - Цвет заливки
+ * @param {Number | Rectangle | Object} [object] - Координата X или Rectangle, или Объект типа {}
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [width] - Ширина области
+ * @param {Number} [height] - Высота области
  *
- * @param {Number | null} [object.x = null] - Координата X
- * @param {Number | null} [object.y = null] - Координата Y
- * @param {Number | null} [object.width = null] - Ширина области
- * @param {Number | null} [object.height = null] - Высота области
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
+ * @param {Number} [object.width] - Ширина области
+ * @param {Number} [object.height] - Высота области
  *
- * @return {Boolean} Возвращает true, если Bitmap существует
+ * @return {Boolean} Bitmap существует
  */
 DKTools_Base.prototype.fillRect = function(color, object, y, width, height) {
     if (!this.hasBitmap()) {
@@ -2916,10 +3098,8 @@ DKTools_Base.prototype.fillRect = function(color, object, y, width, height) {
  * Возвращает true, если Bitmap существует
  *
  * @method fillAll
- *
- * @param {String || null} color - Цвет заливки
- *
- * @return Boolean
+ * @param {String} [color] - Цвет заливки
+ * @return {Boolean} Bitmap существует
  */
 DKTools_Base.prototype.fillAll = function(color) {
     return this.fillRect(color);
@@ -2931,27 +3111,26 @@ DKTools_Base.prototype.fillAll = function(color) {
  *
  * @method gradientFillRect
  *
- * @param {String || null} color1 - Цвет 1
- * @param {String || null} color2 - Цвет 2
- * @param {Boolean || null} vertical - Вертикальный градиент
- * @param {Number || Rectangle || Object || null} object - Координата X или область, или Объект типа {}
- * @param {Number || null} y - Координата Y
- * @param {Number || null} width - Ширина области
- * @param {Number || null} height - Высота области
+ * @param {String} color1 - Цвет 1
+ * @param {String} color2 - Цвет 2
+ * @param {Boolean} vertical - Вертикальный градиент
+ * @param {Number | Rectangle | Object} object - Координата X или Rectangle, или Объект типа {}
+ * @param {Number} y - Координата Y
+ * @param {Number} width - Ширина области
+ * @param {Number} height - Высота области
  *
- * object properties
- * @property {Number || null} x - Координата X
- * @property {Number || null} y - Координата Y
- * @property {Number || null} width - Ширина области
- * @property {Number || null} height - Высота области
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
+ * @param {Number} [object.width] - Ширина области
+ * @param {Number} [object.height] - Высота области
  *
- * @return Boolean
+ * @return {Boolean} Bitmap существует
  */
 DKTools_Base.prototype.gradientFillRect = function(color1, color2, vertical, object, y, width, height) {
     if (!this.hasBitmap()) {
         return false;
     }
-    if (object && object.constructor === Rectangle) {
+    if (object && (object.constructor === Rectangle || object.constructor === Object)) {
         return this.gradientFillRect(color1, color2, vertical, object.x, object.y, object.width, object.height);
     }
     var x = object || 0;
@@ -2970,11 +3149,11 @@ DKTools_Base.prototype.gradientFillRect = function(color1, color2, vertical, obj
 
  * @method gradientFillAll
  *
- * @param {String || null} color1 - Цвет 1
- * @param {String || null} color2 - Цвет 2
- * @param {Boolean || null} vertical - Вертикальный градиент
+ * @param {String} [color1] - Цвет 1
+ * @param {String} [color2] - Цвет 2
+ * @param {Boolean} [vertical] - Вертикальный градиент
  *
- * @return Boolean
+ * @return {Boolean} Bitmap существует
  */
 DKTools_Base.prototype.gradientFillAll = function(color1, color2, vertical) {
     return this.gradientFillAll(color1, color2, vertical);
@@ -2986,20 +3165,19 @@ DKTools_Base.prototype.gradientFillAll = function(color1, color2, vertical) {
  *
  * @method drawText
  *
- * @param {String || null} text - Текст
- * @param {String || null} align - Выравнивание текста
- * @param {Number || Rectangle || Object || null} object - Координата X или область, или Объект типа {}
- * @param {Number || null} y - Координата Y
- * @param {Number || null} width - Ширина области
- * @param {Number || null} height - Высота области
+ * @param {String} text - Текст
+ * @param {String} [align] - Выравнивание текста
+ * @param {Number | Rectangle | Object} [object] - Координата X или Rectangle, или Объект типа {}
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [width] - Ширина области
+ * @param {Number} [height] - Высота области
  *
- * object properties
- * @property {Number || null} x - Координата X
- * @property {Number || null} y - Координата Y
- * @property {Number || null} width - Ширина области
- * @property {Number || null} height - Высота области
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
+ * @param {Number} [object.width] - Ширина области
+ * @param {Number} [object.height] - Высота области
  *
- * @return Boolean
+ * @return {Boolean} Bitmap существует
  */
 DKTools_Base.prototype.drawText = function(text, align, object, y, width, height) {
     text = String(text);
@@ -3018,36 +3196,96 @@ DKTools_Base.prototype.drawText = function(text, align, object, y, width, height
     return true;
 };
 
-DKTools_Base.prototype.drawLine = function(object, y1, x2, y2, color) {
+/**
+ * Рисует линию
+ * Возвращает true, если Bitmap существует
+ *
+ * @method drawLine
+ *
+ * @param {Number | Object} object - Координата X начала линии или Объект типа {}
+ * @param {Number} y1 - Координата Y начала линии
+ * @param {Number} x2 - Координата X конца линии
+ * @param {Number} y2 - Координата Y конца линии
+ * @param {String} [color] - Цвет линии
+ * @param {Number} [lineWidth] - Ширина линии
+ *
+ * @param {Number} object.x1 - Координата X начала линии
+ * @param {Number} object.y1 - Координата Y начала линии
+ * @param {Number} object.x2 - Координата X конца линии
+ * @param {Number} object.y2 - Координата Y конца линии
+ * @param {String} [object.color] - Цвет линии
+ * @param {Number} [object.lineWidth] - Ширина линии
+ *
+ * @returns {Boolean} Bitmap существует
+ */
+DKTools_Base.prototype.drawLine = function(object, y1, x2, y2, color, lineWidth) {
     if (!this.hasBitmap()) {
         return false;
     }
     if (object && object.constructor === Object) {
-        return this.drawLine(object.x1, object.y1, object.x2, object.y2, object.color);
+        return this.drawLine(object.x1, object.y1, object.x2, object.y2, object.color, object.lineWidth);
     }
     var x1 = object || 0;
     y1 = y1 || 0;
     color = color || '#ffffff';
-    this.bitmap.drawLine(x1, y1, x2, y2, color);
+    lineWidth = lineWidth || 1;
+    this.bitmap.drawLine(x1, y1, x2, y2, color, lineWidth);
     return true;
 };
 
-DKTools_Base.prototype.strokeRect = function(color, object, y, width, height) {
+/**
+ * Рисует прямоугольник без заливки
+ * Возвращает true, если Bitmap существует
+ *
+ * @method strokeRect
+ *
+ * @param {String} [color] - Цвет линии
+ * @param {Number | Rectangle | Object} [object] - Координата X или Rectangle, или Объект типа {}
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [width] - Ширина прямоугольника
+ * @param {Number} [height] - Высота прямоугольника
+ * @param {Number} [lineWidth] - Ширина линии
+ *
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
+ * @param {Number} [object.width] - Ширина прямоугольника
+ * @param {Number} [object.height] - Высота прямоугольника
+ *
+ * @return {Boolean} Bitmap существует
+ */
+DKTools_Base.prototype.strokeRect = function(color, lineWidth, object, y, width, height) {
     if (!this.hasBitmap()) {
         return false;
     }
     if (object && (object.constructor === Rectangle || object.constructor === Object)) {
-        return this.strokeRect(color, object.x, object.y, object.width, object.height);
+        return this.strokeRect(color, object.x, object.y, object.width, object.height, lineWidth);
     }
     var x = object || 0;
     y = y || 0;
     width = width || this.standardDrawWidth();
     height = height || this.standardDrawHeight();
     color = color || '#ffffff';
-    this.bitmap.strokeRect(x, y, width, height, color);
+    lineWidth = lineWidth || 1;
+    this.bitmap.strokeRect(x, y, width, height, color, lineWidth);
     return true;
 };
 
+/**
+ * Рисует дугу и заливает ее цветом
+ * Возвращает true, если Bitmap существует
+ *
+ * @method fillArc
+ *
+ * @param {Number} [x] - Координата X
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [radius] - Радиус дуги
+ * @param {Number} startAngle - Стартовый угол
+ * @param {Number} endAngle - Конечный угол
+ * @param {String} [color] - Цвет заливки
+ * @param {Boolean} [antiClockwise] - Против часовой стрелки
+ *
+ * @return {Boolean} Bitmap существует
+ */
 DKTools_Base.prototype.fillArc = function(x, y, radius, startAngle, endAngle, color, antiClockwise) {
     if (!this.hasBitmap()) {
         return false;
@@ -3060,7 +3298,24 @@ DKTools_Base.prototype.fillArc = function(x, y, radius, startAngle, endAngle, co
     return true;
 };
 
-DKTools_Base.prototype.strokeArc = function(x, y, radius, startAngle, endAngle, color, antiClockwise) {
+/**
+ * Рисует дугу без заливки
+ * Возвращает true, если Bitmap существует
+ *
+ * @method strokeArc
+ *
+ * @param {Number} [x] - Координата X
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [radius] - Радиус дуги
+ * @param {Number} startAngle - Стартовый угол
+ * @param {Number} endAngle - Конечный угол
+ * @param {String} [color] - Цвет линии
+ * @param {Boolean} [antiClockwise] - Против часовой стрелки
+ * @param {Number} [lineWidth] - Ширина линии
+ *
+ * @return {Boolean} Bitmap существует
+ */
+DKTools_Base.prototype.strokeArc = function(x, y, radius, startAngle, endAngle, color, antiClockwise, lineWidth) {
     if (!this.hasBitmap()) {
         return false;
     }
@@ -3068,7 +3323,8 @@ DKTools_Base.prototype.strokeArc = function(x, y, radius, startAngle, endAngle, 
     y = y || 0;
     radius = radius || 1;
     color = color || '#ffffff';
-    this.bitmap.strokeArc(x, y, radius, startAngle, endAngle, color, antiClockwise);
+    lineWidth = lineWidth || 1;
+    this.bitmap.strokeArc(x, y, radius, startAngle, endAngle, color, antiClockwise, lineWidth);
     return true;
 };
 
@@ -3078,12 +3334,15 @@ DKTools_Base.prototype.strokeArc = function(x, y, radius, startAngle, endAngle, 
  *
  * @method drawCircle
  *
- * @param {Number || null} radius - Радиус
- * @param {String || null} color - Цвет
- * @param {Number || Point || Object || null} object - Координата X или Point, или Объект типа {}
- * @param {Number || null} y - Координата Y
+ * @param {Number} [radius] - Радиус
+ * @param {String} [color] - Цвет
+ * @param {Number | Point | Object} [object] - Координата X или Point, или Объект типа {}
+ * @param {Number} [y] - Координата Y
  *
- * @return Boolean
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
+ *
+ * @return {Boolean} Bitmap существует
  */
 DKTools_Base.prototype.drawCircle = function(radius, color, object, y) {
     if (!this.hasBitmap()) {
@@ -3101,67 +3360,74 @@ DKTools_Base.prototype.drawCircle = function(radius, color, object, y) {
 };
 
 /**
- * Рисует кусок из Bitmap в Bitmap спрайта
+ * Рисует кусок из Bitmap в Bitmap объекта
  * Возвращает true, если Bitmap существует
  *
  * @method drawBitmap
  *
- * @param {Bitmap || Object} object - Bitmap или объект типа {}
- * @param {Number || null} x1 - Координата X
- * @param {Number || null} y1 - Координата Y
- * @param {Number || null} w1 - Ширина области из Bitmap
- * @param {Number || null} h1 - Высота области из Bitmap
- * @param {Number || null} x2 - Координата X
- * @param {Number || null} y2 - Координата Y
- * @param {Number || null} w2 - Ширина рисуемой области
- * @param {Number || null} h2 - Высота рисуемой области
+ * @param {Bitmap | Object} object - Bitmap или объект типа {}
+ * @param {Number} [x1] - Координата X
+ * @param {Number} [y1] - Координата Y
+ * @param {Number} [w1] - Ширина области из Bitmap
+ * @param {Number} [h1] - Высота области из Bitmap
+ * @param {Number} [x2] - Координата X
+ * @param {Number} [y2] - Координата Y
+ * @param {Number} [w2] - Ширина рисуемой области
+ * @param {Number} [h2] - Высота рисуемой области
  *
- * object.properties
- * @property {Bitmap || Object} - Bitmap или Объект типа {}
- * @property {Number || null} x1 - Координата X
- * @property {Number || null} y1 - Координата Y
- * @property {Number || null} w1 - Ширина области из Bitmap
- * @property {Number || null} h1 - Высота области из Bitmap
- * @property {Number || null} x2 - Координата X
- * @property {Number || null} y2 - Координата Y
- * @property {Number || null} w2 - Ширина рисуемой области
- * @property {Number || null} h2 - Высота рисуемой области
- * @property {Rectangle || Object || null} rect1 - Область или Объект типа {}
- * @property {Rectangle || Object || null} rect2 - Область или Объект типа {}
+ * @param {Bitmap | Object} object.bitmap - Bitmap или Объект типа {}
+ * @param {Number} object.x1 - Координата X
+ * @param {Number} object.y1 - Координата Y
+ * @param {Number} object.w1 - Ширина области из Bitmap
+ * @param {Number} object.h1 - Высота области из Bitmap
+ * @param {Number} object.x2 - Координата X
+ * @param {Number} object.y2 - Координата Y
+ * @param {Number} [object.w2] - Ширина рисуемой области
+ * @param {Number} [object.h2] - Высота рисуемой области
+ * @param {Rectangle | Object} [object.rect1] - Rectangle или Объект типа {}
+ * @param {Rectangle | Object} [object.rect2] - Rectangle или Объект типа {}
  *
- * object.bitmap properties
- * @property {String} folder - Путь к файлу
- * @property {String} filename - Название файла
- * @property {Function || null} listener - Метод обработки после загрузки Bitmap
- * @property {Number || null} hue - Оттенок
- * @property {Boolean || null} smooth - Сглаживание
+ * @param {String} object.bitmap.folder - Путь к файлу
+ * @param {String} object.bitmap.filename - Название файла
+ * @param {Function} [object.bitmap.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.bitmap.hue] - Оттенок
+ * @param {Boolean} [object.bitmap.smooth] - Сглаживание
  *
- * object.rect1 and object.rect2 properties
- * @property {Number || null} x - Координата X
- * @property {Number || null} y - Координата Y
- * @property {Number || null} width - Ширина области
- * @property {Number || null} height - Высота области
+ * @param {Number} object.rect1.x - Координата X
+ * @param {Number} object.rect1.y - Координата Y
+ * @param {Number} object.rect1.width - Ширина области
+ * @param {Number} object.rect1.height - Высота области
  *
- * @return Boolean
+ * @param {Number} object.rect2.x - Координата X
+ * @param {Number} object.rect2.y - Координата Y
+ * @param {Number} [object.rect2.width] - Ширина области
+ * @param {Number} [object.rect2.height] - Высота области
+ *
+ * @return {Boolean} Bitmap существует
  */
 DKTools_Base.prototype.drawBitmap = function(object, x1, y1, w1, h1, x2, y2, w2, h2) {
     object = object || {};
+
     if (!this.hasBitmap()) {
         return false;
     }
+
     var sx = x1, sy = y1, sw = w1, sh = h1;
     var dx = x2, dy = y2, dw = w2, dh = h2;
     var bitmap = object;
+
     if (object.constructor === Object) {
         bitmap = this.bitmapFromObject(object.bitmap);
-        sx = object.x1; sy = object.y1; sw = object.w1; sh = object.h1;
-        dx = object.x2; dy = object.y2; dw = object.w2; dh = object.h2;
+        sx = object.x1 || sx; sy = object.y1 || sy; sw = object.w1 || sw; sh = object.h1 || sh;
+        dx = object.x2 || dx; dy = object.y2 || dy; dw = object.w2 || dw; dh = object.h2 || dh;
+
         if (object.rect1 && (object.rect1.constructor === Rectangle || object.rect1.constructor === Object)) {
             sx = object.rect1.x;
             sy = object.rect1.y;
             sw = object.rect1.width;
             sh = object.rect1.height;
         }
+
         if (object.rect2 && (object.rect2.constructor === Rectangle || object.rect2.constructor === Object)) {
             dx = object.rect2.x;
             dy = object.rect2.y;
@@ -3169,12 +3435,15 @@ DKTools_Base.prototype.drawBitmap = function(object, x1, y1, w1, h1, x2, y2, w2,
             dh = object.rect2.height;
         }
     }
+
     if (!bitmap) {
         return false;
     }
+
     bitmap.addLoadListener(function() {
         this.bitmap.blt(bitmap, sx, sy, sw, sh, dx, dy, dw, dh);
     }.bind(this));
+
     return true;
 };
 
@@ -3185,10 +3454,13 @@ DKTools_Base.prototype.drawBitmap = function(object, x1, y1, w1, h1, x2, y2, w2,
  * @method drawIcon
  *
  * @param {Number} iconIndex - ID иконки
- * @param {Number || Point || Object || null} object - Координата X или Point, или Объект типа {}
- * @param {Number || null} y - Координата Y
+ * @param {Number | Point | Object} [object] - Координата X или Point, или Объект типа {}
+ * @param {Number} [y] - Координата Y
  *
- * @return Boolean
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
+ *
+ * @return {Boolean} Bitmap существует
  */
 DKTools_Base.prototype.drawIcon = function(iconIndex, object, y) {
     if (!this.hasBitmap() || iconIndex == null) {
@@ -3216,18 +3488,17 @@ DKTools_Base.prototype.drawIcon = function(iconIndex, object, y) {
  *
  * @param {String} faceName - Название файла
  * @param {Number} faceIndex - Номер лица
- * @param {Number || Rectangle || Object || null} object - Координата X или область, или Объект типа {}
- * @param {Number || null} y - Координата Y
- * @param {Number || null} width - Ширина области
- * @param {Number || null} height - Высота области
+ * @param {Number | Rectangle | Object} [object] - Координата X или Rectangle, или Объект типа {}
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [width] - Ширина области
+ * @param {Number} [height] - Высота области
  *
- * object properties
- * @property {Number || null} x - Координата X
- * @property {Number || null} y - Координата Y
- * @property {Number || null} width - Ширина области
- * @property {Number || null} height - Высота области
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
+ * @param {Number} [object.width] - Ширина области
+ * @param {Number} [object.height] - Высота области
  *
- * @return Boolean
+ * @return {Boolean} Bitmap существует
  */
 DKTools_Base.prototype.drawFace = function(faceName, faceIndex, object, y, width, height) {
     if (!this.hasBitmap() || faceName == null || faceIndex == null) {
@@ -3261,14 +3532,13 @@ DKTools_Base.prototype.drawFace = function(faceName, faceIndex, object, y, width
  *
  * @param {String} characterName - Название файла
  * @param {Number} characterIndex - Номер персонажа
- * @param {Number || Point || Object || null} object - Координата X или Point, или Объект типа {}
- * @param {Number || null} y - Координата Y
+ * @param {Number | Point | Object} [object] - Координата X или Point, или Объект типа {}
+ * @param {Number} [y] - Координата Y
  *
- * object properties
- * @property {Number || null} x - Координата X
- * @property {Number || null} y - Координата Y
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
  *
- * @return Boolean
+ * @return {Boolean} Bitmap существует
  */
 DKTools_Base.prototype.drawCharacter = function(characterName, characterIndex, object, y) {
     if (!this.hasBitmap()) {
@@ -3294,16 +3564,16 @@ DKTools_Base.prototype.drawCharacter = function(characterName, characterIndex, o
 
 /**
  * Загружает Bitmap из папки img/animations/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadAnimation
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadAnimation = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/animations/', filename, listener, hue, smooth);
@@ -3311,16 +3581,16 @@ DKTools_Base.prototype.loadAnimation = function(filename, listener, hue, smooth)
 
 /**
  * Загружает Bitmap из папки img/battlebacks1/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadBattleback1
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadBattleback1 = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/battlebacks1/', filename, listener, hue, smooth);
@@ -3328,16 +3598,16 @@ DKTools_Base.prototype.loadBattleback1 = function(filename, listener, hue, smoot
 
 /**
  * Загружает Bitmap из папки img/battlebacks2/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadBattleback2
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadBattleback2 = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/battlebacks2/', filename, listener, hue, smooth);
@@ -3345,16 +3615,16 @@ DKTools_Base.prototype.loadBattleback2 = function(filename, listener, hue, smoot
 
 /**
  * Загружает Bitmap из папки img/enemies/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadEnemy
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadEnemy = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/enemies/', filename, listener, hue, smooth);
@@ -3362,16 +3632,16 @@ DKTools_Base.prototype.loadEnemy = function(filename, listener, hue, smooth) {
 
 /**
  * Загружает Bitmap из папки img/characters/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadCharacter
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadCharacter = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/characters/', filename, listener, hue, smooth);
@@ -3379,16 +3649,16 @@ DKTools_Base.prototype.loadCharacter = function(filename, listener, hue, smooth)
 
 /**
  * Загружает Bitmap из папки img/faces/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadFace
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadFace = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/faces/', filename, listener, hue, smooth);
@@ -3396,16 +3666,16 @@ DKTools_Base.prototype.loadFace = function(filename, listener, hue, smooth) {
 
 /**
  * Загружает Bitmap из папки img/parallaxes/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadParallax
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadParallax = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/parallaxes/', filename, listener, hue, smooth);
@@ -3413,16 +3683,16 @@ DKTools_Base.prototype.loadParallax = function(filename, listener, hue, smooth) 
 
 /**
  * Загружает Bitmap из папки img/pictures/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadPicture
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadPicture = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/pictures/', filename, listener, hue, smooth);
@@ -3430,16 +3700,16 @@ DKTools_Base.prototype.loadPicture = function(filename, listener, hue, smooth) {
 
 /**
  * Загружает Bitmap из папки img/sv_actors/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadSvActor
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadSvActor = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/sv_actors/', filename, listener, hue, smooth);
@@ -3447,16 +3717,16 @@ DKTools_Base.prototype.loadSvActor = function(filename, listener, hue, smooth) {
 
 /**
  * Загружает Bitmap из папки img/sv_enemies/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadSvEnemy
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadSvEnemy = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/sv_enemies/', filename, listener, hue, smooth);
@@ -3464,16 +3734,16 @@ DKTools_Base.prototype.loadSvEnemy = function(filename, listener, hue, smooth) {
 
 /**
  * Загружает Bitmap из папки img/system/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadSystem
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadSystem = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/system/', filename, listener, hue, smooth);
@@ -3481,16 +3751,16 @@ DKTools_Base.prototype.loadSystem = function(filename, listener, hue, smooth) {
 
 /**
  * Загружает Bitmap из папки img/tilesets/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadTileset
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadTileset = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/tilesets/', filename, listener, hue, smooth);
@@ -3498,16 +3768,16 @@ DKTools_Base.prototype.loadTileset = function(filename, listener, hue, smooth) {
 
 /**
  * Загружает Bitmap из папки img/titles1/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadTitle1
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadTitle1 = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/titles1/', filename, listener, hue, smooth);
@@ -3515,16 +3785,16 @@ DKTools_Base.prototype.loadTitle1 = function(filename, listener, hue, smooth) {
 
 /**
  * Загружает Bitmap из папки img/titles2/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadTitle2
  *
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadTitle2 = function(filename, listener, hue, smooth) {
     return this.loadBitmap('img/titles2/', filename, listener, hue, smooth);
@@ -3532,16 +3802,16 @@ DKTools_Base.prototype.loadTitle2 = function(filename, listener, hue, smooth) {
 
 /**
  * Загружает обложку окна из папки img/system/
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap был объекта изменен
  *
  * @method loadWindowskin
  *
- * @param {String || null} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {String} filename - Название файла
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
  */
 DKTools_Base.prototype.loadWindowskin = function(filename, listener, hue, smooth) {
     return this.loadSystem(filename || this.standardWindowskin(), listener, hue, smooth);
@@ -3550,56 +3820,34 @@ DKTools_Base.prototype.loadWindowskin = function(filename, listener, hue, smooth
 // symbols methods
 
 /**
+ * Возвращает значение символа
  *
- *
- * @method _getSymbol
  * @private
- *
+ * @method _getSymbol
  * @param {String} symbol - Символ
- *
- * @return {Boolean}
+ * @return {Boolean} Значение символа
  */
 DKTools_Base.prototype._getSymbol = function(symbol) {
     return !!this._symbols[symbol];
 };
 
 /**
+ * Обрабатывает изменение значения символа
  *
- *
- * @method _getSymbols
- * @private
- *
- * @param object
- *
- * @return {Array | Boolean}
+ * @method onSymbolChange
+ * @param {String} symbol - Символ
+ * @param {Boolean} value - Значение символа
  */
-DKTools_Base.prototype._getSymbols = function(object) {
-    var symbols = [];
-    if (arguments.length > 1) {
-        for(var i = 0; i < arguments.length; i++) {
-            var symbol = object[i];
-            var value = this._getSymbol(symbol);
-            symbols.push(value);
-        }
-    } else {
-        if (object.constructor === Array) {
-            return this._getSymbols.apply(this, object);
-        } else {
-            var value = this._getSymbol(object);
-            symbols.push(value);
-        }
-    }
-    return symbols;
+DKTools_Base.prototype.onSymbolChange = function(symbol, value) {
 };
 
 /**
+ * Устанавливает значение символа
  *
- *
- * @method _setSymbol
  * @private
- *
- * @param {String} symbol
- * @param {Boolean} value
+ * @method _setSymbol
+ * @param {String} symbol - Символ
+ * @param {Boolean} value - Значение символа
  */
 DKTools_Base.prototype._setSymbol = function(symbol, value) {
     value = Boolean(value);
@@ -3611,45 +3859,71 @@ DKTools_Base.prototype._setSymbol = function(symbol, value) {
 };
 
 /**
+ * Переключает значение символа
  *
- *
- * @method onSymbolChange
- *
- * @param symbol
- * @param value
+ * @private
+ * @method switchSymbol
+ * @param {String} symbol - Символ
  */
-DKTools_Base.prototype.onSymbolChange = function(symbol, value) {
-};
-
-DKTools_Base.prototype.switchSymbol = function(symbol) {
+DKTools_Base.prototype._switchSymbol = function(symbol) {
     var newValue = !this._getSymbol(symbol);
     this._setSymbol(symbol, newValue);
 };
 
+/**
+ * Возвращает значения символов или одного символа
+ *
+ * @method getSymbols
+ * @param {String[] | String | ...String} object - Массив символов или символ, или перечисление символов
+ * @return {Boolean[]} Значения символов или одного символа
+ */
+DKTools_Base.prototype.getSymbols = function(object) {
+    var symbols = [];
+    if (arguments.length > 1) {
+        for(var i = 0; i < arguments.length; i++) {
+            var symbol = arguments[i];
+            var value = this._getSymbol(symbol);
+            symbols.push(value);
+        }
+    } else {
+        if (object instanceof Array) {
+            return this.getSymbols.apply(this, object);
+        } else {
+            var value = this._getSymbol(object);
+            symbols.push(value);
+        }
+    }
+    return symbols;
+};
+
+/**
+ * Переключает значения символов или одного символа
+ *
+ * @method switchSymbols
+ * @param {String[] | String | ...String} object - Массив символов или символ, или перечисление символов
+ */
 DKTools_Base.prototype.switchSymbols = function(object) {
     if (arguments.length > 1) {
         for(var i = 0; i < arguments.length; i++) {
             var symbol = arguments[i];
-            this.switchSymbol(symbol);
+            this._switchSymbol(symbol);
         }
     } else {
         if (object instanceof Array) {
-            return this.switchSymbols.apply(this, object);
+            return this._switchSymbols.apply(this, object);
         } else {
-            return this.switchSymbol(object);
+            return this._switchSymbol(object);
         }
     }
 };
 
 /**
+ * Включает символы или один символ
  *
- *
- * @method _enableSymbols
- * @private
- *
- * @param object
+ * @method enableSymbols
+ * @param {String[] | String | ...String} object - Массив символов или символ, или перечисление символов
  */
-DKTools_Base.prototype._enableSymbols = function(object) {
+DKTools_Base.prototype.enableSymbols = function(object) {
     if (arguments.length > 1) {
         for(var i = 0; i < arguments.length; i++) {
             var symbol = arguments[i];
@@ -3657,7 +3931,7 @@ DKTools_Base.prototype._enableSymbols = function(object) {
         }
     } else {
         if (object instanceof Array) {
-            return this._enableSymbols.apply(this, object);
+            return this.enableSymbols.apply(this, object);
         } else {
             return this._setSymbol(object, true);
         }
@@ -3665,14 +3939,12 @@ DKTools_Base.prototype._enableSymbols = function(object) {
 };
 
 /**
+ * Выключает символы или один символ
  *
- *
- * @method _disableSymbols
- * @private
- *
- * @param object
+ * @method disableSymbols
+ * @param {String[] | String | ...String} object - Массив символов или символ, или перечисление символов
  */
-DKTools_Base.prototype._disableSymbols = function(object) {
+DKTools_Base.prototype.disableSymbols = function(object) {
     if (arguments.length > 1) {
         for(var i = 0; i < arguments.length; i++) {
             var symbol = arguments[i];
@@ -3680,7 +3952,7 @@ DKTools_Base.prototype._disableSymbols = function(object) {
         }
     } else {
         if (object instanceof Array) {
-            return this._disableSymbols.apply(this, object);
+            return this.disableSymbols.apply(this, object);
         } else {
             return this._setSymbol(object, false);
         }
@@ -3688,46 +3960,64 @@ DKTools_Base.prototype._disableSymbols = function(object) {
 };
 
 /**
- *
+ * Возвращает конъюнкцию символов
  *
  * @method isEnabled
- * @return {Boolean}
+ * @param {String[] | String | ...String} object - Массив символов или символ, или перечисление символов
+ * @return {Boolean} Конъюнкция символов
  */
-DKTools_Base.prototype.isEnabled = function() {
-    var symbols = this._getSymbols.apply(this, arguments);
+DKTools_Base.prototype.isEnabled = function(object) {
+    var symbols = this.getSymbols.apply(this, arguments);
     return symbols.conjunction();
 };
 
-/**
- *
- *
- * @method enable
- *
- */
-DKTools_Base.prototype.enable = DKTools_Base.prototype._enableSymbols;
-
-/**
- *
- *
- * @method disable
- *
- */
-DKTools_Base.prototype.disable = DKTools_Base.prototype._disableSymbols;
-
 // _check methods
 
+/**
+ * Сравнивает ширину с минимальной и максимальной
+ * Возвращает ширину из диапазона
+ *
+ * @private
+ * @method _checkWidth
+ * @param {Number} width - Ширина
+ * @return {Number} Ширина из диапазона
+ *
+ */
 DKTools_Base.prototype._checkWidth = function(width) {
     var minWidth = this.minWidth();
     var maxWidth = this.maxWidth();
     return (width ? width.clamp(minWidth, maxWidth) : minWidth);
 };
 
+/**
+ * Сравнивает высоту с минимальной и максимальной
+ * Возвращает высоту из диапазона
+ *
+ * @private
+ * @method _checkHeight
+ * @param {Number} height - Высота
+ * @return {Number} Высота из диапазона
+ *
+ */
 DKTools_Base.prototype._checkHeight = function(height) {
     var minHeight = this.minHeight();
     var maxHeight = this.maxHeight();
     return (height ? height.clamp(minHeight, maxHeight) : minHeight);
 };
 
+/**
+ * Проверяет source на наличие null значений
+ * Если где-то имеется null, то заменяется из standardArray
+ * Возвращает новый массив с правильными значениями
+ *
+ * @private
+ * @method _checkArray
+ *
+ * @param {Array} source - Массив для проверки
+ * @param {Array} standardArray - Массив со стандартными значениями
+ *
+ * @return {Array} Новый массив с правильными значениями
+ */
 DKTools_Base.prototype._checkArray = function(source, standardArray) {
     var array = [];
     source = source || [];
@@ -3738,6 +4028,20 @@ DKTools_Base.prototype._checkArray = function(source, standardArray) {
     return array;
 };
 
+/**
+ * Проверяет x и y на null
+ * Если где-то есть null, то заменяется из standardPoint
+ * Возвращает новый Point с правильными значениями
+ *
+ * @private
+ * @method _checkPoint
+ *
+ * @param {Number} x - Координата X для проверки
+ * @param {Number} y - Координата Y для проверки
+ * @param {Point} standardPoint - Point со стандартными значениями
+ *
+ * @return {Point} Новый Point с правильными значениями
+ */
 DKTools_Base.prototype._checkPoint = function(x, y, standardPoint) {
     standardPoint = standardPoint || Point.emptyPoint;
     x = (x == null ? standardPoint.x : x);
@@ -3745,6 +4049,22 @@ DKTools_Base.prototype._checkPoint = function(x, y, standardPoint) {
     return new Point(x, y);
 };
 
+/**
+ * Проверяет x, y, width и height на null
+ * Если где-то есть null, то заменяется из standardRect
+ * Возвращает новый Rectangle с правильными значениями
+ *
+ * @private
+ * @method _checkRectangle
+ *
+ * @param {Number} x - Координата X для проверки
+ * @param {Number} y - Координата Y для проверки
+ * @param {Number} width - Ширина для проверки
+ * @param {Number} height - Высота для проверки
+ * @param {Rectangle} standardRect - Rectangle со стандартными значениями
+ *
+ * @return {Rectangle} Новый Rectangle с правильными значениями
+ */
 DKTools_Base.prototype._checkRectangle = function(x, y, width, height, standardRect) {
     standardRect = standardRect || Rectangle.emptyRectangle;
     x = (x == null ? standardRect.x : x);
@@ -3759,11 +4079,9 @@ DKTools_Base.prototype._checkRectangle = function(x, y, width, height, standardR
 /**
  * Проверяет контейнер с событиями, удаляя завершенные события
  *
- * @method _checkEventContainer
  * @private
- *
+ * @method _checkEventContainer
  * @param {String} type - Тип события
- *
  * @return {Array}
  */
 DKTools_Base.prototype._checkEventContainer = function(type) {
@@ -3790,12 +4108,11 @@ DKTools_Base.prototype.checkEvents = function() {
 
 /**
  * Удаляет событие из контейнера
+ * Возвращает true, если событие было удалено
  *
  * @method removeEvent
- *
  * @param {DKToolsEvent} event - Событие
- *
- * @return {Boolean} Возвращает true, если событие было удалено
+ * @return {Boolean} Событие было удалено
  */
 DKTools_Base.prototype.removeEvent = function(event) {
     var container = this.eventContainer(event);
@@ -3808,12 +4125,11 @@ DKTools_Base.prototype.removeEvent = function(event) {
 };
 
 /**
- *
+ * Выполняет callback функцию для событий
  *
  * @method iterateEventContainer
- *
  * @param {String} type - Тип события
- * @param {Function} callback
+ * @param {Function} callback - Функция обработки событий
  */
 DKTools_Base.prototype.iterateEventContainer = function(type, callback) {
     var container = this.eventContainerByType(type);
@@ -3821,13 +4137,12 @@ DKTools_Base.prototype.iterateEventContainer = function(type, callback) {
 };
 
 /**
- *
+ * Проверяет события на паузу
+ * Возвращает конъюнкцию пауз событий
  *
  * @method eventsIsPaused
- *
  * @param {String} type - Тип события
- *
- * @return {Boolean | null}
+ * @return {Boolean} Конъюнкция пауз событий
  */
 DKTools_Base.prototype.eventsIsPaused = function(type) {
     var paused = [];
@@ -3839,10 +4154,9 @@ DKTools_Base.prototype.eventsIsPaused = function(type) {
 };
 
 /**
- *
+ * Ставит события на паузу
  *
  * @method pauseEvents
- *
  * @param {String} type - Тип события
  * @param {Number} duration - Длительность паузы
  */
@@ -3854,7 +4168,7 @@ DKTools_Base.prototype.pauseEvents = function(type, duration) {
 };
 
 /**
- *
+ * Снимает события с паузы
  *
  * @method resumeEvents
  * @param {String} type - Тип события
@@ -3911,16 +4225,31 @@ DKTools_Base.prototype.updateEventContainer = function(type) {
     this.iterateEventContainer(type, callback);
 };
 
+/**
+ * Обновляет события типа wait
+ *
+ * @method updateWaitEvents
+ */
 DKTools_Base.prototype.updateWaitEvents = function() {
     var container = this.eventContainerByType('wait');
     var event = container[0];
     this.updateEvent(event);
 };
 
+/**
+ * Обновляет события типа update
+ *
+ * @method updateUpdateEvents
+ */
 DKTools_Base.prototype.updateUpdateEvents = function() {
     this.updateEventContainer('update');
 };
 
+/**
+ * Обновляет события типа start
+ *
+ * @method updateStartEvents
+ */
 DKTools_Base.prototype.updateStartEvents = function() {
     if (!this.isStarted()) {
         return;
@@ -3928,6 +4257,11 @@ DKTools_Base.prototype.updateStartEvents = function() {
     this.updateEventContainer('start');
 };
 
+/**
+ * Обновляет события типа ready
+ *
+ * @method updateReadyEvents
+ */
 DKTools_Base.prototype.updateReadyEvents = function() {
     if (!this.isReady()) {
         return;
@@ -3935,6 +4269,11 @@ DKTools_Base.prototype.updateReadyEvents = function() {
     this.updateEventContainer('ready');
 };
 
+/**
+ * Обновляет события типа free
+ *
+ * @method updateFreeEvents
+ */
 DKTools_Base.prototype.updateFreeEvents = function() {
     if (this.isBusy()) {
         return;
@@ -3942,18 +4281,38 @@ DKTools_Base.prototype.updateFreeEvents = function() {
     this.updateEventContainer('free');
 };
 
+/**
+ * Обновляет события типа activate
+ *
+ * @method updateActivateEvents
+ */
 DKTools_Base.prototype.updateActivateEvents = function() {
     this.updateEventContainer('activate');
 };
 
+/**
+ * Обновляет события типа deactivate
+ *
+ * @method updateDeactivateEvents
+ */
 DKTools_Base.prototype.updateDeactivateEvents = function() {
     this.updateEventContainer('deactivate');
 };
 
+/**
+ * Обновляет события типа show
+ *
+ * @method updateShowEvents
+ */
 DKTools_Base.prototype.updateShowEvents = function() {
     this.updateEventContainer('show');
 };
 
+/**
+ * Обновляет события типа hide
+ *
+ * @method updateHideEvents
+ */
 DKTools_Base.prototype.updateHideEvents = function() {
     this.updateEventContainer('hide');
 };
@@ -3962,10 +4321,8 @@ DKTools_Base.prototype.updateHideEvents = function() {
  * Создает контейнер для событий
  *
  * @method createEventContainer
- *
  * @param {String} type - Тип события
- *
- * @return {Array} Контейнер для событий
+ * @return {Array} Контейнер с событиями
  */
 DKTools_Base.prototype.createEventContainer = function(type) {
     this._events[type] = [];
@@ -3973,13 +4330,11 @@ DKTools_Base.prototype.createEventContainer = function(type) {
 };
 
 /**
- * Возвращает контейнер для событий по типу события
+ * Возвращает контейнер событий по типу события
  *
  * @method eventContainerByType
- *
  * @param {String} type - Тип события
- *
- * @return {Array} Контейнер для событий
+ * @return {Array} Контейнер с событиями
  */
 DKTools_Base.prototype.eventContainerByType = function(type) {
     var container = this._events[type];
@@ -3994,10 +4349,8 @@ DKTools_Base.prototype.eventContainerByType = function(type) {
  * Возвращает контейнер для событий по событию
  *
  * @method eventContainer
- *
  * @param {DKToolsEvent} event - Событие
- *
- * @return {Array} Контейнер для событий
+ * @return {Array} Контейнер с событиями
  */
 DKTools_Base.prototype.eventContainer = function(event) {
     var type = event.type;
@@ -4008,9 +4361,7 @@ DKTools_Base.prototype.eventContainer = function(event) {
  * Возвращает индекс события в его контейнере
  *
  * @method eventIndex
- *
  * @param {DKToolsEvent} event - Событие
- *
  * @return {Number} Индекс события в его контейнере
  */
 DKTools_Base.prototype.eventIndex = function(event) {
@@ -4022,9 +4373,7 @@ DKTools_Base.prototype.eventIndex = function(event) {
  * Возвращает массив со всеми или событиями определенного типа
  *
  * @method events
- *
- * @param {String | null} [type] - Тип события
- *
+ * @param {String} [type] - Тип события
  * @return {Array} Массив с событиями
  */
 DKTools_Base.prototype.events = function(type) {
@@ -4040,13 +4389,12 @@ DKTools_Base.prototype.events = function(type) {
 };
 
 /**
- * Проверяет существование события в спрайте
+ * Проверяет существование события в объекте
+ * Возвращает true, если событие есть
  *
  * @method hasEvent
- *
  * @param {DKToolsEvent} event - Событие
- *
- * @return {Boolean}
+ * @return {Boolean} Событие есть
  */
 DKTools_Base.prototype.hasEvent = function(event) {
     return this.eventIndex(event) >= 0;
@@ -4054,12 +4402,11 @@ DKTools_Base.prototype.hasEvent = function(event) {
 
 /**
  * Проверяет существование событий определенного типа
+ * Возвращает true, если события есть
  *
  * @method hasEvents
- *
- * @param {String | null} [type] - Тип события
- *
- * @return {Boolean}
+ * @param {String} [type] - Тип события
+ * @return {Boolean} События есть
  */
 DKTools_Base.prototype.hasEvents = function(type) {
     return this.events(type).length > 0;
@@ -4068,14 +4415,14 @@ DKTools_Base.prototype.hasEvents = function(type) {
 /**
  * Создает событие
  *
- * @method _createEvent
  * @private
+ * @method _createEvent
  *
  * @param {String} type - Тип события
- * @param {Function | null} [handler] - Обработчик события
- * @param {Number | null} [duration] - Длительность события
- * @param {Function | null} [onStartHandler] - Обработчик начала работы события
- * @param {Function | null} [onEndHandler] - Обработчик окончания работы события
+ * @param {Function} [handler] - Обработчик события
+ * @param {Number} [duration] - Длительность события
+ * @param {Function} [onStartHandler] - Обработчик начала работы события
+ * @param {Function} [onEndHandler] - Обработчик окончания работы события
  *
  * @return {DKToolsEvent} Созданное событие
  */
@@ -4089,12 +4436,12 @@ DKTools_Base.prototype._createEvent = function(type, handler, duration, onStartH
  * @method addEvent
  *
  * @param {String} type - Тип события
- * @param {Function | null} [handler] - Обработчик события
- * @param {Number | null} [duration] - Длительность события
- * @param {Function | null} [onStartHandler] - Обработчик начала работы события
- * @param {Function | null} [onEndHandler] - Обработчик окончания работы события
+ * @param {Function} [handler] - Обработчик события
+ * @param {Number} [duration] - Длительность события
+ * @param {Function} [onStartHandler] - Обработчик начала работы события
+ * @param {Function} [onEndHandler] - Обработчик окончания работы события
  *
- * @return {DKToolsEvent}
+ * @return {DKToolsEvent} Добавленное событие
  */
 DKTools_Base.prototype.addEvent = function(type, handler, duration, onStartHandler, onEndHandler) {
     var event = this._createEvent(type, handler, duration, onStartHandler, onEndHandler);
@@ -4109,9 +4456,9 @@ DKTools_Base.prototype.addEvent = function(type, handler, duration, onStartHandl
  * @method addEventHandler
  *
  * @param {String} type - Тип события
- * @param {Function | null} [handler] - Обработчик события
+ * @param {Function} [handler] - Обработчик события
  *
- * @return {DKToolsEvent}
+ * @return {DKToolsEvent} Добавленное событие
  */
 DKTools_Base.prototype.addEventHandler = function(type, handler) {
     var duration = -1;
@@ -4124,9 +4471,9 @@ DKTools_Base.prototype.addEventHandler = function(type, handler) {
  * @method addEventListener
  *
  * @param {String} type - Тип события
- * @param {Function | null} [handler] - Обработчик события
+ * @param {Function} [handler] - Обработчик события
  *
- * @return {DKToolsEvent}
+ * @return {DKToolsEvent} Добавленное событие
  */
 DKTools_Base.prototype.addEventListener = function(type, handler) {
     var duration = 1;
@@ -4135,11 +4482,29 @@ DKTools_Base.prototype.addEventListener = function(type, handler) {
 
 // process methods
 
+/**
+ * Выполняет все
+ *
+ * @method processAll
+ */
 DKTools_Base.prototype.processAll = function() {
 };
 
 // update methods
 
+/**
+ * Обновляет все
+ *
+ * @method updateAll
+ */
+DKTools_Base.prototype.updateAll = function() {
+};
+
+/**
+ * Обновляет объект
+ *
+ * @method update
+ */
 DKTools_Base.prototype.update = function() {
     this.processAll();
     this.updateEvents();
@@ -4175,7 +4540,7 @@ DKTools_Base.prototype.updatePaintOpacity = function() {
 };
 
 /**
- * Обновляет фон спрайта
+ * Обновляет фон объекта
  *
  * @method updateBackground
  */
@@ -4229,6 +4594,11 @@ DKTools_Sprite._counter = 0;
 
 Object.defineProperties(DKTools_Sprite.prototype, {
 
+    /**
+     * Рамка спрайта
+     *
+     * @type {Rectangle}
+     */
     frame: {
         get: function() {
             return this._frame;
@@ -4236,6 +4606,11 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         configurable: true
     },
 
+    /**
+     * Ширина спрайта
+     *
+     * @type {Number}
+     */
     width: {
         get: function() {
             return this._frame.width * this.scale.x;
@@ -4247,6 +4622,11 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         configurable: true
     },
 
+    /**
+     * Высота спрайта
+     *
+     * @type {Number}
+     */
     height: {
         get: function() {
             return this._frame.height * this.scale.y;
@@ -4261,8 +4641,7 @@ Object.defineProperties(DKTools_Sprite.prototype, {
     /**
      * Название файла графики
      *
-     * @property graphic
-     * @type String
+     * @type {String}
      */
     graphic: {
         get: function() {
@@ -4271,6 +4650,11 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         configurable: true
     },
 
+    /**
+     * Счетчик фреймов, который показывает сколько мышь находится внутри спрайта
+     *
+     * @type {Number}
+     */
     enteredTime: {
         get: function() {
             return this._enteredTime;
@@ -4278,6 +4662,11 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         configurable: true
     },
 
+    /**
+     * Счетчик фреймов, который показывает сколько мышь нажата на спрайт
+     *
+     * @type {Number}
+     */
     pressedTime: {
         get: function() {
             return this._pressedTime;
@@ -4285,6 +4674,11 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         configurable: true
     },
 
+    /**
+     * Первое нажатие мыши внутри спрайта
+     *
+     * @type {Boolean}
+     */
     touched: {
         get: function() {
             return this._touched;
@@ -4298,6 +4692,11 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         configurable: true
     },
 
+    /**
+     * Координата X нажатия мыши внутри спрайта
+     *
+     * @type {Number}
+     */
     clickX : {
         get: function() {
             return this.canvasToLocalX(TouchInput.x);
@@ -4305,6 +4704,11 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         configurable: true
     },
 
+    /**
+     * Координата Y нажатия мыши внутри спрайта
+     *
+     * @type {Number}
+     */
     clickY : {
         get: function() {
             return this.canvasToLocalY(TouchInput.y);
@@ -4312,6 +4716,11 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         configurable: true
     },
 
+    /**
+     * Количество пикселей прокрутки мыши по оси X внутри спрайта
+     *
+     * @type {Number}
+     */
     wheelX: {
         get: function() {
             return this._wheelX;
@@ -4319,6 +4728,11 @@ Object.defineProperties(DKTools_Sprite.prototype, {
         configurable: true
     },
 
+    /**
+     * Количество пикселей прокрутки мыши по оси Y внутри спрайта
+     *
+     * @type {Number}
+     */
     wheelY: {
         get: function() {
             return this._wheelY;
@@ -4335,22 +4749,22 @@ Object.defineProperties(DKTools_Sprite.prototype, {
  *
  * @constructor
  *
- * @param {Number | Bitmap | Object | null} [object = {}] - Координата X или Bitmap, или Объект типа {}
- * @param {Number | null} [y = 0] - Координата Y
- * @param {Number | null} [width = null] - Ширина Bitmap
- * @param {Number | null} [height = null] - Высота Bitmap
+ * @param {Number | Bitmap | Rectangle | Object} [object] - Координата X или Rectangle, или Bitmap, или Объект типа {}
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [width] - Ширина Bitmap
+ * @param {Number} [height] - Высота Bitmap
  *
- * @param {Number | null} [object.x = 0] - Координата X
- * @param {Number | null} [object.y = 0] - Координата Y
- * @param {Number | null} [object.width = null] - Ширина Bitmap
- * @param {Number | null} [object.height = null] - Высота Bitmap
- * @param {Bitmap | Object | null} [object.bitmap = null] - Bitmap или Объект типа {}
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
+ * @param {Number} [object.width] - Ширина Bitmap
+ * @param {Number} [object.height] - Высота Bitmap
+ * @param {Bitmap | Object} [object.bitmap] - Bitmap или Объект типа {}
  *
  * @param {String} object.bitmap.folder - Путь к файлу
  * @param {String} object.bitmap.filename - Название файла
- * @param {Function | null} [object.bitmap.listener = null] - Метод обработки после загрузки Bitmap
- * @param {Number | null} [object.bitmap.hue = null] - Оттенок
- * @param {Boolean | null} [object.bitmap.smooth = null] - Сглаживание
+ * @param {Function} [object.bitmap.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.bitmap.hue] - Оттенок
+ * @param {Boolean} [object.bitmap.smooth] - Сглаживание
  *
  * @see object properties: DKTools_Sprite.prototype.setupAll
 */
@@ -4374,7 +4788,8 @@ DKTools_Sprite.prototype.initialize = function(object, y, width, height) {
 /**
  * Очищает все данные спрайта
  *
- * @method clearAll
+ * @private
+ * @method _clearAll
  */
 DKTools_Sprite.prototype._clearAll = function() {
     DKTools_Base.prototype._clearAll.call(this);
@@ -4385,15 +4800,21 @@ DKTools_Sprite.prototype._clearAll = function() {
     this._clearTouched();
 };
 
+/**
+ * Очищает нахождение мыши внутри спрайта
+ *
+ * @private
+ * @method _clearEntered
+ */
 DKTools_Sprite.prototype._clearEntered = function() {
     this._entered = false;
 };
 
 /**
- * Сбрасывает счетчик ...
+ * Сбрасывает счетчик нахождения мыши внутри спрайта
  *
- * @method _clearEnteredTime
  * @private
+ * @method _clearEnteredTime
  */
 DKTools_Sprite.prototype._clearEnteredTime = function() {
     this._enteredTime = 0;
@@ -4404,10 +4825,10 @@ DKTools_Sprite.prototype._clearClicked = function() {
 };
 
 /**
- * Сбрасывает счетчик нажатия спрайта
+ * Сбрасывает счетчик нажатия мыши внутри спрайта
  *
- * @method _clearPressedTime
  * @private
+ * @method _clearPressedTime
  */
 DKTools_Sprite.prototype._clearPressedTime = function() {
     this._pressedTime = 0;
@@ -4446,7 +4867,7 @@ DKTools_Sprite.prototype.standardGraphicFolder = function() {
  * @return {String} Стандартное название файла графики
  */
 DKTools_Sprite.prototype.standardGraphic = function() {
-    return null;
+    return '';
 };
 
 /**
@@ -4469,30 +4890,72 @@ DKTools_Sprite.prototype.standardScale = function() {
     return new Point(1, 1);
 };
 
+/**
+ * Возвращает стандартную рамку спрайта
+ *
+ * @method standardFrame
+ * @return {Rectangle} Стандартная рамка спрайта
+ */
 DKTools_Sprite.prototype.standardFrame = function() {
     return new Rectangle(0, 0, this.width, this.height);
 };
 
+/**
+ * Возвращает рамку спрайта в ненажатом состоянии
+ *
+ * @method standardColdFrame
+ * @return {null} Рамка спрайта в ненажатом состоянии
+ */
 DKTools_Sprite.prototype.standardColdFrame = function() {
     return null;
 };
 
+/**
+ * Возвращает рамку спрайта в нажатом состоянии
+ *
+ * @method standardHotFrame
+ * @return {null} Рамка спрайта в нажатом состоянии
+ */
 DKTools_Sprite.prototype.standardHotFrame = function() {
     return null;
 };
 
+/**
+ * Возвращает масштабирование спрайта в ненажатом состоянии
+ *
+ * @method standardColdScale
+ * @return {null} Масштабирование спрайта в ненажатом состоянии
+ */
 DKTools_Sprite.prototype.standardColdScale = function() {
     return null;
 };
 
+/**
+ * Возвращает масштабирование спрайта в нажатом состоянии
+ *
+ * @method standardHotScale
+ * @return {null} Масштабирование спрайта в нажатом состоянии
+ */
 DKTools_Sprite.prototype.standardHotScale = function() {
     return null;
 };
 
+/**
+ * Возвращает прозрачность спрайта в ненажатом состоянии
+ *
+ * @method standardColdOpacity
+ * @return {null} Прозрачность спрайта в ненажатом состоянии
+ */
 DKTools_Sprite.prototype.standardColdOpacity = function() {
     return null;
 };
 
+/**
+ * Возвращает прозрачность спрайта в нажатом состоянии
+ *
+ * @method standardHotOpacity
+ * @return {null} Прозрачность спрайта в нажатом состоянии
+ */
 DKTools_Sprite.prototype.standardHotOpacity = function() {
     return null;
 };
@@ -4504,17 +4967,20 @@ DKTools_Sprite.prototype.standardHotOpacity = function() {
  *
  * @method setupAll
  *
- * @param {Object | null} [object = {}] - Объект типа {}
+ * @param {Object} [object] - Объект типа {}
  *
- * @param {Number | null} [object.id = null] - ID спрайта
- * @param {Boolean | null} [object.visible = null] - Видимость спрайта
- * @param {Boolean | null} [object.active = null] - Активность спрайта
- * @param {String | null} [object.textColor = null] - Цвет текста
- * @param {String | null} [object.align = null] - Выравнивание текста
- * @param {String | null} [object.backgroundColor = null] - Цвет фона
- * @param {Array | null} [object.font = null] - Шрифт текста
- * @param {Number | null} [object.opacity = null] - Прозрачность спрайта
- * @param {Object | Point | null} [object.scale = null] - Масштабирование спрайта
+ * @param {Number} [object.longPressInterval] - Интервал длительного нажатия
+ * @param {Bitmap | Object} [object.bitmap] - Bitmap или Объект типа {}
+ * @param {String} [object.graphic] - Название файла графики
+ * @param {Object | Point} [object.scale] - Масштабирование спрайта
+ * 
+ * @param {String} object.bitmap.folder - Путь к файлу
+ * @param {String} object.bitmap.filename - Название файла
+ * @param {Function} [object.bitmap.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.bitmap.hue] - Оттенок
+ * @param {Boolean} [object.bitmap.smooth] - Сглаживание
+ * 
+ * @see other object properties: DKTools_Base.prototype.setupAll
 */
 DKTools_Sprite.prototype.setupAll = function(object) {
 	object = object || {};
@@ -4529,7 +4995,7 @@ DKTools_Sprite.prototype.setupAll = function(object) {
  * Устанавливает ширину Bitmap
  *
  * @method setupWidth
- * @param {Number | null} [width = null] - Ширина Bitmap
+ * @param {Number} [width] - Ширина Bitmap
 */
 DKTools_Sprite.prototype.setupWidth = function(width) {
 	this._bitmapWidth = this._checkWidth(width);
@@ -4539,7 +5005,7 @@ DKTools_Sprite.prototype.setupWidth = function(width) {
  * Устанавливает высоту Bitmap
  *
  * @method setupHeight
- * @param {Number || null} [height = null] - Высота Bitmap
+ * @param {Number} [height] - Высота Bitmap
 */
 DKTools_Sprite.prototype.setupHeight = function(height) {
 	this._bitmapHeight = this._checkHeight(height);
@@ -4550,8 +5016,11 @@ DKTools_Sprite.prototype.setupHeight = function(height) {
  *
  * @method setupSize
  *
- * @param {Number | null} [object = null] - Ширина Bitmap
- * @param {Number | null} [height = null] - Высота Bitmap
+ * @param {Number | Object} [object] - Ширина Bitmap или Объекти типа {}
+ * @param {Number} [height] - Высота Bitmap
+ *
+ * @param {Number} [object.width] - Ширина Bitmap
+ * @param {Number} [object.height] - Высота Bitmap
  */
 DKTools_Sprite.prototype.setupSize = function(object, height) {
     if (object && object.constructor === Object) {
@@ -4565,7 +5034,7 @@ DKTools_Sprite.prototype.setupSize = function(object, height) {
  * Устанавливает интервал длительного нажатия
  *
  * @method setupLongPressInterval
- * @param {Number | null} [interval = null] - Интервал длительного нажатия
+ * @param {Number} [interval] - Интервал длительного нажатия
  */
 DKTools_Sprite.prototype.setupLongPressInterval = function(interval) {
     this._longPressInterval = interval || this.standardLongPressInterval();
@@ -4575,7 +5044,7 @@ DKTools_Sprite.prototype.setupLongPressInterval = function(interval) {
  * Устанавливает название файла графики
  *
  * @method setupGraphic
- * @param {String | null} [graphic] - Название файла графики
+ * @param {String} [graphic] - Название файла графики
  */
 DKTools_Sprite.prototype.setupGraphic = function(graphic) {
     this._graphic = (graphic == null ? this.standardGraphic() : graphic);
@@ -4585,7 +5054,7 @@ DKTools_Sprite.prototype.setupGraphic = function(graphic) {
  * Устанавливает прозрачность спрайта
  *
  * @method setupOpacity
- * @param {Number | null} [opacity = null] - Прозрачность спрайта
+ * @param {Number} [opacity] - Прозрачность спрайта
 */
 DKTools_Sprite.prototype.setupOpacity = function(opacity) {
 	this.opacity = (opacity == null ? this.standardOpacity() : opacity);
@@ -4596,12 +5065,12 @@ DKTools_Sprite.prototype.setupOpacity = function(opacity) {
  *
  * @method setupBitmap
  *
- * @param {Bitmap | Object | null} [object] - Bitmap или Объект типа {}
+ * @param {Bitmap | Object} [object] - Bitmap или Объект типа {}
  * @param {String} object.folder - Путь к файлу
  * @param {String} object.filename - Название файла
- * @param {Function | null} [object.listener] - Метод обработки после загрузки Bitmap
- * @param {Number | null} [object.hue] - Оттенок
- * @param {Boolean | null} [object.smooth] - Сглаживание
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
 */
 DKTools_Sprite.prototype.setupBitmap = function(object) {
 	this.bitmap = this.bitmapFromObject(object);
@@ -4619,11 +5088,11 @@ DKTools_Sprite.prototype.setupBitmap = function(object) {
  *
  * @method setupScale
  *
- * @param {Number | Point | Object | null} [object = this.standardScale().x] - Координата X или Point, или Объект типа {}
- * @param {Number | null} [y = this.standardScale().y] - Координата Y
+ * @param {Number | Point | Object} [object] - Координата X или Point, или Объект типа {}
+ * @param {Number} [y] - Координата Y
  *
- * @param {Number | null} [object.x = this.standardScale().x] - Координата X
- * @param {Number | null} [object.y = this.standardScale().y] - Координата Y
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
  */
 DKTools_Sprite.prototype.setupScale = function(object, y) {
     if (object && (object.constructor === Point || object.constructor === PIXI.ObservablePoint || object.constructor === Object)) {
@@ -4634,6 +5103,20 @@ DKTools_Sprite.prototype.setupScale = function(object, y) {
     this.scale.copy(scale);
 };
 
+/**
+ * Устанавливает рамку спрайта
+ *
+ * @method setupFrame
+ * @param {Number | Rectangle | Object} [object] - Координата X или Rectangle, или Объект типа {}
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [width] - Ширина рамки
+ * @param {Number} [height] - Высота рамки
+ *
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
+ * @param {Number} [object.width] - Ширина рамки
+ * @param {Number} [object.height] - Высота рамки
+ */
 DKTools_Sprite.prototype.setupFrame = function(object, y, width, height) {
     if (object && (object.constructor === Rectangle || object.constructor === Object)) {
         return this.setupFrame(object.x, object.y, object.width, object.height);
@@ -4648,15 +5131,15 @@ DKTools_Sprite.prototype.setupFrame = function(object, y, width, height) {
  *
  * @method setupColdFrame
  *
- * @param {Number | Rectangle | Object} object - Координата X или область, или Объект типа {}
- * @param {Number} y - Координата Y
- * @param {Number} width - Ширина области
- * @param {Number} height - Высота области
+ * @param {Number | Rectangle | Object} [object] - Координата X или Rectangle, или Объект типа {}
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [width] - Ширина рамки
+ * @param {Number} [height] - Высота рамки
  *
- * @param {Number} object.x - Координата X
- * @param {Number} object.y - Координата Y
- * @param {Number} object.width - Ширина области
- * @param {Number} object.height - Высота области
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
+ * @param {Number} [object.width] - Ширина рамки
+ * @param {Number} [object.height] - Высота рамки
  */
 DKTools_Sprite.prototype.setupColdFrame = function(object, y, width, height) {
     if (object && (object.constructor === Rectangle || object.constructor === Object)) {
@@ -4673,15 +5156,15 @@ DKTools_Sprite.prototype.setupColdFrame = function(object, y, width, height) {
  *
  * @method setupHotFrame
  *
- * @param {Number | Rectangle | Object} object - Координата X или область, или Объект типа {}
- * @param {Number} y - Координата Y
- * @param {Number} width - Ширина области
- * @param {Number} height - Высота области
+ * @param {Number | Rectangle | Object} [object] - Координата X или Rectangle, или Объект типа {}
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [width] - Ширина рамки
+ * @param {Number} [height] - Высота рамки
  *
- * @param {Number} object.x - Координата X
- * @param {Number} object.y - Координата Y
- * @param {Number} object.width - Ширина области
- * @param {Number} object.height - Высота области
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
+ * @param {Number} [object.width] - Ширина рамки
+ * @param {Number} [object.height] - Высота рамки
  */
 DKTools_Sprite.prototype.setupHotFrame = function(object, y, width, height) {
     if (object && (object.constructor === Rectangle || object.constructor === Object)) {
@@ -4698,11 +5181,11 @@ DKTools_Sprite.prototype.setupHotFrame = function(object, y, width, height) {
  *
  * @method setupColdScale
  *
- * @param {Number | Point | Object | null} [object = 1] - Координата X или Point, или Объект типа {}
- * @param {Number | null} [y = 1] - Координата Y
+ * @param {Number | Point | Object} [object] - Координата X или Point, или Объект типа {}
+ * @param {Number} [y] - Координата Y
  *
- * @param {Number | null} [object.x = 1] - Координата X
- * @param {Number | null} [object.y = 1] - Координата Y
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
  */
 DKTools_Sprite.prototype.setupColdScale = function(object, y) {
     if (object && (object.constructor === Point || object.constructor === Object)) {
@@ -4719,11 +5202,11 @@ DKTools_Sprite.prototype.setupColdScale = function(object, y) {
  *
  * @method setupHotScale
  *
- * @param {Number | Point | Object | null} [object = 1] - Координата X или Point, или Объект типа {}
- * @param {Number | null} [y = 1] - Координата Y
+ * @param {Number | Point | Object} [object] - Координата X или Point, или Объект типа {}
+ * @param {Number} [y] - Координата Y
  *
- * @param {Number | null} [object.x = 1] - Координата X
- * @param {Number | null} [object.y = 1] - Координата Y
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
  */
 DKTools_Sprite.prototype.setupHotScale = function(object, y) {
     if (object && (object.constructor === Point || object.constructor === Object)) {
@@ -4739,7 +5222,7 @@ DKTools_Sprite.prototype.setupHotScale = function(object, y) {
  * Устанавливает прозрачность для ненажатого состояния
  *
  * @method setupColdOpacity
- * @param {Number | null} opacity = null] - Прозрачность спрайта
+ * @param {Number} [opacity] - Прозрачность спрайта
  */
 DKTools_Sprite.prototype.setupColdOpacity = function(opacity) {
     this._coldOpacity = (opacity == null ? this.standardColdOpacity() : opacity);
@@ -4750,7 +5233,7 @@ DKTools_Sprite.prototype.setupColdOpacity = function(opacity) {
  * Устанавливает прозрачность для нажатого состояния
  *
  * @method setupHotOpacity
- * @param {Number | null} [opacity = null] - Прозрачность спрайта
+ * @param {Number} [opacity] - Прозрачность спрайта
  */
 DKTools_Sprite.prototype.setupHotOpacity = function(opacity) {
     this._hotOpacity = (opacity == null ? this.standardHotOpacity() : opacity);
@@ -4761,18 +5244,17 @@ DKTools_Sprite.prototype.setupHotOpacity = function(opacity) {
 
 /**
  * Изменяет все параметры спрайта
+ * Возвращает количество измененных параметров
  *
  * @method setAll
  *
- * @param {Object | null} [object = {}] - Объект типа {}
- * @param {Boolean | null} [blockStart = null] - Блокировка вызова функции start
+ * @param {Object} [object] - Объект типа {}
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @param {String | null} [object.textColor = null] - Цвет текста
- * @param {String | null} [object.align = null] - Выравнивание текста
- * @param {String | null} [object.backgroundColor = null] - Цвет фона
- * @param {Array | null} [object.font = null] - Шрифт текста
- * @param {Number | null} [object.opacity = null] - Прозрачность спрайта
- * @param {Object | Point | null} [object.scale = null] - Масштабирование спрайта
+ * @param {String} [object.graphic] - Название файла графики
+ * @param {Point | Object} [object.scale] - Масштабирование спрайта
+ *
+ * @see object properties: DKTools_Base.prototype.setAll
  *
  * @return {Number} Количество измененных параметров
 */
@@ -4780,7 +5262,6 @@ DKTools_Sprite.prototype.setAll = function(object, blockStart) {
 	object = object || {};
 	var block = true;
     var changed = DKTools_Base.prototype.setAll.call(this, object);
-    this._activateSetAllMode();
     if (this.setGraphic(object.graphic, block)) {
         changed++;
     }
@@ -4790,19 +5271,19 @@ DKTools_Sprite.prototype.setAll = function(object, blockStart) {
     if (this.setScale(object.scale)) {
         changed++;
     }
-    this._deactivateSetAllMode();
 	return changed;
 };
 
 /**
  * Изменяет ширину Bitmap
+ * Возвращает true, если изменение произошло
  *
  * @method setWidth
  *
- * @param {Number | null} [width = null] - Ширина Bitmap
- * @param {Boolean | null} [blockStart = null] - Блокировка вызова функции start
+ * @param {Number} [width] - Ширина Bitmap
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return {Boolean} Возвращает true, если изменение произошло
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Sprite.prototype.setWidth = function(width, blockStart) {
     return this.resize(width, this._bitmapHeight, blockStart);
@@ -4810,13 +5291,14 @@ DKTools_Sprite.prototype.setWidth = function(width, blockStart) {
 
 /**
  * Изменяет высоту Bitmap
+ * Возвращает true, если изменение произошло
  *
  * @method setHeight
  *
- * @param {Number | null} [height = null] - Высота Bitmap
- * @param {Boolean | null} [blockStart = null] - Блокировка вызова функции start
+ * @param {Number} [height] - Высота Bitmap
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return {Boolean} Возвращает true, если изменение произошло
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Sprite.prototype.setHeight = function(height, blockStart) {
     return this.resize(this._bitmapWidth, height, blockStart);
@@ -4824,13 +5306,14 @@ DKTools_Sprite.prototype.setHeight = function(height, blockStart) {
 
 /**
  * Изменяет название файла графики
+ * Возвращает true, если изменение произошло
  *
  * @method setGraphic
  *
- * @param {String | null} [graphic] - Название файла графики
- * @param {Boolean | null} [blockStart] - Блокировка вызова функции start
+ * @param {String} [graphic] - Название файла графики
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return {Boolean} Возвращает true, если изменение произошло
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Sprite.prototype.setGraphic = function(graphic, blockStart) {
     if (this._graphic === graphic) {
@@ -4852,10 +5335,8 @@ DKTools_Sprite.prototype.setGraphic = function(graphic, blockStart) {
  * Возвращает true, если изменение произошло
  *
  * @method setOpacity
- *
- * @param {Number || null} opacity - Прозрачность спрайта
- *
- * @return Boolean
+ * @param {Number} [opacity] - Прозрачность спрайта
+ * @return {Boolean} Изменение произошло
 */
 DKTools_Sprite.prototype.setOpacity = function(opacity) {
 	if (this.opacity === opacity) {
@@ -4868,17 +5349,18 @@ DKTools_Sprite.prototype.setOpacity = function(opacity) {
 
 /**
  * Изменяет Bitmap спрайта
+ * Возвращает true, если изменение произошло
  *
  * @method setBitmap
  *
- * @param {Bitmap | Object | null} object - Bitmap или Объект типа {}
+ * @param {Bitmap | Object} object - Bitmap или Объект типа {}
  * @param {String} object.folder - Путь к файлу
  * @param {String} object.filename - Название файла
- * @param {Function | null} [object.listener] - Метод обработки после загрузки Bitmap
- * @param {Number | null} [object.hue] - Оттенок
- * @param {Boolean | null} [object.smooth] - Сглаживание
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
  *
- * @return {Boolean} Возвращает true, если изменение произошло
+ * @return {Boolean} Изменение произошло
 */
 DKTools_Sprite.prototype.setBitmap = function(object) {
 	if (this.bitmap == object) {
@@ -4894,10 +5376,13 @@ DKTools_Sprite.prototype.setBitmap = function(object) {
  *
  * @method setScale
  *
- * @param {Number || Point || Object || null} object - Координата X или Point, или Объект типа {}
- * @param {Number || null} y - Координата Y
+ * @param {Number | Point | Object} [object] - Координата X или Point, или Объект типа {}
+ * @param {Number} [y] - Координата Y
  *
- * @return Boolean
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
+ *
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Sprite.prototype.setScale = function(object, y) {
     if (object && (object.constructor === Point || object.constructor === PIXI.ObservablePoint || object.constructor === Object)) {
@@ -4912,6 +5397,24 @@ DKTools_Sprite.prototype.setScale = function(object, y) {
     return lastX !== this.scale.x || lastY !== this.scale.y;
 };
 
+/**
+ * Изменяет рамку спрайта
+ * Возвращает true, если изменение произошло
+ *
+ * @method setFrame
+ *
+ * @param {Number | Rectangle | Object} [object] -  Координата X или Rectangle, или Объект типа {}
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [width] - Ширина рамки
+ * @param {Number} [height] - Высота рамки
+ *
+ * @param {Number} [object.x] -  Координата X
+ * @param {Number} [object.y] - Координата Y
+ * @param {Number} [object.width] - Ширина рамки
+ * @param {Number} [object.height] - Высота рамки
+ *
+ * @return {Boolean} Изменение произошло
+ */
 DKTools_Sprite.prototype.setFrame = function(object, y, width, height) {
     if (object && (object.constructor === Rectangle || object.constructor === Object)) {
         return this.setFrame(object.x, object.y, object.width, object.height);
@@ -4930,10 +5433,10 @@ DKTools_Sprite.prototype.setFrame = function(object, y, width, height) {
 
 /**
  * Проверяет ширину и высоту Bitmap на соответствие минимальным значениям
- * Возвращает true, если изменение произошло
+ * Возвращает количество измененных параметров
  *
  * @method checkSize
- * @return Number
+ * @return {Number} Количество измененных параметров
  */
 DKTools_Sprite.prototype.checkSize = function() {
     var minWidth = this.minWidth();
@@ -4952,6 +5455,14 @@ DKTools_Sprite.prototype.checkSize = function() {
 
 // _create methods
 
+/**
+ * Создает событие исчезновения/появления спрайта
+ *
+ * @private
+ * @method _createVisibleEvent
+ * @param {Number} duration - Длительность
+ * @param {Boolean} visible - Исчезновение/Появление
+ */
 DKTools_Sprite.prototype._createVisibleEvent = function(duration, visible) {
     var callback = function() {
         this.setupVisible(visible);
@@ -4971,14 +5482,19 @@ DKTools_Sprite.prototype._createVisibleEvent = function(duration, visible) {
 
 // create methods
 
+/**
+ * Создает все объекты
+ *
+ * @method createAll
+ */
 DKTools_Sprite.prototype.createAll = function() {
     DKTools_Base.prototype.createAll.call(this);
     this.createBitmap();
 };
 
 /**
- * Загружает изображения из названия файла графики
- * Создает Bitmap спрайта шириной _bitmapWidth и высотой _bitmapHeight
+ * Если установлена графика, то загружает изображение из названия файла графики,
+ * иначе создает Bitmap шириной _bitmapWidth и высотой _bitmapHeight
  *
  * @method createBitmap
  */
@@ -4993,26 +5509,23 @@ DKTools_Sprite.prototype.createBitmap = function() {
 // uncategorized methods
 
 /**
- * Устанавливает ширину и высоту Bitmap, если они отличаются от текущих
+ * Изменяет ширину и высоту Bitmap, если они отличаются от текущих
+ * Возвращает true, если изменение произошло
  *
  * @method resize
  *
- * @param {Number | null} [width = this.minWidth()] - Ширина Bitmap (The width of the Bitmap)
- * @param {Number | null} [height = this.minHeight()] - Высота Bitmap (The height of the Bitmap)
- * @param {Boolean | null} [blockStart = false] - Блокировка вызова функции start
+ * @param {Number} [width] - Ширина Bitmap
+ * @param {Number} [height] - Высота Bitmap
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return {Boolean} Возвращает true, если изменение произошло
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Sprite.prototype.resize = function(width, height, blockStart) {
     if (!this.isResizable()) {
         return false;
     }
-    if (width == null) {
-        width = this.minWidth();
-    }
-    if (height == null) {
-        height = this.minHeight();
-    }
+    width = (width == null ? this.minWidth() : width);
+    height = (height == null ? this.minHeight() : height);
     if (this._bitmapWidth === width && this._bitmapHeight === height) {
         return false;
     }
@@ -5050,32 +5563,32 @@ DKTools_Sprite.prototype.object = function() {
  *
  * @method move
  *
- * @param {Number | Point | Object | null} [object] - Координата X или Point, или Объект типа {}
- * @param {Number | null} [newY] - Координата Y
- * @param {Number | null} [duration] - Длительность перемещения
- * @param {Number | null} [newOpacity] - Новая прозрачность
- * @param {Number | null} [newScaleX] - Новое масштабирование по X
- * @param {Number | null} [newScaleY] - Новое масштабирование по Y
+ * @param {Number | Point | Object} [object] - Координата X или Point, или Объект типа {}
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [duration] - Длительность перемещения
+ * @param {Number} [opacity] - Прозрачность
+ * @param {Number} [scaleX] - Масштабирование по оси X
+ * @param {Number} [scaleY] - Масштабирование по оси Y
  *
- * @param {Number | null} [object.x] - Координата X
- * @param {Number | null} [object.y] - Координата Y
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
  */
-DKTools_Sprite.prototype.move = function(object, newY, duration, newOpacity, newScaleX, newScaleY) {
+DKTools_Sprite.prototype.move = function(object, y, duration, opacity, scaleX, scaleY) {
     if (object && (object.constructor === Point || object.constructor === Object)) {
         return Sprite.prototype.move.call(this, object.x || 0, object.y || 0);
     }
     duration = duration || 0;
     if (duration > 0) {
-        var newX = (object == null ? this.x : object);
-        newY = (newY == null ? this.y : newY);
-        newOpacity = (newOpacity == null ? this.opacity : newOpacity);
-        newScaleX = newScaleX || this.scale.x;
-        newScaleY = newScaleY || this.scale.y;
-        return this.addEvent('wait', this._updateMove.bind(this, newX, newY, newOpacity, newScaleX, newScaleY), duration);
+        var x = (object == null ? this.x : object);
+        y = (y == null ? this.y : y);
+        opacity = (opacity == null ? this.opacity : opacity);
+        scaleX = scaleX || this.scale.x;
+        scaleY = scaleY || this.scale.y;
+        return this.addEvent('wait', this._updateMove.bind(this, x, y, opacity, scaleX, scaleY), duration);
     } else {
-        var newX = object || 0;
-        newY = newY || 0;
-        Sprite.prototype.move.call(this, newX, newY);
+        var x = object || 0;
+        y = y || 0;
+        Sprite.prototype.move.call(this, x, y);
     }
 };
 
@@ -5092,19 +5605,20 @@ DKTools_Sprite.prototype.moveFrame = function(duration, object, newY, newWidth, 
 
 /**
  * Создает маршрут передвижения спрайта
+ * Возвращает массив с событиями
  *
  * @method moveRoute
  *
  * @param {Object[]} route - Массив с объектами маршрута
- * @param {Number | null} [route.duration = 1] - Длительность передвижения
- * @param {Number | null} [route.onEndWait = 0] - Длительность ожидания после передвижения
- * @param {Number | null} [route.x = this.x] - Координата X передвижения
- * @param {Number | null} [route.y = this.y] - Координата Y передвижения
- * @param {Number | null} [route.opacity = this.opacity] - Прозрачность передвижения
- * @param {Number | null} [route.scaleX = this.scale.x] - Масштабирование передвижения по X
- * @param {Number | null} [route.scaleY = this.scale.y] - Масштабирование передвижения по Y
+ * @param {Number} [route.duration] - Длительность передвижения
+ * @param {Number} [route.onEndWait] - Длительность ожидания после передвижения
+ * @param {Number} [route.x] - Координата X передвижения
+ * @param {Number} [route.y] - Координата Y передвижения
+ * @param {Number} [route.opacity] - Прозрачность передвижения
+ * @param {Number} [route.scaleX] - Масштабирование передвижения по оси X
+ * @param {Number} [route.scaleY] - Масштабирование передвижения по оси Y
  *
- * @return {Array} Массив с событиями
+ * @return {DKToolsEvent[]} Массив с событиями
  */
 DKTools_Sprite.prototype.moveRoute = function(route) {
     if (!route) {
@@ -5131,9 +5645,10 @@ DKTools_Sprite.prototype.moveRoute = function(route) {
 
 /**
  * Проверяет спрайт на наличие названия файла графики
+ * Возвращает true, если название файла графики установлено
  *
  * @method hasGraphic
- * @return {Boolean} Возвращает true, если название файла графики установлено
+ * @return {Boolean} Название файла графики установлено
  */
 DKTools_Sprite.prototype.hasGraphic = function() {
     return !!this._graphic;
@@ -5186,19 +5701,21 @@ DKTools_Sprite.prototype.removeGraphic = function() {
 
 // is methods
 
+/**
+ * Возвращает true, если объект является спрайтом
+ *
+ * @method isSprite
+ * @return {Boolean} Объект является спрайтом
+ */
 DKTools_Sprite.prototype.isSprite = function() {
     return true;
-};
-
-DKTools_Sprite.prototype.isWindow = function() {
-    return false;
 };
 
 /**
  * Возвращает true, если спрайт является контейнером
  *
  * @method isContainer
- * @return Boolean
+ * @return {Boolean} Спрайт является контейнером
  */
 DKTools_Sprite.prototype.isContainer = function() {
     return false;
@@ -5212,27 +5729,28 @@ DKTools_Sprite.prototype.isContainer = function() {
  * @param {Number} x - Координата X
  * @param {Number} y - Координата Y
  *
- * @return {Boolean}
+ * @return {Boolean} Координаты находятся внутри спрайта
  */
 DKTools_Sprite.prototype.isInside = function(x, y) {
     return x >= 0 && y >= 0 && x <= this.width && y <= this.height;
 };
 
 /**
- * Возвращает true, если курсор мышки находится внутри спрайта
+ * Возвращает true, если курсор мыши находится внутри спрайта
  *
  * @method isEntered
- * @return Boolean
+ * @return {Boolean} Курсор мыши находится внутри спрайта
  */
 DKTools_Sprite.prototype.isEntered = function() {
     return this.isInside(this.mouseX, this.mouseY);
 };
 
 /**
- * Проверяет было ли прикосновение внутри спрайта
+ * Проверяет было ли нажатие внутри спрайта
+ * Возвращает true, если нажатие было внутри спрайта
  *
  * @method isTouched
- * @return {Boolean} Возвращает true, если прикосновение было внутри спрайта
+ * @return {Boolean} Нажатие было внутри спрайта
  */
 DKTools_Sprite.prototype.isTouched = function() {
     return this.isInside(this.clickX, this.clickY);
@@ -5244,9 +5762,10 @@ DKTools_Sprite.prototype.isClicked = function() {
 
 /**
  * Проверяет спрайт на длительное нажатие
+ * Возвращает true, если спрайт нажимается больше интервала длительного нажатия
  *
  * @method isLongPressed
- * @return {Boolean} Возвращает true, если спрайт нажимается больше интервала длительного нажатия
+ * @return {Boolean} Спрайт нажимается больше интервала длительного нажатия
  */
 DKTools_Sprite.prototype.isLongPressed = function() {
     return this._pressedTime >= this._longPressInterval;
@@ -5254,9 +5773,10 @@ DKTools_Sprite.prototype.isLongPressed = function() {
 
 /**
  * Проверяет спрайт на одиночное или длительное нажатие
+ * Возвращает true, если спрайт был нажат один раз или нажимается длительное время
  *
  * @method isPressed
- * @return {Boolean} Возвращает true, если спрайт был нажат один раз или нажимается длительное время
+ * @return {Boolean} Спрайт был нажат один раз или нажимается длительное время
  */
 DKTools_Sprite.prototype.isPressed = function() {
     return this.isClicked() || this.isLongPressed();
@@ -5267,7 +5787,7 @@ DKTools_Sprite.prototype.isPressed = function() {
  * Возвращает true, если Bitmap был установлен функцией setupBitmap или setBitmap, а не создан createBitmap
  * 
  * @method isFixedBitmap
- * @return {Boolean} Возвращает true, если Bitmap был установлен функцией setupBitmap или setBitmap
+ * @return {Boolean} Bitmap был установлен функцией setupBitmap или setBitmap
 */
 DKTools_Sprite.prototype.isFixedBitmap = function() {
     return this._fixedBitmap;
@@ -5281,17 +5801,17 @@ DKTools_Sprite.prototype.isResizable = function() {
 
 /**
  * Загружает Bitmap из папки
- * Возвращает true, если Bitmap был изменен
+ * Возвращает true, если Bitmap объекта был изменен
  *
  * @method loadBitmap
  *
  * @param {String} folder - Путь к файлу
  * @param {String} filename - Название файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Сглаживание
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
  *
- * @return Boolean
+ * @return {Boolean} Bitmap объекта был изменен
 */
 DKTools_Sprite.prototype.loadBitmap = function(folder, filename, listener, hue, smooth) {
 	var bitmap = ImageManager.loadBitmap(folder, filename, hue, smooth);
@@ -5310,8 +5830,8 @@ DKTools_Sprite.prototype._onGraphicLoadListener = function() {
 /**
  * Загружает графику из названия файла графики
  *
- * @method loadGraphic
  * @private
+ * @method _loadGraphic
  */
 DKTools_Sprite.prototype._loadGraphic = function() {
     if (this.hasGraphic()) {
@@ -5326,14 +5846,29 @@ DKTools_Sprite.prototype._loadGraphic = function() {
 
 // event methods
 
+/**
+ * Обновляет события типа mouseEnter
+ *
+ * @method updateMouseEnterEvents
+ */
 DKTools_Sprite.prototype.updateMouseEnterEvents = function() {
     this.updateEventContainer('mouseEnter');
 };
 
+/**
+ * Обновляет события типа mouseStay
+ *
+ * @method updateMouseStayEvents
+ */
 DKTools_Sprite.prototype.updateMouseStayEvents = function() {
     this.updateEventContainer('mouseStay');
 };
 
+/**
+ * Обновляет события типа mouseLeave
+ *
+ * @method updateMouseLeaveEvents
+ */
 DKTools_Sprite.prototype.updateMouseLeaveEvents = function() {
     if (this.isPressed()) {
         this._clearEntered();
@@ -5346,7 +5881,7 @@ DKTools_Sprite.prototype.updateMouseLeaveEvents = function() {
 };
 
 /**
- * Обновляет события одиночного нажатия
+ * Обновляет события типа click
  *
  * @method updateClickEvents
  */
@@ -5355,7 +5890,7 @@ DKTools_Sprite.prototype.updateClickEvents = function() {
 };
 
 /**
- * Обновляет события длительного нажатия
+ * Обновляет события типа longPress
  *
  * @method updateLongPressEvents
  */
@@ -5363,6 +5898,11 @@ DKTools_Sprite.prototype.updateLongPressEvents = function() {
     this.updateEventContainer('longPress');
 };
 
+/**
+ * Обновляет события типа wheelX
+ *
+ * @method updateWheelXEvents
+ */
 DKTools_Sprite.prototype.updateWheelXEvents = function() {
     this._wheelX = TouchInput.wheelX;
     if (this._wheelX === 0) {
@@ -5371,6 +5911,11 @@ DKTools_Sprite.prototype.updateWheelXEvents = function() {
     this.updateEventContainer('wheelX');
 };
 
+/**
+ * Обновляет события типа wheelY
+ *
+ * @method updateWheelYEvents
+ */
 DKTools_Sprite.prototype.updateWheelYEvents = function() {
     this._wheelY = TouchInput.wheelY;
     if (this._wheelY === 0) {
@@ -5379,6 +5924,11 @@ DKTools_Sprite.prototype.updateWheelYEvents = function() {
     this.updateEventContainer('wheelY');
 };
 
+/**
+ * Обновляет события типа wheelX и wheelY
+ *
+ * @method updateWheelEvents
+ */
 DKTools_Sprite.prototype.updateWheelEvents = function() {
     this.updateWheelXEvents();
     this.updateWheelYEvents();
@@ -5386,6 +5936,11 @@ DKTools_Sprite.prototype.updateWheelEvents = function() {
 
 // process methods
 
+/**
+ * Выполняет все
+ *
+ * @method processAll
+ */
 DKTools_Sprite.prototype.processAll = function() {
     DKTools_Base.prototype.processAll.call(this);
     if (Utils.isMobileDevice()) {
@@ -5424,8 +5979,8 @@ DKTools_Sprite.prototype.processTouch = function() {
 /**
  * Обновляет перемещение спрайта
  *
- * @method _updateMove
  * @private
+ * @method _updateMove
  *
  * @param {Number} newX - Новая координата X
  * @param {Number} newY - Новая координата Y
@@ -5455,8 +6010,19 @@ DKTools_Sprite.prototype._updateMoveFrame = function(newX, newY, newWidth, newHe
     this.setFrame(x, y, width, height);
 };
 
+DKTools_Sprite.prototype._updateTouched = function() {
+    this.updateFrame();
+    this.updateOpacity();
+    this.updateScale();
+};
+
 // update methods
 
+/**
+ * Обновляет все
+ *
+ * @method updateAll
+ */
 DKTools_Sprite.prototype.updateAll = function() {
     DKTools_Base.prototype.updateAll.call(this);
     this.updateBitmap();
@@ -5484,7 +6050,7 @@ DKTools_Sprite.prototype.update = function() {
 };
 
 /**
- * Обновляет нахождение в спрайте
+ * Обновляет нахождение мыши в спрайте
  *
  * @method updateEnter
  */
@@ -5532,12 +6098,6 @@ DKTools_Sprite.prototype.updateTouch = function() {
         this._clearPressedTime();
         this._clearTouched();
     }
-};
-
-DKTools_Sprite.prototype._updateTouched = function() {
-    this.updateFrame();
-    this.updateOpacity();
-    this.updateScale();
 };
 
 /**
@@ -5593,14 +6153,6 @@ DKTools_Sprite.prototype.updateOpacity = function() {
 // DK Tools Container Base
 //===========================================================================
 
-/**
- * @class DKTools_Container_Base
- *
- * @constructor
- *
- * @param {Number | Object | null} object - Координата X или Объект типа {}
- * @param {Number | null} y - Координата Y
- */
 function DKTools_Container_Base() {
 	this.initialize.apply(this, arguments);
 }
@@ -5613,8 +6165,7 @@ DKTools_Container_Base.prototype.constructor = DKTools_Container_Base;
 /**
  * Количество элементов
  *
- * @property length
- * @type Number
+ * @type {Number}
  */
 Object.defineProperty(DKTools_Container_Base.prototype, 'length', {
 	get: function() {
@@ -5625,6 +6176,20 @@ Object.defineProperty(DKTools_Container_Base.prototype, 'length', {
 
 // initialize methods
 
+/**
+ * @class DKTools_Container_Base
+ *
+ * @constructor
+ *
+ * @param {Number | Object} [object] - Координата X или Объект типа {}
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [fixedWidth] - Фиксированная ширина
+ * @param {Number} [fixedHeight] - Фиксированная высота
+ *
+ * @param
+ *
+ * @see object properties: DKTools_Sprite.prototype.initialize
+ */
 DKTools_Container_Base.prototype.initialize = function(object, y, fixedWidth, fixedHeight) {
     if (object && object.constructor === Object) {
         fixedWidth = object.width || fixedWidth;
@@ -5634,12 +6199,13 @@ DKTools_Container_Base.prototype.initialize = function(object, y, fixedWidth, fi
     DKTools_Sprite.prototype.initialize.call(this, object, y, fixedWidth, fixedHeight);
 };
 
-// clear methods
+// _clear methods
 
 /**
  * Очищает все данные спрайта
  *
- * @method clearAll
+ * @private
+ * @method _clearAll
  */
 DKTools_Container_Base.prototype._clearAll = function() {
     DKTools_Sprite.prototype._clearAll.call(this);
@@ -5649,19 +6215,31 @@ DKTools_Container_Base.prototype._clearAll = function() {
 /**
  * Очищает список элементов контейнера
  *
- * @method clearElements
+ * @private
+ * @method _clearElements
  */
 DKTools_Container_Base.prototype._clearElements = function() {
     this._elements = [];
 };
 
+// clear methods
+
+/**
+ * Очищает список элементов контейнера
+ *
+ * @method clearElements
+ */
+DKTools_Container_Base.prototype.clearElements = function() {
+    return this.setElements();
+};
+
 // standard methods
 
 /**
- * Возвращает стандартное значение активности спрайта
+ * Возвращает стандартное значение активности
  *
  * @method standardActive
- * @return Boolean
+ * @return {Boolean} Стандартное значение активности
  */
 DKTools_Container_Base.prototype.standardActive = function() {
     return false;
@@ -5671,7 +6249,7 @@ DKTools_Container_Base.prototype.standardActive = function() {
  * Возвращает стандартный список элементов контейнера
  *
  * @method standardElements
- * @return Array
+ * @return {Array} Стандартный список элементов контейнера
 */
 DKTools_Container_Base.prototype.standardElements = function() {
 	return [];
@@ -5681,17 +6259,17 @@ DKTools_Container_Base.prototype.standardElements = function() {
  * Возвращает стандартное расположение элементов
  *
  * @method standardPlacement
- * @return String
+ * @return {String} Стандартное расположение элементов
 */
 DKTools_Container_Base.prototype.standardPlacement = function() {
 	return 'horizontal';
 };
 
 /**
- * Возвращает стандартное значение рядов
+ * Возвращает стандартное количество рядов
  *
  * @method standardRows
- * @return Number
+ * @return {Number} Стандартное количество рядов
  */
 DKTools_Container_Base.prototype.standardRows = function() {
     return 0;
@@ -5701,27 +6279,27 @@ DKTools_Container_Base.prototype.standardRows = function() {
  * Возвращает стандартное количество столбцов
  *
  * @method standardCols
- * @return Number
+ * @return {Number} Стандартное количество столбцов
  */
 DKTools_Container_Base.prototype.standardCols = function() {
     return 0;
 };
 
 /**
- * Возвращает стандартное значение отступа по X
+ * Возвращает стандартное значение отступа по оси X
  *
  * @method standardXPadding
- * @return Number
+ * @return {Number} Стандартное значение отступа по оси X
  */
 DKTools_Container_Base.prototype.standardXPadding = function() {
     return 18;
 };
 
 /**
- * Возвращает стандартное значение отступа по Y
+ * Возвращает стандартное значение отступа по оси Y
  *
  * @method standardYPadding
- * @return Number
+ * @return {Number} Стандартное значение отступа по оси Y
  */
 DKTools_Container_Base.prototype.standardYPadding = function() {
     return 18;
@@ -5744,17 +6322,17 @@ DKTools_Container_Base.prototype.standardReversed = function() {
  *
  * @method setupAll
  *
- * @param {Object || null} object - Объект типа {}
+ * @param {Object} [object] - Объект типа {}
  *
- * object properties
- * @property {Array || null} elements - Массив с элементами
- * @property {String || null} placement - Расположение элементов
- * @property {Number || null} rows - Количество рядов
- * @property {Number || null} cols - Количество столбцов
- * @property {Number || null} xPadding - Отступ между элементами контейнера по X
- * @property {Number || null} yPadding - Отступ между элементами контейнера по Y
+ * @param {Array} [object.elements] - Массив с элементами
+ * @param {String} [object.placement] - Расположение элементов
+ * @param {Number} [object.rows] - Количество рядов
+ * @param {Number} [object.cols] - Количество столбцов
+ * @param {Number} [object.xPadding] - Отступ между элементами контейнера по оси X
+ * @param {Number} [object.yPadding] - Отступ между элементами контейнера по оси Y
+ * @param {Boolean} [object.reversed] -
  *
- * @see other object properties: DKTools_Sprite.prototype.setupAll
+ * @see object properties: DKTools_Sprite.prototype.setupAll
 */
 DKTools_Container_Base.prototype.setupAll = function(object) {
 	object = object || {};
@@ -5787,10 +6365,10 @@ DKTools_Container_Base.prototype.setupFixedSize = function(object, height) {
  * Устанавливает элементы контейнера
  *
  * @method setupElements
- * @param {Array || null} elements - Массив с элементами контейнера
+ * @param {Array} elements - Массив с элементами контейнера
 */
 DKTools_Container_Base.prototype.setupElements = function(elements) {
-    if (elements && elements.constructor === Array) {
+    if (elements instanceof Array) {
         this._elements = elements.clone();
     } else {
         this._elements = this.standardElements();
@@ -5801,7 +6379,7 @@ DKTools_Container_Base.prototype.setupElements = function(elements) {
  * Добавляет элемент в контейнер, блокируя вызов функции start контейнера
  *
  * @method setupElement
- * @param {DKToolsSprite || null} element - Элемент контейнера
+ * @param {DKToolsSprite} element - Элемент контейнера
 */
 DKTools_Container_Base.prototype.setupElement = function(element) {
 	this.addElement(element, true);
@@ -5811,7 +6389,7 @@ DKTools_Container_Base.prototype.setupElement = function(element) {
  * Устанавливает расположение элементов
  *
  * @method setupPlacement
- * @param {String || null} placement - Расположение элементов
+ * @param {String} [placement] - Расположение элементов
 */
 DKTools_Container_Base.prototype.setupPlacement = function(placement) {
 	this._placement = placement || this.standardPlacement();
@@ -5823,7 +6401,7 @@ DKTools_Container_Base.prototype.setupPlacement = function(placement) {
  * Устанавливает количество столбцов
  *
  * @method setupRows
- * @param {Number || null} rows - Количество рядов
+ * @param {Number} [rows] - Количество рядов
  */
 DKTools_Container_Base.prototype.setupRows = function(rows) {
     this._rows = (rows == null ? this.standardRows() : rows);
@@ -5833,39 +6411,38 @@ DKTools_Container_Base.prototype.setupRows = function(rows) {
  * Устанавливает количество столбцов
  *
  * @method setupCols
- * @param {Number || null} cols - Количество столбцов
+ * @param {Number} [cols] - Количество столбцов
  */
 DKTools_Container_Base.prototype.setupCols = function(cols) {
     this._cols = (cols == null ? this.standardCols() : cols);
 };
 
 /**
- * Устанавливает отступ между элементами контейнера по X
+ * Устанавливает отступ между элементами контейнера по оси X
  *
  * @method setupXPadding
- * @param {Number || null} padding - Отступ между элементами контейнера по X
+ * @param {Number} [padding] - Отступ между элементами контейнера по оси X
  */
 DKTools_Container_Base.prototype.setupXPadding = function(padding) {
     this._xPadding = (padding == null ? this.standardXPadding() : padding);
 };
 
 /**
- * Устанавливает отступ между элементами контейнера по Y
+ * Устанавливает отступ между элементами контейнера по оси Y
  *
  * @method setupYPadding
- * @param {Number || null} padding - Отступ между элементами контейнера по Y
+ * @param {Number} [padding] - Отступ между элементами контейнера по оси Y
  */
 DKTools_Container_Base.prototype.setupYPadding = function(padding) {
     this._yPadding = (padding == null ? this.standardYPadding() : padding);
 };
 
 /**
- * Устанавливает отступ между элементами контейнера по X и Y
+ * Устанавливает отступ между элементами контейнера по оси X и Y
  *
  * @method setupPadding
- *
- * @param {Number || null} xPadding - Отступ между элементами контейнера по X
- * @param {Number || null} yPadding - Отступ между элементами контейнера по Y
+ * @param {Number} [xPadding] - Отступ между элементами контейнера по оси X
+ * @param {Number} [yPadding] - Отступ между элементами контейнера по оси Y
  */
 DKTools_Container_Base.prototype.setupPadding = function(xPadding, yPadding) {
     this.setupXPadding(xPadding);
@@ -5876,7 +6453,7 @@ DKTools_Container_Base.prototype.setupPadding = function(xPadding, yPadding) {
  *
  *
  * @method setupReversed
- * @param reversed
+ * @param {Boolean} [reversed] -
  */
 DKTools_Container_Base.prototype.setupReversed = function(reversed) {
     this._reversed = (reversed == null ? this.standardReversed() : reversed);
@@ -5886,22 +6463,24 @@ DKTools_Container_Base.prototype.setupReversed = function(reversed) {
 
 /**
  * Изменяет все параметры спрайта
+ * Возвращает количество измененных параметров
  *
  * @method setAll
  *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {Object} [object] - Объект типа {}
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @property {Array || null} elements - Массив с элементами
- * @property {String || null} placement - Расположение элементов
- * @property {Number || null} rows - Количество рядов
- * @property {Number || null} cols - Количество столбцов
- * @property {Number || null} xPadding - Отступ между элементами контейнера по X
- * @property {Number || null} yPadding - Отступ между элементами контейнера по Y
+ * @param {Array} [object.elements] - Массив с элементами
+ * @param {String} [object.placement] - Расположение элементов
+ * @param {Number} [object.rows] - Количество рядов
+ * @param {Number} [object.cols] - Количество столбцов
+ * @param {Number} [object.xPadding] - Отступ между элементами контейнера по оси X
+ * @param {Number} [object.yPadding] - Отступ между элементами контейнера по оси Y
+ * @param {Boolean} [object.reversed] -
  *
- * @see other object properties: DKTools_Sprite.prototype.setupAll
+ * @see object properties: DKTools_Sprite.prototype.setupAll
  *
- * @return Number
+ * @return {Number} Количество измененных параметров
 */
 DKTools_Container_Base.prototype.setAll = function(object, blockStart) {
 	object = object || {};
@@ -5935,10 +6514,10 @@ DKTools_Container_Base.prototype.setAll = function(object, blockStart) {
  *
  * @method setElements
  *
- * @param {Array || null} elements - Массив элементов контейнера
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {Array} [elements] - Массив элементов контейнера
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
 */
 DKTools_Container_Base.prototype.setElements = function(elements, blockStart) {
 	if (this._elements == elements) {
@@ -5958,10 +6537,10 @@ DKTools_Container_Base.prototype.setElements = function(elements, blockStart) {
  *
  * @method setPlacement
  *
- * @param {String || null} placement - Расположение элементов
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {String} [placement] - Расположение элементов
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
 */
 DKTools_Container_Base.prototype.setPlacement = function(placement, blockStart) {
 	if (this._placement === placement) {
@@ -5984,10 +6563,10 @@ DKTools_Container_Base.prototype.setPlacement = function(placement, blockStart) 
  *
  * @method setRows
  *
- * @param {Number || null} rows - Количество рядов
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {Number} [rows] - Количество рядов
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Container_Base.prototype.setRows = function(rows, blockStart) {
     if (this._rows === rows) {
@@ -6010,10 +6589,10 @@ DKTools_Container_Base.prototype.setRows = function(rows, blockStart) {
  *
  * @method setCols
  *
- * @param {Number || null} cols - Количество столбцов
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {Number} [cols] - Количество столбцов
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Container_Base.prototype.setCols = function(cols, blockStart) {
     if (this._cols === cols) {
@@ -6031,15 +6610,15 @@ DKTools_Container_Base.prototype.setCols = function(cols, blockStart) {
 };
 
 /**
- * Изменяет отступ между элементами контейнера по X
+ * Изменяет отступ между элементами контейнера по оси X
  * Возвращает true, если изменение произошло
  *
  * @method setXPadding
  *
- * @param {Number || null} padding - Отступ между элементами контейнера по X
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updatePlacement
+ * @param {Number} [padding] - Отступ между элементами контейнера по оси X
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Container_Base.prototype.setXPadding = function(padding, blockStart) {
     if (this._xPadding === padding) {
@@ -6057,15 +6636,15 @@ DKTools_Container_Base.prototype.setXPadding = function(padding, blockStart) {
 };
 
 /**
- * Изменяет отступ между элементами контейнера по Y
+ * Изменяет отступ между элементами контейнера по оси Y
  * Возвращает true, если изменение произошло
  *
  * @method setYPadding
  *
- * @param {Number || null} padding - Отступ между элементами контейнера по Y
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updatePlacement
+ * @param {Number} [padding] - Отступ между элементами контейнера по оси Y
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Container_Base.prototype.setYPadding = function(padding, blockStart) {
     if (this._yPadding === padding) {
@@ -6083,15 +6662,16 @@ DKTools_Container_Base.prototype.setYPadding = function(padding, blockStart) {
 };
 
 /**
- * Изменяет отступ между элементами контейнера по X и Y
+ * Изменяет отступ между элементами контейнера по оси X и Y
+ * Возвращает количество измененных параметров
  *
- * @method
+ * @method setPadding
  *
- * @param {Number | null} xPadding - Отступ между элементами контейнера по X
- * @param {Number | null} yPadding - Отступ между элементами контейнера по Y
- * @param {Boolean | null} blockUpdate - Блокировка вызова функции updatePlacement
+ * @param {Number} [xPadding] - Отступ между элементами контейнера по оси X
+ * @param {Number} [yPadding] - Отступ между элементами контейнера по оси Y
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return {Number}
+ * @return {Number} Количество измененных параметров
  */
 DKTools_Container_Base.prototype.setPadding = function(xPadding, yPadding, blockStart) {
     var changed = 0;
@@ -6110,13 +6690,14 @@ DKTools_Container_Base.prototype.setPadding = function(xPadding, yPadding, block
 
 /**
  *
+ * Возвращает true, если изменение произошло
  *
  * @method setReversed
  *
- * @param reversed
- * @param blockStart
+ * @param {Boolean} [reversed] -
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return {Boolean}
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Container_Base.prototype.setReversed = function(reversed, blockStart) {
     if (this._reversed === reversed) {
@@ -6142,6 +6723,10 @@ DKTools_Container_Base.prototype.setReversed = function(reversed, blockStart) {
 */
 DKTools_Container_Base.prototype.start = function() {
 	DKTools_Sprite.prototype.start.call(this);
+    //for(var i = 0; i < this.length; i++) {
+    //    var sprite = this.element(i);
+    //    this.drawBitmap(sprite.bitmap, 0, 0, sprite.width, sprite.height, sprite.x, sprite.y);
+    //}
     this.addElementsToChild();
     if (!this.isReady()) {
         this.addEventListener('ready', function() {
@@ -6152,6 +6737,11 @@ DKTools_Container_Base.prototype.start = function() {
 
 // check methods
 
+/**
+ * Проверяет все
+ *
+ * @method checkAll
+ */
 DKTools_Container_Base.prototype.checkAll = function() {
     this.checkRowsAndCols();
     DKTools_Sprite.prototype.checkAll.call(this);
@@ -6160,7 +6750,7 @@ DKTools_Container_Base.prototype.checkAll = function() {
 
 /**
  * Проверяет количество рядов и столбцов
- * Если количетсво рядов и столбцов равно 0, то устанавливает
+ * Если количество рядов и столбцов равно 0, то устанавливает
  * ряды и столбцы, исходя из расположения элементов
  *
  * Если количество рядов задано, а столбцов нет, то вычисляет
@@ -6169,8 +6759,10 @@ DKTools_Container_Base.prototype.checkAll = function() {
  * Если количество столбцов задано, а рядов нет, то вычисляет
  * количество рядов
  *
+ * Возвращает true, если количество рядов или столбцов было равно 0
+ *
  * @method checkRowsAndCols
- * @return Boolean
+ * @return {Boolean} Количество рядов или столбцов было равно 0
  */
 DKTools_Container_Base.prototype.checkRowsAndCols = function() {
     var rows, cols;
@@ -6204,10 +6796,10 @@ DKTools_Container_Base.prototype.checkRowsAndCols = function() {
 
 /**
  * Проверяет ширину и высоту Bitmap на соответствие минимальным значениям
- * Возвращает true, если изменение произошло
+ * Возвращает количество измененных параметров
  *
  * @method checkSize
- * @return Number
+ * @return {Number} Количество измененных параметров
  */
 DKTools_Container_Base.prototype.checkSize = function() {
     var minWidth = this.minWidth();
@@ -6218,6 +6810,8 @@ DKTools_Container_Base.prototype.checkSize = function() {
     }
     return DKTools_Sprite.prototype.checkSize.call(this);
 };
+
+//
 
 DKTools_Container_Base.prototype.paddingWidth = function() {
     var xPadding = this._xPadding;
@@ -6282,12 +6876,11 @@ DKTools_Container_Base.prototype.resizeByFixedSize = function(width, height, blo
 
 /**
  * Клонирует элементы контейнера
+ * Возвращает массив с клонированными элементами контейнера
  *
- * @method cloneElements
  * @private
- *
- * @param {Number | null} [startPosition = 0] - Стартовая позиция клонирования
- *
+ * @method _cloneElements
+ * @param {Number} [startPosition] - Стартовая позиция клонирования
  * @return {Array} Массив с клонированными элементами контейнера
  */
 DKTools_Container_Base.prototype._cloneElements = function(startPosition) {
@@ -6301,10 +6894,10 @@ DKTools_Container_Base.prototype._cloneElements = function(startPosition) {
 };
 
 /**
- *
+ * Возвращает объект со всеми параметрами
  *
  * @method object
- * @return {Object}
+ * @return {Object} Объект со всеми параметрами
  */
 DKTools_Container_Base.prototype.object = function() {
     var object = DKTools_Sprite.prototype.object.call(this);
@@ -6321,20 +6914,11 @@ DKTools_Container_Base.prototype.object = function() {
 // uncategorized methods
 
 /**
- * Очищает список элементов контейнера
- *
- * @method clearElements
- */
-DKTools_Container_Base.prototype.clearElements = function() {
-    return this.setElements();
-};
-
-/**
  * Возвращает минимальную ширину Bitmap
  *
  * @method minWidth
- * @return Number
-*/
+ * @return {Number} Минимальная ширина Bitmap
+ */
 DKTools_Container_Base.prototype.minWidth = function() {
     if (this.isFixedSize()) {
         return this._fixedWidth;
@@ -6354,8 +6938,8 @@ DKTools_Container_Base.prototype.minWidth = function() {
  * Возвращает минимальную высоту Bitmap
  *
  * @method minHeight
- * @return Number
-*/
+ * @return {Number} Минимальная высота Bitmap
+ */
 DKTools_Container_Base.prototype.minHeight = function() {
     if (this.isFixedSize()) {
         return this._fixedHeight;
@@ -6375,7 +6959,7 @@ DKTools_Container_Base.prototype.minHeight = function() {
  * Возвращает максимальное количество рядов
  *
  * @method maxRows
- * @return Number
+ * @return {Number} Максимальное количество рядов
  */
 DKTools_Container_Base.prototype.maxRows = function() {
     return this._rows;
@@ -6385,7 +6969,7 @@ DKTools_Container_Base.prototype.maxRows = function() {
  * Возвращает максимальное количество столбцов
  *
  * @method maxCols
- * @return Number
+ * @return {Number} Максимальное количество столбцов
  */
 DKTools_Container_Base.prototype.maxCols = function() {
     return this._cols;
@@ -6395,10 +6979,9 @@ DKTools_Container_Base.prototype.maxCols = function() {
  * Возвращает минимальное количество элементов
  * Используется для проверки рядов и столбцов
  *
- * @method _minElements
  * @private
- *
- * @return Number
+ * @method _minElements
+ * @return {Number} Минимальное количество элементов
  */
 DKTools_Container_Base.prototype._minElements = function() {
     return this.length;
@@ -6423,7 +7006,7 @@ DKTools_Container_Base.prototype.isFixedSize = function() {
  * Возвращает true, если спрайт является контейнером
  *
  * @method isContainer
- * @return Boolean
+ * @return {Boolean} Спрайт является контейнером
  */
 DKTools_Container_Base.prototype.isContainer = function() {
     return true;
@@ -6437,7 +7020,7 @@ DKTools_Container_Base.prototype.isResizable = function() {
  * Возвращает true, если элементы располагаются вертикально
  *
  * @method isVerticalPlacement
- * @return Boolean
+ * @return {Boolean} Элементы располагаются вертикально
  */
 DKTools_Container_Base.prototype.isVerticalPlacement = function() {
     return this._placement === 'vertical';
@@ -6447,7 +7030,7 @@ DKTools_Container_Base.prototype.isVerticalPlacement = function() {
  * Возвращает true, если элементы располагаются горизонтально
  *
  * @method isHorizontalPlacement
- * @return Boolean
+ * @return {Boolean} Элементы располагаются горизонтально
  */
 DKTools_Container_Base.prototype.isHorizontalPlacement = function() {
     return this._placement === 'horizontal';
@@ -6457,7 +7040,7 @@ DKTools_Container_Base.prototype.isHorizontalPlacement = function() {
  * Возвращает true, если контейнер не содержит элементов
  *
  * @method isEmpty
- * @return Boolean
+ * @return {Boolean} Контейнер не содержит элементов
  */
 DKTools_Container_Base.prototype.isEmpty = function() {
     return this.length === 0;
@@ -6467,7 +7050,7 @@ DKTools_Container_Base.prototype.isEmpty = function() {
  * Возвращает true, если спрайт готов
  *
  * @method isReady
- * @return Boolean
+ * @return {Boolean} Спрайт готов
 */
 DKTools_Container_Base.prototype.isReady = function() {
 	for(var i = 0; i < this.length; i++) {
@@ -6494,7 +7077,7 @@ DKTools_Container_Base.prototype.isReversed = function() {
  * Возвращает все элементы контейнера
  *
  * @method elements
- * @return Array
+ * @return {Array} Все элементы контейнера
 */
 DKTools_Container_Base.prototype.elements = function() {
     var elements = this._elements;
@@ -6508,9 +7091,8 @@ DKTools_Container_Base.prototype.elements = function() {
  * Выполняет callback функцию для каждого элемента
  *
  * @method iterateElements
- *
  * @param {Function} callback - Функция обработки для каждого элемента контейнера
- * @param {Boolean || null} start - Вызов функции start контейнера
+ * @param {Boolean} [start] - Вызов функции start контейнера
  */
 DKTools_Container_Base.prototype.iterateElements = function(callback, start) {
     var elements = this.elements();
@@ -6547,13 +7129,14 @@ DKTools_Container_Base.prototype.addElementsToChild = function() {
 
 /**
  * Добавляет элемент в контейнер
+ * Возвращает true, если изменение произошло
  *
  * @method addElement
  *
- * @param {DKToolsSprite || Array || null} object - Элемент или Массив элементов
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {DKToolsSprite | Array} object - Элемент или массив элементов
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return {Boolean}
+ * @return {Boolean} Изменение произошло
 */
 DKTools_Container_Base.prototype.addElement = function(object, blockStart) {
 	if (!object) {
@@ -6574,23 +7157,22 @@ DKTools_Container_Base.prototype.addElement = function(object, blockStart) {
 };
 
 /**
+ * Возвращает индекс элемента в контейнере
  *
- *
+ * @method elementIndex
  * @param {DKToolsSprite} element
- * @return {Number}
+ * @return {Number} Индекс элемента в контейнере
  */
 DKTools_Container_Base.prototype.elementIndex = function(element) {
     return this.elements().indexOf(element);
 };
 
 /**
- *
+ * Возвращает true, если элемент содержится в контейнере
  *
  * @method hasElement
- *
- * @param element
- *
- * @return {Boolean}
+ * @param {DKToolsSprite} element - Элемент
+ * @return {Boolean} Элемент содержится в контейнере
  */
 DKTools_Container_Base.prototype.hasElement = function(element) {
     return this.elementIndex(element) >= 0;
@@ -6598,11 +7180,14 @@ DKTools_Container_Base.prototype.hasElement = function(element) {
 
 /**
  * Удаляет элемент из контейнера
+ * Возвращает true, если элемент был удален
  *
  * @method removeElement
  *
- * @param {DKToolsSprite || Number || null} object - Элемент или номер элемента
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {DKToolsSprite | Number} object - Элемент или номер элемента
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
+ *
+ * @return {Boolean} Элемент был удален
 */
 DKTools_Container_Base.prototype.removeElement = function(object, blockStart) {
     if (object == null) {
@@ -6623,13 +7208,13 @@ DKTools_Container_Base.prototype.removeElement = function(object, blockStart) {
         this.start();
     }
     return removed;
-};
+}; // добавить поддержку массива в object
 
 /**
  * Вызывает функцию start у всех элементов контейнера
  *
  * @method startElements
- * @param {Boolean || null} blockStart - Блокировка вызова функции start контейнера
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start контейнера
 */
 DKTools_Container_Base.prototype.startElements = function(blockStart) {
 	var callback = function(element) {
@@ -6646,9 +7231,9 @@ DKTools_Container_Base.prototype.startElements = function(blockStart) {
  *
  * @method resizeElements
  *
- * @param {Number || null} width - Высота Bitmap
- * @param {Number || null} height - Ширина Bitmap
- * @param {Boolean || null} blockStart - Блокировка вызова функции start контейнера
+ * @param {Number} [width] - Высота Bitmap
+ * @param {Number} [height] - Ширина Bitmap
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start контейнера
 */
 DKTools_Container_Base.prototype.resizeElements = function(width, height, blockStart) {
 	var callback = function(element) {
@@ -6664,7 +7249,7 @@ DKTools_Container_Base.prototype.resizeElements = function(width, height, blockS
  * Вызывает функцию activate у всех элементов контейнера
  *
  * @method activateElements
- * @param {Boolean || null} start - Вызов функции start контейнера
+ * @param {Boolean} [start] - Вызов функции start контейнера
 */
 DKTools_Container_Base.prototype.activateElements = function(start) {
     var callback = function(element) {
@@ -6680,7 +7265,7 @@ DKTools_Container_Base.prototype.activateElements = function(start) {
  * Вызывает функцию deactivate у всех элементов контейнера
  *
  * @method deactivateElements
- * @param {Boolean || null} start - Вызов функции start контейнера
+ * @param {Boolean} [start] - Вызов функции start контейнера
 */
 DKTools_Container_Base.prototype.deactivateElements = function(start) {
     var callback = function(element) {
@@ -6693,13 +7278,13 @@ DKTools_Container_Base.prototype.deactivateElements = function(start) {
 };
 
 /**
- *
+ * Вызывает функцию show у всех элементов контейнера
  *
  * @method showElements
  *
- * @param duration
- * @param activate
- * @param start
+ * @param {Number} [duration] - Длительность появления
+ * @param {Boolean} [activate] - Активировать элементы
+ * @param {Boolean} [start] - Вызов функции start контейнера
  */
 DKTools_Container_Base.prototype.showElements = function(duration, activate, start) {
     var callback = function(element) {
@@ -6712,13 +7297,13 @@ DKTools_Container_Base.prototype.showElements = function(duration, activate, sta
 };
 
 /**
- *
+ * Вызывает функцию show у всех элементов контейнера
  *
  * @method hideElements
  *
- * @param duration
- * @param blockDeactivate
- * @param start
+ * @param {Number} [duration] - Длительность исчезновения
+ * @param {Boolean} [blockDeactivate] - Блокировать деактивацию элементов
+ * @param {Boolean} [start] - Вызов функции start контейнера
  */
 DKTools_Container_Base.prototype.hideElements = function(duration, blockDeactivate, start) {
     var callback = function(element) {
@@ -6734,10 +7319,8 @@ DKTools_Container_Base.prototype.hideElements = function(duration, blockDeactiva
  * Возвращает элемент по его номеру
  *
  * @method element
- *
  * @param {Number} id - Номер элемента
- *
- * @return DKToolsSprite || null
+ * @return {DKToolsSprite | null}
 */
 DKTools_Container_Base.prototype.element = function(id) {
     return this.elements()[id];
@@ -6747,10 +7330,8 @@ DKTools_Container_Base.prototype.element = function(id) {
  * Возвращает массив с элементами ряда
  *
  * @method row
- *
  * @param {Number} row - Номер ряда
- *
- * @return Array
+ * @return {Array} Массив с элементами ряда
  */
 DKTools_Container_Base.prototype.row = function(row) {
     var elements = [];
@@ -6771,10 +7352,8 @@ DKTools_Container_Base.prototype.row = function(row) {
  * Возвращает массив с элементами столбца
  *
  * @method col
- *
  * @param {Number} col - Номер столбца
- *
- * @return Array
+ * @return {Array} Массив с элементами столбца
  */
 DKTools_Container_Base.prototype.col = function(col) {
     var elements = [];
@@ -6795,10 +7374,8 @@ DKTools_Container_Base.prototype.col = function(col) {
  * Возвращает высоту ряда (максимальную высоту элементов ряда)
  *
  * @method rowHeight
- *
  * @param {Number} row - Номер ряда
- *
- * @return Number
+ * @return {Number} Высота ряда
  */
 DKTools_Container_Base.prototype.rowHeight = function(row) {
     if (this.isFixedSize()) {
@@ -6819,10 +7396,8 @@ DKTools_Container_Base.prototype.rowHeight = function(row) {
  * Возвращает ширину столбца (максимальную ширину элементов столбца)
  *
  * @method colWidth
- *
  * @param {Number} col - Номер столбца
- *
- * @return Number
+ * @return {Number} Ширина столбца
  */
 DKTools_Container_Base.prototype.colWidth = function(col) {
     if (this.isFixedSize()) {
@@ -6843,10 +7418,8 @@ DKTools_Container_Base.prototype.colWidth = function(col) {
  * Возвращает координату Y начала строки
  *
  * @method rowY
- *
  * @param {Number} row - Номер строки
- *
- * @return Number
+ * @return {Number} Координату Y начала строки
  */
 DKTools_Container_Base.prototype.rowY = function(row) {
     var y = 0;
@@ -6860,10 +7433,8 @@ DKTools_Container_Base.prototype.rowY = function(row) {
  * Возвращает координату X начала столбца
  *
  * @method colX
- *
  * @param {Number} col - Номер столбца
- *
- * @return Number
+ * @return {Number} Координату X начала столбца
  */
 DKTools_Container_Base.prototype.colX = function(col) {
     var x = 0;
@@ -6877,10 +7448,8 @@ DKTools_Container_Base.prototype.colX = function(col) {
  * Возвращает номер строки элемента контейнера
  *
  * @method elementRow
- *
  * @param {DKToolsSprite} element - Элемент контейнера
- *
- * @return Number
+ * @return {Number} Номер строки элемента контейнера
  */
 DKTools_Container_Base.prototype.elementRow = function(element) {
     var index = this.elementIndex(element);
@@ -6892,10 +7461,8 @@ DKTools_Container_Base.prototype.elementRow = function(element) {
  * Возвращает номер столбца элемента контейнера
  *
  * @method elementCol
- *
  * @param {DKToolsSprite} element - Элемент контейнера
- *
- * @return Number
+ * @return {Number} Номер столбца элемента контейнера
  */
 DKTools_Container_Base.prototype.elementCol = function(element) {
     var index = this.elementIndex(element);
@@ -6906,12 +7473,11 @@ DKTools_Container_Base.prototype.elementCol = function(element) {
 
 /**
  * Выравнивает элемент по ширине и высоте
+ * Возвращает true, если элемент есть
  *
  * @method alignElement
- *
- * @param {DKToolsSprite || Number} object - Номер элемента или сам элемент
- *
- * @return {Boolean}
+ * @param {DKToolsSprite | Number} object - Элемент или его номер
+ * @return {Boolean} Элемент есть
  */
 DKTools_Container_Base.prototype.alignElement = function(object) {
     if (object == null) {
@@ -6972,6 +7538,11 @@ DKTools_Container_Base.prototype.alignElements = function() {
 
 // update methods
 
+/**
+ * Обновляет все
+ *
+ * @method updateAll
+ */
 DKTools_Container_Base.prototype.updateAll = function() {
     DKTools_Sprite.prototype.updateAll.call(this);
     this.updatePlacement();
@@ -7685,8 +8256,8 @@ DKTools_Selectable_Container_Base.prototype.updateCursorAnimation = function() {
  *
  * @constructor
  *
- * @param {Number} object - Координата X
- * @param {Number} y - Координата Y
+ * @param {Number} [object] - Координата X
+ * @param {Number} [y] - Координата Y
  */
 function DKTools_Text_Container() {
 	this.initialize.apply(this, arguments);
@@ -7695,8 +8266,13 @@ function DKTools_Text_Container() {
 DKTools_Text_Container.prototype = Object.create(DKTools_Container_Base.prototype);
 DKTools_Text_Container.prototype.constructor = DKTools_Text_Container;
 
-// property
+// properties
 
+/**
+ * Спрайт текста
+ *
+ * @type {DKTools_Sprite}
+ */
 Object.defineProperty(DKTools_Text_Container.prototype, 'textSprite', {
     get: function() {
         return this._textSprite;
@@ -7704,8 +8280,14 @@ Object.defineProperty(DKTools_Text_Container.prototype, 'textSprite', {
     configurable: true
 });
 
-// setup methods
+// _setup methods
 
+/**
+ * Устанавливает события
+ *
+ * @private
+ * @method _setupEvents
+ */
 DKTools_Text_Container.prototype._setupEvents = function() {
     DKTools_Container_Base.prototype._setupEvents.call(this);
     this.addEventListener('start', function() {
@@ -7714,16 +8296,43 @@ DKTools_Text_Container.prototype._setupEvents = function() {
     }.bind(this));
 };
 
+// _create methods
+
+/**
+ * Создает необходимые объекты
+ *
+ * @private
+ * @method _createAll
+ */
+DKTools_Text_Container.prototype._createAll = function() {
+    DKTools_Container_Base.prototype._createAll.call(this);
+    this._createTextSprite();
+};
+
+/**
+ * Создает спрайт текста
+ *
+ * @private
+ * @method _createTextSprite
+ * @param {Object} [object] - Объект типа {}
+ *
+ * @see object properties: DKTools_Sprite.prototype.initialize
+ */
+DKTools_Text_Container.prototype._createTextSprite = function(object) {
+    this._textSprite = new DKTools_Sprite(object);
+};
+
+// setup methods
+
 /**
  * Устанавливает все параметры спрайта
  *
  * @method setupAll
  *
- * @param {Object || null} object - Объект типа {}
+ * @param {Object} [object] - Объект типа {}
+ * @param {Object} [object.textSprite] - Объект типа {}
  *
- * @property {Object || null} textSprite - Объект типа {}
- *
- * @see other object properties: DKTools_Container_Base.prototype.setupAll
+ * @see object properties: DKTools_Container_Base.prototype.setupAll
  * @see textSprite properties: DKTools_Sprite.prototype.setupAll
 */
 DKTools_Text_Container.prototype.setupAll = function(object) {
@@ -7737,12 +8346,12 @@ DKTools_Text_Container.prototype.setupAll = function(object) {
  *
  * @method setupTextSprite
  *
- * @param {Object || null} object - Объект типа {}
+ * @param {Object} [object] - Объект типа {}
  *
- * @property {Number || null} width - Ширина Bitmap спрайта текста
- * @property {Number || null} height - Высота Bitmap спрайта текста
+ * @param {Number} [object.width] - Ширина Bitmap спрайта текста
+ * @param {Number} [object.height] - Высота Bitmap спрайта текста
  *
- * @see other object properties: DKTools_Sprite.prototype.setupAll
+ * @see object properties: DKTools_Sprite.prototype.setupAll
 */
 DKTools_Text_Container.prototype.setupTextSprite = function(object) {
     object = object || {};
@@ -7754,8 +8363,7 @@ DKTools_Text_Container.prototype.setupTextSprite = function(object) {
  * Устанавливает ширину для Bitmap спрайта текста
  *
  * @method setupTextSpriteWidth
- *
- * @param {Number || null} width - Ширина Bitmap спрайта текста
+ * @param {Number} [width] - Ширина Bitmap спрайта текста
  */
 DKTools_Text_Container.prototype.setupTextSpriteWidth = function(width) {
     this._textSprite.setupWidth(width);
@@ -7765,8 +8373,7 @@ DKTools_Text_Container.prototype.setupTextSpriteWidth = function(width) {
  * Устанавливает высоту для Bitmap спрайта текста
  *
  * @method setupTextSpriteHeight
- *
- * @param {Number || null} height - Высота Bitmap спрайта текста
+ * @param {Number} [height] - Высота Bitmap спрайта текста
  */
 DKTools_Text_Container.prototype.setupTextSpriteHeight = function(height) {
     this._textSprite.setupHeight(height);
@@ -7776,9 +8383,8 @@ DKTools_Text_Container.prototype.setupTextSpriteHeight = function(height) {
  * Устанавливает размер для Bitmap спрайта текста
  *
  * @method setupTextSpriteSize
- *
- * @param {Number || null} width - Ширина Bitmap спрайта текста
- * @param {Number || null} height - Высота Bitmap спрайта текста
+ * @param {Number} [width] - Ширина Bitmap спрайта текста
+ * @param {Number} [height] - Высота Bitmap спрайта текста
 */
 DKTools_Text_Container.prototype.setupTextSpriteSize = function(width, height) {
     this._textSprite.setupSize(width, height);
@@ -7788,8 +8394,7 @@ DKTools_Text_Container.prototype.setupTextSpriteSize = function(width, height) {
  * Устанавливает отображаемый текст для спрайта текста
  *
  * @method setupText
- *
- * @param {String || null} text - Отображаемый текст
+ * @param {String} [text] - Отображаемый текст
 */
 DKTools_Text_Container.prototype.setupText = function(text) {
     this._textSprite.setupText(text);
@@ -7803,26 +8408,24 @@ DKTools_Text_Container.prototype.setupText = function(text) {
  *
  * @method setAll
  *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {Object} [object] - Объект типа {}
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @property {Object || null} textSprite - Объект типа {}
+ * @param {Object} [object.textSprite] - Объект типа {}
  *
- * @see other object properties: DKTools_Container_Base.prototype.setAll
+ * @see object properties: DKTools_Container_Base.prototype.setAll
  * @see textSprite properties: DKTools_Sprite.prototype.setAll
  *
- * @return Number
+ * @return {Number} Количество измененных параметров
 */
 DKTools_Text_Container.prototype.setAll = function(object, blockStart) {
 	object = object || {};
 	var block = true;
     var changed = DKTools_Container_Base.prototype.setAll.call(this, object, block);
-    this._activateSetAllMode();
     changed += this.setTextSprite(object.textSprite, block);
 	if (changed && !blockStart) {
         this.start();
     }
-    this._deactivateSetAllMode();
 	return changed;
 };
 
@@ -7832,12 +8435,12 @@ DKTools_Text_Container.prototype.setAll = function(object, blockStart) {
  *
  * @method setTextSprite
  *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {Object} [object] - Объект типа {}
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
  * @see object properties: DKTools_Sprite.prototype.setAll
  *
- * @return Number
+ * @return {Number} Количество измененных параметров
 */
 DKTools_Text_Container.prototype.setTextSprite = function(object, blockStart) {
     return this._textSprite.setAll(object, blockStart);
@@ -7849,11 +8452,11 @@ DKTools_Text_Container.prototype.setTextSprite = function(object, blockStart) {
  *
  * @method setTextSpriteSize
  *
- * @param {Number || null} width - Ширина Bitmap спрайта текста
- * @param {Number || null} height - Высота Bitmap спрайта текста
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {Number} [width] - Ширина Bitmap спрайта текста
+ * @param {Number} [height] - Высота Bitmap спрайта текста
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
 */
 DKTools_Text_Container.prototype.setTextSpriteSize = function(width, height, blockStart) {
     if (this._textSprite.resize(width, height)) {
@@ -7871,10 +8474,10 @@ DKTools_Text_Container.prototype.setTextSpriteSize = function(width, height, blo
  *
  * @method setText
  *
- * @param {String || null} text - Отображаемый текст
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {String} {text} - Отображаемый текст
+ * @param {Boolean} {blockStart} - Блокировка вызова функции start
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
 */
 DKTools_Text_Container.prototype.setText = function(text, blockStart) {
     if (this._textSprite.setText(text)) {
@@ -7886,35 +8489,13 @@ DKTools_Text_Container.prototype.setText = function(text, blockStart) {
     return false;
 };
 
-// create methods
-
-DKTools_Text_Container.prototype._createAll = function() {
-    DKTools_Container_Base.prototype._createAll.call(this);
-    this._createTextSprite();
-};
-
-/**
- * Создает спрайт текста
- *
- * @method _createTextSprite
- *
- * @private
- *
- * @param {Object || null} object - Объект типа {}
- *
- * @see object properties: DKTools_Sprite.prototype.initialize
- */
-DKTools_Text_Container.prototype._createTextSprite = function(object) {
-    this._textSprite = new DKTools_Sprite(object);
-};
-
 // clone methods
 
 /**
- *
+ * Возвращает объект со всеми параметрами
  *
  * @method object
- * @return {Object}
+ * @return {Object} Объект со всеми параметрами
  */
 DKTools_Text_Container.prototype.object = function() {
     var object = DKTools_Container_Base.prototype.object.call(this);
@@ -7929,7 +8510,7 @@ DKTools_Text_Container.prototype.object = function() {
  * Возвращает все элементы контейнера
  *
  * @method elements
- * @return Array
+ * @return {Array} Все элементы контейнера
  */
 DKTools_Text_Container.prototype.elements = function() {
     var elements = [this._textSprite].concat(this._elements);
@@ -7972,8 +8553,8 @@ DKTools_Text_Container.prototype.resizeTextSprite = function(align) {
  *
  * @constructor
  *
- * @param {Number || Object || null} object - Координата X или Объект типа {}
- * @param {Number || null} y - Координата Y
+ * @param {Number | Object} [object] - Координата X или Объект типа {}
+ * @param {Number} [y] - Координата Y
  */
 function DKTools_Container() {
     this.initialize.apply(this, arguments);
@@ -7982,33 +8563,31 @@ function DKTools_Container() {
 DKTools_Container.prototype = Object.create(DKTools_Text_Container.prototype);
 DKTools_Container.prototype.constructor = DKTools_Container;
 
-// property
+// properties
 
 Object.defineProperties(DKTools_Container.prototype, {
 
     /**
+     * Базовый спрайт
      *
+     * @type {DKToolsSprite}
      */
     baseSprite: {
         get: function() {
             return this._baseSprite;
         },
         configurable: true
-    },
-
-    /**
-     *
-     */
-    baseSpriteClass: {
-        get: function() {
-            return DKTools_Sprite;
-        },
-        configurable: true
     }
 });
 
-// setup methods
+// _setup methods
 
+/**
+ * Устанавливает события
+ *
+ * @private
+ * @method _setupEvents
+ */
 DKTools_Container.prototype._setupEvents = function() {
     DKTools_Text_Container.prototype._setupEvents.call(this);
     this.addEventListener('start', function() {
@@ -8016,26 +8595,50 @@ DKTools_Container.prototype._setupEvents = function() {
     }.bind(this));
 };
 
-DKTools_Container.prototype.setup = function(target, type, value) {
-    type = type.charAt(0).toUpperCase() + type.substr(1);
-    var func = 'setup%1'.format(type);
-    if (target === 'container') {
-        this[func](value);
-    } else {
-        this[target][func](value);
-    }
+// _create methods
+
+/**
+ * Создает необходимые объекты
+ *
+ * @private
+ * @method _createAll
+ */
+DKTools_Container.prototype._createAll = function() {
+    DKTools_Text_Container.prototype._createAll.call(this);
+    this._createBaseSprite();
 };
+
+/**
+ * Создает базовый спрайт
+ *
+ * @private
+ * @method _createBaseSprite
+ * @param {Object} [object] - Объект типа {}
+ */
+DKTools_Container.prototype._createBaseSprite = function(object) {
+    this._baseSprite = new DKTools_Sprite(object);
+};
+
+// setup methods
+
+//DKTools_Container.prototype.setup = function(target, type, value) {
+//    type = type.charAt(0).toUpperCase() + type.substr(1);
+//    var func = 'setup%1'.format(type);
+//    if (target === 'container') {
+//        this[func](value);
+//    } else {
+//        this[target][func](value);
+//    }
+//};
 
 /**
  * Устанавливает все параметры спрайта
  *
  * @method setupAll
+ * @param {Object} [object] - Объект типа {}
+ * @param {Object} [object.baseSprite] - Объект типа {}
  *
- * @param {Object || null} object - Объект типа {}
- *
- * @property {Object || null} baseSprite - Объект типа {}
- *
- * @see other object properties: DKTools_Text_Container.prototype.setupAll
+ * @see object properties: DKTools_Text_Container.prototype.setupAll
 */
 DKTools_Container.prototype.setupAll = function(object) {
     object = object || {};
@@ -8048,12 +8651,12 @@ DKTools_Container.prototype.setupAll = function(object) {
  *
  * @method setupBaseSprite
  *
- * @param {Object || null} object - Объект типа {}
+ * @param {Object} [object] - Объект типа {}
  *
- * @property {Number || null} width - Ширина Bitmap базового спрайта
- * @property {Number || null} height - Высота Bitmap базового спрайта
+ * @param {Number} [object.width] - Ширина Bitmap базового спрайта
+ * @param {Number} [object.height] - Высота Bitmap базового спрайта
  *
- * @see other object properties: DKTools_Sprite.prototype.setupAll
+ * @see object properties: DKTools_Sprite.prototype.setupAll
 */
 DKTools_Container.prototype.setupBaseSprite = function(object) {
     object = object || {};
@@ -8065,8 +8668,7 @@ DKTools_Container.prototype.setupBaseSprite = function(object) {
  * Устанавливает ширину для Bitmap базового спрайта
  *
  * @method setupBaseSpriteWidth
- *
- * @param {Number || null} width - Ширина Bitmap базового спрайта
+ * @param {Number} [width] - Ширина Bitmap базового спрайта
  */
 DKTools_Container.prototype.setupBaseSpriteWidth = function(width) {
     this._baseSprite.setupWidth(width);
@@ -8076,8 +8678,7 @@ DKTools_Container.prototype.setupBaseSpriteWidth = function(width) {
  * Устанавливает высоту для Bitmap базового спрайта
  *
  * @method setupBaseSpriteHeight
- *
- * @param {Number || null} height - Высота Bitmap базового спрайта
+ * @param {Number} [height] - Высота Bitmap базового спрайта
  */
 DKTools_Container.prototype.setupBaseSpriteHeight = function(height) {
     this._baseSprite.setupHeight(height);
@@ -8087,9 +8688,8 @@ DKTools_Container.prototype.setupBaseSpriteHeight = function(height) {
  * Устанавливает размер для Bitmap базового спрайта
  *
  * @method setupBaseSpriteSize
- *
- * @param {Number || null} width - Ширина Bitmap базового спрайта
- * @param {Number || null} height - Высота Bitmap базового спрайта
+ * @param {Number} [width] - Ширина Bitmap базового спрайта
+ * @param {Number} [height] - Высота Bitmap базового спрайта
 */
 DKTools_Container.prototype.setupBaseSpriteSize = function(width, height) {
     this._baseSprite.setupSize(width, height);
@@ -8103,15 +8703,14 @@ DKTools_Container.prototype.setupBaseSpriteSize = function(width, height) {
  *
  * @method setAll
  *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {Object} [object] - Объект типа {}
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @property {Object || null} baseSprite - Объект типа {}
+ * @param {Object} [object.baseSprite] - Объект типа {}
  *
- * @see other object properties: DKTools_Text_Container.prototype.setAll
- * @see baseSprite properties: DKTools_Sprite.prototype.setAll
+ * @see object properties: DKTools_Text_Container.prototype.setAll
  *
- * @return Number
+ * @return {Number} Количество измененных параметров
 */
 DKTools_Container.prototype.setAll = function(object, blockStart) {
     object = object || {};
@@ -8130,12 +8729,10 @@ DKTools_Container.prototype.setAll = function(object, blockStart) {
  *
  * @method setBaseSprite
  *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {Object} [object] - Объект типа {}
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @see object properties: DKTools_Sprite.prototype.setAll
- *
- * @return Number
+ * @return {Number} Количество измененных параметров
 */
 DKTools_Container.prototype.setBaseSprite = function(object, blockStart) {
     return this._baseSprite.setAll(object, blockStart);
@@ -8147,11 +8744,11 @@ DKTools_Container.prototype.setBaseSprite = function(object, blockStart) {
  *
  * @method setBaseSpriteSize
  *
- * @param {Number || null} width - Ширина Bitmap спрайта текста
- * @param {Number || null} height - Высота Bitmap спрайта текста
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
+ * @param {Number} [width] - Ширина Bitmap спрайта текста
+ * @param {Number} [height] - Высота Bitmap спрайта текста
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return Boolean
+ * @return {Boolean} Изменение произошло
 */
 DKTools_Container.prototype.setBaseSpriteSize = function(width, height, blockStart) {
     if (this._baseSprite.resize(width, height)) {
@@ -8161,29 +8758,7 @@ DKTools_Container.prototype.setBaseSpriteSize = function(width, height, blockSta
         return true;
     }
     return false;
-};
-
-// create methods
-
-DKTools_Container.prototype._createAll = function() {
-    DKTools_Text_Container.prototype._createAll.call(this);
-    this._createBaseSprite();
-};
-
-/**
- * Создает базовый спрайт
- *
- * @method _createBaseSprite
- *
- * @private
- *
- * @param {Object || null} object - Объект типа {}
- *
- * @see object properties: DKTools_Sprite.prototype.initialize
- */
-DKTools_Container.prototype._createBaseSprite = function(object) {
-    this._baseSprite = new (this.baseSpriteClass)(object);
-};
+}; // мб resizeBaseSprite ?
 
 // elements methods
 
@@ -8191,7 +8766,7 @@ DKTools_Container.prototype._createBaseSprite = function(object) {
  * Возвращает все элементы контейнера
  *
  * @method elements
- * @return Array
+ * @return {Array} Все элементы контейнера
  */
 DKTools_Container.prototype.elements = function() {
     var elements = [this._textSprite, this._baseSprite];
@@ -8235,4282 +8810,28 @@ DKTools_Container.prototype.elements = function() {
 // clone methods
 
 /**
+ * Клонирует элементы контейнера
+ * Возвращает массив с клонированными элементами контейнера
  *
- *
- * @method _cloneElements
  * @private
- *
- * @return {Array}
+ * @method _cloneElements
+ * @return {Array} Массив с клонированными элементами контейнера
  */
 DKTools_Container.prototype._cloneElements = function() {
     return [];
 };
 
 /**
- *
+ * Возвращает объект со всеми параметрами
  *
  * @method object
- * @return {Object}
+ * @return {Object} Объект со всеми параметрами
  */
 DKTools_Container.prototype.object = function() {
     var object = DKTools_Text_Container.prototype.object.call(this);
     object.baseSprite = this._baseSprite.object();
     return object;
 };
-
-
-
-
-
-//===========================================================================
-// DK Tools Progress Bar Base
-//===========================================================================
-
-/**
- * @class DKTools_Progress_Bar_Base
- *
- * @constructor
- *
- * @param {Number || null} object - Координата X
- * @param {Number || null} y - Координата Y
- * @param {Number || null} width - Ширина Bitmap
- * @param {Number || null} height - Высота Bitmap
-*/
-function DKTools_Progress_Bar_Base() {
-	this.initialize.apply(this, arguments);
-}
-
-DKTools_Progress_Bar_Base.prototype = Object.create(DKTools_Sprite.prototype);
-DKTools_Progress_Bar_Base.prototype.constructor = DKTools_Progress_Bar_Base;
-
-// standard methods
-
-/**
- * Возвращает стандартное значение активности спрайта
- *
- * @method standardActive
- * @return Boolean
- */
-DKTools_Progress_Bar_Base.prototype.standardActive = function() {
-    return false;
-};
-
-/**
- * Возвращает стандартное максимальное значение
- *
- * @method standardMax
- * @return Number
-*/
-DKTools_Progress_Bar_Base.prototype.standardMax = function() {
-	return 100;
-};
-
-/**
- * Возвращает стандартное значение
- *
- * @method standardValue
- * @return Number
-*/
-DKTools_Progress_Bar_Base.prototype.standardValue = function() {
-	return 0;
-};
-
-/**
- * Возвращает стандартный цвет
- *
- * @method standardColor
- * @return String
-*/
-DKTools_Progress_Bar_Base.prototype.standardProgressColor = function() {
-	return '#33ccff';
-};
-
-/**
- * Возвращает стандартное отображение процентов
- *
- * @method standardShowPercent
- * @return Boolean
-*/
-DKTools_Progress_Bar_Base.prototype.standardShowPercent = function() {
-	return true;
-};
-
-/**
- * Возвращает стандартный цвет фона
- *
- * @method standardBackgroundColor
- * @return String
-*/
-DKTools_Progress_Bar_Base.prototype.standardBackgroundColor = function() {
-	return '#000000';
-};
-
-// setup methods
-
-/**
- * Устанавливает все параметры спрайта
- *
- * @method setupAll
- *
- * @param {Object || null} object - Объект типа {}
- *
- * @property {Number || null} max - Максимальное значение
- * @property {Number || null} value - Текущее значение
- * @property {String || null} progressColor - Цвет прогресса
- * @property {Boolean || null} showPercent - Отображение в процентах
- *
- * @see other object properties: DKTools_Sprite.prototype.setupAll
-*/
-DKTools_Progress_Bar_Base.prototype.setupAll = function(object) {
-	object = object || {};
-	DKTools_Sprite.prototype.setupAll.call(this, object);
-	this.setupMax(object.max);
-	this.setupValue(object.value);
-	this.setupProgressColor(object.progressColor);
-	this.setupShowPercent(object.showPercent);
-};
-
-/**
- * Устанавливает максимальное значение
- *
- * @method setupMax
- * @param {Number || null} max - Максимальное значение
-*/
-DKTools_Progress_Bar_Base.prototype.setupMax = function(max) {
-	this._max = max || this.standardMax();
-};
-
-/**
- * Устанавливает текущее значение
- *
- * @method setupValue
- * @param {Number || null} value - Текущее значение
-*/
-DKTools_Progress_Bar_Base.prototype.setupValue = function(value) {
-	var max = this._max;
-	var newValue = Math.max(0, Math.min(value, max));
-	this._value = Number.isNaN(newValue) ? this.standardValue() : newValue;
-};
-
-/**
- * Устанавливает цвет
- *
- * @method setupProgressColor
- * @param {String || null} color - Цвет
-*/
-DKTools_Progress_Bar_Base.prototype.setupProgressColor = function(color) {
-	this._progressColor = color || this.standardProgressColor();
-};
-
-/**
- * Устанавливает отображение процентов
- *
- * @method setupShowPercent
- * @param {Boolean || null} showPercent - Отображение процентов
-*/
-DKTools_Progress_Bar_Base.prototype.setupShowPercent = function(showPercent) {
-	this._showPercent = (showPercent == null ? this.standardShowPercent() : showPercent);
-};
-
-// set methods
-
-/**
- * Изменяет все параметры спрайта
- * Возвращает количество измененных параметров
- *
- * @method setAll
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @property {Number || null} max - Максимальное значение
- * @property {Number || null} value - Текущее значение
- * @property {String || null} progressColor - Цвет прогресса
- * @property {Boolean || null} showPercent - Отображение в процентах
- *
- * @see other object properties: DKTools_Sprite.prototype.setAll
- *
- * @return Number
-*/
-DKTools_Progress_Bar_Base.prototype.setAll = function(object, blockStart) {
-	object = object || {};
-	var block = true;
-	var changed = DKTools_Sprite.prototype.setAll.call(this, object, block);
-    this._activateSetAllMode();
-	if (this.setMax(object.max, block)) {
-        changed++;
-    }
-	if (this.setValue(object.value, block)) {
-        changed++;
-    }
-	if (this.setProgressColor(object.progressColor, block)) {
-        changed++;
-    }
-    if (this.setShowPercent(object.showPercent, block)) {
-        changed++;
-    }
-	if (changed && !blockStart) {
-        this.start();
-    }
-    this._deactivateSetAllMode();
-	return changed;
-};
-
-/**
- * Изменяет максимальное значение
- * Возвращает true, если изменение произошло
- *
- * @method setMax
- *
- * @param {Number || null} max - Максимальное значение
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @return Boolean
-*/
-DKTools_Progress_Bar_Base.prototype.setMax = function(max, blockStart) {
-	if (this._max === max) {
-        return false;
-    }
-	var lastMax = this._max;
-	this.setupMax(max);
-	if (lastMax === this._max) {
-        return false;
-    }
-	if (!blockStart) {
-        this.start();
-    }
-	return true;
-};
-
-/**
- * Изменяет текущее значение
- * Возвращает true, если изменение произошло
- *
- * @method setValue
- *
- * @param {Number || null} value - Текущее значение
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
-*/
-DKTools_Progress_Bar_Base.prototype.setValue = function(value, blockUpdate) {
-	if (this._value === value) {
-        return false;
-    }
-	var lastValue = this._value;
-	this.setupValue(value);
-	if (lastValue === this._value) {
-        return false;
-    }
-	if (!blockUpdate) {
-        this.updateBitmap();
-    }
-    this.updateValueEvents();
-	return true;
-};
-
-/**
- * Изменяет цвет прогресса
- * Возвращает true, если изменение произошло
- *
- * @method setProgressColor
- *
- * @param {String || null} color - Цвет прогресса
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
-*/
-DKTools_Progress_Bar_Base.prototype.setProgressColor = function(color, blockUpdate) {
-	if (this._progressColor === color) {
-        return false;
-    }
-	var lastColor = this._progressColor;
-	this.setupProgressColor(color);
-	if (lastColor === this._progressColor) {
-        return false;
-    }
-	if (!blockUpdate) {
-        this.updateBitmap();
-    }
-	return true;
-};
-
-/**
- * Изменяет отображение процентов
- * Возвращает true, если изменение произошло
- *
- * @method setShowPercent
- *
- * @param {String || null} show - Отображение процентов
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
-*/
-DKTools_Progress_Bar_Base.prototype.setShowPercent = function(show, blockUpdate) {
-	if (this._showPercent === show) {
-        return false;
-    }
-	var lastShow = this._showPercent;
-	this.setupShowPercent(show);
-	if (lastShow === this._showPercent) {
-        return false;
-    }
-	if (!blockUpdate) {
-        this.updateBitmap();
-    }
-	return true;
-};
-
-/**
- * Устанавливает функцию обработки обновления текста
- *
- * @method setUpdateTextHandler
- * @param {Function | null} method - Функция обработки обновления текста
- */
-DKTools_Progress_Bar_Base.prototype.setUpdateTextHandler = function(method) {
-    this._updateTextHandler = method;
-};
-
-// other methods
-
-/**
- *
- * @return {Object}
- */
-DKTools_Progress_Bar_Base.prototype.object = function() {
-    var object = DKTools_Sprite.prototype.object.call(this);
-    object.max = this._max;
-    object.value = this._value;
-    object.progressColor = this._progressColor;
-    object.showPercent = this._showPercent;
-    return object;
-};
-
-/**
- * Возвращает минимальную ширину Bitmap
- * Returns the minimum width of the Bitmap
- *
- * @method minWidth
- * @return Number
-*/
-DKTools_Progress_Bar_Base.prototype.minWidth = function() {
-	return 50;
-};
-
-/**
- * Возвращает минимальную высоту Bitmap
- * Returns the minimum height of the Bitmap
- *
- * @method minHeight
- * @return Number
-*/
-DKTools_Progress_Bar_Base.prototype.minHeight = function() {
-	return this.lineHeight();
-};
-
-/**
- *
- *
- * @method value
- * @return {Number}
- */
-DKTools_Progress_Bar_Base.prototype.value = function() {
-    return this._value;
-};
-
-/**
- *
- *
- * @method max
- * @return {Number}
- */
-DKTools_Progress_Bar_Base.prototype.max = function() {
-    return this._max;
-};
-
-// is methods
-
-/**
- * Возвращает true, если отображение в процентах
- *
- * @method isShowPercent
- * @return Boolean
- */
-DKTools_Progress_Bar_Base.prototype.isShowPercent = function() {
-    return this._showPercent;
-};
-
-/**
- * Возвращает true, если текущее значение равно 0
- *
- * @method isEmpty
- * @return Boolean
- */
-DKTools_Progress_Bar_Base.prototype.isEmpty = function() {
-    return this._value === 0;
-};
-
-/**
- * Возвращает true, если текущее значение равно максимальному значению
- *
- * @method isFull
- * @return Boolean
- */
-DKTools_Progress_Bar_Base.prototype.isFull = function() {
-    return this._value === this._max;
-};
-
-// events methods
-
-DKTools_Progress_Bar_Base.prototype.updateValueEvents = function() {
-    this.updateEventContainer('value');
-};
-
-DKTools_Progress_Bar_Base.prototype.updateEmptyEvents = function() {
-    if (!this.isEmpty()) {
-        return;
-    }
-    this.updateEventContainer('empty');
-};
-
-DKTools_Progress_Bar_Base.prototype.updateFullEvents = function() {
-    if (!this.isFull()) {
-        return;
-    }
-    this.updateEventContainer('full');
-};
-
-/**
- * @method _updateAutoFill
- * @private
- *
- * @param {DKToolsEvent} event - Событие
- */
-DKTools_Progress_Bar_Base.prototype._updateAutoFill = function(event) {
-    var duration = event.duration;
-    var value = (this._value * (duration - 1) + this._max) / duration;
-    this.setValue(value);
-
-};
-
-/**
- * Событие автозаполнения прогресса
- *
- * @method autoFill
- *
- * @param {Number} duration - Длительность события
- *
- * @return {DKToolsEvent} Событие
- */
-DKTools_Progress_Bar_Base.prototype.autoFill = function(duration) {
-    return this.addEvent('wait', this._updateAutoFill.bind(this), duration);
-};
-
-// update methods
-
-/**
- * Обновляет спрайт
- *
- * @method update
- */
-DKTools_Progress_Bar_Base.prototype.update = function() {
-    DKTools_Sprite.prototype.update.call(this);
-    this.updateEmptyEvents();
-    this.updateFullEvents();
-};
-
-DKTools_Progress_Bar_Base.prototype.updateBackground = function() {
-    DKTools_Sprite.prototype.updateBackground.call(this);
-    this.updateProgressColor();
-};
-
-/**
- * Обновляет цвет прогресса
- *
- * @method updateProgressColor
-*/
-DKTools_Progress_Bar_Base.prototype.updateProgressColor = function() {
-	if (this._value === 0) {
-        return;
-    }
-	var width = this._value * this._bitmapWidth / this._max;
-	this.fillRect(this._progressColor, 0, 0, width);
-};
-
-/**
- * Обновляет текст
- *
- * @method updateText
-*/
-DKTools_Progress_Bar_Base.prototype.updateText = function() {
-    var text;
-    if (this.hasUpdateTextHandler()) {
-        text = this.callUpdateTextHandler();
-    } else {
-        if (this.isShowPercent()) {
-            text = '%1%'.format(Math.ceil(this._value / this._max * 100));
-        } else {
-            text = '%1/%2'.format(this._value, this._max);
-        }
-    }
-    this.drawText(text);
-};
-
-//
-
-/**
- * Добавить к текущему значению
- *
- * @method add
- * @param {Number} value - Добавляемое значение
-*/
-DKTools_Progress_Bar_Base.prototype.add = function(value) {
-    if (value == null) {
-        return;
-    }
-    this.setValue(this._value + value);
-};
-
-/**
- * Отнять от текущего значения
- *
- * @method rem
- * @param {Number} value - Отнимаемое значение
- */
-DKTools_Progress_Bar_Base.prototype.rem = function(value) {
-    this.add(-value);
-};
-
-/**
- * Уменьшить текущее значение
- * Возвращает true, если изменение произошло
- *
- * @method prev
- * @return Boolean
-*/
-DKTools_Progress_Bar_Base.prototype.prev = function() {
-	if (this._value === 0) {
-        return false;
-    }
-    return this.setValue(this._value - 1);
-};
-
-/**
- * Увеличить текущее значение
- * Возвращает true, если изменение произошло
- *
- * @method next
- * @return Boolean
-*/
-DKTools_Progress_Bar_Base.prototype.next = function() {
-	if (this._value >= this._max) {
-        return false;
-    }
-    return this.setValue(this._value + 1);
-};
-
-/**
- * Установить текущее значение в 0
- * Возвращает true, если изменение произошло
- *
- * @method empty
- * @return Boolean
-*/
-DKTools_Progress_Bar_Base.prototype.empty = function() {
-	return this.setValue(0);
-};
-
-/**
- * Установить текущее значение в максимум
- * Возвращает true, если изменение произошло
- *
- * @method full
- * @return Boolean
-*/
-DKTools_Progress_Bar_Base.prototype.full = function() {
-	return this.setValue(this._max);
-};
-
-/**
- *
- *
- * @method hasUpdateTextHandler
- * @return {Boolean}
- */
-DKTools_Progress_Bar_Base.prototype.hasUpdateTextHandler = function() {
-    return !!this._updateTextHandler;
-};
-
-/**
- * Вызов функции обработки обновления текста
- *
- * @method callUpdateTextHandler
- */
-DKTools_Progress_Bar_Base.prototype.callUpdateTextHandler = function() {
-    return this._updateTextHandler(this);
-};
-
-
-
-
-
-//===========================================================================
-// DK Tools Progress Bar
-//===========================================================================
-
-/**
- * @class DKTools_Progress_Bar
- *
- * @constructor
- *
- * @param {Number || null} object - Координата X
- * @param {Number || null} y - Координата Y
-*/
-function DKTools_Progress_Bar() {
-    this.initialize.apply(this, arguments);
-}
-
-DKTools_Progress_Bar.prototype = Object.create(DKTools_Container.prototype);
-DKTools_Progress_Bar.prototype.constructor = DKTools_Progress_Bar;
-
-// property
-
-Object.defineProperty(DKTools_Progress_Bar.prototype, 'baseSpriteClass', {
-    get: function() {
-        return DKTools_Progress_Bar_Base;
-    },
-    configurable: true
-});
-
-// setup methods
-
-/**
- * Устанавливает максимальное значение
- *
- * @method setupMax
- * @param {Number || null} max - Максимальное значение
-*/
-DKTools_Progress_Bar.prototype.setupMax = function(max) {
-    this._baseSprite.setupMax(max);
-};
-
-/**
- * Устанавливает текущее значение
- *
- * @method setupValue
- * @param {Number || null} value - Текущее значение
-*/
-DKTools_Progress_Bar.prototype.setupValue = function(value) {
-    this._baseSprite.setupValue(value);
-};
-
-/**
- * Устанавливает цвет
- *
- * @method setupColor
- * @param {String || null} color - Цвет
-*/
-DKTools_Progress_Bar.prototype.setupProgressColor = function(color) {
-    this._baseSprite.setupProgressColor(color);
-};
-
-/**
- * Устанавливает отображение процентов
- *
- * @method setupShowPercent
- * @param {Boolean || null} showPercent - Отображение процентов
-*/
-DKTools_Progress_Bar.prototype.setupShowPercent = function(showPercent) {
-    this._baseSprite.setupShowPercent(showPercent);
-};
-
-// set methods
-
-/**
- * Изменяет максимальное значение
- * Возвращает true, если изменение произошло
- *
- * @method setMax
- *
- * @param {Number || null} max - Максимальное значение
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @return Boolean
-*/
-DKTools_Progress_Bar.prototype.setMax = function(max, blockStart) {
-    return this._baseSprite.setMax(max, blockStart);
-};
-
-/**
- * Изменяет текущее значение
- * Возвращает true, если изменение произошло
- *
- * @method setValue
- *
- * @param {Number || null} value - Текущее значение
- * @param {Boolean || null} blockStart - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-DKTools_Progress_Bar.prototype.setValue = function(value, blockStart) {
-    return this._baseSprite.setValue(value, blockStart);
-};
-
-/**
- * Изменяет цвет прогресса
- * Возвращает true, если изменение произошло
- *
- * @method setProgressColor
- *
- * @param {String || null} color - Цвет прогресса
- * @param {Boolean || null} blockStart - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-DKTools_Progress_Bar.prototype.setProgressColor = function(color, blockStart) {
-    return this._baseSprite.setProgressColor(color, blockStart);
-};
-
-/**
- * Изменяет отображение процентов
- * Возвращает true, если изменение произошло
- *
- * @method setShowPercent
- *
- * @param {String || null} show - Отображение процентов
- * @param {Boolean || null} blockStart - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
-*/
-DKTools_Progress_Bar.prototype.setShowPercent = function(show, blockStart) {
-    return this._baseSprite.setShowPercent(show, blockStart);
-};
-
-/**
- * Устанавливает функцию обработки изменения текущего значения
- *
- * @method setValueHandler
- * @param {Function} method - Функция обработки изменения текущего значения
-*/
-DKTools_Progress_Bar.prototype.setValueHandler = function(method) {
-    this._baseSprite.setValueHandler(method);
-};
-
-/**
- * Устанавливает функцию обработки максимального значения
- *
- * @method setFullHandler
- * @param {Function} method - Функция обработки максимального значения
-*/
-DKTools_Progress_Bar.prototype.setFullHandler = function(method) {
-    this._baseSprite.setFullHandler(method);
-};
-
-/**
- * Устанавливает функцию обработки нулевого значения
- *
- * @method setEmptyHandler
- * @param {Function} method - Функция обработки нулевого значения
-*/
-DKTools_Progress_Bar.prototype.setEmptyHandler = function(method) {
-    this._baseSprite.setEmptyHandler(method);
-};
-
-/**
- * Устанавливает функцию обработки обновления текста
- *
- * @method setUpdateTextHandler
- * @param {Function || null} method - Функция обработки обновления текста
- */
-DKTools_Progress_Bar.prototype.setUpdateTextHandler = function(method) {
-    this._baseSprite.setUpdateTextHandler(method);
-};
-
-// is methods
-
-/**
- * Возвращает true, если отображение в процентах
- *
- * @method isShowPercent
- * @return Boolean
-*/
-DKTools_Progress_Bar.prototype.isShowPercent = function() {
-    return this._baseSprite.isShowPercent();
-};
-
-/**
- * Возвращает true, если текущее значение равно максимальному значению
- *
- * @method isFull
- * @return Boolean
- */
-DKTools_Progress_Bar.prototype.isFull = function() {
-    return this._baseSprite.isFull();
-};
-
-// other methods
-
-/**
- *
- * @return {Number}
- */
-DKTools_Progress_Bar.prototype.value = function() {
-    return this._baseSprite.value();
-};
-
-/**
- *
- * @return {Number}
- */
-DKTools_Progress_Bar.prototype.max = function() {
-    return this._baseSprite.max();
-};
-
-/**
- *
- * @param duration
- *
- * @return {DKToolsEvent}
- */
-DKTools_Progress_Bar.prototype.autoFill = function(duration) {
-    return this._baseSprite.autoFill(duration);
-};
-
-/**
- * Добавить к текущему значению
- *
- * @method add
- * @param {Number} value - Добавляемое значение
- */
-DKTools_Progress_Bar.prototype.add = function(value) {
-    this._baseSprite.add(value);
-};
-
-/**
- * Отнять от текущего значения
- *
- * @method rem
- * @param {Number} value - Отнимаемое значение
- */
-DKTools_Progress_Bar.prototype.rem = function(value) {
-    this._baseSprite.rem(value);
-};
-
-/**
- * Уменьшить текущее значение
- * Возвращает true, если изменение произошло
- *
- * @method prev
- * @return Boolean
-*/
-DKTools_Progress_Bar.prototype.prev = function() {
-    return this._baseSprite.prev();
-};
-
-/**
- * Увеличить текущее значение
- * Возвращает true, если изменение произошло
- *
- * @method next
- * @return Boolean
-*/
-DKTools_Progress_Bar.prototype.next = function() {
-    return this._baseSprite.next();
-};
-
-/**
- * Установить текущее значение в 0
- * Возвращает true, если изменение произошло
- *
- * @method empty
- * @return Boolean
-*/
-DKTools_Progress_Bar.prototype.empty = function() {
-    return this._baseSprite.empty();
-};
-
-/**
- * Установить текущее значение в максимум
- * Возвращает true, если изменение произошло
- *
- * @method full
- * @return Boolean
-*/
-DKTools_Progress_Bar.prototype.full = function() {
-    return this._baseSprite.full();
-};
-
-
-
-
-
-//===========================================================================
-// DK Tools Input Base
-//===========================================================================
-
-/**
- * @class DKTools_Input_Base
- *
- * @constructor
- *
- * @param {Number} object - Координата X
- * @param {Number} y - Координата Y
- * @param {Number} width - Ширина Bitmap
- * @param {Number} height - Высота Bitmap
- */
-function DKTools_Input_Base() {
-	this.initialize.apply(this, arguments);
-}
-
-DKTools_Input_Base.prototype = Object.create(DKTools_Sprite.prototype);
-DKTools_Input_Base.prototype.constructor = DKTools_Input_Base;
-
-DKTools_Input_Base._alphabet = {};
-
-// russian alphabet
-DKTools_Input_Base._alphabet.ru = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
-// english alphabet
-DKTools_Input_Base._alphabet.en = 'abcdefghijklmnopqrstuvwxyz';
-
-// string of numbers
-DKTools_Input_Base._numbers = '1234567890';
-
-// properties
-
-/**
- * Позиция каретки ввода
- *
- * @property position
- * @type Number
- */
-Object.defineProperty(DKTools_Input_Base.prototype, 'length', {
-    get: function() {
-        return this._text.length;
-    },
-    configurable: true
-});
-
-/**
- * Позиция каретки ввода
- *
- * @property position
- * @type Number
- */
-Object.defineProperty(DKTools_Input_Base.prototype, 'caretPosition', {
-    get: function() {
-        return this._caret.position;
-    },
-    set: function(value) {
-        this.setupCaretPosition(value);
-    },
-    configurable: true
-});
-
-// clear methods
-
-/**
- * Очищает все данные спрайта
- *
- * @method clearAll
- */
-DKTools_Input_Base.prototype._clearAll = function() {
-    DKTools_Sprite.prototype._clearAll.call(this);
-    this._clearCaret();
-    this._clearCaretCounter();
-};
-
-/**
- *
- *
- * @method _clearCaret
- * @private
- */
-DKTools_Input_Base.prototype._clearCaret = function() {
-    this._caret = {};
-};
-
-/**
- * Очищает счетчик обновления каретки ввода
- *
- * @method _clearCaretCounter
- * @private
- */
-DKTools_Input_Base.prototype._clearCaretCounter = function() {
-    this._caret.counter = 0;
-};
-
-// standard methods
-
-/**
- * Возвращает стандартное выравнивание
- *
- * @method standardAlign
- * @return String
-*/
-DKTools_Input_Base.prototype.standardAlign = function() {
-	return 'left';
-};
-
-/**
- * Возвращает минимальную длину ввода
- *
- * @method minLength
- * @return Number
- */
-DKTools_Input_Base.prototype.standardMinLength = function() {
-    return 1;
-};
-
-/**
- * Возвращает максимальную длину ввода
- *
- * @method maxLength
- * @return Number
- */
-DKTools_Input_Base.prototype.standardMaxLength = function() {
-    return 60;
-};
-
-/**
- * Возвращает скорость обновления каретки ввода
- *
- * @method standardCaretRate
- * @return Number
-*/
-DKTools_Input_Base.prototype.standardCaretRate = function() {
-    return 25;
-};
-
-/**
- * Возвращает стандартный текст каретки ввода
- *
- * @method standardCaretText
- * @return String
-*/
-DKTools_Input_Base.prototype.standardCaretText = function() {
-    return '|';
-};
-
-/**
- * Возвращает стандартную видимость каретки ввода
- *
- * @method standardCaretVisible
- * @return Boolean
-*/
-DKTools_Input_Base.prototype.standardCaretVisible = function() {
-    return this.standardActive();
-};
-
-/**
- * Возвращает стандартную позицию каретки ввода
- *
- * @method standardCaretPosition
- * @return Number
-*/
-DKTools_Input_Base.prototype.standardCaretPosition = function() {
-    return this.length;
-};
-
-// _setup methods
-
-DKTools_Input_Base.prototype._setupSymbols = function() {
-    DKTools_Sprite.prototype._setupSymbols.call(this);
-    this.enable('alphabet', 'numbers', 'symbols', 'space');
-};
-
-// setup methods
-
-/**
- * Устанавливает все параметры спрайта
- *
- * @method setupAll
- *
- * @param {Object || null} object - Объект типа {}
- *
- * @property {Number || null} maxLength - Длина ввода
- * @property {Object || null} caret - Объект типа {}
- *
- * @see other object properties: DKTools_Sprite.prototype.setupAll
- * @see caret properties: DKTools_Input_Base.prototype.setupCaret
-*/
-DKTools_Input_Base.prototype.setupAll = function(object) {
-	object = object || {};
-	DKTools_Sprite.prototype.setupAll.call(this, object);
-	this.setupMaxLength(object.maxLength);
-	this.setupCaret(object.caret);
-};
-
-/**
- * Устанавливает длину ввода
- *
- * @method setupInputLength
- * @param {Number || null} length - Длина ввода
-*/
-DKTools_Input_Base.prototype.setupMaxLength = function(length) {
-    var minLength = this.standardMinLength();
-    var maxLength = this.standardMaxLength();
-	this._maxLength = (length ? length.clamp(minLength, maxLength) : minLength);
-};
-
-/**
- * Устанавливает все параметры каретки ввода
- *
- * @method setupCaret
- *
- * @param {Object || null} object - Объект типа {}
- *
- * object properties
- * @property {Number || null} rate - Скорость обновления каретки ввода
- * @property {String || null} text - Текст каретки ввода
- * @property {Boolean || null} visible - Видимость каретки ввода
- * @property {Number || null} position - Позиция каретки ввода
-*/
-DKTools_Input_Base.prototype.setupCaret = function(object) {
-    object = object || {};
-    this._clearCaret();
-    this._clearCaretCounter();
-    this.setupCaretRate(object.rate);
-    this.setupCaretText(object.text);
-    this.setupCaretVisible(object.visible);
-    this.setupCaretPosition(object.position);
-};
-
-/**
- * Устанавливает скорость обновления каретки ввода
- *
- * @method setupCaretRate
- * @param {Number || null} rate - Скорость обновления каретки ввода
-*/
-DKTools_Input_Base.prototype.setupCaretRate = function(rate) {
-    this._caret.rate = (rate == null ? this.standardCaretRate() : rate);
-};
-
-/**
- * Устанавливает текст каретки ввода
- *
- * @method setupCaretText
- * @param {String || null} text - Текст каретки ввода
-*/
-DKTools_Input_Base.prototype.setupCaretText = function(text) {
-    this._caret.text = (text == null ? this.standardCaretText() : String(text));
-};
-
-/**
- * Устанавливает видимость каретки ввода
- *
- * @method setupCaretVisible
- * @param {Boolean || null} visible - Видимость каретки ввода
-*/
-DKTools_Input_Base.prototype.setupCaretVisible = function(visible) {
-    this._caret.visible = (visible == null ? this.standardCaretVisible() : visible);
-};
-
-/**
- * Устанавливает позицию каретки ввода
- *
- * @method setupCaretPosition
- * @param {Number || null} position - Позиция каретки ввода
-*/
-DKTools_Input_Base.prototype.setupCaretPosition = function(position) {
-    position = (position == null ? this.standardCaretPosition() : position);
-    this._caret.position = position.clamp(0, this.length);
-};
-
-// set methods
-
-/**
- * Изменяет все параметры спрайта
- * Возвращает количество измененных параметров
- *
- * @method setAll
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @property {Number || null} maxLength - Длина ввода
- * @property {Object || null} caret - Объект типа {}
- *
- * @see other object properties: DKTools_Sprite.prototype.setAll
- * @see caret properties: DKTools_Input_Base.prototype.setCaret
- *
- * @return Number
-*/
-DKTools_Input_Base.prototype.setAll = function(object, blockStart) {
-	object = object || {};
-	var block = true;
-	var changed = DKTools_Sprite.prototype.setAll.call(this, object, block);
-    this._activateSetAllMode();
-    changed += this.setCaret(object.caret, block);
-	if (changed && !blockStart) {
-        this.start();
-    }
-	if (this.setMaxLength(object.maxLength)) {
-        changed++;
-    }
-    this._deactivateSetAllMode();
-	return changed;
-};
-
-/**
- * Изменяет введенный текст
- * Возвращает true, если изменение произошло
- *
- * @method setInputText
- *
- * @param {Number || null} text - Введенный текст
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
-*/
-DKTools_Input_Base.prototype.setText = function(text, blockRefresh) {
-    if (DKTools_Sprite.prototype.setText.call(this, text, true)) {
-        this.setupCaretPosition();
-        if (!blockRefresh) {
-            this.refreshAll();
-        }
-        return true;
-    }
-    return false;
-};
-
-/**
- * Изменяет длину ввода
- * Возвращает true, если изменение произошло
- *
- * @method setInputLength
- *
- * @param {Number || null} length - Длина ввода
- *
- * @return Boolean
-*/
-DKTools_Input_Base.prototype.setMaxLength = function(length) {
-    if (this._maxLength === length) {
-        return false;
-    }
-    var lastLength = this._maxLength;
-    this.setupMaxLength(length);
-    return lastLength !== this._maxLength;
-};
-
-/**
- * Изменяет все параметры каретки ввода
- * Возвращает количество измененных параметров
- *
- * @method setCaret
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @property {Number || null} rate - Скорость обновления каретки ввода
- * @property {String || null} text - Текст каретки ввода
- * @property {Boolean || null} visible - Видимость каретки ввода
- * @property {Number || null} position - Позиция каретки ввода
- *
- * @return Number
-*/
-DKTools_Input_Base.prototype.setCaret = function(object, blockStart) {
-    object = object || {};
-    var block = true;
-    var changed = 0;
-    this._clearCaretCounter();
-    if (this.setCaretRate(object.rate, block)) {
-        changed++;
-    }
-    if (this.setCaretText(object.text, block)) {
-        changed++;
-    }
-    if (this.setCaretVisible(object.visible, block)) {
-        changed++;
-    }
-    if (this.setCaretPosition(object.position, block)) {
-        changed++;
-    }
-    if (changed && !blockStart) {
-        this.start();
-    }
-    return changed;
-};
-
-/**
- * Изменяет скорость обновления каретки ввода
- * Возвращает true, если изменение произошло
- *
- * @method setCaretRate
- *
- * @param {Number || null} rate - Скорость обновления каретки ввода
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
-*/
-DKTools_Input_Base.prototype.setCaretRate = function(rate, blockUpdate) {
-    if (this._caret.rate === rate) {
-        return false;
-    }
-    var lastRate = this._caret.rate;
-    this.setupCaretRate(rate);
-    if (lastRate === this._caret.rate) {
-        return false;
-    }
-    if (!blockUpdate) {
-        this.updateBitmap();
-    }
-    return true;
-};
-
-/**
- * Изменяет текст каретки ввода
- * Возвращает true, если изменение произошло
- *
- * @method setCaretText
- *
- * @param {String || null} text - Текст каретки ввода
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
-*/
-DKTools_Input_Base.prototype.setCaretText = function(text, blockUpdate) {
-    if (this._caret.text === text) {
-        return false;
-    }
-    var lastText = this._caret.text;
-    this.setupCaretText(text);
-    if (lastText === this._caret.text) {
-        return false;
-    }
-    if (!blockUpdate) {
-        this.updateBitmap();
-    }
-    return true;
-};
-
-/**
- * Изменяет видимость каретки ввода
- * Возвращает true, если изменение произошло
- *
- * @method setCaretVisible
- *
- * @param {Boolean || null} visible - Видимость каретки ввода
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
-*/
-DKTools_Input_Base.prototype.setCaretVisible = function(visible, blockUpdate) {
-    if (this._caret.visible === visible) {
-        return false;
-    }
-    var lastVisible = this._caret.visible;
-    this.setupCaretVisible(visible);
-    if (lastVisible === this._caret.visible) {
-        return false;
-    }
-    if (!blockUpdate) {
-        this.updateBitmap();
-    }
-    return true;
-};
-
-/**
- * Изменяет позицию каретки ввода
- * Возвращает true, если изменение произошло
- *
- * @method setCaretPosition
- *
- * @param {Number || null} position - Позиция каретки ввода
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
-*/
-DKTools_Input_Base.prototype.setCaretPosition = function(position, blockUpdate) {
-    if (this._caret.position === position) {
-        return false;
-    }
-    var lastPosition = this._caret.position;
-    this.setupCaretPosition(position);
-    if (lastPosition === this._caret.position) {
-        return false;
-    }
-    if (!blockUpdate) {
-        this.updateBitmap();
-    }
-	return true;
-};
-
-// other methods
-
-/**
- *
- *
- * @method _alphabet
- * @private
- *
- * @return {String}
- */
-DKTools_Input_Base.prototype._alphabet = function() {
-    var alphabet = '';
-    for(var locale in DKTools_Input_Base._alphabet) {
-        alphabet += DKTools_Input_Base._alphabet[locale];
-    }
-    return alphabet;
-};
-
-/**
- *
- *
- * @method object
- * @return {Object}
- */
-DKTools_Input_Base.prototype.object = function() {
-    var object = DKTools_Sprite.prototype.object.call(this);
-    object.maxLength = this._maxLength;
-    object.caret = this._caret;
-    return object;
-};
-
-/**
- * Возвращает минимальную ширину спрайта
- * Returns the minimum width of the sprite
- *
- * @method minWidth
- * @return Number
-*/
-DKTools_Input_Base.prototype.minWidth = function() {
-	return 50;
-};
-
-/**
- * Возвращает минимальную высоту спрайта
- * Returns the minimum height of the sprite
- *
- * @method minHeight
- * @return Number
-*/
-DKTools_Input_Base.prototype.minHeight = function() {
-	return 36;
-};
-
-/**
- * Активирует спрайт
- *
- * @method activate
-*/
-DKTools_Input_Base.prototype.activate = function() {
-    DKTools_Sprite.prototype.activate.call(this);
-	DKToolsInputManager.clear();
-	this.showCaret();
-};
-
-/**
- * Деактивирует спрайт
- *
- * @method deactivate
-*/
-DKTools_Input_Base.prototype.deactivate = function() {
-	DKTools_Sprite.prototype.deactivate.call(this);
-	this.hideCaret();
-};
-
-/**
- * Возвращает видимость каретки ввода
- *
- * @method caretIsVisible
- * @return Boolean
-*/
-DKTools_Input_Base.prototype.caretIsVisible = function() {
-    return this._caret.visible;
-};
-
-/**
- * Отображает каретку ввода
- *
- * @method showCaret
-*/
-DKTools_Input_Base.prototype.showCaret = function() {
-    this.setupCaretVisible(true);
-    this.refreshAll();
-};
-
-/**
- * Скрывает каретку ввода
- *
- * @method hideCaret
-*/
-DKTools_Input_Base.prototype.hideCaret = function() {
-    this.setupCaretVisible(false);
-    this.refreshAll();
-};
-
-//
-
-/**
- * Очищает менеджер ввода текста и введенный текст
- *
- * @method clearInput
- */
-DKTools_Input_Base.prototype.clearInput = function(blockStart) {
-    DKToolsInputManager.clear();
-    this.clearText(blockStart);
-};
-
-// symbols methods
-
-DKTools_Input_Base.prototype.onSymbolChange = function(symbol, value) {
-    DKTools_Sprite.prototype.onSymbolChange.call(this, symbol, value);
-    if (symbol === 'password') {
-        this.redrawAll();
-    }
-};
-
-/**
- * Добавляет текст
- *
- * @method add
- *
- * @param {String} text - Текст для добавления
- * @param {Number || null} start - Стартовая позиция для добавления
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
-*/
-DKTools_Input_Base.prototype.add = function(text, start, blockUpdate) {
-    if (text == null || text.length === 0 || start < 0) {
-        return false;
-    }
-    if (start == null || start > this.length) {
-        start = this.length;
-    }
-    var _text = this._text;
-    var text1 = _text.substring(0, start);
-    var text2 = _text.substring(start - 1 + text.length);
-    return this.setText(text1 + text + text2, blockUpdate);
-};
-
-/**
- * Удаляет текст
- *
- * @method rem
- *
- * @param {Number} start - Стартовая позиция для удаления
- * @param {Number} count - Количество символов для удаления
- * @param {Boolean | null} blockUpdate - Блокировка вызова функции updateBitmap
- */
-DKTools_Input_Base.prototype.rem = function(start, count, blockUpdate) {
-    if (start >= this.length || count == null || count === 0) {
-        return false;
-    }
-    if (count >= this.length) {
-        //this.clearText();
-        this.setupText('');
-        if (!blockUpdate) {
-            this.updateBitmap();
-        }
-        return false;
-    }
-    if (start == null) {
-        start = this.length - count;
-    }
-    var text = this._text;
-    var text1 = text.substring(0, start);
-    var text2 = text.substring(start + count);
-    return this.setText(text1 + text2, blockUpdate);
-};
-
-/**
- *
- *
- * @method _drawableText
- * @private
- *
- * @return {String}
- */
-DKTools_Input_Base.prototype._drawableText = function() {
-    var text = this._text;
-    var textLength = text.length;
-    var caret = (this.caretIsVisible() ? this._caret.text : ' ');
-    var position = this.caretPosition;
-    var drawableText;
-    if (this.isEnabled('password')) {
-        text = '';
-        for(var i = 0; i < textLength; i++) {
-            text += '*';
-        }
-    }
-    if (position === 0) {
-        drawableText = caret + text;
-    } else if (position <= textLength) {
-        var text1 = text.substring(0, position);
-        var text2 = text.substring(position);
-        drawableText = text1 + caret + text2;
-    } else {
-        drawableText = text + caret;
-    }
-    return drawableText;
-};
-
-/**
- * Обновляет отображаемый текст
- *
- * @method updateText
-*/
-DKTools_Input_Base.prototype.updateText = function() {
-	var text = this._drawableText();
-	this.drawText(text);
-};
-
-/**
- *
- *
- * @method _isAlphabet
- * @private
- *
- * @param symbol
- *
- * @return {Boolean}
- */
-DKTools_Input_Base.prototype._isAlphabet = function(symbol) {
-    var alphabet = this._alphabet();
-    return alphabet.contains(symbol);
-};
-
-/**
- *
- *
- * @method _isNumber
- * @private
- *
- * @param symbol
- * @return {Boolean}
- */
-DKTools_Input_Base.prototype._isNumber = function(symbol) {
-    var numbers = DKTools_Input_Base._numbers;
-    return numbers.contains(symbol);
-};
-
-/**
- *
- *
- * @method _isSymbol
- * @private
- *
- * @param symbol
- *
- * @return {Boolean}
- */
-DKTools_Input_Base.prototype._isSymbol = function(symbol) {
-    return !this._isAlphabet(symbol) && !this._isNumber(symbol);
-};
-
-/**
- *
- *
- * @method
- * @private
- *
- * @param symbol
- * @returns {Boolean}
- */
-DKTools_Input_Base.prototype._isSpace = function(symbol) {
-    return symbol === ' ';
-};
-
-/**
- *
- *
- * @method _checkSymbol
- * @private
- *
- * @param {String} symbol - Символ
- *
- * @return {Boolean}
- */
-DKTools_Input_Base.prototype._checkSymbol = function(symbol) {
-    return (this.isEnabled('alphabet') && this._isAlphabet(symbol) ||
-        this.isEnabled('numbers') && this._isNumber(symbol) ||
-        this.isEnabled('space') && this._isSpace(symbol) ||
-        this.isEnabled('symbols') && this._isSymbol(symbol));
-};
-
-/**
- *
- *
- * @method _getInput
- * @private
- *
- * @return {String}
- */
-DKTools_Input_Base.prototype._getInput = function() {
-    var input = DKToolsInputManager.getText();
-    var text = '';
-    for(var i = 0; i < input.length; i++) {
-        var symbol = input[i];
-        if (this._checkSymbol(symbol.toLowerCase())) {
-            text += symbol;
-        }
-    }
-    return text;
-};
-
-// process methods
-
-/**
- * Ввод текста
- *
- * @method processInput
-*/
-DKTools_Input_Base.prototype.processInput = function() {
-	if (this.length >= this._maxLength || !DKToolsInputManager.hasText()) {
-		return DKToolsInputManager.clear();
-	}
-    var input = this._getInput();
-    if (!input) {
-        return;
-    }
-    var text = this._text;
-    var position = this.caretPosition;
-    if (position !== this.length) {
-		var text1 = text.substring(0, position);
-		var text2 = text.substring(position);
-        this.setupText(text1 + input + text2);
-	} else {
-        this.setupText(text + input);
-    }
-	this.caretPosition += input.length;
-    this.updateInputEvents();
-	this._needRefresh = true;
-};
-
-/**
- * Стирание текста
- *
- * @method processBackspace
-*/
-DKTools_Input_Base.prototype.processBackspace = function() {
-	if (!Input.isRepeated('backspace') || this.caretPosition === 0) {
-        return;
-    }
-    var text = this._text;
-    var length = this.length;
-    var position = this.caretPosition;
-	if (position < length && position > 0) {
-		var text1 = text.substring(0, position - 1);
-		var text2 = text.substring(position);
-		this.setupText(text1 + text2);
-	} else {
-		this.setupText(text.substring(0, length - 1));
-	}
-    this.caretPosition--;
-	this.updateInputEvents();
-	this._needRefresh = true;
-};
-
-/**
- * Стирание текста
- *
- * @method processDelete
-*/
-DKTools_Input_Base.prototype.processDelete = function() {
-	if (!Input.isRepeated('delete') || this.caretPosition === this.length) {
-        return;
-    }
-    var text = this._text;
-    var position = this.caretPosition;
-	var text1 = text.substring(0, position);
-	var text2 = text.substring(position + 1);
-	this.setupText(text1 + text2);
-    this.updateInputEvents();
-	this._needRefresh = true;
-};
-
-/**
- * Нажатие Ok
- *
- * @method processOk
-*/
-DKTools_Input_Base.prototype.processOk = function() {
-	if (!Input.isTriggered('ok')) {
-        return;
-    }
-    this.updateOkEvents();
-	this._needRefresh = true;
-};
-
-/**
- * Нажатие Cancel
- *
- * @method processOk
-*/
-DKTools_Input_Base.prototype.processCancel = function() {
-	if (!Input.isTriggered('cancel') && !TouchInput.isCancelled()) {
-        return;
-    }
-    this.updateCancelEvents();
-	this._needRefresh = true;
-};
-
-/**
- * Передвижение каретки влево
- *
- * @method processLeft
-*/
-DKTools_Input_Base.prototype.processCaretLeft = function() {
-	if (!Input.isRepeated('left')) {
-        return;
-    }
-	this.caretPosition--;
-	this._needRefresh = true;
-};
-
-/**
- * Передвижение каретки вправо
- *
- * @method processRight
-*/
-DKTools_Input_Base.prototype.processCaretRight = function() {
-	if (!Input.isRepeated('right')) {
-        return;
-    }
-	this.caretPosition++;
-	this._needRefresh = true;
-};
-
-/**
- * Передвижение каретки ввода
- *
- * @method processCaretMove
- */
-DKTools_Input_Base.prototype.processCaretMove = function() {
-    this.processCaretLeft();
-    this.processCaretRight();
-};
-
-/**
- * Обновление видимости каретки ввода
- */
-DKTools_Input_Base.prototype.processCaretVisible = function() {
-    this._caret.counter++;
-    if (this._caret.counter % this._caret.rate !== 0) {
-        return;
-    }
-    this._clearCaretCounter();
-    this.setupCaretVisible(!this._caret.visible);
-    this._needRefresh = true;
-};
-
-// events mehtods
-
-DKTools_Input_Base.prototype.updateOkEvents = function() {
-    this.deactivate();
-    this.updateEventContainer('ok');
-};
-
-DKTools_Input_Base.prototype.updateInputEvents = function() {
-    this.updateEventContainer('input');
-};
-
-DKTools_Input_Base.prototype.updateCancelEvents = function() {
-    this.deactivate();
-    this.updateEventContainer('cancel');
-};
-
-// update methods
-
-/**
- * Обновление спрайта
- *
- * @method update
-*/
-DKTools_Input_Base.prototype.update = function() {
-	DKTools_Sprite.prototype.update.call(this);
-    if (this.isVisibleAndActive()) {
-        this.processInput();
-        this.processBackspace();
-        this.processDelete();
-        this.processOk();
-        this.processCancel();
-        this.processCaretMove();
-        this.processCaretVisible();
-        if (this._needRefresh) {
-            this.refreshAll();
-        }
-    }
-};
-
-
-
-
-
-//===========================================================================
-// DK Tools Input
-//===========================================================================
-
-/**
- * @class DKTools_Input
- *
- * @constructor
- *
- * @param {Number || null} object - Координата X
- * @param {Number || null} y - Координата Y
- */
-function DKTools_Input() {
-    this.initialize.apply(this, arguments);
-}
-
-DKTools_Input.prototype = Object.create(DKTools_Container.prototype);
-DKTools_Input.prototype.constructor = DKTools_Input;
-
-// property
-
-Object.defineProperty(DKTools_Input.prototype, 'baseSpriteClass', {
-    get: function() {
-        return DKTools_Input_Base;
-    },
-    configurable: true
-});
-
-// setup methods
-
-/**
- * Устанавливает длину ввода
- *
- * @method setupInputLength
- * @param {Number || null} length - Длина ввода
- */
-DKTools_Input.prototype.setupMaxLength = function(length) {
-    this._baseSprite.setupMaxLength(length);
-};
-
-/**
- * Устанавливает все параметры каретки ввода
- *
- * @method setupCaret
- *
- * @param {Object || null} object - Объект типа {}
- *
- * object properties
- * @property {Number || null} rate - Скорость обновления каретки ввода
- * @property {String || null} text - Текст каретки ввода
- * @property {Boolean || null} visible - Видимость каретки ввода
- * @property {Number || null} position - Позиция каретки ввода
- */
-DKTools_Input.prototype.setupCaret = function(object) {
-    this._baseSprite.setupCaret(object);
-};
-
-/**
- * Устанавливает скорость обновления каретки ввода
- *
- * @method setupCaretRate
- * @param {Number || null} rate - Скорость обновления каретки ввода
- */
-DKTools_Input.prototype.setupCaretRate = function(rate) {
-    this._baseSprite.setupCaretRate(rate);
-};
-
-/**
- * Устанавливает текст каретки ввода
- *
- * @method setupCaretText
- * @param {String || null} text - Текст каретки ввода
- */
-DKTools_Input.prototype.setupCaretText = function(text) {
-    this._baseSprite.setupCaretText(text);
-};
-
-/**
- * Устанавливает видимость каретки ввода
- *
- * @method setupCaretVisible
- * @param {Boolean || null} visible - Видимость каретки ввода
- */
-DKTools_Input.prototype.setupCaretVisible = function(visible) {
-    this._baseSprite.setupCaretVisible(visible);
-};
-
-/**
- * Устанавливает позицию каретки ввода
- *
- * @method setupCaretPosition
- * @param {Number || null} position - Позиция каретки ввода
- */
-DKTools_Input.prototype.setupCaretPosition = function(position) {
-    this._baseSprite.setupCaretPosition(position);
-};
-
-// set methods
-
-/**
- * Изменяет длину ввода
- * Возвращает true, если изменение произошло
- *
- * @method setInputLength
- *
- * @param {Number || null} length - Длина ввода
- *
- * @return Boolean
- */
-DKTools_Input.prototype.setMaxLength = function(length) {
-    return this._baseSprite.setMaxLength(length);
-};
-
-/**
- * Изменяет все параметры каретки ввода
- * Возвращает количество измененных параметров
- *
- * @method setCaret
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @property {Number || null} rate - Скорость обновления каретки ввода
- * @property {String || null} text - Текст каретки ввода
- * @property {Boolean || null} visible - Видимость каретки ввода
- * @property {Number || null} position - Позиция каретки ввода
- *
- * @return Number
- */
-DKTools_Input.prototype.setCaret = function(object, blockStart) {
-    return this._baseSprite.setCaret(object, blockStart);
-};
-
-/**
- * Изменяет скорость обновления каретки ввода
- * Возвращает true, если изменение произошло
- *
- * @method setCaretRate
- *
- * @param {Number || null} rate - Скорость обновления каретки ввода
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-DKTools_Input.prototype.setCaretRate = function(rate, blockUpdate) {
-    return this._baseSprite.setCaretRate(rate, blockUpdate);
-};
-
-/**
- * Изменяет текст каретки ввода
- * Возвращает true, если изменение произошло
- *
- * @method setCaretText
- *
- * @param {String || null} text - Текст каретки ввода
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-DKTools_Input.prototype.setCaretText = function(text, blockUpdate) {
-    return this._baseSprite.setCaretText(text, blockUpdate);
-};
-
-/**
- * Изменяет видимость каретки ввода
- * Возвращает true, если изменение произошло
- *
- * @method setCaretVisible
- *
- * @param {Boolean || null} visible - Видимость каретки ввода
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-DKTools_Input.prototype.setCaretVisible = function(visible, blockUpdate) {
-    return this._baseSprite.setCaretVisible(visible, blockUpdate);
-};
-
-/**
- * Изменяет позицию каретки ввода
- * Возвращает true, если изменение произошло
- *
- * @method setCaretPosition
- *
- * @param {Number || null} position - Позиция каретки ввода
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-DKTools_Input.prototype.setCaretPosition = function(position, blockUpdate) {
-    return this._baseSprite.setCaretPosition(position, blockUpdate);
-};
-
-// other methods
-
-/**
- * Добавляет текст
- *
- * @method add
- *
- * @param {String} text - Текст для добавления
- * @param {Number || null} start - Стартовая позиция для добавления
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- */
-DKTools_Input.prototype.add = function(text, start, blockUpdate) {
-    return this._baseSprite.add(text, start, blockUpdate);
-};
-
-/**
- * Удаляет текст
- *
- * @method rem
- *
- * @param {Number} start - Стартовая позиция для удаления
- * @param {Number} count - Количество символов для удаления
- * @param {Boolean | null} blockUpdate - Блокировка вызова функции updateBitmap
- */
-DKTools_Input.prototype.rem = function(start, count, blockUpdate) {
-    return this._baseSprite.rem(start, count, blockUpdate);
-};
-
-
-
-
-
-//===========================================================================
-// DK Tools Check Box Base
-//===========================================================================
-
-/**
- * @class DKTools_CheckBox_Base
- *
- * @constructor
- *
- * @param {Number} object - Координата X
- * @param {Number} y - Координата Y
- * @param {Number} width - Ширина Bitmap
- * @param {Number} height - Высота Bitmap
-*/
-function DKTools_CheckBox_Base() {
-	this.initialize.apply(this, arguments);
-}
-
-DKTools_CheckBox_Base.prototype = Object.create(DKTools_Sprite.prototype);
-DKTools_CheckBox_Base.prototype.constructor = DKTools_CheckBox_Base;
-
-// properties
-
-Object.defineProperties(DKTools_CheckBox_Base.prototype, {
-
-    /**
-     * Шрифт текста
-     *
-     * @property font
-     * @type Array
-     */
-    font: {
-        get: function() {
-            return this._font[this._checked];
-        },
-        configurable: true
-    },
-
-    /**
-     * Цвет текста
-     *
-     * @property textColor
-     * @type String
-     */
-    textColor: {
-        get: function() {
-            return this._textColor[this._checked];
-        },
-        configurable: true
-    },
-
-    paintOpacity: {
-        get: function() {
-            return this._paintOpacity[this._checked];
-        },
-        configurable: true
-    },
-
-    /**
-     * Цвет фона
-     *
-     * @property backgroundColor
-     * @type String
-     */
-    backgroundColor: {
-        get: function() {
-            return this._backgroundColor[this._checked];
-        },
-        configurable: true
-    },
-
-    /**
-     * Отображаемый текст
-     *
-     * @property text
-     * @type String
-     */
-    text: {
-        get: function() {
-            return this._text[this._checked];
-        },
-        configurable: true
-    },
-
-    /**
-     * Выравнивание текста
-     *
-     * @property align
-     * @type String
-     */
-    align: {
-        get: function() {
-            return this._align[this._checked];
-        },
-        configurable: true
-    },
-
-    /**
-     * Название файла графики
-     *
-     * @property graphic
-     * @type String
-     */
-    graphic: {
-        get: function() {
-            return this._graphic[this._checked];
-        },
-        configurable: true
-    }
-
-});
-
-// standard methods
-
-/**
- * Возвращает стандартный шрифт
-
- * @method standardFont
- * @return Object
- */
-DKTools_CheckBox_Base.prototype.standardFont = function() {
-    var standardFont = DKTools_Sprite.prototype.standardFont.call(this);
-    var object = {
-        checked: standardFont,
-        unchecked: standardFont
-    };
-    return object;
-};
-
-/**
- * Возвращает стандартный цвет текста
- *
- * @method standardTextColor
- * @return Object
-*/
-DKTools_CheckBox_Base.prototype.standardTextColor = function() {
-    var standardColor = DKTools_Sprite.prototype.standardTextColor.call(this);
-    var object = {
-        checked: standardColor,
-        unchecked: standardColor
-    };
-	return object;
-};
-
-DKTools_CheckBox_Base.prototype.standardPaintOpacity = function() {
-    var standardOpacity = DKTools_Sprite.prototype.standardPaintOpacity.call(this);
-    var object = {
-        checked: standardOpacity,
-        unchecked: standardOpacity
-    };
-    return object;
-};
-
-/**
- * Возвращает стандартный цвет фона
- *
- * @method standardBackgroundColor
- * @return Object
- */
-DKTools_CheckBox_Base.prototype.standardBackgroundColor = function() {
-    var standardColor = DKTools_Sprite.prototype.standardBackgroundColor.call(this);
-    var object = {
-        checked: standardColor,
-        unchecked: standardColor
-    };
-    return object;
-};
-
-/**
- * Возвращает стандартный текст
- *
- * @method standardText
- * @return Object
- */
-DKTools_CheckBox_Base.prototype.standardText = function() {
-    var object = {
-        checked: DKLocalizationManager.DKTools('#checkBoxStandardCheckedText#'),
-        unchecked: DKLocalizationManager.DKTools('#checkBoxStandardUncheckedText#')
-    };
-    return object;
-};
-
-/**
- * Возвращает стандартное выравнивание
- *
- * @method standardAlign
- * @return Object
- */
-DKTools_CheckBox_Base.prototype.standardAlign = function() {
-    var standardAlign = DKTools_Sprite.prototype.standardAlign.call(this);
-    var object = {
-        checked: standardAlign,
-        unchecked: standardAlign
-    };
-    return object;
-};
-
-/**
- * Возвращает стандартную графику
- *
- * @method standardGraphic
- * @return Object
- */
-DKTools_CheckBox_Base.prototype.standardGraphic = function() {
-    var standardGraphic = DKTools_Sprite.prototype.standardGraphic.call(this);
-    var object = {
-        checked: standardGraphic,
-        unchecked: standardGraphic
-    };
-    return object;
-};
-
-/**
- *
- *
- * @method standardChecked
- * @return {String}
- */
-DKTools_CheckBox_Base.prototype.standardChecked = function() {
-    return 'unchecked';
-};
-
-// setup methods
-
-/** Изменить текст
- * Устанавливает все параметры спрайта
- *
- * @method setupAll
- *
- * @param {Object || null} object - Объект типа {}
- *
- * object properties
- * @property {Object || null} textColor - Цвет текста включенного и выключенного состояния
- * @property {Object || null} backgroundColor - Цвет фона включенного и выключенного состояния
- * @property {Object || null} align - Выравнивание текста включенного и выключенного состояния
- * @property {Object || null} font - Шрифт текста включенного и выключенного состояния
- * @property {Object || null} text - Текст включенного и выключенного состояния
- * @property {Boolean || String || null} checked - Включен или выключен переключатель
- * @property {Object || null} graphic - Графика включенного и выключенного состояния
- *
- * @see other object properties: DKTools_Sprite.prototype.setupAll
-*/
-DKTools_CheckBox_Base.prototype.setupAll = function(object) {
-    object = object || {};
-	DKTools_Sprite.prototype.setupAll.call(this, object);
-	this.setupChecked(object.checked);
-};
-
-/**
- * Устанавливает цвет текста включенного и выключенного состояния
- *
- * @method setupTextColor
- *
- * @param {String || Object || null} object - Цвет текста включенного состояния или Объект типа {}
- * @param {String || null} unchecked - Цвет текста выключенного состояния
- *
- * object properties
- * @property {String || null} checked - Цвет текста включенного состояния
- * @property {String || null} unchecked - Цвет текста выключенного состояния
-*/
-DKTools_CheckBox_Base.prototype.setupTextColor = function(object, unchecked) {
-    if (object && object.constructor === Object) {
-        return this.setupTextColor(object.checked, object.unchecked);
-    }
-    var standardColor = this.standardTextColor();
-    var checked = object || standardColor.checked;
-    unchecked = unchecked || standardColor.unchecked;
-    this._textColor = {
-        checked: checked,
-        unchecked: unchecked
-    };
-};
-
-DKTools_CheckBox_Base.prototype.setupPaintOpacity = function(object, unchecked) {
-    if (object && object.constructor === Object) {
-        return this.setupPaintOpacity(object.checked, object.unchecked);
-    }
-    var standardOpacity = this.standardPaintOpacity();
-    var checked = object || standardOpacity.checked;
-    unchecked = unchecked || standardOpacity.unchecked;
-    this._paintOpacity = {
-        checked: checked,
-        unchecked: unchecked
-    };
-};
-
-/**
- * Устанавливает цвет фона включенного и выключенного состояния
- *
- * @method setupBackgroundColor
- *
- * @param {String || Object || null} object - Цвет фона включенного состояния или Объект типа {}
- * @param {String || null} unchecked - Цвет фона выключенного состояния
- *
- * object properties
- * @property {String || null} checked - Цвет фона включенного состояния
- * @property {String || null} unchecked - Цвет фона выключенного состояния
- */
-DKTools_CheckBox_Base.prototype.setupBackgroundColor = function(object, unchecked) {
-    if (object && object.constructor === Object) {
-        return this.setupBackgroundColor(object.checked, object.unchecked);
-    }
-    var standardColor = this.standardBackgroundColor();
-    var checked = object || standardColor.checked;
-    unchecked = unchecked || standardColor.unchecked;
-    this._backgroundColor = {
-        checked: checked,
-        unchecked: unchecked
-    };
-};
-
-/**
- * Устанавливает выравнивание текста включенного и выключенного состояния
- *
- * @method setupAlign
- *
- * @param {String || Object || null} object - Выравнивание текста включенного состояния или Объект типа {}
- * @param {String || null} unchecked - Выравнивание текста выключенного состояния
- *
- * object properties
- * @property {String || null} checked - Выравнивание текста включенного состояния
- * @property {String || null} unchecked - Выравнивание текста выключенного состояния
- */
-DKTools_CheckBox_Base.prototype.setupAlign = function(object, unchecked) {
-    if (object && object.constructor === Object) {
-        return this.setupAlign(object.checked, object.unchecked);
-    }
-    var standardAlign = this.standardAlign();
-    var checked = object || standardAlign.checked;
-    unchecked = unchecked || standardAlign.unchecked;
-    this._align = {
-        checked: checked,
-        unchecked: unchecked
-    };
-};
-
-/**
- * Устанавливает текст включенного и выключенного состояния
- *
- * @method setupText
- *
- * @param {String || Object || null} object - Текст включенного состояния или Объект типа {}
- * @param {String || null} unchecked - Текст выключенного состояния
- *
- * object properties
- * @property {String || null} checked - Текст включенного состояния
- * @property {String || null} unchecked - Текст выключенного состояния
- */
-DKTools_CheckBox_Base.prototype.setupText = function(object, unchecked) {
-    if (object && object.constructor === Object) {
-        return this.setupText(object.checked, object.unchecked);
-    }
-    var standardText = this.standardText();
-    var checked = object || standardText.checked;
-    unchecked = unchecked || standardText.unchecked;
-    this._text = {
-        checked: checked,
-        unchecked: unchecked
-    };
-};
-
-/**
- * Устанавливает графику включенного и выключенного состояния
- *
- * @method setupGraphic
- *
- * @param {String || Object || null} object - Графика включенного состояния или Объект типа {}
- * @param {String || null} unchecked - Графика выключенного состояния
- *
- * object properties
- * @property {String || null} checked - Графика включенного состояния
- * @property {String || null} unchecked - Графика выключенного состояния
- */
-DKTools_CheckBox_Base.prototype.setupGraphic = function(object, unchecked) {
-    if (object && object.constructor === Object) {
-        return this.setupGraphic(object.checked, object.unchecked);
-    }
-    var standardGraphic = this.standardGraphic();
-    var checked = object || standardGraphic.checked;
-    unchecked = unchecked || standardGraphic.unchecked;
-    this._graphic = {
-        checked: checked,
-        unchecked: unchecked
-    };
-};
-
-/** Изменить текст
- * Устанавливает включен или выключен переключатель
- *
- * @method setupChecked
- * @param {Boolean || String || null} checked - Включен или выключен переключатель
- */
-DKTools_CheckBox_Base.prototype.setupChecked = function(checked) {
-    if (checked == null) {
-        this._checked = this.standardChecked();
-        return;
-    }
-    if (checked.constructor === Boolean) {
-        this._checked = checked ? 'checked' : 'unchecked';
-    } else {
-        this._checked = checked;
-    }
-};
-
-// set methods
-
-/** Изменить текст
- * Изменяет все параметры спрайта
- * Возвращает количество измененных параметров
- *
- * @method setAll
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * object properties
- * @property {Object || null} textColor - Цвет текста включенного и выключенного состояния
- * @property {Object || null} backgroundColor - Цвет фона включенного и выключенного состояния
- * @property {Object || null} align - Выравнивание текста включенного и выключенного состояния
- * @property {Object || null} font - Шрифт текста включенного и выключенного состояния
- * @property {Object || null} text - Текст включенного и выключенного состояния
- * @property {Boolean || String || null} checked - Включен или выключен переключатель
- * @property {Object || null} graphic - Графика включенного и выключенного состояния
- *
- * @see other object properties: DKTools_Sprite.prototype.setAll
- *
- * @return Number
-*/
-DKTools_CheckBox_Base.prototype.setAll = function(object, blockStart) {
-    object = object || {};
-	var block = true;
-    var changed = DKTools_Sprite.prototype.setAll.call(this, object, block);
-    this._activateSetAllMode();
-	if (this.setChecked(object.checked, block)) {
-        changed++;
-    }
-	if (changed && !blockStart) {
-        this.start();
-    }
-    this._deactivateSetAllMode();
-	return changed;
-};
-
-DKTools_CheckBox_Base.prototype.setFont = function(object, blockStart) {
-    object = object || {};
-    var lastChecked = this._font.checked;
-    var lastUnchecked = this._font.unchecked;
-    if (this._font.checked.equals(object.checked) && this._font.unchecked.equals(object.unchecked)) {
-        return false;
-    }
-    this.setupFont(object);
-    if (this._font.checked.equals(lastChecked) && this._font.unchecked.equals(lastUnchecked)) {
-        return false;
-    }
-    if (!blockStart) {
-        this.start();
-    }
-    return true;
-};
-
-/**
- * Изменяет цвет текста включенного и выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setTextColor
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * object properties
- * @property {String || null} checked - Цвет текста включенного состояния
- * @property {String || null} unchecked - Цвет текста выключенного состояния
- *
- * @return Boolean
- */
-DKTools_CheckBox_Base.prototype.setTextColor = function(object, blockUpdate) {
-    object = object || {};
-    var lastChecked = this._textColor.checked;
-    var lastUnchecked = this._textColor.unchecked;
-    if (lastChecked === object.checked && lastUnchecked === object.unchecked) {
-        return false;
-    }
-    this.setupTextColor(object);
-    if (lastChecked === this._textColor.checked && lastUnchecked === this._textColor.unchecked) {
-        return false;
-    }
-    if (!blockUpdate) {
-        this.updateBitmap();
-    }
-    return true;
-};
-
-DKTools_CheckBox_Base.prototype.setPaintOpacity = function(object, blockUpdate) {
-    object = object || {};
-    var lastChecked = this._paintOpacity.checked;
-    var lastUnchecked = this._paintOpacity.unchecked;
-    if (lastChecked === object.checked && lastUnchecked === object.unchecked) {
-        return false;
-    }
-    this.setupPaintOpacity(object);
-    if (lastChecked === this._paintOpacity.checked && lastUnchecked === this._paintOpacity.unchecked) {
-        return false;
-    }
-    if (!blockUpdate) {
-        this.updateBitmap();
-    }
-    return true;
-};
-
-/**
- * Изменяет цвет фона включенного и выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setBackgroundColor
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * object properties
- * @property {String || null} checked - Цвет фона включенного состояния
- * @property {String || null} unchecked - Цвет фона выключенного состояния
- *
- * @return Boolean
- */
-DKTools_CheckBox_Base.prototype.setBackgroundColor = function(object, blockUpdate) {
-    object = object || {};
-    var lastChecked = this._backgroundColor.checked;
-    var lastUnchecked = this._backgroundColor.unchecked;
-    if (lastChecked === object.checked && lastUnchecked === object.unchecked) {
-        return false;
-    }
-    this.setupBackgroundColor(object);
-    if (lastChecked === this._backgroundColor.checked && lastUnchecked === this._backgroundColor.unchecked) {
-        return false;
-    }
-    if (!blockUpdate) {
-        this.updateBitmap();
-    }
-    return true;
-};
-
-/**
- * Изменяет текст включенного и выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setText
- *
- * @param {Object | null} [object] - Объект типа {}
- * @param {Boolean | null} [blockStart] - Блокировка вызова функции start
- *
- * @param {String | null} [object.checked] - Текст включенного состояния
- * @param {String | null} [object.unchecked] - Текст выключенного состояния
- *
- * @return Boolean
-*/
-DKTools_CheckBox_Base.prototype.setText = function(object, blockStart) {
-    object = object || {};
-    var lastChecked = this._text.checked;
-    var lastUnchecked = this._text.unchecked;
-    if (lastChecked === object.checked && lastUnchecked === object.unchecked) {
-        return false;
-    }
-    this.setupText(object);
-    if (lastChecked === this._text.checked && lastUnchecked === this._text.unchecked) {
-        return false;
-    }
-    if (!blockStart) {
-        this.start();
-    }
-    return true;
-};
-
-/**
- * Изменяет выравнивание текста включенного и выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setAlign
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * object properties
- * @property {String || null} checked - Выравнивание текста включенного состояния
- * @property {String || null} unchecked - Выравнивание текста выключенного состояния
- *
- * @return Boolean
- */
-DKTools_CheckBox_Base.prototype.setAlign = function(object, blockUpdate) {
-    object = object || {};
-    var lastChecked = this._align.checked;
-    var lastUnchecked = this._align.unchecked;
-    if (lastChecked === object.checked && lastUnchecked === object.unchecked) {
-        return false;
-    }
-    this.setupAlign(object);
-    if (lastChecked === this._align.checked && lastUnchecked === this._align.unchecked) {
-        return false;
-    }
-    if (!blockUpdate) {
-        this.updateBitmap();
-    }
-    return true;
-};
-
-/** Изменить текст
- * Изменяет графику включенного и выключенного состояния
- * Возвращает true, если изменение произошло
- *
- * @method setGraphic
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * object properties
- * @property {String || null} checked - Графика включенного состояния
- * @property {String || null} unchecked - Графика выключенного состояния
- *
- * @return Boolean
- */
-DKTools_CheckBox_Base.prototype.setGraphic = function(object, blockStart) {
-    object = object || {};
-    var lastChecked = this._graphic.checked;
-    var lastUnchecked = this._graphic.unchecked;
-    if (lastChecked === object.checked && lastUnchecked === object.unchecked) {
-        return false;
-    }
-    this.setupGraphic(object);
-    if (lastChecked === this._graphic.checked && lastUnchecked === this._graphic.unchecked) {
-        return false;
-    }
-    if (!blockStart) {
-        this.start();
-    }
-    return true;
-};
-
-/** Изменить текст
- * Изменяет включен или выключен переключатель
- * Возвращает true, если изменение произошло
- *
- * @method setChecked
- *
- * @param {Boolean | String | null} checked - Включен или выключен переключатель
- * @param {Boolean | null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-DKTools_CheckBox_Base.prototype.setChecked = function(checked, blockStart) {
-    if (this._checked === checked || this.isChecked() === checked) {
-        return false;
-    }
-    var lastChecked = this._checked;
-    this.setupChecked(checked);
-    if (lastChecked === this._checked) {
-        return false;
-    }
-    if (!blockStart) {
-        this.start();
-    }
-    return true;
-};
-
-// other methods
-
-/**
- * Запускает работу спрайта
- *
- * @method start
- *
- * @param {Boolean | null} activate - Активировать спрайт
- * @param {Boolean | null} checked - Включить элемент
-*/
-DKTools_CheckBox_Base.prototype.start = function(activate, checked) {
-	DKTools_Sprite.prototype.start.call(this, activate);
-    if (checked) {
-        this.check();
-    }
-};
-
-/**
- * Возвращает объект со всеми параметрами спрайта
- *
- * @method object
- * @return {Object}
- */
-DKTools_CheckBox_Base.prototype.object = function() {
-    var object = DKTools_Sprite.prototype.object.call(this);
-    object.checked = this._checked;
-    return object;
-};
-
-/**
- * Возвращает минимальную ширину спрайта
- * Returns the minimum width of the sprite
- *
- * @method minWidth
- * @return {Number}
-*/
-DKTools_CheckBox_Base.prototype.minWidth = function() {
-    var standardText = this.standardText();
-    var text = this._text || {};
-	var length1 = this.textWidth(text.checked || standardText.checked);
-	var length2 = this.textWidth(text.unchecked || standardText.unchecked);
-	return Math.max(length1, length2);
-};
-
-/**
- * Копирует шрифт из source в target
- * Если какие-то значения отсутствуют, они берутся из standardFont
- *
- * @method _checkFont
- * @private
- *
- * @param {Object | null} target - Объект типа {}
- * @param {Object | null} source - Объект типа {}
- * @param {Object | null} standardFont - Объект типа {}
- *
- * target, source and standardFont properties
- * @property {Array | null} checked - Шрифт включенного текста
- * @property {Array | null} unchecked - Шрифт выключенного текста
- *
- * @return {Object}
- */
-DKTools_CheckBox_Base.prototype._checkArray = function(source, standardFont) {
-    source = source || {};
-    var checkedFont = standardFont.checked;
-    var uncheckedFont = standardFont.unchecked;
-    var font = {
-        checked: DKTools_Sprite.prototype._checkArray(source.checked, checkedFont),
-        unchecked: DKTools_Sprite.prototype._checkArray(source.unchecked, uncheckedFont)
-    }
-    return font;
-};
-
-/**
- * Возвращает true, если графика установлена
- *
- * @method hasGraphic
- * @return {Boolean}
-*/
-DKTools_CheckBox_Base.prototype.hasGraphic = function() {
-	return !!this._graphic.checked && !!this._graphic.unchecked;
-};
-
-/** Изменить текст
- * Возвращает true, если элемент включен
- *
- * @method isChecked
- * @return {Boolean}
-*/
-DKTools_CheckBox_Base.prototype.isChecked = function() {
-	return this._checked === 'checked';
-};
-
-/** Изменить текст
- * Переключает элемент из включенного состояния в выключенное и обратно
- *
- * @method switch
-*/
-DKTools_CheckBox_Base.prototype.switch = function() {
-    this.setChecked(!this.isChecked());
-};
-
-/** Изменить текст
- * Включает элемент
- *
- * @method check
-*/
-DKTools_CheckBox_Base.prototype.check = function() {
-	if (this.isChecked()) {
-        return;
-    }
-	this.switch();
-};
-
-/** Изменить текст
- * Выключает элемент
- *
- * @method uncheck
-*/
-DKTools_CheckBox_Base.prototype.uncheck = function() {
-	if (!this.isChecked()) {
-        return;
-    }
-	this.switch();
-};
-
-/**
- *
- *
- * @method updateClickEvents
- */
-DKTools_CheckBox_Base.prototype.updateClickEvents = function() {
-    this.switch();
-    DKTools_Sprite.prototype.updateClickEvents.call(this);
-};
-
-
-
-
-
-//===========================================================================
-// DK Tools Check Box
-//===========================================================================
-
-/**
- * @class DKTools_CheckBox
- *
- * @constructor
- *
- * @param {Number || null} object - Координата X
- * @param {Number || null} y - Координата Y
- */
-function DKTools_CheckBox() {
-    this.initialize.apply(this, arguments);
-}
-
-DKTools_CheckBox.prototype = Object.create(DKTools_Container.prototype);
-DKTools_CheckBox.prototype.constructor = DKTools_CheckBox;
-
-// property
-
-/**
- *
- *
- * @property baseSpriteClass
- * @type DKTools_CheckBox_Base
- */
-Object.defineProperty(DKTools_CheckBox.prototype, 'baseSpriteClass', {
-    get: function() {
-        return DKTools_CheckBox_Base;
-    },
-    configurable: true
-});
-
-// setup methods
-
-/** Изменить текст
- * Устанавливает включен или выключен переключатель
- *
- * @method setupChecked
- * @param {Boolean || String || null} checked - Включен или выключен переключатель
- */
-DKTools_CheckBox.prototype.setupChecked = function(checked) {
-    this._baseSprite.setupChecked(checked);
-};
-
-// set methods
-
-/** Изменить текст
- * Изменяет включен или выключен переключатель
- * Возвращает true, если изменение произошло
- *
- * @method setChecked
- *
- * @param {Boolean || String || null} checked - Включен или выключен переключатель
- * @param {Boolean || null} blockUpdate - Блокировка вызова функции updateBitmap
- *
- * @return Boolean
- */
-DKTools_CheckBox.prototype.setChecked = function(checked, blockUpdate) {
-    return this._baseSprite.setChecked(checked, blockUpdate);
-};
-
-// other methods
-
-/** Изменить текст
- * Возвращает true, если элемент включен
- *
- * @method isChecked
- * @return Boolean
- */
-DKTools_CheckBox.prototype.isChecked = function() {
-    return this._baseSprite.isChecked();
-};
-
-/** Изменить текст
- * Переключает элемент из включенного состояния в выключенное и обратно
- *
- * @method switch
- */
-DKTools_CheckBox.prototype.switch = function() {
-    this._baseSprite.switch();
-};
-
-/** Изменить текст
- * Включает элемент
- *
- * @method check
- */
-DKTools_CheckBox.prototype.check = function() {
-    this._baseSprite.check();
-};
-
-/** Изменить текст
- * Выключает элемент
- *
- * @method uncheck
- */
-DKTools_CheckBox.prototype.uncheck = function() {
-    this._baseSprite.uncheck();
-};
-
-
-
-
-
-//===========================================================================
-// DK Tools Radio Button Base
-//===========================================================================
-
-/**
- * @class DKTools_Radio_Button_Base
- *
- * @constructor
- *
- * @param {Number || Object || null} object - Координата X
- * @param {Number || null} y - Координата Y
-*/
-function DKTools_Radio_Button_Base() {
-	this.initialize.apply(this, arguments);
-}
-
-DKTools_Radio_Button_Base.prototype = Object.create(DKTools_Container_Base.prototype);
-DKTools_Radio_Button_Base.prototype.constructor = DKTools_Radio_Button_Base;
-
-// standard method
-
-/**
- * Возвращает стандартный номер выбранной кнопки
- *
- * @method standardIndex
- * @return Number
- */
-DKTools_Radio_Button_Base.prototype.standardIndex = function() {
-    return 0;
-};
-
-// setup methods
-
-/** Изменить текст
- * Устанавливает все параметры спрайта
- *
- * @method setupAll
- *
- * @param {Object || null} object - Объект типа {}
- *
- * @property {Number || null} index - Номер выбранной кнопки
- *
- * @see other object properties: DKTools_CheckBox_Base.prototype.setupAll
- * @see other object properties: DKTools_Container_Base.prototype.setupAll
-*/
-DKTools_Radio_Button_Base.prototype.setupAll = function(object) {
-    object = object || {};
-	DKTools_Container_Base.prototype.setupAll.call(this, object);
-    this.setupIndex(object.index);
-};
-
-/**
- * Устанавливает номер выбранной кнопки
- *
- * @method setupIndex
- * @param {Number || null} index - Номер выбранной кнопки
-*/
-DKTools_Radio_Button_Base.prototype.setupIndex = function(index) {
-	this._index = (index == null ? this.standardIndex() : index);
-};
-
-// set methods
-
-/**
- * Изменяет все параметры спрайта
- *
- * @method setAll
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @property {Number || null} index - Номер выбранной кнопки
- *
- * @see other object properties: DKTools_CheckBox_Base.prototype.setAll
- * @see other object properties: DKTools_Container_Base.prototype.setAll
- *
- * @return Number
-*/
-DKTools_Radio_Button_Base.prototype.setAll = function(object, blockStart) {
-    object = object || {};
-	var block = true;
-    var changed = DKTools_Container_Base.prototype.setAll.call(this, object, block);
-    this._activateSetAllMode();
-	if (changed && !blockStart) {
-        this.start();
-    }
-    if (this.setIndex(object.index)) {
-        changed++;
-    }
-    this._deactivateSetAllMode();
-	return changed;
-};
-
-/**
- * Изменяет номер выбранной кнопки
- *
- * @method setIndex
- *
- * @param {Number || null} index - Номер выбранной кнопки
- * @return Boolean
- */
-DKTools_Radio_Button_Base.prototype.setIndex = function(index) {
-	if (this._index === index) {
-        return false;
-    }
-	var lastIndex = this._index;
-    this.select(index);
-    return lastIndex !== this._index;
-};
-
-// other methods
-
-/**
- *
- *
- * @method object
- * @return {Object}
- */
-DKTools_Radio_Button_Base.prototype.object = function() {
-    var object = DKTools_Container_Base.prototype.object.call(this);
-    object.index = this._index;
-    return object;
-};
-
-/**
- * Запускает работу спрайта
- *
- * @method start
- */
-DKTools_Radio_Button_Base.prototype.start = function() {
-    if (!this.isStarted()) {
-        this.updateElementsId();
-        this.updateElementsClickHandler();
-        this.select(this._index);
-    }
-    DKTools_Container_Base.prototype.start.call(this);
-    this.activateElements();
-};
-
-/**
- * Вызывает функцию activate у всех элементов контейнера
- *
- * @method activateElements
- * @param {Boolean || null} start - Вызов функции start контейнера
- */
-DKTools_Radio_Button_Base.prototype.activateElements = function(start) {
-    var callback = function(element) {
-        element._baseSprite.activate();
-    };
-    this.iterateElements(callback);
-    if (start) {
-        this.start();
-    }
-};
-
-/**
- * Вызывает функцию deactivate у всех элементов контейнера
- *
- * @method deactivateElements
- * @param {Boolean || null} start - Вызов функции start контейнера
- */
-DKTools_Radio_Button_Base.prototype.deactivateElements = function(start) {
-    var callback = function(element) {
-        element._baseSprite.deactivate();
-    };
-    this.iterateElements(callback);
-    if (start) {
-        this.start();
-    }
-};
-
-/**
- * Обновляет обработчик нажатия кнопок
- *
- * @method updateElementsClickHandler
- */
-DKTools_Radio_Button_Base.prototype.updateElementsClickHandler = function() {
-    var callback = function(element) {
-        element._baseSprite.addEventHandler('click', this._elementClickHandler.bind(this, element.id))
-    }.bind(this);
-    this.iterateElements(callback);
-};
-
-DKTools_Radio_Button_Base.prototype._elementClickHandler = function(id) {
-	this.select(id);
-    this.updateClickEvents();
-};
-
-/**
- * Возвращает номер выбранной кнопки
- *
- * @method selectedIndex
- * @return Number
-*/
-DKTools_Radio_Button_Base.prototype.index = function() {
-	return this._index;
-};
-
-/**
- * Возвращает выбранную кнопку
- *
- * @method selected
- * @return DKTools_CheckBox
-*/
-DKTools_Radio_Button_Base.prototype.selected = function() {
-	return this.element(this._index);
-};
-
-/**
- * Выбирает предыдущую кнопку
- *
- * @method prev
-*/
-DKTools_Radio_Button_Base.prototype.prev = function() {
-	if (this.isEmpty()) {
-        return;
-    }
-	var id = this._index - 1;
-	if (id < 0) {
-        id = this.length - 1;
-    }
-	this.select(id);
-};
-
-/**
- * Выбирает следующую кнопку
- *
- * @method next
-*/
-DKTools_Radio_Button_Base.prototype.next = function() {
-	if (this.isEmpty()) {
-        return;
-    }
-	this.select((this._index + 1) % this.length);
-};
-
-/**
- * Выбирает кнопку по ID
- *
- * @method select
- * @param {Number} id - ID кнопки
-*/
-DKTools_Radio_Button_Base.prototype.select = function(id) {
-    if (this.isEmpty() || id >= this.length || id < 0) {
-        return;
-    }
-    this.selected().uncheck();
-    this.setupIndex(id);
-    this.selected().check();
-};
-
-
-
-
-
-//===========================================================================
-// DK Tools Radio Button
-//===========================================================================
-
-/**
- * @class DKTools_Radio_Button
- * @constructor
- * @param {Number || null} object - Координата X
- * @param {Number || null} y - Координата Y
- */
-function DKTools_Radio_Button() {
-    this.initialize.apply(this, arguments);
-}
-
-DKTools_Radio_Button.prototype = Object.create(DKTools_Container.prototype);
-DKTools_Radio_Button.prototype.constructor = DKTools_Radio_Button;
-
-// property
-
-Object.defineProperty(DKTools_Radio_Button.prototype, 'baseSpriteClass', {
-    get: function() {
-        return DKTools_Radio_Button_Base;
-    },
-    configurable: true
-});
-
-// setup methods
-
-DKTools_Radio_Button.prototype.setupIndex = function(index) {
-    this._baseSprite.setupIndex(index);
-};
-
-// set methods
-
-DKTools_Radio_Button.prototype.setIndex = function(index) {
-    return this._baseSprite.setIndex(index);
-};
-
-// other methods
-
-/**
- * Возвращает номер выбранной кнопки
- *
- * @method selectedIndex
- * @return Number
- */
-DKTools_Radio_Button.prototype.index = function() {
-    return this._baseSprite.index();
-};
-
-/**
- * Возвращает выбранную кнопку
- *
- * @method selected
- * @return DKTools_CheckBox
- */
-DKTools_Radio_Button.prototype.selected = function() {
-    return this._baseSprite.selected();
-};
-
-/**
- * Выбирает предыдущую кнопку
- *
- * @method prev
- */
-DKTools_Radio_Button.prototype.prev = function() {
-    this._baseSprite.prev();
-};
-
-/**
- * Выбирает следующую кнопку
- *
- * @method next
- */
-DKTools_Radio_Button.prototype.next = function() {
-    this._baseSprite.next();
-};
-
-/**
- * Выбирает кнопку по ID
- *
- * @method select
- * @param {Number} id - ID кнопки
- */
-DKTools_Radio_Button.prototype.select = function(id) {
-    this._baseSprite.select(id);
-};
-
-
-
-
-
-//===========================================================================
-// DK Tools Clicker Base
-//===========================================================================
-
-function DKTools_Clicker_Base() {
-    this.initialize.apply(this, arguments);
-}
-
-DKTools_Clicker_Base.prototype = Object.create(DKTools_Sprite.prototype);
-DKTools_Clicker_Base.prototype.constructor = DKTools_Clicker_Base;
-
-// properties
-
-Object.defineProperty(DKTools_Clicker_Base.prototype, 'length', {
-    get: function() {
-        return this.elements().length;
-    },
-    configurable: true
-});
-
-// initialize method
-
-/**
- * @class DKTools_Clicker_Base
- *
- * @constructor
- *
- * @param {Number || null} object - Координата X
- * @param {Number || null} y - Координата Y
- */
-DKTools_Clicker_Base.prototype.initialize = DKTools_Container_Base.prototype.initialize;
-
-// standard methods
-
-/**
- * Возвращает стандартный список элементов
- *
- * @method standardElements
- * @return Array
- */
-DKTools_Clicker_Base.prototype.standardElements = DKTools_Container_Base.prototype.standardElements;
-
-DKTools_Clicker_Base.prototype.standardIndex = DKTools_Radio_Button_Base.prototype.standardIndex;
-
-// setup methods
-
-DKTools_Clicker_Base.prototype.setupAll = function(object) {
-    object = object || {};
-    DKTools_Sprite.prototype.setupAll.call(this, object);
-    this.setupElements(object.elements);
-    this.setupIndex(object.index);
-};
-
-/**
- * Устанавливает элементы
- *
- * @method setupElements
- * @param {Array || null} elements - Массив с элементами
- */
-DKTools_Clicker_Base.prototype.setupElements = DKTools_Container_Base.prototype.setupElements;
-
-/**
- * Добавляет элемент, блокируя вызов функции start контейнера
- *
- * @method setupElement
- * @param {Sprite || null} element - Элемент
- */
-DKTools_Clicker_Base.prototype.setupElement = DKTools_Container_Base.prototype.setupElement;
-
-DKTools_Clicker_Base.prototype.setupIndex = DKTools_Radio_Button_Base.prototype.setupIndex;
-
-// set methods
-
-DKTools_Clicker_Base.prototype.setAll = function(object, blockStart) {
-    object = object || {};
-    var block = true;
-    var changed = DKTools_Sprite.prototype.setAll.call(this, object, block);
-    this._activateSetAllMode();
-    if (this.setElements(object.elements, block)) {
-        changed++;
-    }
-    if (this.setIndex(object.index)) { // вызывает start через select, blockStart не будет работать правильно
-        changed++;
-    }
-    if (changed && !blockStart) {
-        this.start();
-    }
-    this._deactivateSetAllMode();
-    return changed;
-};
-
-/**
- * Изменяет список элементов
- *
- * @method setElements
- *
- * @param {Array || null} elements - Массив элементов
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @return Boolean
- */
-DKTools_Clicker_Base.prototype.setElements = DKTools_Container_Base.prototype.setElements;
-
-DKTools_Clicker_Base.prototype.setIndex = DKTools_Radio_Button_Base.prototype.setIndex;
-
-// other methods
-
-/**
- * Запускает работу спрайта
- *
- * @method start
- * @param {Boolean || null} activate - Активировать спрайт
- */
-DKTools_Clicker_Base.prototype.start = function(activate) {
-    this._checkElements();
-    DKTools_Sprite.prototype.start.call(this, activate);
-};
-
-DKTools_Clicker_Base.prototype._checkElements = function() {
-    var elements = this.elements();
-    for(var i = 0; i < this.length; i++) {
-        var bitmap = elements[i];
-        bitmap = this.bitmapFromObject(bitmap);
-        elements[i] = bitmap;
-    }
-};
-
-/**
- * Клонирует элементы контейнера
- *
- * @method _cloneElements
- * @private
- *
- * @param {Number | null} [startPosition = 0] - Стартовая позиция клонирования
- *
- * @return {Array} Массив с клонированными элементами контейнера
- */
-DKTools_Clicker_Base.prototype._cloneElements = DKTools_Container_Base.prototype._cloneElements;
-
-/**
- *
- *
- * @method object
- * @return {Object}
- */
-DKTools_Clicker_Base.prototype.object = function() {
-    var object = DKTools_Sprite.prototype.object.call(this);
-    object.elements = this._cloneElements();
-    object.index = this._index;
-    return object;
-};
-
-/**
- * Создает Bitmap спрайта шириной _bitmapWidth и высотой _bitmapHeight
- *
- * @method createBitmap
- */
-DKTools_Clicker_Base.prototype.createBitmap = function() {
-    this.setupBitmap(this.selected());
-};
-
-/**
- * Возвращает true, если спрайт не содержит элементов
- *
- * @method isEmpty
- * @return Boolean
- */
-DKTools_Clicker_Base.prototype.isEmpty = DKTools_Container_Base.prototype.isEmpty;
-
-/**
- * Очищает список элементов
- *
- * @method clearElements
- */
-DKTools_Clicker_Base.prototype.clearElements = DKTools_Container_Base.prototype.clearElements;
-
-/**
- * Выполняет callback функцию для каждого элемента
- *
- * @method iterateElements
- *
- * @param {Function} callback - Функция обработки для каждого элемента контейнера
- * @param {Boolean || null} start - Вызов функции start контейнера
- */
-DKTools_Clicker_Base.prototype.iterateElements = DKTools_Container_Base.prototype.iterateElements;
-
-/**
- * Возвращает все элементы
- *
- * @method elements
- * @return Array
- */
-DKTools_Clicker_Base.prototype.elements = DKTools_Container_Base.prototype.elements;
-
-/**
- * Возвращает элемент по его ID
- *
- * @method element
- *
- * @param {Number} id - ID элемента
- *
- * @return DKToolsSprite || null
- */
-DKTools_Clicker_Base.prototype.element = DKTools_Container_Base.prototype.element;
-
-/**
- * Добавляет элемент
- *
- * @method addElement
- *
- * @param {Sprite || Array || null} object - Элемент или Массив элементов
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- */
-DKTools_Clicker_Base.prototype.addElement = DKTools_Container_Base.prototype.addElement;
-
-/**
- * Удаляет элемент
- *
- * @method removeElement
- *
- * @param {Sprite || Number || null} object - Элемент или номер элемента
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- */
-DKTools_Clicker_Base.prototype.removeElement = DKTools_Container_Base.prototype.removeElement;
-
-/**
- * Возвращает номер показываемого элемента
- *
- * @method selectedIndex
- * @return Number
- */
-DKTools_Clicker_Base.prototype.index = DKTools_Radio_Button_Base.prototype.index;
-
-/**
- * Возвращает показываемый сейчас элемент
- *
- * @method selected
- * @return Sprite || null
- */
-DKTools_Clicker_Base.prototype.selected = DKTools_Radio_Button_Base.prototype.selected;
-
-/**
- * Показывает предыдущий элемент
- *
- * @method prev
- */
-DKTools_Clicker_Base.prototype.prev = DKTools_Radio_Button_Base.prototype.prev;
-
-/**
- * Показывает следующий элемент
- *
- * @method next
- */
-DKTools_Clicker_Base.prototype.next = DKTools_Radio_Button_Base.prototype.next;
-
-/**
- * Выбирает кнопку по ID
- *
- * @method select
- * @param {Number} id - ID кнопки
- */
-DKTools_Clicker_Base.prototype.select = function(id) {
-    if (this.isEmpty()) {
-        return;
-    }
-    if (id >= this.length || id < 0 || id === this.index()) {
-        return;
-    }
-    this.setupIndex(id);
-    this.start();
-};
-
-DKTools_Clicker_Base.prototype._updateAutoSwitching = function(duration) {
-    var handler = null;
-    var onStartHandler = null;
-    this.addEvent('wait', handler, duration, onStartHandler, this.next.bind(this));
-};
-
-DKTools_Clicker_Base.prototype.autoSwitching = function(duration) {
-    return this.addEventHandler('update', this._updateAutoSwitching.bind(this, duration));
-};
-
-DKTools_Clicker_Base.prototype.updateClickEvents = function() {
-    this.next();
-    DKTools_Sprite.prototype.updateClickEvents.call(this);
-};
-
-
-
-
-
-//===========================================================================
-// DK Tools Clicker
-//===========================================================================
-
-/**
- * @class DKTools_Clicker
- *
- * @constructor
- *
- * @param {Number || null} object - Координата X
- * @param {Number || null} y - Координата Y
- */
-function DKTools_Clicker() {
-    this.initialize.apply(this, arguments);
-}
-
-DKTools_Clicker.prototype = Object.create(DKTools_Container.prototype);
-DKTools_Clicker.prototype.constructor = DKTools_Clicker;
-
-// property
-
-Object.defineProperty(DKTools_Clicker.prototype, 'baseSpriteClass', {
-    get: function() {
-        return DKTools_Clicker_Base;
-    },
-    configurable: true
-});
-
-// setup methods
-
-// set methods
-
-// other methods
-
-DKTools_Clicker.prototype.autoSwitching = function(duration) {
-    return this._baseSprite.autoSwitching(duration);
-};
-
-
-
-
-
-//===========================================================================
-// DK Tools Color Picker Base
-//===========================================================================
-
-/**
- * @class DKTools_ColorPicker_Base
- *
- * @constructor
- *
- * @param {Number} object - Координата X
- * @param {Number} y - Координата Y
-*/
-function DKTools_ColorPicker_Base() {
-	this.initialize.apply(this, arguments);
-}
-
-DKTools_ColorPicker_Base.prototype = Object.create(DKTools_Sprite.prototype);
-DKTools_ColorPicker_Base.prototype.constructor = DKTools_ColorPicker_Base;
-
-// other methods
-
-DKTools_ColorPicker_Base.prototype.color = function() {
-    return this._color;
-};
-
-DKTools_ColorPicker_Base.prototype.createBitmap = function() {
-	if (this.hasGraphic()) {
-        DKTools_Sprite.prototype.createBitmap.call(this);
-    } else {
-		this.loadWindowskin();
-		this.setFrame(96, 144, 96, 48);
-	}
-};
-
-DKTools_ColorPicker_Base.prototype._updateColor = function() {
-    var dx = this._frame.x;
-    var dy = this._frame.y;
-    var x = this.clickX / this.scale.x + dx;
-    var y = this.clickY / this.scale.y + dy;
-    this._color = this.bitmap.getPixel(x, y);
-};
-
-DKTools_ColorPicker_Base.prototype.updateClickEvents = function() {
-    this._updateColor();
-    DKTools_Sprite.prototype.updateClickEvents.call(this);
-};
-
-
-
-
-
-//===========================================================================
-// DK Tools Color Picker
-//===========================================================================
-
-/**
- * @class DKTools_ColorPicker
- *
- * @constructor
- *
- * @param {Number || null} object - Координата X
- * @param {Number || null} y - Координата Y
- */
-function DKTools_ColorPicker() {
-    this.initialize.apply(this, arguments);
-}
-
-DKTools_ColorPicker.prototype = Object.create(DKTools_Container.prototype);
-DKTools_ColorPicker.prototype.constructor = DKTools_ColorPicker;
-
-// property
-
-Object.defineProperty(DKTools_ColorPicker.prototype, 'baseSpriteClass', {
-    get: function() {
-        return DKTools_ColorPicker_Base;
-    },
-    configurable: true
-});
-
-// other method
-
-DKTools_ColorPicker.prototype.color = function() {
-    return this._baseSprite.color();
-};
-
-
-
-
-
-//===========================================================================
-// NOT READY
-//===========================================================================
-// DK Tools Slider Base
-//===========================================================================
-
-function DKTools_Slider_Base() {
-	this.initialize.apply(this, arguments);
-}
-
-DKTools_Slider_Base.prototype = Object.create(DKTools_Container_Base.prototype);
-DKTools_Slider_Base.prototype.constructor = DKTools_Slider_Base;
-
-// standard methods
-
-/**
- * Возвращает стандартное значение активности спрайта
- *
- * @method standardActive
- * @return Boolean
-*/
-DKTools_Slider_Base.prototype.standardActive = function() {
-	return false;
-};
-
-DKTools_Slider_Base.prototype.standardBackgroundColor = function() {
-    var standardColor = DKTools_Container_Base.prototype.standardBackgroundColor.call(this);
-    var blackColor = '#000000';
-    var handleColor = '#33ccff';
-    var object = {
-        container: standardColor,
-        minusSprite: blackColor,
-        backgroundSprite: blackColor,
-        handleSprite: handleColor,
-        plusSprite: blackColor
-    };
-    return object;
-};
-
-DKTools_Slider_Base.prototype.standardMin = function() {
-	return 0;
-};
-
-DKTools_Slider_Base.prototype.standardMax = function() {
-	return 100;
-};
-
-// setup methods
-
-/**
- * Устанавливает все параметры спрайта
- *
- * @method setupAll
- *
- * @param {Object || null} object - Объект типа {}
- *
- * @property {Number || null} min - Минимальное значение слайдера
- * @property {Number || null} max - Максимальное значение слайдера
- * @property {Number || null} value - Текущее значение слайдера
- *
- * @see other object properties: DKTools_Sprite.prototype.setupAll
-*/
-DKTools_Slider_Base.prototype.setupAll = function(object) {
-	object = object || {};
-    DKTools_Container_Base.prototype.setupAll.call(this, object);
-	this.setupMin(object.min);
-	this.setupMax(object.max);
-	this.setupValue(object.value);
-};
-
-DKTools_Slider_Base.prototype.setupBackgroundColor = function(type, color) {
-    if (!this._backgroundColor) {
-        DKTools_Container_Base.prototype.setupBackgroundColor.call(this, color);
-    }
-    var standardColor = this.standardBackgroundColor();
-    type = type || 'all';
-    if (type === 'all') {
-        for(var type in this._backgroundColor) {
-           this.setupBackgroundColor(type, color);
-        }
-    } else {
-        this._backgroundColor[type] = color || standardColor[type];
-    }
-};
-
-/**
- * Устанавливает минимальное значение слайдера
- *
- * @method setupMin
- * @param {Number || null} min - Минимальное значение слайдера
-*/
-DKTools_Slider_Base.prototype.setupMin = function(min) {
-	this._min = (min == null ? this.standardMin() : min);
-	this._minWidth = this.textWidth(this._min);
-};
-
-/**
- * Устанавливает максимальное значение слайдера
- *
- * @method setupMax
- * @param {Number || null} max - Максимальное значение слайдера
-*/
-DKTools_Slider_Base.prototype.setupMax = function(max) {
-	this._max = (max ? Math.max(this._min, max) : this.standardMax());
-	this._maxWidth = this.textWidth(this._max);
-};
-
-/**
- * Устанавливает текущее значение слайдера
- *
- * @method setupValue
- * @param {Number || null} value - Текущее значение слайдера
-*/
-DKTools_Slider_Base.prototype.setupValue = function(value) {
-	this._value = (value == null ? this._min : value.clamp(this._min, this._max));
-};
-
-// set methods
-
-/**
- * Изменяет все параметры спрайта
- * Возвращает количество измененных параметров
- *
- * @method setAll
- *
- * @param {Object || null} object - Объект типа {}
- * @param {Boolean || null} blockStart - Блокировка вызова функции start
- *
- * @property {Number || null} min - Минимальное значение слайдера
- * @property {Number || null} max - Максимальное значение слайдера
- * @property {Number || null} value - Текущее значение слайдера
- *
- * @see other object properties: DKTools_Sprite.prototype.setAll
- *
- * @return Number
-*/
-DKTools_Slider_Base.prototype.setAll = function(object, blockStart) {
-	object = object || {};
-	var block = true;
-	var changed = DKTools_Sprite.prototype.setAll.call(this, object, block);
-	if (this.setMin(object.min, block)) {
-        changed++;
-    }
-	if (this.setMax(object.max, block)) {
-        changed++;
-    }
-	if (this.setValue(object.value, block)) {
-        changed++;
-    }
-	if (changed && !blockStart) {
-        this.start();
-    }
-	return changed;
-};
-
-DKTools_Slider_Base.prototype.setMin = function(min, blockStart) {
-	if (this._min === min) {
-        return false;
-    }
-	var lastMin = this._min;
-	this.setupMin(min);
-	if (lastMin === this._min) {
-        return false;
-    }
-	if (!blockStart) {
-        this.start();
-    }
-	return true;
-};
-
-DKTools_Slider_Base.prototype.setMax = function(max, blockStart) {
-	if (this._max === max) {
-        return false;
-    }
-	var lastMax = this._max;
-	this.setupMax(max);
-	if (lastMax === this._max) {
-        return false;
-    }
-	if (!blockStart) {
-        this.start();
-    }
-	return true;
-};
-
-DKTools_Slider_Base.prototype.setValue = function(value, blockUpdate) {
-	if (this._value === value) {
-        return false;
-    }
-	var lastValue = this._value;
-	this.setupValue(value);
-	if (lastValue === this._value) {
-        return false;
-    }
-    if (!blockUpdate) {
-        this.updateBitmap();
-    }
-	//this.checkHandleValue();
-	this.updateHandle();
-	return true;
-};
-
-// other methods
-
-/**
- * Запускает работу спрайта
- *
- * @method start
-*/
-DKTools_Slider_Base.prototype.start = function() {
-    if (this.isEmpty()) {
-        this.createElements();
-    }
-    DKTools_Container_Base.prototype.start.call(this);
-    this.addChild(this._handleSprite);
-    this.checkValue();
-    this.updateHandlePosition();
-	//this.updateInputData();
-};
-
-DKTools_Slider_Base.prototype.object = function() {
-    var object = DKTools_Sprite.prototype.object.call(this);
-    object.min = this._min;
-    object.max = this._max;
-    object.value = this._value;
-    return object;
-};
-
-DKTools_Slider_Base.prototype.createBackgroundSprite = function() {
-    this._backgroundSprite = new DKTools_Sprite(0, 0, this._bitmapWidth, this._bitmapHeight);
-    this._backgroundSprite.setupBackgroundColor(this._backgroundColor.backgroundSprite);
-    this._backgroundSprite.setupLongPressInterval(1);
-    this._backgroundSprite.addEventHandler('longPress', this._updateHandleTouch.bind(this));
-    this._backgroundSprite.start();
-
-};
-
-DKTools_Slider_Base.prototype.createMinusSprite = function() {
-    this._minusSprite = new DKTools_Sprite(0, 0, 36, 36);
-    this._minusSprite.setupBackgroundColor(this._backgroundColor.minusSprite);
-    this._minusSprite.setupText('-');
-    this._minusSprite.setupColdOpacity(255);
-    this._minusSprite.setupHotOpacity(155);
-    this._minusSprite.addEventHandler('click', this.prev.bind(this));
-    this._minusSprite.addEventHandler('longPress', function(event) {
-        var target = event.target;
-        var pressedTime = target._pressedTime * 3;
-        var base = 40;
-        var difference = this._max - this._min;
-        var divider = base - Math.floor(difference / 100);
-        var value = Math.max(1, Math.floor(pressedTime / divider));
-        //p(value);
-        this.rem(value);
-    }.bind(this));
-    this._minusSprite.start(true);
-};
-
-DKTools_Slider_Base.prototype.createPlusSprite = function() {
-    this._plusSprite = new DKTools_Sprite(0, 0, 36, 36);
-    this._plusSprite.setupBackgroundColor(this._backgroundColor.plusSprite);
-    this._plusSprite.setupText('+');
-    this._plusSprite.setupColdOpacity(255);
-    this._plusSprite.setupHotOpacity(155);
-    this._plusSprite.addEventHandler('click', this.next.bind(this));
-    this._plusSprite.addEventHandler('longPress', function(event) {
-        var target = event.target;
-        var pressedTime = target._pressedTime * 3;
-        var base = 40;
-        var difference = this._max - this._min;
-        var divider = base - Math.floor(difference / 100);
-        pressedTime = target._pressedTime / 10;
-        divider = 1;
-        var value = Math.max(1, Math.floor(pressedTime / divider));
-        //p(value);
-        this.add(value);
-    }.bind(this));
-    this._plusSprite.start(true);
-};
-
-DKTools_Slider_Base.prototype.createControlSprites = function() {
-    this.createMinusSprite();
-    this.createPlusSprite();
-};
-
-DKTools_Slider_Base.prototype.createHandleSprite = function() {
-    var handleWidth = this._maxWidth + 8;
-    this._handleSprite = new DKTools_Sprite(0, 0, handleWidth);
-    this._handleSprite.setupBackgroundColor(this._backgroundColor.handleSprite);
-    this._handleSprite.setupText(this._value);
-    this._handleSprite.start(true);
-    this._handleSprite.deactivate();
-};
-
-DKTools_Slider_Base.prototype.createElements = function() {
-    this.createControlSprites();
-    this.createBackgroundSprite();
-    this.createHandleSprite();
-};
-
-DKTools_Slider_Base.prototype.checkValue = function() {
-    var min = this._min;
-    var max = this._max;
-    var value = this._value;
-    if (value > max) {
-        this.setupValue(max);
-    }
-    if (value < min) {
-        this.setupValue(min);
-    }
-};
-
-DKTools_Slider_Base.prototype._percent = function() {
-    return (this._backgroundSprite.width - this._handleSprite.width) / (this._max - this._min);
-};
-
-DKTools_Slider_Base.prototype.handleBaseX = function() {
-    return this._backgroundSprite.x;
-};
-
-DKTools_Slider_Base.prototype.updateHandleX = function() {
-    this._handleSprite.x = this.handleBaseX() + (this._value - this._min) * this._percent();
-};
-
-DKTools_Slider_Base.prototype.updateHandleY = function() {
-    this._handleSprite.y = this._backgroundSprite.y;
-};
-
-DKTools_Slider_Base.prototype.updateHandlePosition = function() {
-    this.updateHandleX();
-    this.updateHandleY();
-};
-
-DKTools_Slider_Base.prototype.updateValue = function() {
-    var value = this._min + Math.floor((this._handleSprite.x - this.handleBaseX()) / this._percent());
-    this.setValue(value);
-};
-
-DKTools_Slider_Base.prototype.handleClickHandler = function() {
-    var baseX = this.handleBaseX();
-    var localX = this._backgroundSprite.canvasToLocalX(TouchInput.x);
-    var handleHalfWidth = this._handleSprite.width / 2;
-    var newHandleX = baseX + localX - handleHalfWidth;
-    this._handleSprite.x = newHandleX;
-    this.updateValue();
-    this.updateHandlePosition();
-    //var backgroundX = this._backgroundSprite.x;
-    //var x = this._backgroundSprite.canvasToLocalX(TouchInput.x);
-    //this._handleSprite.x = backgroundX + x - this._handleSprite.width / 2;
-    //this._handleSprite.x = this._handleSprite.x.clamp(backgroundX, backgroundX + this._backgroundSprite.width - this._handleSprite.width);
-    //var percent = (this._backgroundSprite.width - this._handleSprite.width) / (this._max - this._min);
-    //var value = this._min + Math.floor((this._handleSprite.x - backgroundX) / percent);
-    //this._handleSprite.setText(value);
-    //this.setupValue(value);
-};
-
-DKTools_Slider_Base.prototype.elements = function() {
-    if (!this._backgroundSprite) {
-        return [];
-    }
-    return [this._minusSprite, this._backgroundSprite, this._plusSprite];
-};
-
-DKTools_Slider_Base.prototype.isContainer = function() {
-    return true;
-};
-
-DKTools_Slider_Base.prototype._updateHandleTouch = function(event) {
-    if (this._touchX === TouchInput.x) {
-        return;
-    }
-    this._touchX = TouchInput.x;
-    this.handleClickHandler();
-};
-
-DKTools_Slider_Base.prototype.updateBackground = function() {
-    if (this._backgroundColor.container) {
-        this.fillAll(this._backgroundColor.container);
-    }
-};
-
-DKTools_Slider_Base.prototype.getPrevValue = function() {
-    var prevValue = this._value - 1;
-    if (prevValue < this._min) {
-        return this._min;
-    }
-    return prevValue;
-};
-
-DKTools_Slider_Base.prototype.getNextValue = function() {
-    var nextValue = this._value + 1;
-    if (nextValue > this._max) {
-        return this._max;
-    }
-    return nextValue;
-};
-
-DKTools_Slider_Base.prototype.prev = function() {
-	return this.setValue(this.getPrevValue());
-};
-
-DKTools_Slider_Base.prototype.next = function() {
-	return this.setValue(this.getNextValue());
-};
-
-DKTools_Slider_Base.prototype.empty = function() { // другое название
-    return this.setValue(this._min);
-};
-
-DKTools_Slider_Base.prototype.full = function() { // другое название
-    return this.setValue(this._max);
-};
-
-DKTools_Slider_Base.prototype.add = function(value) {
-    var newValue = this._value + value;
-    if (newValue >= this._max) {
-        return this.full();
-    }
-    return this.setValue(newValue);
-};
-
-DKTools_Slider_Base.prototype.rem = function(value) {
-    var newValue = this._value - value;
-    if (newValue <= this._min) {
-        return this.empty();
-    }
-    return this.setValue(newValue);
-};
-
-DKTools_Slider_Base.prototype.updateHandle = function() {
-    var value = this._value;
-    this._handleSprite.setText(value);
-    this.updateHandlePosition();
-};
-
-DKTools_Slider_Base.prototype.updateClickEvents = function() {
-    //this._handleSprite.x = this.canvasToLocalX(TouchInput.x) - this._handleSprite.width / 2;
-    //this.checkHandleX();
-    //this.checkHandleY();
-    //this.updateValue();
-    DKTools_Container_Base.prototype.updateClickEvents.call(this);
-};
-
-
-
-
-
-//===========================================================================
-// NOT READY
-//===========================================================================
-// DK Tools Slider
-//===========================================================================
-
-/**
- * @class DKTools_Slider
- *
- * @constructor
- *
- * @param {Number || null} object - Координата X
- * @param {Number || null} y - Координата Y
- */
-function DKTools_Slider() {
-    this.initialize.apply(this, arguments);
-}
-
-DKTools_Slider.prototype = Object.create(DKTools_Container.prototype);
-DKTools_Slider.prototype.constructor = DKTools_Slider;
-
-// property
-
-Object.defineProperty(DKTools_Slider.prototype, 'baseSpriteClass', {
-    get: function() {
-        return DKTools_Slider_Base;
-    },
-    configurable: true
-});
 
 
 
@@ -12535,6 +8856,11 @@ DKTools_Window._counter = 0;
 
 Object.defineProperties(DKTools_Window.prototype, {
 
+    /**
+     * Спрайт контента
+     *
+     * @type {DKTools_Sprite}
+     */
     contentsSprite: {
         get: function() {
             return this._windowContentsSprite;
@@ -12542,6 +8868,12 @@ Object.defineProperties(DKTools_Window.prototype, {
         configurable: true
     },
 
+    /**
+     * Bitmap спрайта контента
+     * Для поддержки функций из DKTools_Base
+     *
+     * @type {Bitmap}
+     */
     bitmap: {
         get: function() {
             return this.contents;
@@ -12552,6 +8884,11 @@ Object.defineProperties(DKTools_Window.prototype, {
         configurable: true
     },
 
+    /**
+     * Счетчик фреймов, который показывает сколько мышь нажата на спрайт
+     *
+     * @type {Number}
+     */
     pressedTime: {
         get: function() {
             return this.contentsSprite.pressedTime;
@@ -12559,6 +8896,11 @@ Object.defineProperties(DKTools_Window.prototype, {
         configurable: true
     },
 
+    /**
+     * Координата X нажатия мыши внутри спрайта
+     *
+     * @type {Number}
+     */
     clickX : {
         get: function() {
             return this.contentsSprite.clickX;
@@ -12566,6 +8908,11 @@ Object.defineProperties(DKTools_Window.prototype, {
         configurable: true
     },
 
+    /**
+     * Координата Y нажатия мыши внутри спрайта
+     *
+     * @type {Number}
+     */
     clickY : {
         get: function() {
             return this.contentsSprite.clickY;
@@ -12582,10 +8929,12 @@ Object.defineProperties(DKTools_Window.prototype, {
  *
  * @constructor
  *
- * @param {Number} object - Координата X
- * @param {Number} y - Координата Y
- * @param {Number} width - Ширина окна
- * @param {Number} height - Высота окна
+ * @param {Number | Object} [object] - Координата X
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [width] - Ширина окна
+ * @param {Number} [height] - Высота окна
+ *
+ * @see object properties: DKTools_Base.prototype.initialize
  */
 DKTools_Window.prototype.initialize = function(object, y, width, height) {
     PIXI.Container.call(this);
@@ -12597,6 +8946,12 @@ DKTools_Window.prototype.initialize = function(object, y, width, height) {
 
 // _clear methods
 
+/**
+ * Очищает все данные окна
+ *
+ * @private
+ * @method _clearAll
+ */
 DKTools_Window.prototype._clearAll = function() {
     DKTools_Base.prototype._clearAll.call(this);
     this._clearIsWindow();
@@ -12636,8 +8991,8 @@ DKTools_Window.prototype._clearOrigin = function() {
 /**
  * Возвращает стандартное значение коодинаты X для спрайта
  *
- * @method standardSpriteY
- * @return Number
+ * @method standardSpriteX
+ * @return {Number} Стандартное значение коодинаты X для спрайта
 */
 DKTools_Window.prototype.standardSpriteX = function() {
 	return this.standardPadding();
@@ -12647,33 +9002,57 @@ DKTools_Window.prototype.standardSpriteX = function() {
  * Возвращает стандартное значение коодинаты Y для спрайта
  *
  * @method standardSpriteY
- * @return Number
+ * @return {Number} Стандартное значение коодинаты Y для спрайта
 */
 DKTools_Window.prototype.standardSpriteY = function() {
 	return this.standardPadding();
 };
 
+/**
+ * Возвращает стандартную позицию для спрайта
+ *
+ * @method standardSpritePosition
+ * @return {Point} Стандартная позиция для спрайта
+ */
 DKTools_Window.prototype.standardSpritePosition = function() {
     return new Point(this.standardSpriteX(), this.standardSpriteY());
 };
 
+/**
+ * Возвращает стандартную видимость рамки окна
+ *
+ * @method standardFrameVisible
+ * @returns {Boolean} Стандартная видимость рамки окна
+ */
 DKTools_Window.prototype.standardFrameVisible = function() {
     return true;
 };
 
+/**
+ * Возвращает стандартную прозрачность окна
+ *
+ * @method standardWindowOpacity
+ * @return {Number} Стандартная прозрачность окна
+ */
 DKTools_Window.prototype.standardWindowOpacity = function() {
     return 255;
 };
 
+/**
+ * Возвращает стандартную прозрачность контента окна
+ *
+ * @method standardContentsOpacity
+ * @return {Number} Стандартная прозрачность контента окна
+ */
 DKTools_Window.prototype.standardContentsOpacity = function() {
     return 255;
 };
 
 /**
  * Возвращает стандартную прозрачность
-
+ *
  * @method standardOpacity
- * @return Array
+ * @return {Number[]} Стандартная прозрачность
  */
 DKTools_Window.prototype.standardOpacity = function() {
     return [this.standardWindowOpacity(), this.standardContentsOpacity(), this.standardBackOpacity()];
@@ -12681,9 +9060,9 @@ DKTools_Window.prototype.standardOpacity = function() {
 
 /**
  * Возвращает стандартный тон окна
- 
+ *
  * @method standardTone
- * @return Array
+ * @return {Number[]} Стандартный тон окна
 */
 DKTools_Window.prototype.standardTone = function() {
 	return $gameSystem.windowTone();
@@ -12693,13 +9072,13 @@ DKTools_Window.prototype.standardTone = function() {
 
 /**
  * Устанавливает все параметры окна
- 
+ *
  * @method setupAll
- * @param {String || null} textColor - Цвет текста
- * @param {Array || null} font - Шрифт текста
- * @param {Array || null} opacity - Прозрачность окна
- * @param {Array || null} tone - Тон окна
- * @param {String || null} windowskin - Обложка окна
+ *
+ * @param {Object} [object] - Объект типа {}
+ * @param {Number[]} [object.tone] - Тон окна
+ *
+ * @see object properties: DKTools_Base.prototype.setupAll
 */
 DKTools_Window.prototype.setupAll = function(object) {
     object = object || {};
@@ -12707,14 +9086,37 @@ DKTools_Window.prototype.setupAll = function(object) {
 	this.setupTone(object.tone);
 };
 
+/**
+ * Устанавливает ширину окна
+ *
+ * @method setupWidth
+ * @param {Number} [width] - Ширина окна
+ */
 DKTools_Window.prototype.setupWidth = function(width) {
     this.width = this._checkWidth(width);
 };
 
+/**
+ * Устанавливает высоту окна
+ *
+ * @method setupHeight
+ * @param {Number} [height] - Высота окна
+ */
 DKTools_Window.prototype.setupHeight = function(height) {
     this.height = this._checkHeight(height);
 };
 
+/**
+ * Устанавливает размер окна
+ *
+ * @method setupSize
+ *
+ * @param {Number | Object} [object] - Ширина окна или Объекти типа {}
+ * @param {Number} [height] - Высота окна
+ *
+ * @param {Number} [object.width] - Ширина окна
+ * @param {Number} [object.height] - Высота окна
+ */
 DKTools_Window.prototype.setupSize = function(object, height) {
     if (object && object.constructor === Object) {
         return this.setupSize(object.width, object.height);
@@ -12726,9 +9128,9 @@ DKTools_Window.prototype.setupSize = function(object, height) {
 
 /**
  * Устанавливает тон окна
- 
+ *
  * @method setupTone
- * @param {Array || null} tone - Тон окна
+ * @param {Number[]} [tone] - Тон окна
 */
 DKTools_Window.prototype.setupTone = function(tone) {
     this._tone = this._checkArray(tone, this.standardTone());
@@ -12736,9 +9138,9 @@ DKTools_Window.prototype.setupTone = function(tone) {
 
 /**
  * Устанавливает прозрачность окна
-
+ *
  * @method setupOpacity
- * @param {Array || null} opacity - Прозрачность окна
+ * @param {Number[]} [opacity] - Прозрачность окна
 */
 DKTools_Window.prototype.setupOpacity = function(opacity) {
     this._opacity = this._checkArray(opacity, this.standardOpacity());
@@ -12748,16 +9150,16 @@ DKTools_Window.prototype.setupOpacity = function(opacity) {
 
 /**
  * Изменяет все параметры окна
-
+ * Возвращает количество измененных параметров
+ *
  * @method setAll
- * @param {Object || null} object -
- * @param {Boolean || null} blockStart -
- * @param {String || null} textColor - Цвет текста
- * @param {Array || null} font - Шрифт текста
- * @param {Array || null} opacity - Прозрачность окна
- * @param {Array || null} tone - Тон окна
- * @param {String || null} windowskin - Обложка окна
- * @return Number
+ *
+ * @param {Object} [object] - Объект типа {}
+ * @param {Number[]} [object.tone] - Тон окна
+ *
+ * @see object properties: DKTools_Base.prototype.setAll
+ *
+ * @return {Number} Количество измененных параметров
 */
 DKTools_Window.prototype.setAll = function(object, blockStart) {
 	object = object || {};
@@ -12773,28 +9175,30 @@ DKTools_Window.prototype.setAll = function(object, blockStart) {
 };
 
 /**
- * Изменяет ширину Bitmap
+ * Изменяет ширину окна
+ * Возвращает true, если изменение произошло
  *
  * @method setWidth
  *
- * @param {Number | null} [width = null] - Ширина Bitmap
- * @param {Boolean | null} [blockStart = null] - Блокировка вызова функции start
+ * @param {Number} [width] - Ширина окна
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return {Boolean} Возвращает true, если изменение произошло
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Window.prototype.setWidth = function(width, blockStart) {
     return this.resize(width, this.height, blockStart);
 };
 
 /**
- * Изменяет высоту Bitmap
+ * Изменяет высоту окна
+ * Возвращает true, если изменение произошло
  *
  * @method setHeight
  *
- * @param {Number | null} [height = null] - Высота Bitmap
- * @param {Boolean | null} [blockStart = null] - Блокировка вызова функции start
+ * @param {Number} [height] - Высота окна
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return {Boolean} Возвращает true, если изменение произошло
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Window.prototype.setHeight = function(height, blockStart) {
     return this.resize(this.width, height, blockStart);
@@ -12803,10 +9207,13 @@ DKTools_Window.prototype.setHeight = function(height, blockStart) {
 /**
  * Изменяет прозрачность окна
  * Возвращает true, если изменение произошло
-
+ *
  * @method setOpacity
- * @param {Array || null} opacity - Прозрачность окна
- * @return Boolean
+ *
+ * @param {Number[]} [opacity] - Прозрачность окна
+ * @param {Boolean} [blockUpdate] - Блокировка вызова функции updateOpacity
+ *
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Window.prototype.setOpacity = function(opacity, blockUpdate) {
     opacity = opacity || this.standardOpacity();
@@ -12827,10 +9234,13 @@ DKTools_Window.prototype.setOpacity = function(opacity, blockUpdate) {
 /**
  * Изменяет тон окна
  * Возвращает true, если изменение произошло
-
+ *
  * @method setTone
- * @param {Array || null} tone - Тон окна
- * @return Boolean
+ *
+ * @param {Number[]} [tone] - Тон окна
+ * @param {Boolean} [blockUpdate] - Блокировка вызова функции updateTone
+ *
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Window.prototype.setTone = function(tone, blockUpdate) {
     tone = tone || this.standardTone();
@@ -12850,6 +9260,12 @@ DKTools_Window.prototype.setTone = function(tone, blockUpdate) {
 
 // _create methods
 
+/**
+ * Создает все части окна
+ *
+ * @private
+ * @method _createAllParts
+ */
 DKTools_Window.prototype._createAllParts = function() {
     this._createSpriteContainer();
     this._createBackSprite();
@@ -12860,10 +9276,22 @@ DKTools_Window.prototype._createAllParts = function() {
     this._addAllPartsToChild();
 };
 
+/**
+ * Создает контейнер спрайтов
+ *
+ * @private
+ * @method _createSpriteContainer
+ */
 DKTools_Window.prototype._createSpriteContainer = function() {
     this._windowSpriteContainer = new PIXI.Container();
 };
 
+/**
+ * Создает спрайт заднего фона
+ *
+ * @private
+ * @method _createBackSprite
+ */
 DKTools_Window.prototype._createBackSprite = function() {
     if (this.needsBackSprite()) {
         this._windowBackSprite = new Sprite();
@@ -12871,6 +9299,12 @@ DKTools_Window.prototype._createBackSprite = function() {
     }
 };
 
+/**
+ * Создает спрайт рамки окна
+ *
+ * @private
+ * @method _createFrameSprite
+ */
 DKTools_Window.prototype._createFrameSprite = function() {
     if (this.needsFrameSprite()) {
         this._windowFrameSprite = new Sprite();
@@ -12878,10 +9312,22 @@ DKTools_Window.prototype._createFrameSprite = function() {
     }
 };
 
+/**
+ * Создает спрайт контента окна
+ *
+ * @private
+ * @method _createContentsSprite
+ */
 DKTools_Window.prototype._createContentsSprite = function() {
     this._windowContentsSprite = new DKTools_Sprite();
 };
 
+/**
+ * Создает спрайты стрелок
+ *
+ * @private
+ * @method _createArrowSprites
+ */
 DKTools_Window.prototype._createArrowSprites = function() {
     if (this.needsArrowSprites()) {
         this._createDownArrowSprite();
@@ -12891,40 +9337,84 @@ DKTools_Window.prototype._createArrowSprites = function() {
     }
 };
 
+/**
+ * Создает спрайт стрелки вниз
+ *
+ * @private
+ * @method _createDownArrowSprite
+ */
 DKTools_Window.prototype._createDownArrowSprite = function() {
     if (this.needsDownArrowSprite()) {
         this._downArrowSprite = new Sprite();
     }
 };
 
+/**
+ * Создает спрайт стрелки вверх
+ *
+ * @private
+ * @method _createUpArrowSprite
+ */
 DKTools_Window.prototype._createUpArrowSprite = function() {
     if (this.needsUpArrowSprite()) {
         this._upArrowSprite = new Sprite();
     }
 };
 
+/**
+ * Создает спрайт стрелки влево
+ *
+ * @private
+ * @method _createLeftArrowSprite
+ */
 DKTools_Window.prototype._createLeftArrowSprite = function() {
     if (this.needsLeftArrowSprite()) {
         this._leftArrowSprite = new Sprite();
     }
 };
 
+/**
+ * Создает спрайт стрелки вправо
+ *
+ * @private
+ * @method _createRightArrowSprite
+ */
 DKTools_Window.prototype._createRightArrowSprite = function() {
     if (this.needsRightArrowSprite()) {
         this._rightArrowSprite = new Sprite();
     }
 };
 
+/**
+ * Создает спрайт знака паузы
+ *
+ * @private
+ * @method _createPauseSignSprite
+ */
 DKTools_Window.prototype._createPauseSignSprite = function() {
     if (this.needsPauseSignSprite()) {
         this._windowPauseSignSprite = new Sprite();
     }
 };
 
+/**
+ * Создает обложку окна
+ *
+ * @private
+ * @method _createWindowskin
+ */
 DKTools_Window.prototype._createWindowskin = function() {
     this.windowskin = this.loadWindowskin();
 };
 
+/**
+ * Создает событие исчезновения/появления окна
+ *
+ * @private
+ * @method _createVisibleEvent
+ * @param {Number} duration - Длительность
+ * @param {Boolean} visible - Исчезновение/Появление
+ */
 DKTools_Window.prototype._createVisibleEvent = function(duration, visible) {
     var callback = function() {
         this.setupVisible(visible);
@@ -12944,40 +9434,94 @@ DKTools_Window.prototype._createVisibleEvent = function(duration, visible) {
 
 // needs methods
 
+/**
+ * Возвращает true, если нужно создать спрайт заднего фона
+ *
+ * @method needsBackSprite
+ * @return {Boolean} Нужно создать спрайт заднего фона
+ */
 DKTools_Window.prototype.needsBackSprite = function() {
     return true;
 };
 
+/**
+ * Возвращает true, если нужно создать спрайт рамки окна
+ *
+ * @method needsFrameSprite
+ * @return {Boolean} Нужно создать спрайт рамки окна
+ */
 DKTools_Window.prototype.needsFrameSprite = function() {
     return true;
 };
 
+/**
+ * Возвращает true, если нужно создать спрайты стрелок
+ *
+ * @method needsArrowSprites
+ * @return {Boolean} Нужно создать спрайты стрелок
+ */
 DKTools_Window.prototype.needsArrowSprites = function() {
     return true;
 };
 
+/**
+ * Возвращает true, если нужно создать спрайт стрелки вниз
+ *
+ * @method needsDownArrowSprite
+ * @return {Boolean} Нужно создать спрайт стрелки вниз
+ */
 DKTools_Window.prototype.needsDownArrowSprite = function() {
     return true;
 };
 
+/**
+ * Возвращает true, если нужно создать спрайт стрелки вверх
+ *
+ * @method needsUpArrowSprite
+ * @return {Boolean} Нужно создать спрайт стрелки вверх
+ */
 DKTools_Window.prototype.needsUpArrowSprite = function() {
     return true;
 };
 
+/**
+ * Возвращает true, если нужно создать спрайт стрелки влево
+ *
+ * @method needsLeftArrowSprite
+ * @return {Boolean} Нужно создать спрайт стрелки влево
+ */
 DKTools_Window.prototype.needsLeftArrowSprite = function() {
     return true;
 };
 
+/**
+ * Возвращает true, если нужно создать спрайт стрелки вправо
+ *
+ * @method needsRightArrowSprite
+ * @return {Boolean} Нужно создать спрайт стрелки вправо
+ */
 DKTools_Window.prototype.needsRightArrowSprite = function() {
     return true;
 };
 
+/**
+ * Возвращает true, если нужно создать спрайт знака паузы
+ *
+ * @method needsPauseSignSprite
+ * @return {Boolean} Нужно создать спрайт знака паузы
+ */
 DKTools_Window.prototype.needsPauseSignSprite = function() {
     return true;
 };
 
 // _refresh methods
 
+/**
+ * Обновляет все части окна
+ *
+ * @private
+ * @method _refreshAllParts
+ */
 DKTools_Window.prototype._refreshAllParts = function() {
     this._refreshBack();
     this._refreshFrame();
@@ -12986,24 +9530,48 @@ DKTools_Window.prototype._refreshAllParts = function() {
     this._refreshPauseSign();
 };
 
+/**
+ * Обновляет спрайт заднего фона
+ *
+ * @private
+ * @method _refreshBack
+ */
 DKTools_Window.prototype._refreshBack = function() {
     if (this.hasBackSprite()) {
         Window.prototype._refreshBack.call(this);
     }
 };
 
+/**
+ * Обновляет спрайт рамки окна
+ *
+ * @private
+ * @method _refreshFrame
+ */
 DKTools_Window.prototype._refreshFrame = function() {
     if (this.hasFrameSprite()) {
         Window.prototype._refreshFrame.call(this);
     }
 };
 
+/**
+ * Обновляет спрайт контента окна
+ *
+ * @private
+ * @method _refreshContents
+ */
 DKTools_Window.prototype._refreshContents = function() {
     if (this.hasContentsSprite()) {
         Window.prototype._refreshContents.call(this);
     }
 };
 
+/**
+ * Обновляет спрайты стрелок
+ *
+ * @private
+ * @method _refreshContents
+ */
 DKTools_Window.prototype._refreshArrows = function() {
     var w = this._width;
     var h = this._height;
@@ -13042,6 +9610,12 @@ DKTools_Window.prototype._refreshArrows = function() {
     }
 };
 
+/**
+ * Обновляет спрайт знака паузы
+ *
+ * @private
+ * @method _refreshPauseSign
+ */
 DKTools_Window.prototype._refreshPauseSign = function() {
     if (this.hasPauseSignSprite()) {
         Window.prototype._refreshPauseSign.call(this);
@@ -13050,6 +9624,12 @@ DKTools_Window.prototype._refreshPauseSign = function() {
 
 // _add methods
 
+/**
+ * Добавляет все части окна в обработку
+ *
+ * @private
+ * @method _addAllPartsToChild
+ */
 DKTools_Window.prototype._addAllPartsToChild = function() {
     this._addSpriteContainerToChild();
     this._addContentsSpriteToChild();
@@ -13057,6 +9637,12 @@ DKTools_Window.prototype._addAllPartsToChild = function() {
     this._addWindowPauseSignSpriteToChild();
 };
 
+/**
+ * Добавляет контейнер спрайтов в обработку
+ *
+ * @private
+ * @method _addSpriteContainerToChild
+ */
 DKTools_Window.prototype._addSpriteContainerToChild = function() {
     if (this.hasSpriteContainer()) {
         if (this.hasBackSprite()) {
@@ -13069,12 +9655,24 @@ DKTools_Window.prototype._addSpriteContainerToChild = function() {
     }
 };
 
+/**
+ * Добавляет спрайт контента в обработку
+ *
+ * @private
+ * @method _addContentsSpriteToChild
+ */
 DKTools_Window.prototype._addContentsSpriteToChild = function() {
     if (this.hasContentsSprite()) {
         this.addChild(this._windowContentsSprite);
     }
 };
 
+/**
+ * Добавляет спрайты стрелок в обработку
+ *
+ * @private
+ * @method _addArrowSpritesToChild
+ */
 DKTools_Window.prototype._addArrowSpritesToChild = function() {
     this._addDownArrowSpriteToChild();
     this._addUpArrowSpriteToChild();
@@ -13082,30 +9680,60 @@ DKTools_Window.prototype._addArrowSpritesToChild = function() {
     this._addRightArrowSpriteToChild();
 };
 
+/**
+ * Добавляет спрайт стрелки вниз в обработку
+ *
+ * @private
+ * @method _addDownArrowSpriteToChild
+ */
 DKTools_Window.prototype._addDownArrowSpriteToChild = function() {
     if (this.hasDownArrowSprite()) {
         this.addChild(this._downArrowSprite);
     }
 };
 
+/**
+ * Добавляет спрайт стрелки вверх в обработку
+ *
+ * @private
+ * @method _addUpArrowSpriteToChild
+ */
 DKTools_Window.prototype._addUpArrowSpriteToChild = function() {
     if (this.hasUpArrowSprite()) {
         this.addChild(this._upArrowSprite);
     }
 };
 
+/**
+ * Добавляет спрайт стрелки влево в обработку
+ *
+ * @private
+ * @method _addLeftArrowSpriteToChild
+ */
 DKTools_Window.prototype._addLeftArrowSpriteToChild = function() {
     if (this.hasLeftArrowSprite()) {
         this.addChild(this._leftArrowSprite);
     }
 };
 
+/**
+ * Добавляет спрайт стрелки вправо в обработку
+ *
+ * @private
+ * @method _addRightArrowSpriteToChild
+ */
 DKTools_Window.prototype._addRightArrowSpriteToChild = function() {
     if (this.hasRightArrowSprite()) {
         this.addChild(this._rightArrowSprite);
     }
 };
 
+/**
+ * Добавляет спрайт знака паузы в обработку
+ *
+ * @private
+ * @method _addWindowPauseSignSpriteToChild
+ */
 DKTools_Window.prototype._addWindowPauseSignSpriteToChild = function() {
     if (this.hasPauseSignSprite()) {
         this.addChild(this._windowPauseSignSprite);
@@ -13114,6 +9742,11 @@ DKTools_Window.prototype._addWindowPauseSignSpriteToChild = function() {
 
 // create methods
 
+/**
+ * Создает все объекты
+ *
+ * @method createAll
+ */
 DKTools_Window.prototype.createAll = function() {
     DKTools_Base.prototype.createAll.call(this);
     this.createContents();
@@ -13128,11 +9761,11 @@ DKTools_Window.prototype.createContents = function() {
 // check methods
 
 /**
- * Проверяет ширину и высоту Bitmap на соответствие минимальным значениям
- * Возвращает true, если изменение произошло
+ * Проверяет ширину и высоту окна на соответствие минимальным значениям
+ * Возвращает количество измененных параметров
  *
  * @method checkSize
- * @return Number
+ * @return {Number} Количество измененных параметров
  */
 DKTools_Window.prototype.checkSize = function() {
     var minWidth = this.minWidth();
@@ -13151,30 +9784,55 @@ DKTools_Window.prototype.checkSize = function() {
 
 // is method
 
-DKTools_Window.prototype.isSprite = function() {
-    return false;
-};
-
+/**
+ * Возвращает true, если объект является окном
+ *
+ * @method isWindow
+ * @return {Boolean} Объект является окном
+ */
 DKTools_Window.prototype.isWindow = function() {
-    return this._isWindow;
+    return true;
 };
 
+/**
+ * Возвращает true, если окно открыто и его видно
+ *
+ * @method isOpenAndVisible
+ * @returns {Boolean} Окно открыто и его видно
+ */
 DKTools_Window.prototype.isOpenAndVisible = function() {
     return this.isOpen() && this.isVisible();
 };
 
+
+/**
+ * Возвращает true, если окно открыто и активно
+ *
+ * @method isOpenAndActive
+ * @returns {Boolean} Окно открыто и активно
+ */
 DKTools_Window.prototype.isOpenAndActive = function() {
     return this.isOpen() && this.isActive();
 };
 
-// frame visible methods
+// frame methods
 
+/**
+ * Показывает рамку окна
+ *
+ * @method showFrame
+ */
 DKTools_Window.prototype.showFrame = function() {
     if (this.hasFrameSprite()) {
         this._windowFrameSprite.visible = true;
     }
 };
 
+/**
+ * Скрывает рамку окна
+ *
+ * @method hideFrame
+ */
 DKTools_Window.prototype.hideFrame = function() {
     if (this.hasFrameSprite()) {
         this._windowFrameSprite.visible = false;
@@ -13183,43 +9841,103 @@ DKTools_Window.prototype.hideFrame = function() {
 
 // has methods
 
+/**
+ * Возвращает true, если окно содержит контейнер спрайтов
+ *
+ * @method hasSpriteContainer
+ * @return {Boolean} Окно содержит контейнер спрайтов
+ */
 DKTools_Window.prototype.hasSpriteContainer = function() {
     return !!this._windowSpriteContainer;
 };
 
+/**
+ * Возвращает true, если окно содержит спрайт заднего фона
+ *
+ * @method hasBackSprite
+ * @return {Boolean} Окно содержит спрайт заднего фона
+ */
 DKTools_Window.prototype.hasBackSprite = function() {
     return !!this._windowBackSprite;
 };
 
+/**
+ * Возвращает true, если окно содержит спрайт рамки окна
+ *
+ * @method hasFrameSprite
+ * @return {Boolean} Окно содержит спрайт рамки окна
+ */
 DKTools_Window.prototype.hasFrameSprite = function() {
     return !!this._windowFrameSprite;
 };
 
+/**
+ * Возвращает true, если окно содержит спрайт контента окна
+ *
+ * @method hasContentsSprite
+ * @return {Boolean} Окно содержит спрайт контента окна
+ */
 DKTools_Window.prototype.hasContentsSprite = function() {
     return !!this._windowContentsSprite;
 };
 
+/**
+ * Возвращает true, если окно содержит спрайты стрелок
+ *
+ * @method hasArrowSprites
+ * @return {Boolean} Окно содержит спрайты стрелок
+ */
 DKTools_Window.prototype.hasArrowSprites = function() {
     return this.hasDownArrowSprite() && this.hasUpArrowSprite() &&
             this.hasLeftArrowSprite() && this.hasRightArrowSprite();
 };
 
+/**
+ * Возвращает true, если окно содержит спрайт стрелки вниз
+ *
+ * @method hasDownArrowSprite
+ * @return {Boolean} Окно содержит спрайт стрелки вниз
+ */
 DKTools_Window.prototype.hasDownArrowSprite = function() {
     return !!this._downArrowSprite;
 };
 
+/**
+ * Возвращает true, если окно содержит спрайт стрелки вверх
+ *
+ * @method hasUpArrowSprite
+ * @return {Boolean} Окно содержит спрайт стрелки вверх
+ */
 DKTools_Window.prototype.hasUpArrowSprite = function() {
     return !!this._upArrowSprite;
 };
 
+/**
+ * Возвращает true, если окно содержит спрайт стрелки влево
+ *
+ * @method hasLeftArrowSprite
+ * @return {Boolean} Окно содержит спрайт стрелки влево
+ */
 DKTools_Window.prototype.hasLeftArrowSprite = function() {
     return !!this._leftArrowSprite;
 };
 
+/**
+ * Возвращает true, если окно содержит спрайт стрелки вправо
+ *
+ * @method hasRightArrowSprite
+ * @return {Boolean} Окно содержит спрайт стрелки вправо
+ */
 DKTools_Window.prototype.hasRightArrowSprite = function() {
     return !!this._rightArrowSprite;
 };
 
+/**
+ * Возвращает true, если окно содержит спрайт знака паузы
+ *
+ * @method hasPauseSignSprite
+ * @return {Boolean} Окно содержит спрайт знака паузы
+ */
 DKTools_Window.prototype.hasPauseSignSprite = function() {
     return !!this._windowPauseSignSprite;
 };
@@ -13227,49 +9945,50 @@ DKTools_Window.prototype.hasPauseSignSprite = function() {
 // move methods
 
 /**
- * Перемещает спрайт
+ * Перемещает окно
  *
  * @method move
  *
- * @param {Number | Point | Object | null} [object] - Координата X или Point, или Объект типа {}
- * @param {Number | null} [newY] - Координата Y
- * @param {Number | null} [duration] - Длительность перемещения
- * @param {Number | null} [newOpacity] - Новая прозрачность
- * @param {Number | null} [newScaleX] - Новое масштабирование по X
- * @param {Number | null} [newScaleY] - Новое масштабирование по Y
+ * @param {Number | Point | Object} [object] - Координата X или Point, или Объект типа {}
+ * @param {Number} [y] - Координата Y
+ * @param {Number} [duration] - Длительность перемещения
+ * @param {Number} [newOpacity] - Новая прозрачность
+ * @param {Number} [newScaleX] - Новое масштабирование по оси X
+ * @param {Number} [newScaleY] - Новое масштабирование по оси Y
  *
- * @param {Number | null} [object.x] - Координата X
- * @param {Number | null} [object.y] - Координата Y
+ * @param {Number} [object.x] - Координата X
+ * @param {Number} [object.y] - Координата Y
  */
-DKTools_Window.prototype.move = function(object, newY, duration, newOpacity) {
+DKTools_Window.prototype.move = function(object, y, duration, newOpacity) {
     if (object && (object.constructor === Point || object.constructor === Object)) {
         return Window.prototype.move.call(this, object.x, object.y, this.width, this.height);
     }
     duration = duration || 0;
     if (duration > 0) {
-        var newX = (object == null ? this.x : object);
-        newY = (newY == null ? this.y : newY);
+        var x = (object == null ? this.x : object);
+        y = (y == null ? this.y : y);
         newOpacity = (newOpacity == null ? this.opacity : newOpacity);
-        return this.addEvent('wait', this._updateMove.bind(this, newX, newY, newOpacity), duration);
+        return this.addEvent('wait', this._updateMove.bind(this, x, y, newOpacity), duration);
     } else {
-        var newX = object || 0;
-        newY = newY || 0;
-        Window.prototype.move.call(this, newX, newY, this.width, this.height);
+        var x = object || 0;
+        y = y || 0;
+        Window.prototype.move.call(this, x, y, this.width, this.height);
     }
 };
 
 // size methods
 
 /**
- * Устанавливает ширину и высоту Bitmap, если они отличаются от текущих
+ * Устанавливает ширину и высоту окна, если они отличаются от текущих
+ * Возвращает true, если изменение произошло
  *
  * @method resize
  *
- * @param {Number | null} [width = this.minWidth()] - Ширина Bitmap (The width of the Bitmap)
- * @param {Number | null} [height = this.minHeight()] - Высота Bitmap (The height of the Bitmap)
- * @param {Boolean | null} [blockStart = false] - Блокировка вызова функции start
+ * @param {Number} [width] - Ширина окна
+ * @param {Number} [height] - Высота окна
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @return {Boolean} Возвращает true, если изменение произошло
+ * @return {Boolean} Изменение произошло
  */
 DKTools_Window.prototype.resize = function(width, height, blockStart) {
     if (width == null) {
@@ -13295,10 +10014,9 @@ DKTools_Window.prototype.resize = function(width, height, blockStart) {
 
 /**
  * Возвращает минимальную ширину окна
- * Returns the minimum width of the window
  *
  * @method minWidth
- * @return Number
+ * @return {Number} Минимальная ширина окна
 */
 DKTools_Window.prototype.minWidth = function() {
     return this.standardPadding() * 2 + DKTools_Base.prototype.minWidth.call(this);
@@ -13306,10 +10024,9 @@ DKTools_Window.prototype.minWidth = function() {
 
 /**
  * Возвращает минимальную высоту окна
- * Returns the minimum height of the window
  *
  * @method minHeight
- * @return Number
+ * @return {Number} Минимальная высота окна
  */
 DKTools_Window.prototype.minHeight = function() {
 	return this.standardPadding() * 2 + DKTools_Base.prototype.minHeight.call(this);
@@ -13319,16 +10036,18 @@ DKTools_Window.prototype.minHeight = function() {
 
 /**
  * Загружает Bitmap из папки
- * Возвращает true, если bitmap был изменен
-
+ * Возвращает загруженный Bitmap
+ *
  * @method loadBitmap
- * @param {String || null} folder - Путь к папке
- * @param {String || null} filename - Имя файла
- * @param {Function || null} listener - Метод обработки после загрузки Bitmap
- * @param {Number || null} hue - Оттенок
- * @param {Boolean || null} smooth - Гладкий
- * @return Bitmap
-*/
+ *
+ * @param {String} folder - Путь к файлу
+ * @param {String} filename - Название файла
+ * @param {Function} [listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [hue] - Оттенок
+ * @param {Boolean} [smooth] - Сглаживание
+ *
+ * @return {Bitmap} Bitmap объекта был изменен
+ */
 DKTools_Window.prototype.loadBitmap = function(folder, filename, listener, hue, smooth) {
 	var bitmap = ImageManager.loadBitmap(folder, filename, hue, smooth);
 	if (listener) {
@@ -13339,19 +10058,39 @@ DKTools_Window.prototype.loadBitmap = function(folder, filename, listener, hue, 
 
 // reset methods
 
+/**
+ * Сбрасывает шрифт текста
+ *
+ * @method resetFontSettings
+ */
 DKTools_Window.prototype.resetFontSettings = function() {
 };
 
+/**
+ * Сбрасывает текст текста
+ *
+ * @method resetTextColor
+ */
 DKTools_Window.prototype.resetTextColor = function() {
 };
 
 // change methods
 
+/**
+ * Изменяет цвет текста
+ *
+ * @method changeTextColor
+ * @param {String} color - Цвет текста
+ */
 DKTools_Window.prototype.changeTextColor = function(color) {
-	//if (this.setTextColor(color, true)) this.updateTextColor();
-    //return this.setTextColor(color, true);
 };
 
+/**
+ * Изменяет прозрачность рисования контента окна
+ *
+ * @method changePaintOpacity
+ * @param {} object
+ */
 DKTools_Window.prototype.changePaintOpacity = function(object) {
 	// совместимость со стандартным changePaintOpacity
 	//if (object != null && object.constructor === Boolean) {
@@ -13364,10 +10103,20 @@ DKTools_Window.prototype.changePaintOpacity = function(object) {
 
 // events methods
 
+/**
+ * Обновляет события типа open
+ *
+ * @method updateOpenEvents
+ */
 DKTools_Window.prototype.updateOpenEvents = function() {
     this.updateEventContainer('open');
 };
 
+/**
+ * Обновляет события типа close
+ *
+ * @method updateCloseEvents
+ */
 DKTools_Window.prototype.updateCloseEvents = function() {
     this.updateEventContainer('close');
 };
@@ -13396,12 +10145,24 @@ DKTools_Window.prototype._updateMove = function(newX, newY, newOpacity, event) {
     this.setupOpacity(opacity);
 };
 
+/**
+ * Обновляет спрайт контента окна
+ *
+ * @private
+ * @method _updateContents
+ */
 DKTools_Window.prototype._updateContents = function() {
     if (this.hasContentsSprite()) {
         Window.prototype._updateContents.call(this);
     }
 };
 
+/**
+ * Обновляет видимость спрайтов стрелок
+ *
+ * @private
+ * @method _updateArrows
+ */
 DKTools_Window.prototype._updateArrows = function() {
     var isOpen = this.isOpen();
     if (this.hasDownArrowSprite()) {
@@ -13418,6 +10179,12 @@ DKTools_Window.prototype._updateArrows = function() {
     }
 };
 
+/**
+ * Обновляет спрайт знака паузы
+ *
+ * @private
+ * @method _updatePauseSign
+ */
 DKTools_Window.prototype._updatePauseSign = function() {
     if (this.hasPauseSignSprite()) {
         Window.prototype._updatePauseSign.call(this);
@@ -13426,6 +10193,11 @@ DKTools_Window.prototype._updatePauseSign = function() {
 
 // update methods
 
+/**
+ * Обновляет все
+ *
+ * @method updateAll
+ */
 DKTools_Window.prototype.updateAll = function() {
     DKTools_Base.prototype.updateAll.call(this);
     this.updateTone();
@@ -13449,8 +10221,8 @@ DKTools_Window.prototype.updateTransform = function() {
 };
 
 /**
- * Обновление тона окна
-
+ * Обновляет тон окна
+ *
  * @method updateTone
 */
 DKTools_Window.prototype.updateTone = function() {
@@ -13460,8 +10232,8 @@ DKTools_Window.prototype.updateTone = function() {
 };
 
 /**
- * Обновление прозрачности окна
-
+ * Обновляет прозрачность окна
+ *
  * @method updateOpacity
 */
 DKTools_Window.prototype.updateOpacity = function() {
@@ -13477,8 +10249,8 @@ DKTools_Window.prototype.updateOpacity = function() {
 };
 
 /**
- * Обновление открытия окна
-
+ * Обновляет открытие окна
+ *
  * @method updateOpen
 */
 DKTools_Window.prototype.updateOpen = function() {
@@ -13493,8 +10265,8 @@ DKTools_Window.prototype.updateOpen = function() {
 };
 
 /**
- * Обновление закрытия окна
-
+ * Обновляет закрытие окна
+ *
  * @method updateClose
 */
 DKTools_Window.prototype.updateClose = function() {
@@ -13508,6 +10280,11 @@ DKTools_Window.prototype.updateClose = function() {
 	}
 };
 
+/**
+ * Обновляет стрелки окна
+ *
+ * @method updateArrows
+ */
 DKTools_Window.prototype.updateArrows = function() {
 };
 
@@ -13643,6 +10420,11 @@ DKTools_Scene.prototype.iterateChildren = function(callback) {
 
 // update methods
 
+/**
+ * Обновляет сцену
+ *
+ * @method update
+ */
 DKTools_Scene.prototype.update = function() {
     Scene_Base.prototype.update.call(this);
     this.updateEvents();
