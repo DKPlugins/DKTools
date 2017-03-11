@@ -4,7 +4,7 @@ Author: DK (Denis Kuznetsov) (http://vk.com/dk_plugins)
 Site: http://dk-plugins.ru
 Group in VK: http://vk.com/dkplugins
 Version: 0.96 beta
-Release: 13.01.2017
+Release: 11.03.2017
 First release: 13.01.2016
 Supported languages: Russian, English
 */
@@ -15,7 +15,7 @@ Supported languages: Russian, English
 Сайт: http://dk-plugins.ru
 Группа ВК: http://vk.com/dkplugins
 Версия: 0.96 beta
-Релиз: 13.01.2017
+Релиз: 11.03.2017
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
@@ -72,7 +72,7 @@ DKLocalization.DKTools = {
  Site: http://dk-plugins.ru
  Group in VK: http://vk.com/dkplugins
  Version: 0.96 beta
- Release: 13.01.2017
+ Release: 11.03.2017
  First release: 13.01.2016
  Supported languages: Russian, English
 
@@ -80,10 +80,8 @@ DKLocalization.DKTools = {
  1. DKTools.Sprite
  2. DKTools.Viewport
  3. DKTools.Layout
- 4. DKTools.TextContainer
- 5. DKTools.Container
- 6. DKTools.Window
- 7. DKTools.Scene
+ 4. DKTools.Window
+ 5. DKTools.Scene
 
  ### Create objects ###
 
@@ -121,7 +119,7 @@ DKLocalization.DKTools = {
  Сайт: http://dk-plugins.ru
  Группа ВК: http://vk.com/dkplugins
  Версия: 0.96 beta
- Релиз: 13.01.2017
+ Релиз: 11.03.2017
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
  
@@ -129,10 +127,8 @@ DKLocalization.DKTools = {
  1. DKTools.Sprite
  2. DKTools.Viewport
  3. DKTools.Layout
- 4. DKTools.TextContainer
- 5. DKTools.Container
- 6. DKTools.Window
- 7. DKTools.Scene
+ 4. DKTools.Window
+ 5. DKTools.Scene
  
  ### Создание объектов ###
  Создание объекта состоит из 4 этапов
