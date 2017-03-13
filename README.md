@@ -1,6 +1,6 @@
 **Author**: DK
 
-**Version**: Public 0.92 **Beta**
+**Version**: Public 0.96 **Beta**
  
 **Description**: API. Contains elements for creating plugins.
  
@@ -8,7 +8,7 @@
  
 ## **4 steps to use DKTools**
 1. Create Element
-Create element from DKTools through "new" operator, like: var object = new DKTools_Sprite(x, y, width);
+Create element from DKTools through "new" operator, like: var object = new DKTools.Sprite(x, y, width);
  
 2. Set parameters through "setup" functions
 Each element contain "setup" functions, which set the parameters. All functions have default parameters.
@@ -20,27 +20,11 @@ Call start function of element.
 Use "addChild" function for add element to your scene.
  
 ## **List of elements:**
-1. DKTools_Sprite - Based on standard Sprite. Base class for other elements. Contain all required functions.
-2. DKTools_Viewport - 
-3. DKTools_Container_Base - Stores and processes the elements.
-4. DKTools_Selectable_Container_Base - 
-5. DKTools_Text_Container - Based on DKTools_Container_Base. Stores and processes the elements. First element - DKTools_Sprite.
-6. DKTools_Container - Based on DKTools_Text_Container. Stores and processes only two elements. First element - DKTools_Sprite.
-7. DKTools_Progress_Bar_Base - Progress bar.
-8. DKTools_Progress_Bar - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_Progress_Bar_Base.
-9. DKTools_Input_Base - Element for input text from keyboard
-10. DKTools_Input - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_Input_Base.
-11. DKTools_CheckBox_Base - CheckBox.
-12. DKTools_CheckBox - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_CheckBox_Base.
-13. DKTools_Radio_Button_Base - Based on DKTools_Container_Base. Contains DKTools_CheckBox elements as buttons.
-14. DKTools_Radio_Button - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_Radio_Button_Base.
-15. DKTools_Clicker_Base - Simple "clicker". Сycles through the images by clicking on the sprite.
-16. DKTools_Clicker - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_Clicker_Base.
-17. DKTools_ColorPicker_Base - ColorPicker.
-18. DKTools_ColorPicker - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_ColorPicker_Base.
-19. DKTools_Slider_Base - Slider.
-20. DKTools_Slider - Based on DKTools_Container. First element - DKTools_Sprite. Second - DKTools_Slider_Base.
-21. DKTools_Window - Based on standard Window_Base. Base class for other elements. Contain all required functions.
+1. DKTools.Sprite - Based on standard Sprite. Base class for other elements. Contain all required functions.
+2. DKTools.Viewport - 
+3. DKTools.Layout - Stores and processes the elements.
+4. DKTools.Window - Based on standard Window_Base. Base class for other elements. Contain all required functions.
+5. DKTools.Scene -
 
 **Warning:** not all elements are ready
  
@@ -50,36 +34,9 @@ Use "addChild" function for add element to your scene.
 3. Many different functions in each element
  
 # **FAQ**
-**Q: What is "DKTools_Sprite" ?**
+**Q: What is "DKTools.Sprite" ?**
 
 **A:** This is a class, which contain a standard Sprite functions, Sprite_Button functions and many new functions. The most significant features are: avoid errors when changing parameters, event support, new features for click and mouse (long press, mouse enter/stay on element and mouse leave from element.
- 
- 
-**Q: What is "Event support" ?**
-
-**A:** I developed special class "DKToolsEvent", that handles a variety of activities that take place with the elements.
- 
- 
-**Q: What types of activities can take place with the elements?**
-
-**A:** Base class "DKTools_Sprite" includes the following types of events:
-
-1. wait - events that caused each time an element is updated (blocking update events)
-2. update - events  that caused each time an element is updated
-3. start - events, which are caused when calling the function start element
-4. ready - events, which are caused when element is ready (images loaded)
-5. free - events, which are caused when element is ready and element have not the wait events
-6. activate - events, which are caused when calling the activation function of the element
-7. deactivate - events, which are caused when calling the deactivation function of the element
-8. mouseEnter - events that are called when you hover over the element (triggered once)
-9. mouseStay - similar to the previous type, but triggered every frame until the mouse is stay on element
-10. mouseLeave - events that are called when the mouse leaves an element (triggered once)
-11. click - events that are called when a user clicks on an element (a simple click)
-12. longPress - event that are called when the user clicks long press on element
-13. wheelX - event that are called when the user scrolls the mouse wheel on the X axis
-14. wheelY - event that are called when the user scrolls the mouse wheel on the Y axis
-
-Other elements have different events.
 
 
 **Q: Сurrently DKTools has incomplete documentation and only in Russian. Will the English documentation ?**
