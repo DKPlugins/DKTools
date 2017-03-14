@@ -3314,8 +3314,7 @@ DKTools.Base.prototype.initialize = function(object, y, width, height) {
  */
 DKTools.Base.prototype._clearAll = function() {
     this._clearEvents();
-    this._clearSymbols();
-    this._clearTexts();
+    this._clearOptions();
 };
 
 /**
@@ -3328,29 +3327,16 @@ DKTools.Base.prototype._clearEvents = function() {
 };
 
 /**
- * Очищает символы
+ * Очищает опции
  *
  * @private
  */
-DKTools.Base.prototype._clearSymbols = function() {
+DKTools.Base.prototype._clearOptions = function() {
     /**
      * @private
      * @type {String[]}
      */
-    this._symbols = {};
-};
-
-/**
- * Очищает тексты
- *
- * @private
- */
-DKTools.Base.prototype._clearTexts = function() {
-    /**
-     * @private
-     * @type {PIXI.Text[]}
-     */
-    this._texts = [];
+    this._options = [];
 };
 
 // clear methods
@@ -4332,9 +4318,15 @@ DKTools.Base.prototype.removeAll = function() {
 
 /**
  * @param {PIXI.Text} text
+ * @return {Boolean}
  */
 DKTools.Base.prototype.removeText = function(text) {
-    DKTools.Utils.Array.remove(this._texts, text);
+    var index = this.children.indexOf(text);
+    if (index >= 0) {
+        this.removeChild(text);
+        return true;
+    }
+    return false;
 };
 
 // _check methods
@@ -4613,7 +4605,9 @@ DKTools.Base.prototype.bitmapFromObject = function(object) {
     if (!object) {
         return null;
     }
-    var bitmap = object || null;
+    // object - Bitmap
+    var bitmap = object;
+    // object - Object
     if (object.constructor === Object) {
         bitmap = ImageManager.loadBitmap(object.folder, object.filename, object.hue, object.smooth);
         if (object.listener) {
@@ -5285,7 +5279,7 @@ DKTools.Base.prototype.drawCharacter = function(characterName, characterIndex, o
     if (!this.hasBitmap()) {
         return false;
     }
-    if (object && (object.constructor === Point || object.constructor === Object)) {
+    if (object instanceof Object) {
         return this.drawCharacter(characterName, characterIndex, object.x, object.y);
     }
     var x = object || 0;
@@ -5307,448 +5301,480 @@ DKTools.Base.prototype.drawCharacter = function(characterName, characterIndex, o
  * Загружает Bitmap из папки img/animations/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadAnimation = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/animations/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadAnimation = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/animations/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/animations/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает Bitmap из папки img/battlebacks1/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadBattleback1 = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/battlebacks1/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadBattleback1 = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/battlebacks1/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/battlebacks1/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает Bitmap из папки img/battlebacks2/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadBattleback2 = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/battlebacks2/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadBattleback2 = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/battlebacks2/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/battlebacks2/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает Bitmap из папки img/enemies/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadEnemy = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/enemies/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadEnemy = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/enemies/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/enemies/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает Bitmap из папки img/characters/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadCharacter = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/characters/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadCharacter = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/characters/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/characters/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает Bitmap из папки img/faces/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadFace = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/faces/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadFace = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/faces/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/faces/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает Bitmap из папки img/parallaxes/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadParallax = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/parallaxes/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadParallax = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/parallaxes/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/parallaxes/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает Bitmap из папки img/pictures/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadPicture = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/pictures/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadPicture = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/pictures/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/pictures/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает Bitmap из папки img/sv_actors/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadSvActor = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/sv_actors/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadSvActor = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/sv_actors/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/sv_actors/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает Bitmap из папки img/sv_enemies/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadSvEnemy = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/sv_enemies/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadSvEnemy = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/sv_enemies/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/sv_enemies/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает Bitmap из папки img/system/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadSystem = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/system/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadSystem = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/system/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/system/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает Bitmap из папки img/tilesets/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadTileset = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/tilesets/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadTileset = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/tilesets/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/tilesets/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает Bitmap из папки img/titles1/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadTitle1 = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/titles1/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadTitle1 = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/titles1/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/titles1/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает Bitmap из папки img/titles2/
  * Возвращает true, если Bitmap объекта был изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadTitle2 = function(filename, listener, hue, smooth) {
-    return this.loadBitmap('img/titles2/', filename, listener, hue, smooth);
+DKTools.Base.prototype.loadTitle2 = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/titles2/', object.filename, object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadBitmap('img/titles2/', object, listener, hue, smooth);
 };
 
 /**
  * Загружает обложку окна из папки img/system/
  * Возвращает true, если Bitmap был объекта изменен
  *
- * @param {String} filename - Название файла
+ * @param {String | Object} object - Название файла или Объект типа {}
  * @param {Function} [listener] - Метод обработки после загрузки Bitmap
  * @param {Number} [hue] - Оттенок
  * @param {Boolean} [smooth] - Сглаживание
  *
+ * @param {String} object.filename - Название файла
+ * @param {Function} [object.listener] - Метод обработки после загрузки Bitmap
+ * @param {Number} [object.hue] - Оттенок
+ * @param {Boolean} [object.smooth] - Сглаживание
+ *
  * @return {Boolean} Bitmap объекта был изменен
  */
-DKTools.Base.prototype.loadWindowskin = function(filename, listener, hue, smooth) {
-    return this.loadSystem(filename || this.standardWindowskin(), listener, hue, smooth);
+DKTools.Base.prototype.loadWindowskin = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadSystem(object.filename || this.standardWindowskin(), object.listener, object.hue, object.smooth);
+    }
+    // object - String
+    return this.loadSystem(object || this.standardWindowskin(), listener, hue, smooth);
 };
 
-// symbols methods
+// options methods
 
 /**
- * Возвращает значение символа
+ * Возвращает true, если опция включена
  *
- * @param {String} symbol - Символ
- * @return {Boolean} Значение символа
+ * @param {String} option - Название опции
+ * @return {Boolean} Опция включена
  */
-DKTools.Base.prototype.symbol = function(symbol) {
-    return !!this._symbols[symbol];
-};
-
-/**
- * Обрабатывает изменение значения символа
- *
- * @param {String} symbol - Символ
- * @param {Boolean} value - Значение символа
- */
-DKTools.Base.prototype.onSymbolChange = function(symbol, value) {
+DKTools.Base.prototype.isOptionEnabled = function(option) {
+    return this._options.contains(option);
 };
 
 /**
- * Устанавливает значение символа
+ * Возвращает true, если опция выключена
  *
- * @param {String} symbol - Символ
- * @param {Boolean} value - Значение символа
+ * @param {String} option - Название опции
+ * @return {Boolean} Опция выключена
  */
-DKTools.Base.prototype.setSymbol = function(symbol, value) {
-    value = DKTools.Utils.toBoolean(value);
-    var lastValue = this.symbol(symbol);
-    this._symbols[symbol] = value;
-    if (lastValue !== value) {
-        this.onSymbolChange(symbol, value);
+DKTools.Base.prototype.isOptionDisabled = function(option) {
+    return !this.isOptionEnabled(option);
+};
+
+/**
+ * Обрабатывает изменение значения опции
+ *
+ * @param {String} option - Название опции
+ * @param {Boolean} value - Значение опции
+ */
+DKTools.Base.prototype.onOptionChange = function(option, value) {
+};
+
+/**
+ * Включает опцию
+ *
+ * @param {String} option - Название опции
+ */
+DKTools.Base.prototype.enableOption = function(option) {
+    if (this.isOptionDisabled(option)) {
+        this._options.push(option);
+        this.onOptionChange(option, true);
     }
 };
 
 /**
- * Возвращает значения символов или одного символа
+ * Включает опции
  *
- * @param {String[] | String | ...String} object - Массив символов или символ, или перечисление символов
- * @return {Boolean[]} Значения символов или одного символа
+ * @param {String[] | ...String} object - Массив названий опций или перечисление названий опций
  */
-DKTools.Base.prototype.symbols = function(object) {
-    var symbols = [];
-    if (arguments.length > 1) {
-        for(var i = 0; i < arguments.length; i++) {
-            var symbol = arguments[i];
-            var value = this.symbol(symbol);
-            symbols.push(value);
-        }
+DKTools.Base.prototype.enableOptions = function(object) {
+    var options = (arguments.length > 1 ? arguments : object);
+    _.each(options, this.enableOption.bind(this));
+};
+
+/**
+ * Выключает опцию
+ *
+ * @param {String} option - Название опции
+ */
+DKTools.Base.prototype.disableOption = function(option) {
+    if (this.isOptionEnabled(option)) {
+        DKTools.Utils.Array.remove(this._options, option);
+        this.onOptionChange(option, false);
+    }
+};
+
+/**
+ * Выключает опции
+ *
+ * @param {String[] | ...String} object - Массив названий опций или перечисление названий опций
+ */
+DKTools.Base.prototype.disableOptions = function(object) {
+    var options = (arguments.length > 1 ? arguments : object);
+    _.each(options, this.disableOption.bind(this));
+};
+
+/**
+ * Переключает опцию
+ *
+ * @param {String} option - Название опции
+ */
+DKTools.Base.prototype.switchOption = function(option) {
+    if (this.isOptionEnabled(option)) {
+        this.disableOption(option);
     } else {
-        if (object instanceof Array) {
-            return this.symbols.apply(this, object);
-        } else {
-            var value = this.symbol(object);
-            symbols.push(value);
-        }
-    }
-    return symbols;
-};
-
-/**
- * Возвращает true, если у объекта есть символ
- *
- * @param {String} symbol - Символ
- * @return {Boolean} У объекта есть символ
- */
-DKTools.Base.prototype.hasSymbol = function(symbol) {
-    return this._symbols.hasOwnProperty(symbol);
-};
-
-/**
- * Возвращает объект, в котором для каждого символа указано его значение
- *
- * @param {String[] | String | ...String} object - Массив символов или символ, или перечисление символов
- * @return {Object} Объект, в котором для каждого символа указано его значение
- */
-DKTools.Base.prototype.hasSymbols = function(object) {
-    var symbols = {};
-    if (arguments.length > 1) {
-        for(var i = 0; i < arguments.length; i++) {
-            var symbol = arguments[i];
-            symbols[symbol] = this.hasSymbol(symbol);
-        }
-    } else {
-        if (object instanceof Array) {
-            return this.hasSymbols.apply(this, object);
-        } else {
-            symbols[object] = this.hasSymbol(object);
-        }
-    }
-    return symbols;
-};
-
-/**
- * Переключает значение символа
- *
- * @param {String} symbol - Символ
- */
-DKTools.Base.prototype.switchSymbol = function(symbol) {
-    var newValue = !this.symbol(symbol);
-    this.setSymbol(symbol, newValue);
-};
-
-/**
- * Переключает значения символов или одного символа
- *
- * @param {String[] | String | ...String} object - Массив символов или символ, или перечисление символов
- */
-DKTools.Base.prototype.switchSymbols = function(object) {
-    if (arguments.length > 1) {
-        for(var i = 0; i < arguments.length; i++) {
-            var symbol = arguments[i];
-            this.switchSymbol(symbol);
-        }
-    } else {
-        if (object instanceof Array) {
-            return this.switchSymbols.apply(this, object);
-        } else {
-            return this.switchSymbol(object);
-        }
+        this.enableOption(option);
     }
 };
 
 /**
- * Включает символ
+ * Переключает опции
  *
- * @param {String} symbol - Символ
+ * @param {String[] | ...String} object - Массив названий опций или перечисление названий опций
  */
-DKTools.Base.prototype.enableSymbol = function(symbol) {
-    this.setSymbol(symbol, true);
+DKTools.Base.prototype.switchOptions = function(object) {
+    var options = (arguments.length > 1 ? arguments : object);
+    _.each(options, this.switchOption.bind(this));
 };
 
 /**
- * Включает символы или один символ
+ * Возвращает конъюнкцию опций
  *
- * @param {String[] | String | ...String} object - Массив символов или символ, или перечисление символов
+ * @param {String[] | ...String} object - Массив названий опций или перечисление названий опций
+ * @return {Boolean} Конъюнкция опций
  */
-DKTools.Base.prototype.enableSymbols = function(object) {
-    if (arguments.length > 1) {
-        for(var i = 0; i < arguments.length; i++) {
-            var symbol = arguments[i];
-            this.enableSymbol(symbol);
-        }
-    } else {
-        if (object instanceof Array) {
-            return this.enableSymbols.apply(this, object);
-        } else {
-            return this.enableSymbol(object);
-        }
-    }
+DKTools.Base.prototype.isOptionsEnabled = function(object) {
+    var options = (arguments.length > 1 ? arguments : object);
+    return DKTools.Utils.Array.conjunction(_.map(options, this.isOptionEnabled.bind(this)));
 };
 
 /**
- * Выключает символ
+ * Возвращает конъюнкцию опций
  *
- * @param {String} symbol - Символ
+ * @param {String[] | ...String} object - Массив названий опций или перечисление названий опций
+ * @return {Boolean} Конъюнкция опций
  */
-DKTools.Base.prototype.disableSymbol = function(symbol) {
-    this.setSymbol(symbol, false);
-};
-
-/**
- * Выключает символы или один символ
- *
- * @param {String[] | String | ...String} object - Массив символов или символ, или перечисление символов
- */
-DKTools.Base.prototype.disableSymbols = function(object) {
-    if (arguments.length > 1) {
-        for(var i = 0; i < arguments.length; i++) {
-            var symbol = arguments[i];
-            this.disableSymbol(symbol);
-        }
-    } else {
-        if (object instanceof Array) {
-            return this.disableSymbols.apply(this, object);
-        } else {
-            return this.disableSymbol(object);
-        }
-    }
-};
-
-/**
- * Возвращает массив с включенными символами
- *
- * @return {String[]} Массив с включенными символами
- */
-DKTools.Base.prototype.enabledSymbols = function() {
-    var symbols = [];
-    for(var symbol in this._symbols) {
-        if (this.symbol(symbol)) {
-            symbols.push(symbol);
-        }
-    }
-    return symbols;
-};
-
-/**
- * Возвращает массив с выключенными символами
- *
- * @return {String[]} Массив с выключенными символами
- */
-DKTools.Base.prototype.disabledSymbols = function() {
-    var symbols = [];
-    for(var symbol in this._symbols) {
-        if (!this.symbol(symbol)) {
-            symbols.push(symbol);
-        }
-    }
-    return symbols;
-};
-
-/**
- * Возвращает конъюнкцию символов
- *
- * @param {String[] | String | ...String} object - Массив символов или символ, или перечисление символов
- * @return {Boolean} Конъюнкция символов
- */
-DKTools.Base.prototype.isSymbolsEnabled = function(object) {
-    var symbols = this.symbols.apply(this, arguments);
-    return symbols.conjunction();
+DKTools.Base.prototype.isOptionsDisabled = function(object) {
+    var options = (arguments.length > 1 ? arguments : object);
+    return DKTools.Utils.Array.conjunction(_.map(options, this.isOptionDisabled.bind(this)));
 };
 
 // event methods
@@ -6155,7 +6181,6 @@ DKTools.Base.prototype.addText = function(text, style) {
     } else {
         textSprite = new PIXI.Text(text, Object.assign(this.standardTextStyle(), style));
     }
-    this._texts.push(textSprite);
     this.addChild(textSprite);
     return textSprite;
 };
