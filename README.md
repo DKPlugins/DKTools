@@ -2,7 +2,7 @@
 
 **Version**: Public 0.98 **Beta**
  
-**Description**: API. Contains elements for creating plugins.
+**Description**: Library for RPG Maker MV
  
 **Dependencies**: RPG Maker MV 1.5+ and lodash.js
 
@@ -15,7 +15,7 @@
 **Warning:** May contain bugs in some elements
  
 ## **4 steps to use DKTools**
-1. Create Element
+1. Create element
 Create element from DKTools through "new" operator, like: var object = new DKTools.Sprite(x, y, width);
  
 2. Set parameters through "setup" functions
