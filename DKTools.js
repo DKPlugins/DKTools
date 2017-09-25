@@ -242,12 +242,14 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type boolean
  * @default false
 
- * @param Beta Updates
- * @text Бета обновления
+ * @param Page Size
+ * @text Количество плагинов
  * @parent Updates
- * @desc Проверять бета версии обновлений ?
- * @type boolean
- * @default false
+ * @desc Количество плагинов на одной странице
+ * @type number
+ * @min 1
+ * @max 25
+ * @default 10
 
  * @param Updates Language
  * @text Язык интерфейса
@@ -318,14 +320,9 @@ Imported.DKTools = 0.98;
 //===========================================================================
 
 /**
- * @class DKTools
- * @constructor
- *
- * @namespace DKTools
+ * @type {Object}
  */
-function DKTools() {
-	throw new Error('This is a static class!');
-}
+const DKTools = {};
 
 /**
  * Версия DKTools
@@ -351,8 +348,7 @@ Object.defineProperties(DKTools, {
     version: {
         get: function() {
             return this._version;
-        },
-        configurable: true
+        }
     }
 
 });
@@ -362,86 +358,74 @@ Object.defineProperties(DKTools, {
 /**
  * Статический класс утилит
  *
- * @class DKTools.Utils
- * @constructor
- *
+ * @type {Object}
  * @memberOf DKTools
  */
-DKTools.Utils = function() {
-    throw new Error('This is a static class!');
-};
+DKTools.Utils = {};
 
 /**
  * Статический класс, содержащий функции для String
  *
- * @class DKTools.Utils.String
- * @constructor
- *
+ * @type {Object}
  * @memberOf DKTools.Utils
  */
-DKTools.Utils.String = function() {
-    throw new Error('This is a static class!');
-};
+DKTools.Utils.String = {};
 
 /**
  * Статический класс, содержащий функции для Array
  *
- * @class DKTools.Utils.Array
- * @constructor
- *
+ * @type {Object}
  * @memberOf DKTools.Utils
  */
-DKTools.Utils.Array = function() {
-    throw new Error('This is a static class!');
-};
+DKTools.Utils.Array = {};
 
 /**
  * Статический класс, содержащий функции для Bitmap
  *
- * @class DKTools.Utils.Bitmap
- * @constructor
- *
+ * @type {Object}
  * @memberOf DKTools.Utils
  */
-DKTools.Utils.Bitmap = function() {
-    throw new Error('This is a static class!');
-};
+DKTools.Utils.Bitmap = {};
 
 /**
  * Статический класс, содержащий функции для Point
  *
- * @class DKTools.Utils.Point
- * @constructor
- *
+ * @type {Object}
  * @memberOf DKTools.Utils
  */
-DKTools.Utils.Point = function() {
-    throw new Error('This is a static class!');
-};
+DKTools.Utils.Point = {};
 
 /**
  * Статический класс, содержащий функции для Rectangle
  *
- * @class DKTools.Utils.Rectangle
- * @constructor
- *
+ * @type {Object}
  * @memberOf DKTools.Utils
  */
-DKTools.Utils.Rectangle = function() {
-    throw new Error('This is a static class!');
-};
+DKTools.Utils.Rectangle = {};
 
 /**
  * Статический класс, содержащий функции рандома
  *
- * @class DKTools.Utils.Random
- * @constructor
- *
+ * @type {Object}
  * @memberOf DKTools.Utils
  */
-DKTools.Utils.Random = function() {
-    throw new Error('This is a static class!');
-};
+DKTools.Utils.Random = {};
+
+/**
+ * Статический класс, содержащий последовательности
+ *
+ * @type {Object}
+ * @memberOf DKTools.Utils
+ */
+DKTools.Utils.Sequence = {};
+
+/**
+ * Статический класс, содержащий последовательности алфавита
+ *
+ * @type {Object}
+ * @memberOf DKTools.Utils.Sequence
+ */
+DKTools.Utils.Sequence.Alphabet = {};
 
 /**
  * @class DKTools.ParameterManager
@@ -459,38 +443,26 @@ DKTools.ParameterManager = function(pluginName, convertible) {
 /**
  * Статический класс, который управляет файловой системой
  *
- * @class DKTools.FileManager
- * @constructor
- *
+ * @type {Object}
  * @memberOf DKTools
  */
-DKTools.FileManager = function() {
-    throw new Error('This is a static class!');
-};
+DKTools.FileManager = {};
 
 /**
  * Статический класс локализации
  *
- * @class DKTools.Localization
- * @constructor
- *
+ * @type {Object}
  * @memberOf DKTools
  */
-DKTools.Localization = function() {
-    throw new Error('This is a static class!');
-};
+DKTools.Localization = {};
 
 /**
  * Статический класс, который управляет плагинами
  *
- * @class DKTools.PluginManager
- * @constructor
- *
+ * @type {Object}
  * @memberOf DKTools
  */
-DKTools.PluginManager = function() {
-    throw new Error('This is a static class!');
-};
+DKTools.PluginManager = {};
 
 /**
  * Класс аудиофайла
@@ -661,6 +633,19 @@ DKTools.Sprite.Cursor = function(object, y, width, height) {
 };
 
 /**
+ * @class DKTools.Sprite.Arrow
+ * @augments DKTools.Sprite.Button
+ *
+ * @override
+ * @constructor
+ *
+ * @memberOf DKTools.Sprite
+ */
+DKTools.Sprite.Arrow = function(object, y) {
+    this.initialize.apply(this, arguments);
+};
+
+/**
  * @class DKTools.Sprite.Selectable
  * @augments DKTools.Sprite.Button
  *
@@ -785,9 +770,11 @@ DKTools.Scene = function() {
 	this.initialize.apply(this, arguments);
 };
 
-DKTools.Updates = function() {
-    throw new Error('This is a static class!');
-};
+/**
+ * @type {Object}
+ * @memberOf DKTools
+ */
+DKTools.Updates = {};
 
 
 
@@ -842,6 +829,10 @@ DKTools.Utils.initialize = function() {
 
     if (DKToolsParam.get('Open Console')) {
         this.openConsole();
+    }
+
+    if (DKToolsParam.get('Auto Updates')) {
+        DKTools.Updates.autoCheckUpdates();
     }
 };
 
@@ -1397,12 +1388,7 @@ DKTools.Utils.Point.equals = function(point1, point2) {
  * @return {*} Клонированный Point
  */
 DKTools.Utils.Point.clone = function(point) {
-    let newPoint;
-    if (point instanceof PIXI.ObservablePoint) {
-        newPoint = new PIXI.ObservablePoint();
-    } else {
-        newPoint = new (point.constructor)();
-    }
+    let newPoint = new (point.constructor)();
     newPoint.copy(point);
     return newPoint;
 };
@@ -1535,7 +1521,7 @@ DKTools.Utils.Random.getFloat = function(max) {
  * @return {Boolean}
  */
 DKTools.Utils.Random.getBoolean = function() {
-    return this.getInt(2) % 2 === 0;
+    return this.getInt(1) % 2 === 0;
 };
 
 /**
@@ -1564,6 +1550,62 @@ DKTools.Utils.Random.getRgbaColor = function(alpha) {
  */
 DKTools.Utils.Random.getHexColor = function() {
     return '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+};
+
+
+
+
+
+//===========================================================================
+// DKTools Utils Sequence
+//===========================================================================
+
+/**
+ *
+ * @param {Number} [max=Number.MAX_SAFE_INTEGER]
+ */
+DKTools.Utils.Sequence.Number = function*(max) {
+    max = max || Number.MAX_SAFE_INTEGER;
+    let count = 0;
+    while(count <= max) {
+        yield count++;
+    }
+};
+
+/**
+ *
+ * @param [Boolean} [start=false]
+ */
+DKTools.Utils.Sequence.Boolean = function*(start) {
+    let value = start || false;
+    while(true) {
+        value = !value;
+        yield value;
+    }
+};
+
+/**
+ *
+ * @param {Boolean} [upper]
+ */
+DKTools.Utils.Sequence.Alphabet.ru = function*(upper) {
+    let alphabet = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
+    if (upper) {
+        alphabet = alphabet.toUpperCase();
+    }
+    yield* alphabet;
+};
+
+/**
+ *
+ * @param {Boolean} [upper]
+ */
+DKTools.Utils.Sequence.Alphabet.en = function*(upper) {
+    let alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    if (upper) {
+        alphabet = alphabet.toUpperCase();
+    }
+    yield* alphabet;
 };
 
 
@@ -1850,10 +1892,10 @@ DKTools.PluginManager._checkRequirements = function() {
         let maxVersion = _.max(pluginInfo);
         let pluginVersion = this.pluginVersion(pluginName);
         if (_.isUndefined(pluginVersion)) {
-            var error = 'Required to install the plugin "%1". Minimal version: %2'.format(pluginName, maxVersion);
+            let error = 'Required to install the plugin "%1". Minimal version: %2'.format(pluginName, maxVersion);
             throw new Error(error);
         } else if (pluginVersion < maxVersion) {
-            var error = 'Required to update the plugin "%1" to minimal version %2 (Installed: %3)'.format(pluginName,
+            let error = 'Required to update the plugin "%1" to minimal version %2 (Installed: %3)'.format(pluginName,
                 maxVersion, pluginVersion);
             throw new Error(error);
         }
@@ -2434,6 +2476,13 @@ DKTools.Localization._localFilename = DKToolsParam.get('Local Filename');
  */
 DKTools.Localization._webFilename = DKToolsParam.get('Web Filename');
 
+/**
+ * @private
+ * @readonly
+ * @type {Function[]}
+ */
+DKTools.Localization._listeners = [];
+
 // properties
 
 Object.defineProperties(DKTools.Localization, {
@@ -2596,7 +2645,7 @@ DKTools.Localization._getFileObject = function() {
  * @returns {String | null}
  */
 DKTools.Localization.getPrevLocale = function() {
-    let locales = this.locales;
+    const locales = this.locales;
     let index = _.indexOf(locales, this._locale);
     if (index >= 0) {
         index--;
@@ -2615,7 +2664,7 @@ DKTools.Localization.getPrevLocale = function() {
  * @returns {String | null}
  */
 DKTools.Localization.getNextLocale = function() {
-    let locales = this.locales;
+    const locales = this.locales;
     let index = _.indexOf(locales, this._locale);
     if (index >= 0) {
         index++;
@@ -2632,7 +2681,7 @@ DKTools.Localization.getNextLocale = function() {
  * @returns {String | null}
  */
 DKTools.Localization.getPrevLanguage = function() {
-    let locale = this.getPrevLocale();
+    const locale = this.getPrevLocale();
     if (locale) {
         return this._languages[locale];
     }
@@ -2644,7 +2693,7 @@ DKTools.Localization.getPrevLanguage = function() {
  * @returns {String | null}
  */
 DKTools.Localization.getNextLanguage = function() {
-    let locale = this.getNextLocale();
+    const locale = this.getNextLocale();
     if (locale) {
         return this._languages[locale];
     }
@@ -2655,7 +2704,7 @@ DKTools.Localization.getNextLanguage = function() {
  * @static
  */
 DKTools.Localization.selectPrevLocale = function() {
-    let locale = this.getPrevLocale();
+    const locale = this.getPrevLocale();
     if (locale) {
         this._setLocale(locale);
     }
@@ -2665,7 +2714,7 @@ DKTools.Localization.selectPrevLocale = function() {
  * @static
  */
 DKTools.Localization.selectNextLocale = function() {
-    let locale = this.getNextLocale();
+    const locale = this.getNextLocale();
     if (locale) {
         this._setLocale(locale);
     }
@@ -2679,7 +2728,7 @@ DKTools.Localization.selectNextLocale = function() {
 DKTools.Localization._setLocale = function(locale) {
     if (this.checkLocale(locale)) {
         if (this._locale !== locale) {
-            let lastLocale = this._locale;
+            const lastLocale = this._locale;
             this._locale = locale;
             this.saveLocale();
             this.onLocaleChange(lastLocale);
@@ -2705,7 +2754,17 @@ DKTools.Localization.checkLocale = function(locale) {
  * @param {String} lastLocale - Предыдущая локаль игры
  */
 DKTools.Localization.onLocaleChange = function(lastLocale) {
-    // to be overridden by plugins
+    _.forEach(this._listeners, function(listener) {
+        listener(lastLocale);
+    });
+};
+
+/**
+ * @static
+ * @param {Function} listener
+ */
+DKTools.Localization.addChangeLocaleListener = function(listener) {
+    this._listeners.push(listener);
 };
 
 
@@ -2716,7 +2775,7 @@ DKTools.Localization.onLocaleChange = function(lastLocale) {
 // window
 //===========================================================================
 
-let DKTools_window_onload = window.onload;
+const DKTools_window_onload = window.onload;
 window.onload = function() {
     DKTools.Utils.initialize();
     DKTools.FileManager.initialize();
@@ -5215,10 +5274,6 @@ Object.defineProperties(DKTools.Base.prototype, {
  * @see свойства object: DKTools.Base.prototype.setupAll
  */
 DKTools.Base.prototype.initialize = function(object, y, width, height) {
-    this._clearAll();
-    this._createAll();
-    this._setupAll();
-    this._addAllChildren();
     let x;
     if (object instanceof Object) {
         x = object.x;
@@ -5229,8 +5284,12 @@ DKTools.Base.prototype.initialize = function(object, y, width, height) {
         x = object;
     }
     this.move(x, y);
-    this.setupAll(object);
     this.setupSize(width, height);
+    this._clearAll();
+    this._createAll();
+    this._setupAll();
+    this._addAllChildren();
+    this.setupAll(object);
 };
 
 // _clear methods
@@ -5648,7 +5707,7 @@ DKTools.Base.prototype.standardWindowskin = function() {
  * @return {Object} Стандартный стиль текста
  */
 DKTools.Base.prototype.standardTextStyle = function() {
-    var style = {
+    let style = {
         fill: 'white',
         strokeThickness: 3,
         fontFamily: this.standardFontFace(),
@@ -6208,11 +6267,11 @@ DKTools.Base.prototype.setScale = function(object, y) {
         return this.setScale(object.x, object.y);
     }
     // object - Number
-    let newScale = DKTools.Utils.Point.convertToPoint(object, y);
+    const newScale = DKTools.Utils.Point.convertToPoint(object, y);
     if (DKTools.Utils.Point.equals(this.scale, newScale)) {
         return false;
     }
-    let lastScale = DKTools.Utils.Point.clone(this.scale);
+    const lastScale = DKTools.Utils.Point.clone(this.scale);
     this.setupScale(newScale);
     return !DKTools.Utils.Point.equals(this.scale, lastScale);
 };
@@ -6470,6 +6529,10 @@ DKTools.Base.prototype.redrawAll = function() {
 };
 
 // get methods
+
+DKTools.Base.prototype.getChildById = function(id) {
+    return _.find(this.children, { id: id });
+};
 
 /**
  * Возвращает ширину текста
@@ -6969,6 +7032,18 @@ DKTools.Base.prototype.isOutside = function(x, y) {
  */
 DKTools.Base.prototype.isMouseEntered = function() {
     return this.isInside(TouchInput.mouseX, TouchInput.mouseY);
+};
+
+/**
+ *
+ * @param [object]
+ * @returns {Boolean}
+ */
+DKTools.Base.prototype.isChild = function(object) {
+    if (!object) {
+        return !!this.parent;
+    }
+    return object.parent === this;
 };
 
 // draw methods
@@ -9142,40 +9217,6 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Ширина спрайта (с учетом масштабирования)
-     *
-     * @type {Number}
-     * @memberOf DKTools.Sprite
-     */
-    width: {
-        get: function() {
-            return this._frame.width * this.scale.x;
-        },
-        set: function(value) {
-            this._frame.width = value;
-            this._refresh();
-        },
-        configurable: true
-    },
-
-    /**
-     * Высота спрайта (с учетом масштабирования)
-     *
-     * @type {Number}
-     * @memberOf DKTools.Sprite
-     */
-    height: {
-        get: function() {
-            return this._frame.height * this.scale.y;
-        },
-        set: function(value) {
-            this._frame.height = value;
-            this._refresh();
-        },
-        configurable: true
-    },
-
-    /**
      * Реальная ширина спрайта (без учета масштабирования)
      *
      * @readonly
@@ -9185,6 +9226,10 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     realWidth: {
         get: function() {
             return this._frame.width;
+        },
+        set: function(value) {
+            this._frame.width = value;
+            this._refresh();
         },
         configurable: true
     },
@@ -9199,6 +9244,42 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     realHeight: {
         get: function() {
             return this._frame.height;
+        },
+        set: function(value) {
+            this._frame.height = value;
+            this._refresh();
+        },
+        configurable: true
+    },
+
+    /**
+     * Ширина спрайта (с учетом масштабирования)
+     *
+     * @type {Number}
+     * @memberOf DKTools.Sprite
+     */
+    width: {
+        get: function() {
+            return this.realWidth * this.scale.x;
+        },
+        set: function(value) {
+            this.realWidth = Math.floor(value / this.scale.x);
+        },
+        configurable: true
+    },
+
+    /**
+     * Высота спрайта (с учетом масштабирования)
+     *
+     * @type {Number}
+     * @memberOf DKTools.Sprite
+     */
+    height: {
+        get: function() {
+            return this.realHeight * this.scale.y;
+        },
+        set: function(value) {
+            this.realHeight = Math.floor(value / this.scale.y);
         },
         configurable: true
     },
@@ -9766,8 +9847,8 @@ DKTools.Sprite.prototype.resize = function(width, height, blockStart) {
     if (this._bitmapWidth === width && this._bitmapHeight === height) {
         return false;
     }
-    let lastWidth = this._bitmapWidth;
-    let lastHeight = this._bitmapHeight;
+    const lastWidth = this._bitmapWidth;
+    const lastHeight = this._bitmapHeight;
     this.setupSize(width, height);
     if (this._bitmapWidth === lastWidth  && this._bitmapHeight === lastHeight) {
         return false;
@@ -10190,7 +10271,7 @@ DKTools.Sprite.Button.prototype.standardLongPressInterval = function() {
  */
 DKTools.Sprite.Button.prototype.setupAll = function(object) {
     object = object || {};
-    DKTools.Sprite.prototype.setupAll.call(this);
+    DKTools.Sprite.prototype.setupAll.call(this, object);
     this.setupLongPressInterval(object.longPressInterval);
 };
 
@@ -10454,7 +10535,7 @@ DKTools.Sprite.Cursor.prototype._createAll = function() {
  * @private
  */
 DKTools.Sprite.Cursor.prototype._createWindowskin = function() {
-    let filename = this.standardWindowskin();
+    const filename = this.standardWindowskin();
     this._windowskin = ImageManager.loadSystem(filename);
 };
 
@@ -10635,23 +10716,23 @@ DKTools.Sprite.Cursor.prototype.refreshAll = function() {
  * Обновляет курсор
  */
 DKTools.Sprite.Cursor.prototype.refreshCursor = function() {
-    let x = this._cursorRect.x;
-    let y = this._cursorRect.y;
-    let w = this._cursorRect.width;
-    let h = this._cursorRect.height;
-    let m = 4;
-    let ox = 0;
-    let oy = 0;
-    let w2 = Math.min(w, this.parent.width - x);
-    let h2 = Math.min(h, this.parent.height - y);
+    const x = this._cursorRect.x;
+    const y = this._cursorRect.y;
+    const w = this._cursorRect.width;
+    const h = this._cursorRect.height;
+    const m = 4;
+    const ox = 0;
+    const oy = 0;
+    const w2 = Math.min(w, this.parent.width - x);
+    const h2 = Math.min(h, this.parent.height - y);
 
     this.move(x, y);
 
     if (w > 0 && h > 0) {
-        let skin = this._windowskin;
-        let bitmap = new Bitmap(w2, h2);
-        let p = 96;
-        let q = 48;
+        const skin = this._windowskin;
+        const bitmap = new Bitmap(w2, h2);
+        const p = 96;
+        const q = 48;
         bitmap.blt(skin, p+m, p+m, q-m*2, q-m*2, ox+m, oy+m, w-m*2, h-m*2);
         bitmap.blt(skin, p+m, p+0, q-m*2, m, ox+m, oy+0, w-m*2, m);
         bitmap.blt(skin, p+m, p+q-m, q-m*2, m, ox+m, oy+h-m, w-m*2, m);
@@ -10683,6 +10764,98 @@ DKTools.Sprite.Cursor.prototype.updateCursorAnimation = function() {
     }
     this.setOpacity(parentOpacity);
 };
+
+
+
+
+
+//===========================================================================
+// DKTools Sprite Arrow
+//===========================================================================
+
+DKTools.Sprite.Arrow.prototype = Object.create(DKTools.Sprite.Button.prototype);
+DKTools.Sprite.Arrow.prototype.constructor = DKTools.Sprite.Arrow;
+
+// properties
+
+Object.defineProperties(DKTools.Sprite.Arrow.prototype, {
+
+    arrowType: {
+        get: function() {
+            return this._arrowType;
+        },
+        configurable: true
+    }
+
+});
+
+// standard methods
+
+DKTools.Sprite.Arrow.prototype.standardVisible = function() {
+    return false;
+};
+
+DKTools.Sprite.Arrow.prototype.standardGraphicName = function() {
+    return this.standardWindowskin();
+};
+
+DKTools.Sprite.Arrow.prototype.standardAnchor = function() {
+    return new Point(0.5, 0.5);
+};
+
+DKTools.Sprite.Arrow.prototype.standardArrowType = function() {
+    return null;
+};
+
+// setup methods
+
+DKTools.Sprite.Arrow.prototype.setupAll = function(object) {
+    object = object || {};
+    DKTools.Sprite.Button.prototype.setupAll.call(this, object);
+    this.setupArrowType(object.arrowType);
+};
+
+DKTools.Sprite.Arrow.prototype.setupArrowType = function(type) {
+    /**
+     * @private
+     * @readonly
+     * @type {String}
+     */
+    this._arrowType = type || this.standardArrowType();
+};
+
+// refresh methods
+
+DKTools.Sprite.Arrow.prototype.refreshAll = function() {
+    DKTools.Sprite.Button.prototype.refreshAll.call(this);
+    this.refreshArrow();
+};
+
+DKTools.Sprite.Arrow.prototype.refreshArrow = function() {
+    const p = 24;
+    const q = p / 2;
+    const sx = 96 + p;
+    const sy = p;
+    switch (this._arrowType) {
+        case 'up':
+            this.setFrame(sx + q, sy, p, q);
+            break;
+        case 'down':
+            this.setFrame(sx + q, sy + q + p, p, q);
+            break;
+        case 'left':
+            this.setFrame(sx, sy + q, q, p);
+            break;
+        case 'right':
+            this.setFrame(sx + q + p, sy + q, q, p);
+            break;
+        default:
+            throw new Error('Arrow does not have an arrowType!');
+            break;
+    }
+
+};
+
 
 
 
@@ -10769,9 +10942,9 @@ Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
      * @type {Number}
      * @memberOf DKTools.Sprite.Selectable
      */
-    cols: {
+    maxCols: {
         get: function() {
-            return this._cols;
+            return this._maxCols;
         },
         configurable: true
     },
@@ -10868,16 +11041,9 @@ Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
         configurable: true
     },
 
-    scrollX: {
+    cursorSprite: {
         get: function() {
-            return this._scrollX;
-        },
-        configurable: true
-    },
-
-    scrollY: {
-        get: function() {
-            return this._scrollY;
+            return this._cursorSprite;
         },
         configurable: true
     }
@@ -10896,7 +11062,8 @@ DKTools.Sprite.Selectable.prototype._clearAll = function() {
     DKTools.Sprite.Button.prototype._clearAll.call(this);
     this._clearItems();
     this._clearHandlers();
-    this._clearScroll();
+    this._clearTopRow();
+    this._clearTopCol();
 };
 
 DKTools.Sprite.Selectable.prototype._clearItems = function() {
@@ -10923,41 +11090,27 @@ DKTools.Sprite.Selectable.prototype._clearHandlers = function() {
 };
 
 /**
- * Очищает прокручивание
- *
  * @private
  */
-DKTools.Sprite.Selectable.prototype._clearScroll = function() {
-    this._clearScrollX();
-    this._clearScrollY();
+DKTools.Sprite.Selectable.prototype._clearTopRow = function() {
+    /**
+     * @private
+     * @readonly
+     * @type {Number}
+     */
+    this._topRow = 0;
 };
 
 /**
- * Очищает прокручивание по оси X
- *
  * @private
  */
-DKTools.Sprite.Selectable.prototype._clearScrollX = function() {
+DKTools.Sprite.Selectable.prototype._clearTopCol = function() {
     /**
-     * @readonly
      * @private
+     * @readonly
      * @type {Number}
      */
-    this._scrollX = 0;
-};
-
-/**
- * Очищает прокручивание по оси Y
- *
- * @private
- */
-DKTools.Sprite.Selectable.prototype._clearScrollY = function() {
-    /**
-     * @readonly
-     * @private
-     * @type {Number}
-     */
-    this._scrollY = 0;
+    this._topCol = 0;
 };
 
 // _create methods
@@ -10979,6 +11132,11 @@ DKTools.Sprite.Selectable.prototype._createAll = function() {
  * @private
  */
 DKTools.Sprite.Selectable.prototype._createCursorSprite = function() {
+    /**
+     * @private
+     * @readonly
+     * @type {DKTools.Sprite.Cursor}
+     */
     this._cursorSprite = new DKTools.Sprite.Cursor();
 };
 
@@ -11083,12 +11241,12 @@ DKTools.Sprite.Selectable.prototype._addCursorSprite = function() {
  */
 DKTools.Sprite.Selectable.prototype.standardDrawItemHandler = function() {
     return function(index) {
-        var name = this.getItemName(index);
-        var rect = this.getItemRectForTextByIndex(index);
-        var align = this.getItemAlignByIndex(index);
-        var textColor = this.getItemTextColorByIndex(index);
-        var font = this.getItemFontByIndex(index);
-        var paintOpacity = this.getItemPaintOpacityByIndex(index);
+        const name = this.getItemName(index);
+        const rect = this.getItemRectForTextByIndex(index);
+        const align = this.getItemAlignByIndex(index);
+        const textColor = this.getItemTextColorByIndex(index);
+        const font = this.getItemFontByIndex(index);
+        const paintOpacity = this.getItemPaintOpacityByIndex(index);
         this.changeTextColor(textColor);
         this.changeFont(font);
         this.changePaintOpacity(paintOpacity);
@@ -11119,7 +11277,7 @@ DKTools.Sprite.Selectable.prototype.standardItems = function() {
  *
  * @returns {Number} Стандартное количество столбцов
  */
-DKTools.Sprite.Selectable.prototype.standardCols = function() {
+DKTools.Sprite.Selectable.prototype.standardMaxCols = function() {
     return 1;
 };
 
@@ -11148,7 +11306,7 @@ DKTools.Sprite.Selectable.prototype.standardFixedHorizontal = function() {
  * @returns {Number}
  */
 DKTools.Sprite.Selectable.prototype.standardHorizontalSpacing = function() {
-    return 12;
+    return 0;12;
 };
 
 /**
@@ -11172,7 +11330,7 @@ DKTools.Sprite.Selectable.prototype.standardTextPadding = function() {
  */
 DKTools.Sprite.Selectable.prototype.standardItemWidth = function() {
     return function() {
-        var spacing = this._horizontalSpacing;
+        const spacing = this._horizontalSpacing;
         return Math.floor((this.realWidth + spacing) / this.getMaxCols() - spacing);
     }.bind(this);
 };
@@ -11280,7 +11438,7 @@ DKTools.Sprite.Selectable.prototype.setupAll = function(object) {
     this.setupDrawItemHandler(object.drawItemHandler);
     this.setupIndex(object.index);
     this.setupItems(object.items);
-    this.setupCols(object.cols); // TODO: переделать в maxCols
+    this.setupMaxCols(object.maxCols);
     this.setupCursorFixed(object.cursorFixed);
     this.setupCursorAll(object.cursorAll);
 
@@ -11382,7 +11540,7 @@ DKTools.Sprite.Selectable.prototype.setupItems = function(items) { // TODO: пр
  *
  * @param {Number} [cols] - Количество столбцов
  */
-DKTools.Sprite.Selectable.prototype.setupCols = function(cols) {
+DKTools.Sprite.Selectable.prototype.setupMaxCols = function(cols) {
     /**
      * Количество столбцов
      *
@@ -11390,7 +11548,7 @@ DKTools.Sprite.Selectable.prototype.setupCols = function(cols) {
      * @readonly
      * @type {Number}
      */
-    this._cols = cols || this.standardCols();
+    this._maxCols = cols || this.standardMaxCols();
 };
 
 /**
@@ -11567,7 +11725,7 @@ DKTools.Sprite.Selectable.prototype.setAll = function(object, blockStart) {
     object = object || {};
     var block = true;
     var changed = DKTools.Sprite.Button.prototype.setAll.call(this, object, block);
-    if (this.setCols(object.cols, block)) {
+    if (this.setMaxCols(object.maxCols, block)) {
         changed++;
     }
     if (changed && !blockStart) {
@@ -11589,7 +11747,7 @@ DKTools.Sprite.Selectable.prototype.setIndex = function(index, blockRefresh) {
     if (this._index === index) {
         return false;
     }
-    var lastIndex = this._index;
+    const lastIndex = this._index;
     this.setupIndex(index);
     if (this._index === lastIndex) {
         return false;
@@ -11609,15 +11767,26 @@ DKTools.Sprite.Selectable.prototype.setIndex = function(index, blockRefresh) {
  *
  * @returns {Boolean} Изменение произошло
  */
-DKTools.Sprite.Selectable.prototype.setCols = function(cols, blockRefresh) {
-    if (this._cols === cols) {
+DKTools.Sprite.Selectable.prototype.setMaxCols = function(cols, blockRefresh) {
+    if (this._maxCols === cols) {
         return false;
     }
-    var lastCols = this._cols;
-    this.setupCols(cols);
-    if (this._cols === lastCols) {
+    const lastCols = this._maxCols;
+    this.setupMaxCols(cols);
+    if (this._maxCols === lastCols) {
         return false;
     }
+    if (!blockRefresh) {
+        this.refreshAll();
+    }
+    return true;
+};
+
+DKTools.Sprite.Selectable.prototype.setItems = function(items, blockRefresh) {
+    if (this._items == items) {
+        return false;
+    }
+    this.setupItems(items);
     if (!blockRefresh) {
         this.refreshAll();
     }
@@ -11667,9 +11836,9 @@ DKTools.Sprite.Selectable.prototype.setCursorAll = function(cursorAll, blockRefr
  * @param {Number} row - Номер ряда
  */
 DKTools.Sprite.Selectable.prototype.setTopRow = function(row) {
-    var scrollY = _.clamp(row, 0, this.getMaxTopRow()) * (this.getItemHeight() + this._verticalSpacing);
-    if (this._scrollY !== scrollY) {
-        this._scrollY = scrollY;
+    const topRow = _.clamp(row, 0, this.getMaxTopRow());
+    if (this._topRow !== topRow) {
+        this._topRow = topRow;
         this.refreshAll();
     }
 };
@@ -11679,9 +11848,9 @@ DKTools.Sprite.Selectable.prototype.setTopRow = function(row) {
  * @param {Number} col - Номер столбца
  */
 DKTools.Sprite.Selectable.prototype.setTopCol = function(col) {
-    var scrollX = _.clamp(col, 0, this.getMaxTopCol()) * (this.getItemWidth() + this._horizontalSpacing);
-    if (this._scrollX !== scrollX) {
-        this._scrollX = scrollX;
+    const topCol = _.clamp(col, 0, this.getMaxTopCol());
+    if (this._topCol !== topCol) {
+        this._topCol = topCol;
         this.refreshAll();
     }
 };
@@ -11732,16 +11901,16 @@ DKTools.Sprite.Selectable.prototype.setCursorRect = function(object, y, width, h
  * @returns {Rectangle} Прямоугольник пункта по индексу
  */
 DKTools.Sprite.Selectable.prototype.getItemRectByIndex = function(index) {
-    var rect = new Rectangle();
-    var maxCols = this.getMaxCols();
+    const rect = new Rectangle();
+    const maxCols = this.getMaxCols();
     rect.width = this.getItemWidth();
     rect.height = this.getItemHeight();
     if (this.isHorizontal()) {
-        rect.x = index * (rect.width + this._horizontalSpacing) - this._scrollX;
+        rect.x = (index - this.getTopCol()) * (rect.width + this._horizontalSpacing);
         rect.y = 0;
     } else {
-        rect.x = index % maxCols * (rect.width + this._horizontalSpacing) - this._scrollX;
-        rect.y = Math.floor(index / maxCols) * (rect.height + this._verticalSpacing) - this._scrollY;
+        rect.x = index % maxCols * (rect.width + this._horizontalSpacing);
+        rect.y = (Math.floor(index / maxCols) - this.getTopRow()) * (rect.height + this._verticalSpacing);
     }
     return rect;
 };
@@ -11763,7 +11932,7 @@ DKTools.Sprite.Selectable.prototype.getItemRect = function(item) {
  * @returns {Rectangle} Прямоугольник пункта для текста по индексу
  */
 DKTools.Sprite.Selectable.prototype.getItemRectForTextByIndex = function(index) {
-    var rect = this.getItemRectByIndex(index);
+    const rect = this.getItemRectByIndex(index);
     rect.x += this._textPadding;
     rect.width -= this._textPadding * 2;
     return rect;
@@ -11991,10 +12160,10 @@ DKTools.Sprite.Selectable.prototype.getItemIndex = function(item) {
  * @returns {Object[]} Видимые пункты
  */
 DKTools.Sprite.Selectable.prototype.getVisibleItems = function() {
-    var index = this.getTopIndex();
-    var maxPageItems = this.getMaxPageItems();
-    var maxItems = this.getMaxItems();
-    var items = [];
+    const maxPageItems = this.getMaxPageItems();
+    const maxItems = this.getMaxItems();
+    let index = this.getTopIndex();
+    let items = [];
     for(var i = 0; i < maxPageItems && index < maxItems; i++, index++) {
         items.push(this.getItem(index));
     }
@@ -12008,9 +12177,9 @@ DKTools.Sprite.Selectable.prototype.getVisibleItems = function() {
  * @returns {String | null} Название пункта по индексу
  */
 DKTools.Sprite.Selectable.prototype.getItemName = function(index) {
-    var item = this.getItem(index);
+    const item = this.getItem(index);
     if (item) {
-        var name = item.name;
+        const name = item.name;
         if (_.isFunction(name)) {
             return name(index);
         }
@@ -12026,7 +12195,7 @@ DKTools.Sprite.Selectable.prototype.getItemName = function(index) {
  * @returns {String | null} Символ пункта по индексу
  */
 DKTools.Sprite.Selectable.prototype.getItemSymbol = function(index) {
-    var item = this.getItem(index);
+    const item = this.getItem(index);
     return item ? item.symbol : null;
 };
 
@@ -12083,7 +12252,7 @@ DKTools.Sprite.Selectable.prototype.getMaxItems = function() {
  * @returns {Number} Максимальное количество рядов
  */
 DKTools.Sprite.Selectable.prototype.getMaxRows = function() {
-    if (this.isFixedHorizontal()) { // TODO
+    if (this.isFixedHorizontal()) {
         return 1;
     }
     return Math.max(1, Math.ceil(this.getMaxItems() / this.getMaxCols()));
@@ -12095,7 +12264,7 @@ DKTools.Sprite.Selectable.prototype.getMaxRows = function() {
  * @returns {Number} Максимальное количество столбцов
  */
 DKTools.Sprite.Selectable.prototype.getMaxCols = function() {
-    return this._cols;
+    return this._maxCols;
 };
 
 /**
@@ -12115,15 +12284,23 @@ DKTools.Sprite.Selectable.prototype.getMaxTopCol = function() {
 /**
  * @returns {Number}
  */
-DKTools.Sprite.Selectable.prototype.getMaxPageCols = function() {
-    return Math.floor(this.realWidth / this.getItemWidth());
+DKTools.Sprite.Selectable.prototype.getMaxPageRows = function() {
+    const spacing = this._verticalSpacing;
+    const realHeight = this.realHeight;
+    const itemHeight = this.getItemHeight();
+    const maxRows = this.getMaxRows();
+    let rows = 0, height = 0;
+    for(; rows < maxRows && height + itemHeight + spacing <= realHeight && height + itemHeight <= realHeight; rows++) {
+        height += itemHeight + spacing;
+    }
+    return rows;
 };
 
 /**
  * @returns {Number}
  */
-DKTools.Sprite.Selectable.prototype.getMaxPageRows = function() {
-    return Math.floor(this.realHeight / this.getItemHeight());
+DKTools.Sprite.Selectable.prototype.getMaxPageCols = function() {
+    return this.getMaxCols();
 };
 
 /**
@@ -12133,7 +12310,7 @@ DKTools.Sprite.Selectable.prototype.getMaxPageItems = function() {
     if (this.isHorizontal()) {
         return this.getMaxPageCols();
     }
-    return this.getMaxPageRows() * this.getMaxCols();
+    return this.getMaxPageRows() * this.getMaxPageCols();
 };
 
 /**
@@ -12172,11 +12349,11 @@ DKTools.Sprite.Selectable.prototype.getItemRow = function(item) {
  * @returns {Object[]} Пункты по номеру ряда
  */
 DKTools.Sprite.Selectable.prototype.getRowItems = function(row) {
-    var items = [];
+    let items = [];
     if (_.inRange(row, 0, this.getMaxRows())) {
-        var index = row * this.getMaxCols();
-        var maxPageItems = this.getMaxPageItems();
-        var maxItems = this.getMaxItems();
+        let index = row * this.getMaxCols();
+        const maxPageItems = this.getMaxPageItems();
+        const maxItems = this.getMaxItems();
         for(var i = 0; i < maxPageItems && index < maxItems && this.getRowByIndex(index) === row; i++, index++) {
             items.push(this.getItem(index));
         }
@@ -12200,6 +12377,9 @@ DKTools.Sprite.Selectable.prototype.getColByIndex = function(index) {
  * @returns {Number} Номер текущего выбранного столбца
  */
 DKTools.Sprite.Selectable.prototype.getCurrentCol = function() {
+    if (this.isHorizontal()) {
+        return this._index;
+    }
     return this.getColByIndex(this._index);
 };
 
@@ -12220,9 +12400,9 @@ DKTools.Sprite.Selectable.prototype.getItemCol = function(item) {
  * @returns {Object[]} Пункты по номеру столбца
  */
 DKTools.Sprite.Selectable.prototype.getColItems = function(col) {
-    var items = [];
+    let items = [];
     if (_.inRange(col, 0, this.getMaxCols())) {
-        var maxItems = this.getMaxItems();
+        const maxItems = this.getMaxItems();
         for(var index = 0; index < maxItems; index++) {
             if (this.getColByIndex(index) === col) {
                 items.push(this.getItem(index));
@@ -12246,14 +12426,14 @@ DKTools.Sprite.Selectable.prototype.getTopIndex = function() {
  * @returns {Number}
  */
 DKTools.Sprite.Selectable.prototype.getTopRow = function() {
-    return Math.floor(this._scrollY / this.getItemHeight());
+    return this._topRow;
 };
 
 /**
  * @returns {Number}
  */
 DKTools.Sprite.Selectable.prototype.getTopCol = function() {
-    return Math.floor(this._scrollX / this.getItemWidth());
+    return this._topCol;
 };
 
 /**
@@ -12320,7 +12500,7 @@ DKTools.Sprite.Selectable.prototype.isCursorMovable = function() {
  * @returns {Boolean}
  */
 DKTools.Sprite.Selectable.prototype.isOkEnabled = function() {
-    return this.isHandled('ok');
+    return true;
 };
 
 /**
@@ -12354,10 +12534,10 @@ DKTools.Sprite.Selectable.prototype.isCursorVisible = function() {
         return false;
     }
     if (this.isHorizontal()) {
-        var col = this.getCurrentCol();
+        const col = this.getCurrentCol();
         return col >= this.getTopCol() && col <= this.getBottomCol();
     }
-    var row = this.getCurrentRow();
+    const row = this.getCurrentRow();
     return row >= this.getTopRow() && row <= this.getBottomRow();
 };
 
@@ -12368,9 +12548,9 @@ DKTools.Sprite.Selectable.prototype.isCursorVisible = function() {
  * @returns {Boolean} Пункт по индексу включен
  */
 DKTools.Sprite.Selectable.prototype.isItemEnabled = function(index) {
-    var item = this.getItem(index);
+    const item = this.getItem(index);
     if (item) {
-        var enabled = item.enabled;
+        const enabled = item.enabled;
         if (_.isFunction(enabled)) {
             return enabled(index);
         }
@@ -12492,6 +12672,7 @@ DKTools.Sprite.Selectable.prototype.activate = function() {
  * Деактивирует объект
  *
  * @override
+ * @param {Boolean} [deselect]
  */
 DKTools.Sprite.Selectable.prototype.deactivate = function(deselect) {
     DKTools.Sprite.Button.prototype.deactivate.call(this);
@@ -12508,9 +12689,12 @@ DKTools.Sprite.Selectable.prototype.deactivate = function(deselect) {
  * @param {Boolean} [wrap=false] - Циклический выбор
  */
 DKTools.Sprite.Selectable.prototype.cursorDown = function(wrap) {
-    var index = this._index;
-    var maxItems = this.getMaxItems();
-    var maxCols = this.getMaxCols();
+    if (this.isHorizontal()) {
+        return;
+    }
+    const index = this._index;
+    const maxItems = this.getMaxItems();
+    const maxCols = this.getMaxCols();
     if (index < maxItems - maxCols || (wrap && maxCols === 1)) {
         this.selectItemByIndex((index + maxCols) % maxItems);
     }
@@ -12522,9 +12706,12 @@ DKTools.Sprite.Selectable.prototype.cursorDown = function(wrap) {
  * @param {Boolean} [wrap=false] - Циклический выбор
  */
 DKTools.Sprite.Selectable.prototype.cursorUp = function(wrap) {
-    var index = this._index;
-    var maxItems = this.getMaxItems();
-    var maxCols = this.getMaxCols();
+    if (this.isHorizontal()) {
+        return;
+    }
+    const index = this._index;
+    const maxItems = this.getMaxItems();
+    const maxCols = this.getMaxCols();
     if (index >= maxCols || (wrap && maxCols === 1)) {
         this.selectItemByIndex((index - maxCols + maxItems) % maxItems);
     }
@@ -12540,9 +12727,9 @@ DKTools.Sprite.Selectable.prototype.cursorRight = function(wrap) {
         this.selectNext(wrap);
         return;
     }
-    var index = this._index;
-    var maxItems = this.getMaxItems();
-    var maxCols = this.getMaxCols();
+    const index = this._index;
+    const maxItems = this.getMaxItems();
+    const maxCols = this.getMaxCols();
     if (maxCols >= 2 && (index < maxItems - 1 || (wrap && this.isHorizontal()))) { // TODO оставить isHorizontal
         this.selectItemByIndex((index + 1) % maxItems);
     }
@@ -12558,9 +12745,9 @@ DKTools.Sprite.Selectable.prototype.cursorLeft = function(wrap) {
         this.selectPrev(wrap);
         return;
     }
-    var index = this._index;
-    var maxItems = this.getMaxItems();
-    var maxCols = this.getMaxCols();
+    const index = this._index;
+    const maxItems = this.getMaxItems();
+    const maxCols = this.getMaxCols();
     if (maxCols >= 2 && (index > 0 || (wrap && this.isHorizontal()))) { // TODO оставить isHorizontal
         this.selectItemByIndex((index - 1 + maxItems) % maxItems);
     }
@@ -12570,17 +12757,17 @@ DKTools.Sprite.Selectable.prototype.cursorLeft = function(wrap) {
  * Обратывает перемещение страницы вниз
  */
 DKTools.Sprite.Selectable.prototype.cursorPagedown = function() {
-    var index = this._index;
-    var getMaxItems = this.getMaxItems();
     if (this.isHorizontal()) {
-        if (this.getTopCol() + this.getMaxPageCols() < this.getMaxCols()) {
-            this.setTopCol(this.getTopCol() + this.getMaxPageCols());
-            this.selectItemByIndex(Math.min(index + this.getMaxPageItems(), getMaxItems - 1));
+        const topCol = this.getTopCol();
+        if (topCol + this.getMaxPageCols() < this.getMaxItems()) {
+            this.setTopCol(topCol + this.getMaxPageCols());
+            this.selectItemByIndex(Math.min(this._index + this.getMaxPageItems(), this.getMaxItems() - 1));
         }
     } else {
-        if (this.getTopRow() + this.getMaxPageRows() < this.getMaxRows()) {
-            this.setTopRow(this.getTopRow() + this.getMaxPageRows());
-            this.selectItemByIndex(Math.min(index + this.getMaxPageItems(), getMaxItems - 1));
+        const topRow = this.getTopRow();
+        if (topRow + this.getMaxPageRows() < this.getMaxRows()) {
+            this.setTopRow(topRow + this.getMaxPageRows());
+            this.selectItemByIndex(Math.min(this._index + this.getMaxPageItems(), this.getMaxItems() - 1));
         }
     }
 };
@@ -12589,16 +12776,17 @@ DKTools.Sprite.Selectable.prototype.cursorPagedown = function() {
  * Обрабатывает перемещение страницы вверх
  */
 DKTools.Sprite.Selectable.prototype.cursorPageup = function() {
-    var index = this._index;
     if (this.isHorizontal()) {
-        if (this.getTopCol() > 0) {
-            this.setTopCol(this.getTopCol() - this.getMaxPageCols());
-            this.selectItemByIndex(Math.max(index - this.getMaxPageItems(), 0));
+        const topCol = this.getTopCol();
+        if (topCol > 0) {
+            this.setTopCol(topCol - this.getMaxPageCols());
+            this.selectItemByIndex(Math.max(0, this._index - this.getMaxPageItems()));
         }
     } else {
-        if (this.getTopRow() > 0) {
-            this.setTopRow(this.getTopRow() - this.getMaxPageRows());
-            this.selectItemByIndex(Math.max(index - this.getMaxPageItems(), 0));
+        const topRow = this.getTopRow();
+        if (topRow > 0) {
+            this.setTopRow(topRow - this.getMaxPageRows());
+            this.selectItemByIndex(Math.max(0, this._index - this.getMaxPageItems()));
         }
     }
 };
@@ -12624,12 +12812,12 @@ DKTools.Sprite.Selectable.prototype.hideCursor = function() {
  * @param {Boolean} triggered
  */
 DKTools.Sprite.Selectable.prototype._onTouch = function(triggered) {
-    var lastIndex = this._index;
-    var x = TouchInput.x;
-    var y = TouchInput.y;
-    var hitIndex = this.hitTest(x, y);
+    const lastIndex = this._index;
+    const x = TouchInput.x;
+    const y = TouchInput.y;
+    const hitIndex = this.hitTest(x, y);
     if (hitIndex >= 0) {
-        if (hitIndex === this._index) {
+        if (this._index === hitIndex) {
             if (triggered && this.isOkEnabled()) {
                 this.processOk();
             }
@@ -12649,13 +12837,13 @@ DKTools.Sprite.Selectable.prototype._onTouch = function(triggered) {
  */
 DKTools.Sprite.Selectable.prototype.hitTest = function(x, y) {
     if (this.isInside(x, y)) {
-        var localX = this.canvasToLocalX(x);
-        var localY = this.canvasToLocalY(y);
-        var index = this.getTopIndex();
-        var maxPageItems = this.getMaxPageItems();
-        var maxItems = this.getMaxItems();
+        const localX = this.canvasToLocalX(x);
+        const localY = this.canvasToLocalY(y);
+        const maxPageItems = this.getMaxPageItems();
+        const maxItems = this.getMaxItems();
+        let index = this.getTopIndex();
         for(var i = 0; i < maxPageItems && index < maxItems; i++, index++) {
-            var rect = this.getItemRectByIndex(index);
+            const rect = this.getItemRectByIndex(index);
             rect.width *= this.scale.x;
             rect.height *= this.scale.y;
             if (rect.contains(localX, localY)) {
@@ -12682,9 +12870,9 @@ DKTools.Sprite.Selectable.prototype.drawAll = function() {
  * Рисует все пункты
  */
 DKTools.Sprite.Selectable.prototype.drawAllItems = function() {
-    var index = this.getTopIndex();
-    var maxPageItems = this.getMaxPageItems();
-    var maxItems = this.getMaxItems();
+    const maxPageItems = this.getMaxPageItems();
+    const maxItems = this.getMaxItems();
+    let index = this.getTopIndex();
     for(var i = 0; i < maxPageItems && index < maxItems; i++, index++) {
         this.drawItemByIndex(index);
     }
@@ -12838,8 +13026,7 @@ DKTools.Sprite.Selectable.prototype.updateSelectEvents = function() {
  */
 DKTools.Sprite.Selectable.prototype.selectItemByIndex = function(index) {
     this.setupIndex(index);
-    this.ensureCursorVisible();
-    this.updateCursor();
+    this.refreshAll();
     this.updateSelectEvents();
 };
 
@@ -12886,7 +13073,7 @@ DKTools.Sprite.Selectable.prototype.reselect = function() {
  * @param {Boolean} [wrap=false] - Циклический выбор
  */
 DKTools.Sprite.Selectable.prototype.selectNext = function(wrap) {
-    let index = this.getNextIndex(wrap);
+    const index = this.getNextIndex(wrap);
     if (index >= 0) {
         this.selectItemByIndex(index);
     }
@@ -12904,30 +13091,36 @@ DKTools.Sprite.Selectable.prototype.selectPrev = function(wrap) {
     }
 };
 
-// other methods
+// remove methods
 
 /**
- * Обеспечивает видимость курсора
+ * Удаляет обработчик выбора по символу
+ *
+ * @param {String} symbol - Символ
  */
-DKTools.Sprite.Selectable.prototype.ensureCursorVisible = function() {
-    if (this.isHorizontal()) {
-        let col = this.getCurrentCol();
-        if (col < this.getTopCol()) {
-            this.setTopCol(col);
-        } else if (col > this.getBottomCol()) {
-            this.setBottomCol(col);
-        }
-    } else {
-        let row = this.getCurrentRow();
-        if (row < this.getTopRow()) {
-            this.setTopRow(row);
-        } else if (row > this.getBottomRow()) {
-            this.setBottomRow(row);
-        }
-    }
+DKTools.Sprite.Selectable.prototype.removeHandler = function(symbol) {
+    delete this._handlers[symbol];
 };
 
-// remove methods
+// item methods
+
+/**
+ * @private
+ * @param {Object} item
+ * @returns {Object}
+ */
+DKTools.Sprite.Selectable.prototype._checkItem = function(item) {
+    if (_.isUndefined(item.enabled)) {
+        item.enabled = true;
+    }
+    if (_.isUndefined(item.ext)) {
+        item.ext = null;
+    }
+    if (item.symbol && item.handler) {
+        this.setHandler(item.symbol, item.handler);
+    }
+    return item;
+};
 
 /**
  * Удаляет пункт
@@ -12957,35 +13150,6 @@ DKTools.Sprite.Selectable.prototype.removeItems = function(items, blockRefresh) 
     if (!blockRefresh) {
         this.refreshAll();
     }
-};
-
-/**
- * Удаляет обработчик выбора по символу
- *
- * @param {String} symbol - Символ
- */
-DKTools.Sprite.Selectable.prototype.removeHandler = function(symbol) {
-    delete this._handlers[symbol];
-};
-
-//
-
-/**
- * @private
- * @param {Object} item
- * @returns {Object}
- */
-DKTools.Sprite.Selectable.prototype._checkItem = function(item) {
-    if (_.isUndefined(item.enabled)) {
-        item.enabled = true;
-    }
-    if (_.isUndefined(item.ext)) {
-        item.ext = null;
-    }
-    if (item.symbol && item.handler) {
-        this.setHandler(item.symbol, item.handler);
-    }
-    return item;
 };
 
 /**
@@ -13150,7 +13314,7 @@ DKTools.Sprite.Selectable.prototype.processAll = function() {
  */
 DKTools.Sprite.Selectable.prototype.processCursorMove = function() {
     if (this.isCursorMovable()) {
-        let lastIndex = this._index;
+        const lastIndex = this._index;
         if (Input.isRepeated('down')) {
             this.cursorDown(Input.isTriggered('down'));
         }
@@ -13191,10 +13355,10 @@ DKTools.Sprite.Selectable.prototype.processHandling = function() {
 
 DKTools.Sprite.Selectable.prototype.processMouseHover = function() {
     if (this.isOptionEnabled('mouseHover') && this.isOptionDisabled('mobileDevice') && this.isCursorMovable()) {
-        let lastIndex = this._index;
-        let x = TouchInput.mouseX;
-        let y = TouchInput.mouseY;
-        let hitIndex = this.hitTest(x, y);
+        const lastIndex = this._index;
+        const x = TouchInput.mouseX;
+        const y = TouchInput.mouseY;
+        const hitIndex = this.hitTest(x, y);
         if (hitIndex >= 0 && hitIndex !== lastIndex) {
             this.selectItemByIndex(hitIndex);
             this.playCursorSound();
@@ -13204,7 +13368,7 @@ DKTools.Sprite.Selectable.prototype.processMouseHover = function() {
 
 DKTools.Sprite.Selectable.prototype.processWheelScroll = function() {
     if (this.isOptionEnabled('wheelScroll') && this.isVisibleAndActive()) {
-        let wheelY = this.wheelY;
+        const wheelY = this.wheelY;
         if (wheelY > 0) {
             if (this.isHorizontal()) {
                 this.scrollRight();
@@ -13269,12 +13433,27 @@ DKTools.Sprite.Selectable.prototype.updateAll = function() {
  * Обновляет курсор
  */
 DKTools.Sprite.Selectable.prototype.updateCursor = function() {
+    if (this.isHorizontal()) {
+        const col = this.getCurrentCol();
+        if (col < this.getTopCol()) {
+            this.setTopCol(col);
+        } else if (col > this.getBottomCol()) {
+            this.setBottomCol(col);
+        }
+    } else {
+        const row = this.getCurrentRow();
+        if (row < this.getTopRow()) {
+            this.setTopRow(row);
+        } else if (row > this.getBottomRow()) {
+            this.setBottomRow(row);
+        }
+    }
     if (this.isCursorAll()) {
-        let allRowsHeight = this.getMaxRows() * this.getItemHeight();
+        const allRowsHeight = this.getMaxRows() * this.getItemHeight();
         this.setCursorRect(0, 0, this.realWidth, allRowsHeight);
         this.resetScroll();
     } else if (this.isCursorVisible()) {
-        let rect = this.getItemRectByIndex(this._index);
+        const rect = this.getItemRectByIndex(this._index);
         this.setCursorRect(rect);
     } else {
         this.setCursorRect(Rectangle.emptyRectangle);
@@ -13318,12 +13497,15 @@ DKTools.Sprite.Tab.prototype._createAll = function() {
 };
 
 DKTools.Sprite.Tab.prototype._createTabSprite = function() {
-    this._tabSprite = new DKTools.Sprite.Selectable();
+    this._tabSprite = new DKTools.Sprite.Selectable({
+        width: this._bitmapWidth,
+        height: '1'
+    });
 
     this._tabSprite.addEvent({
         type: 'select',
         onUpdate: function(event) {
-            var index = event.target.index;
+            const index = event.target.index;
             this.selectTab(index);
         }.bind(this)
     });
@@ -13361,10 +13543,6 @@ DKTools.Sprite.Tab.prototype.standardVerticalSpacing = function() {
 //     DKTools.Sprite.prototype.setupAll.call(this, object);
 // };
 
-DKTools.Sprite.Tab.prototype.setupTabs = function(tabs) {
-    this._tabSprite.setupItems(tabs);
-};
-
 // set methods
 
 
@@ -13379,8 +13557,8 @@ DKTools.Sprite.Tab.prototype.getTab = function(index) {
     return this._tabSprite.getItem(index);
 };
 
-DKTools.Sprite.Tab.prototype.getContents = function(index) {
-    let tab = this.getTab(index);
+DKTools.Sprite.Tab.prototype.getTabContents = function(index) {
+    const tab = this.getTab(index);
     return tab ? tab.contents : null;
 };
 
@@ -13388,8 +13566,8 @@ DKTools.Sprite.Tab.prototype.getCurrentTab = function() {
     return this.getTab(this._tabSprite.index);
 };
 
-DKTools.Sprite.Tab.prototype.getCurrentContents = function() {
-    return this.getContents(this._tabSprite.index);
+DKTools.Sprite.Tab.prototype.getCurrentTabContents = function() {
+    return this.getTabContents(this._tabSprite.index);
 };
 
 DKTools.Sprite.Tab.prototype.getContentsWidth = function() {
@@ -13428,6 +13606,10 @@ DKTools.Sprite.Tab.prototype.getContentsHeight = function() {
     return this._bitmapHeight;
 };
 
+DKTools.Sprite.Tab.prototype.getContentsSize = function() {
+    return { width: this.getContentsWidth(), height: this.getContentsHeight() };
+};
+
 // start methods
 
 DKTools.Sprite.Tab.prototype.start = function(activate) {
@@ -13461,11 +13643,17 @@ DKTools.Sprite.Tab.prototype.removeContentsSprite = function() {
     }
 };
 
+// event methods
+
+DKTools.Sprite.Tab.prototype.updateSelectTabEvents = function() {
+    this.updateEventsContainer('selectTab');
+};
+
 // select methods
 
 DKTools.Sprite.Tab.prototype.selectTab = function(index) {
     this.removeContentsSprite();
-    var contents = this.getContents(index);
+    const contents = this.getTabContents(index);
     if (contents) {
         if (!contents.isStarted()) {
             contents.start();
@@ -13474,6 +13662,7 @@ DKTools.Sprite.Tab.prototype.selectTab = function(index) {
         this.addChild(this._contentsSprite);
         this.updateContentsSprite();
     }
+    this.updateSelectTabEvents();
 };
 
 DKTools.Sprite.Tab.prototype.reselectTab = function() {
@@ -14091,12 +14280,12 @@ DKTools.Layout.prototype.setItems = function(items, blockStart) {
  * @return {Boolean} Изменение произошло
  */
 DKTools.Layout.prototype.setMaxCols = function(cols, blockStart) {
-    if (this._cols === cols) {
+    if (this._maxCols === cols) {
         return false;
     }
-    let lastCols = this._cols;
+    const lastCols = this._maxCols;
     this.setupMaxCols(cols);
-    if (this._cols === lastCols) {
+    if (this._maxCols === lastCols) {
         return false;
     }
     if (!blockStart) {
@@ -14810,40 +14999,6 @@ DKTools.Window._counter = 0;
 Object.defineProperties(DKTools.Window.prototype, {
 
     /**
-     * Ширина окна (с учетом масштабирования)
-     *
-     * @type {Number}
-     * @memberOf DKTools.Window
-     */
-    width: {
-        get: function() {
-            return this._width * this.scale.x;
-        },
-        set: function(value) {
-            this._width = value;
-            this._refreshAllParts();
-        },
-        configurable: true
-    },
-
-    /**
-     * Высота окна (с учетом масштабирования)
-     *
-     * @type {Number}
-     * @memberOf DKTools.Window
-     */
-    height: {
-        get: function() {
-            return this._height * this.scale.y;
-        },
-        set: function(value) {
-            this._height = value;
-            this._refreshAllParts();
-        },
-        configurable: true
-    },
-
-    /**
      * Реальная ширина окна (без учета масштабирования)
      *
      * @readonly
@@ -14867,6 +15022,40 @@ Object.defineProperties(DKTools.Window.prototype, {
     realHeight: {
         get: function() {
             return this._height;
+        },
+        configurable: true
+    },
+
+    /**
+     * Ширина окна (с учетом масштабирования)
+     *
+     * @type {Number}
+     * @memberOf DKTools.Window
+     */
+    width: {
+        get: function() {
+            return this.realWidth * this.scale.x;
+        },
+        set: function(value) {
+            this._width = value;
+            this._refreshAllParts();
+        },
+        configurable: true
+    },
+
+    /**
+     * Высота окна (с учетом масштабирования)
+     *
+     * @type {Number}
+     * @memberOf DKTools.Window
+     */
+    height: {
+        get: function() {
+            return this.realHeight * this.scale.y;
+        },
+        set: function(value) {
+            this._height = value;
+            this._refreshAllParts();
         },
         configurable: true
     },
@@ -15040,6 +15229,8 @@ DKTools.Window.prototype._clearAll = function() {
     this._clearMargin();
     this._clearColorTone();
     this._clearOrigin();
+
+    this._clearArrows();
 };
 
 /**
@@ -15114,6 +15305,18 @@ DKTools.Window.prototype._clearOrigin = function() {
     this._origin = this.standardOrigin();
 };
 
+/**
+ * @private
+ */
+DKTools.Window.prototype._clearArrows = function() {
+    /**
+     * @private
+     * @readonly
+     * @type {DKTools.Sprite.Arrow[]}
+     */
+    this._arrows = [];
+};
+
 // _create methods
 
 /**
@@ -15138,8 +15341,6 @@ DKTools.Window.prototype._createAllParts = function() {
     this._createSpriteContainer();
     this._createBackSprite();
     this._createFrameSprite();
-    this._createContentsSprite();
-    this._createArrowSprites();
     this._createPauseSignSprite();
 };
 
@@ -15163,7 +15364,7 @@ DKTools.Window.prototype._createSpriteContainer = function() {
  * @private
  */
 DKTools.Window.prototype._createBackSprite = function() {
-    if (this.needsBackSprite()) {
+    if (this.needsCreateBackSprite()) {
         /**
          * @private
          * @readonly
@@ -15181,7 +15382,7 @@ DKTools.Window.prototype._createBackSprite = function() {
  * @private
  */
 DKTools.Window.prototype._createFrameSprite = function() {
-    if (this.needsFrameSprite()) {
+    if (this.needsCreateFrameSprite()) {
         /**
          * @private
          * @readonly
@@ -15193,104 +15394,12 @@ DKTools.Window.prototype._createFrameSprite = function() {
 };
 
 /**
- * Создает спрайт контента окна
- *
- * @private
- */
-DKTools.Window.prototype._createContentsSprite = function() {
-    /**
-     * @private
-     * @readonly
-     * @type {DKTools.Sprite}
-     */
-    this._windowContentsSprite = new DKTools.Sprite();
-};
-
-/**
- * Создает спрайты стрелок
- *
- * @private
- */
-DKTools.Window.prototype._createArrowSprites = function() {
-    if (this.needsArrowSprites()) {
-        this._createDownArrowSprite();
-        this._createUpArrowSprite();
-        this._createLeftArrowSprite();
-        this._createRightArrowSprite();
-    }
-};
-
-/**
- * Создает спрайт стрелки вниз
- *
- * @private
- */
-DKTools.Window.prototype._createDownArrowSprite = function() {
-    if (this.needsDownArrowSprite()) {
-        /**
-         * @private
-         * @readonly
-         * @type {Sprite}
-         */
-        this._downArrowSprite = new Sprite();
-    }
-};
-
-/**
- * Создает спрайт стрелки вверх
- *
- * @private
- */
-DKTools.Window.prototype._createUpArrowSprite = function() {
-    if (this.needsUpArrowSprite()) {
-        /**
-         * @private
-         * @readonly
-         * @type {Sprite}
-         */
-        this._upArrowSprite = new Sprite();
-    }
-};
-
-/**
- * Создает спрайт стрелки влево
- *
- * @private
- */
-DKTools.Window.prototype._createLeftArrowSprite = function() {
-    if (this.needsLeftArrowSprite()) {
-        /**
-         * @private
-         * @readonly
-         * @type {Sprite}
-         */
-        this._leftArrowSprite = new Sprite();
-    }
-};
-
-/**
- * Создает спрайт стрелки вправо
- *
- * @private
- */
-DKTools.Window.prototype._createRightArrowSprite = function() {
-    if (this.needsRightArrowSprite()) {
-        /**
-         * @private
-         * @readonly
-         * @type {Sprite}
-         */
-        this._rightArrowSprite = new Sprite();
-    }
-};
-
-/**
  * Создает спрайт знака паузы
  *
  * @private
  */
 DKTools.Window.prototype._createPauseSignSprite = function() {
-    if (this.needsPauseSignSprite()) {
+    if (this.needsCreatePauseSignSprite()) {
         /**
          * @private
          * @readonly
@@ -15309,6 +15418,30 @@ DKTools.Window.prototype._createWindowskin = function() {
     this.windowskin = this.loadWindowskin();
 };
 
+// _setup methods
+
+/**
+ *
+ * @private
+ * @override
+ */
+DKTools.Window.prototype._setupEvents = function() {
+    DKTools.Base.prototype._setupEvents.call(this);
+    if (this.needsCreateArrowSprites()) {
+        this._setupCreateAllEvent();
+    }
+};
+
+/**
+ * @private
+ */
+DKTools.Window.prototype._setupCreateAllEvent = function() {
+     this.addOneTimeEvent({
+         type: 'createAll',
+         onSuccess: this.createArrows.bind(this)
+     });
+};
+
 // _add methods
 
 /**
@@ -15319,7 +15452,7 @@ DKTools.Window.prototype._createWindowskin = function() {
  */
 DKTools.Window.prototype._addAllChildren = function() {
     DKTools.Base.prototype._addAllChildren.call(this);
-    this._addAllPartsAsChildren();
+    this._addAllParts();
 };
 
 /**
@@ -15327,11 +15460,9 @@ DKTools.Window.prototype._addAllChildren = function() {
  *
  * @private
  */
-DKTools.Window.prototype._addAllPartsAsChildren = function() {
-    this._addSpriteContainerAsChild();
-    this._addContentsSpriteAsChild();
-    this._addArrowSpritesAsChild();
-    this._addPauseSignSpriteAsChild();
+DKTools.Window.prototype._addAllParts = function() {
+    this._addSpriteContainer();
+    this._addPauseSignSprite();
 };
 
 /**
@@ -15339,7 +15470,7 @@ DKTools.Window.prototype._addAllPartsAsChildren = function() {
  *
  * @private
  */
-DKTools.Window.prototype._addSpriteContainerAsChild = function() {
+DKTools.Window.prototype._addSpriteContainer = function() {
     if (this.hasSpriteContainer()) {
         if (this.hasBackSprite()) {
             this._windowSpriteContainer.addChild(this._windowBackSprite);
@@ -15356,65 +15487,9 @@ DKTools.Window.prototype._addSpriteContainerAsChild = function() {
  *
  * @private
  */
-DKTools.Window.prototype._addContentsSpriteAsChild = function() {
+DKTools.Window.prototype._addContentsSprite = function() {
     if (this.hasContentsSprite()) {
         this.addChild(this._windowContentsSprite);
-    }
-};
-
-/**
- * Добавляет спрайты стрелок в обработку
- *
- * @private
- */
-DKTools.Window.prototype._addArrowSpritesAsChild = function() {
-    this._addDownArrowSpriteAsChild();
-    this._addUpArrowSpriteAsChild();
-    this._addLeftArrowSpriteAsChild();
-    this._addRightArrowSpriteAsChild();
-};
-
-/**
- * Добавляет спрайт стрелки вниз в обработку
- *
- * @private
- */
-DKTools.Window.prototype._addDownArrowSpriteAsChild = function() {
-    if (this.hasDownArrowSprite()) {
-        this.addChild(this._downArrowSprite);
-    }
-};
-
-/**
- * Добавляет спрайт стрелки вверх в обработку
- *
- * @private
- */
-DKTools.Window.prototype._addUpArrowSpriteAsChild = function() {
-    if (this.hasUpArrowSprite()) {
-        this.addChild(this._upArrowSprite);
-    }
-};
-
-/**
- * Добавляет спрайт стрелки влево в обработку
- *
- * @private
- */
-DKTools.Window.prototype._addLeftArrowSpriteAsChild = function() {
-    if (this.hasLeftArrowSprite()) {
-        this.addChild(this._leftArrowSprite);
-    }
-};
-
-/**
- * Добавляет спрайт стрелки вправо в обработку
- *
- * @private
- */
-DKTools.Window.prototype._addRightArrowSpriteAsChild = function() {
-    if (this.hasRightArrowSprite()) {
-        this.addChild(this._rightArrowSprite);
     }
 };
 
@@ -15423,7 +15498,7 @@ DKTools.Window.prototype._addRightArrowSpriteAsChild = function() {
  *
  * @private
  */
-DKTools.Window.prototype._addPauseSignSpriteAsChild = function() {
+DKTools.Window.prototype._addPauseSignSprite = function() {
     if (this.hasPauseSignSprite()) {
         this.addChild(this._windowPauseSignSprite);
     }
@@ -15457,6 +15532,14 @@ DKTools.Window.prototype.standardColorTone = function() {
  */
 DKTools.Window.prototype.standardOrigin = function() {
     return new Point();
+};
+
+/**
+ *
+ * @returns {DKTools.Sprite}
+ */
+DKTools.Window.prototype.standardContentsSprite = function() {
+    return new DKTools.Sprite();
 };
 
 /**
@@ -15611,16 +15694,13 @@ DKTools.Window.prototype.setupAll = function(object) {
     DKTools.Base.prototype.setupAll.call(this, object);
 
     // TODO: протестировать
-    var contentsSprite = object.contentsSprite;
-    if (object instanceof DKTools.Window && object.contentsSprite instanceof DKTools.Sprite) {
-        contentsSprite = contentsSprite.clone();
+    let contentsSprite = object.contentsSprite;
+    if (object instanceof DKTools.Window && contentsSprite instanceof DKTools.Sprite) {
+        contentsSprite = contentsSprite.clone(true);
     }
-    if (contentsSprite) {
-        this.setupContentsSprite(contentsSprite);
-    }
-
     this.setupContentsWidth(object.contentsWidth);
     this.setupContentsHeight(object.contentsHeight);
+    this.setupContentsSprite(contentsSprite);
     this.setupContentsPosition(object.contentsPosition);
     this.setupOpacity(object.opacity);
 	this.setupTone(object.tone);
@@ -15684,9 +15764,30 @@ DKTools.Window.prototype.setupContentsHeight = function(contentsHeight) {
     this._contentsHeight = contentsHeight || this.standardContentsHeight();
 };
 
+DKTools.Window.prototype.setupContentsSprite = function(contentsSprite) {
+    /**
+     * @private
+     * @readonly
+     * @type {DKTools.Sprite | *}
+     */
+    this._windowContentsSprite = contentsSprite || this.standardContentsSprite();
+};
+
+/**
+ *
+ * @param [object]
+ * @param {Number} [y] - Координата Y
+ */
 DKTools.Window.prototype.setupContentsPosition = function(object, y) {
-    var position = DKTools.Utils.Point.convertToPoint(object, y);
-    this._contentsPosition = Object.assign(this.standardContentsPosition(), position);
+    const position = DKTools.Utils.Point.convertToPoint(object, y);
+    const newPosition = Object.assign(this.standardContentsPosition(), position);
+
+    /**
+     * @private
+     * @readonly
+     * @type {Point}
+     */
+    this._contentsPosition = new Point(newPosition.x, newPosition.y);
 };
 
 /**
@@ -15722,14 +15823,6 @@ DKTools.Window.prototype.setupTone = function(tone) {
     this._tone = Object.assign(standardTone, tone);
 };
 
-DKTools.Window.prototype.setupWindowskin = function() {
-
-};
-
-DKTools.Window.prototype.setupContentsSprite = function(contentsSprite) {
-    this._windowContentsSprite = contentsSprite;
-};
-
 // set methods
 
 /**
@@ -15752,12 +15845,12 @@ DKTools.Window.prototype.setupContentsSprite = function(contentsSprite) {
  *
  * @return {Number} Количество измененных параметров
 */
-DKTools.Window.prototype.setAll = function(object, blockStart) {
+DKTools.Window.prototype.setAll = function(object, blockStart, activate) {
 	object = object || {};
-	var block = true;
-	var changed = DKTools.Base.prototype.setAll.call(this, object);
+	let block = true;
+	let changed = DKTools.Base.prototype.setAll.call(this, object);
 	if (changed && !blockStart) {
-        this.start();
+        this.start(activate);
     }
     if (this.setOpacity(object.opacity, block)) {
         changed++;
@@ -15777,8 +15870,8 @@ DKTools.Window.prototype.setAll = function(object, blockStart) {
  *
  * @return {Boolean} Изменение произошло
  */
-DKTools.Window.prototype.setWidth = function(width, blockStart) {
-    return this.resize(width, this.height, blockStart);
+DKTools.Window.prototype.setWidth = function(width, blockStart, activate) {
+    return this.resize(width, this._height, blockStart, activate);
 };
 
 /**
@@ -15790,8 +15883,31 @@ DKTools.Window.prototype.setWidth = function(width, blockStart) {
  *
  * @return {Boolean} Изменение произошло
  */
-DKTools.Window.prototype.setHeight = function(height, blockStart) {
-    return this.resize(this.width, height, blockStart);
+DKTools.Window.prototype.setHeight = function(height, blockStart, activate) {
+    return this.resize(this._width, height, blockStart, activate);
+};
+
+DKTools.Window.prototype.setContentsSprite = function(contentsSprite, blockStart, activate) {
+    this.removeContentsSprite();
+    this.setupContentsSprite(contentsSprite);
+    this.addContentsSprite();
+    if (!blockStart) {
+        this.start(activate);
+    }
+};
+
+DKTools.Window.prototype.setContentsPosition = function(object, y) {
+    if (object instanceof Object) {
+        return this.setContentsPosition(object, y);
+    }
+    // object - Number
+    const newPos = DKTools.Utils.Point.convertToPoint(object, y);
+    if (DKTools.Utils.Point.equals(this._contentsPosition, newPos)) {
+        return false;
+    }
+    const lastPos = DKTools.Utils.Point.clone(this._contentsPosition);
+    this.setupContentsPosition(newPos);
+    return !DKTools.Utils.Point.equals(this.scale, lastPos);
 };
 
 /**
@@ -15831,7 +15947,7 @@ DKTools.Window.prototype.setOpacity = function(opacity, blockUpdate) {
  * @return {Boolean} Изменение произошло
  */
 DKTools.Window.prototype.setTone = function(tone, blockUpdate) {
-    var standardTone = _.clone(this.standardTone());
+    const standardTone = _.clone(this.standardTone());
     if (_.isEqual(this._tone, Object.assign(standardTone, tone))) {
         return false;
     }
@@ -15842,18 +15958,27 @@ DKTools.Window.prototype.setTone = function(tone, blockUpdate) {
     return true;
 };
 
-DKTools.Window.prototype.setContentsSprite = function(contentsSprite, blockStart) {
-    if (this.hasContentsSprite()) {
-        this.removeChild(this._windowContentsSprite);
-        this._windowContentsSprite = null;
-    }
-    this.setupContentsSprite(contentsSprite);
-    if (!blockStart) {
-        this.start();
-    }
+// get methods
+
+/**
+ * Возвращает минимальную ширину окна
+ *
+ * @override
+ * @return {Number} Минимальная ширина окна
+ */
+DKTools.Window.prototype.getMinWidth = function() {
+    return this.standardPadding() * 2 + DKTools.Base.prototype.getMinWidth.call(this);
 };
 
-// get methods
+/**
+ * Возвращает минимальную высоту окна
+ *
+ * @override
+ * @return {Number} Минимальная высота окна
+ */
+DKTools.Window.prototype.getMinHeight = function() {
+    return this.standardPadding() * 2 + DKTools.Base.prototype.getMinHeight.call(this);
+};
 
 /**
  * Возвращает ширину содержимого окна
@@ -15879,14 +16004,32 @@ DKTools.Window.prototype.getContentsHeight = function() {
     return this._contentsHeight;
 };
 
-// needs methods
+/**
+ *
+ * @returns {Object}
+ */
+DKTools.Window.prototype.getContentsSize = function() {
+    return { width: this.getContentsWidth(), height: this.getContentsHeight() };
+};
+
+/**
+ * Возвращает спрайт стрелки по id
+ *
+ * @param {*} id
+ * @returns {DKTools.Sprite.Arrow | undefined} Спрайт стрелки или undefined
+ */
+DKTools.Window.prototype.getArrow = function(id) {
+    return _.find(this._arrows, { id: id });
+};
+
+// needs create methods
 
 /**
  * Возвращает true, если нужно создать спрайт заднего фона окна
  *
  * @return {Boolean} Нужно создать спрайт заднего фона окна
  */
-DKTools.Window.prototype.needsBackSprite = function() {
+DKTools.Window.prototype.needsCreateBackSprite = function() {
     return true;
 };
 
@@ -15895,7 +16038,7 @@ DKTools.Window.prototype.needsBackSprite = function() {
  *
  * @return {Boolean} Нужно создать спрайт рамки окна
  */
-DKTools.Window.prototype.needsFrameSprite = function() {
+DKTools.Window.prototype.needsCreateFrameSprite = function() {
     return true;
 };
 
@@ -15904,8 +16047,8 @@ DKTools.Window.prototype.needsFrameSprite = function() {
  *
  * @return {Boolean} Нужно создать спрайты стрелок
  */
-DKTools.Window.prototype.needsArrowSprites = function() {
-    return true;
+DKTools.Window.prototype.needsCreateArrowSprites = function() {
+    return false;
 };
 
 /**
@@ -15913,7 +16056,7 @@ DKTools.Window.prototype.needsArrowSprites = function() {
  *
  * @return {Boolean} Нужно создать спрайт стрелки вниз
  */
-DKTools.Window.prototype.needsDownArrowSprite = function() {
+DKTools.Window.prototype.needsCreateDownArrowSprite = function() {
     return true;
 };
 
@@ -15922,7 +16065,7 @@ DKTools.Window.prototype.needsDownArrowSprite = function() {
  *
  * @return {Boolean} Нужно создать спрайт стрелки вверх
  */
-DKTools.Window.prototype.needsUpArrowSprite = function() {
+DKTools.Window.prototype.needsCreateUpArrowSprite = function() {
     return true;
 };
 
@@ -15931,7 +16074,7 @@ DKTools.Window.prototype.needsUpArrowSprite = function() {
  *
  * @return {Boolean} Нужно создать спрайт стрелки влево
  */
-DKTools.Window.prototype.needsLeftArrowSprite = function() {
+DKTools.Window.prototype.needsCreateLeftArrowSprite = function() {
     return true;
 };
 
@@ -15940,7 +16083,7 @@ DKTools.Window.prototype.needsLeftArrowSprite = function() {
  *
  * @return {Boolean} Нужно создать спрайт стрелки вправо
  */
-DKTools.Window.prototype.needsRightArrowSprite = function() {
+DKTools.Window.prototype.needsCreateRightArrowSprite = function() {
     return true;
 };
 
@@ -15949,7 +16092,7 @@ DKTools.Window.prototype.needsRightArrowSprite = function() {
  *
  * @return {Boolean} Нужно создать спрайт знака паузы
  */
-DKTools.Window.prototype.needsPauseSignSprite = function() {
+DKTools.Window.prototype.needsCreatePauseSignSprite = function() {
     return true;
 };
 
@@ -15965,7 +16108,6 @@ DKTools.Window.prototype._refreshAllParts = function() {
     this._refreshBack();
     this._refreshFrame();
     this._refreshContents();
-    this._refreshArrows();
     this._refreshPauseSign();
 };
 
@@ -16000,54 +16142,7 @@ DKTools.Window.prototype._refreshFrame = function() {
  * @override
  */
 DKTools.Window.prototype._refreshContents = function() {
-    if (this.hasContentsSprite()) {
-        // this.moveContents(this.standardContentsPosition());
-        this.moveContents(this._contentsPosition);
-    }
-};
-
-/**
- * Обновляет спрайты стрелок
- *
- * @private
- * @override
- */
-DKTools.Window.prototype._refreshArrows = function() {
-    var w = this._width;
-    var h = this._height;
-    var bitmap = this._windowskin;
-    var p = 24;
-    var q = p / 2;
-    var sx = 96 + p;
-    var sy = p;
-    if (this.hasDownArrowSprite()) {
-        this._downArrowSprite.bitmap = bitmap;
-        this._downArrowSprite.anchor.x = 0.5;
-        this._downArrowSprite.anchor.y = 0.5;
-        this._downArrowSprite.setFrame(sx + q, sy + q + p, p, q);
-        this._downArrowSprite.move(w / 2, h - q);
-    }
-    if (this.hasUpArrowSprite()) {
-        this._upArrowSprite.bitmap = bitmap;
-        this._upArrowSprite.anchor.x = 0.5;
-        this._upArrowSprite.anchor.y = 0.5;
-        this._upArrowSprite.setFrame(sx + q, sy, p, q);
-        this._upArrowSprite.move(w / 2, q);
-    }
-    if (this.hasLeftArrowSprite()) {
-        this._leftArrowSprite.bitmap = bitmap;
-        this._leftArrowSprite.anchor.x = 0.5;
-        this._leftArrowSprite.anchor.y = 0.5;
-        this._leftArrowSprite.setFrame(sx, sy + q, q, p);
-        this._leftArrowSprite.move(q, h / 2);
-    }
-    if (this.hasRightArrowSprite()) {
-        this._rightArrowSprite.bitmap = bitmap;
-        this._rightArrowSprite.anchor.x = 0.5;
-        this._rightArrowSprite.anchor.y = 0.5;
-        this._rightArrowSprite.setFrame(sx + q + p, sy + q, q, p);
-        this._rightArrowSprite.move(w - q, h / 2);
-    }
+    this.moveContents(this._contentsPosition);
 };
 
 /**
@@ -16065,9 +16160,32 @@ DKTools.Window.prototype._refreshPauseSign = function() {
 // start methods
 
 DKTools.Window.prototype.start = function(activate) {
-    DKTools.Base.prototype.start.call(this, activate);
     if (this.hasContentsSprite()) {
-        this._windowContentsSprite.start(activate);
+        const contentsSprite = this._windowContentsSprite;
+        contentsSprite.setupSize(this.getContentsWidth(), this.getContentsHeight());
+        contentsSprite.start(activate);
+    }
+    DKTools.Base.prototype.start.call(this, activate);
+};
+
+// remove methods
+
+DKTools.Window.prototype.removeAllChildren = function() {
+    DKTools.Base.prototype.removeAllChildren.call(this);
+    this.removeContentsSprite();
+};
+
+DKTools.Window.prototype.removeContentsSprite = function() {
+    if (this.hasContentsSprite()) {
+        this.removeChild(this._windowContentsSprite);
+    }
+};
+
+DKTools.Window.prototype.removeArrow = function(id) {
+    const arrow = this.getArrow(id);
+    if (arrow) {
+        DKTools.Utils.Array.remove(this._arrows, arrow);
+        this.removeChild(arrow);
     }
 };
 
@@ -16081,9 +16199,9 @@ DKTools.Window.prototype.start = function(activate) {
  * @return {Number} Количество измененных параметров
  */
 DKTools.Window.prototype.checkSize = function() {
-    var minWidth = this.getMinWidth();
-    var minHeight = this.getMinHeight();
-    var changed = 0;
+    const minWidth = this.getMinWidth();
+    const minHeight = this.getMinHeight();
+    let changed = 0;
     if (this._width < minWidth) {
         this.setupWidth(minWidth);
         changed++;
@@ -16098,25 +16216,80 @@ DKTools.Window.prototype.checkSize = function() {
 // create methods
 
 /**
- * Создает все объекты
  *
- * @override
+ * @param {String} type
+ * @param {*} id
+ * @param {PIXI.Point | Point | Object | Number} [object]
+ * @param {Number} [y] - Координата Y
+ * @return {DKTools.Sprite.Arrow}
  */
-DKTools.Window.prototype.createAll = function() {
-    DKTools.Base.prototype.createAll.call(this);
-    this.createContents();
+DKTools.Window.prototype.createArrow = function(type, id, object, y) {
+    if (object instanceof Object) {
+        return this.createArrow(type, id, object.x, object, y);
+    }
+    const x = object; // object - Number
+    const arrow = new DKTools.Sprite.Arrow({
+        x: x,
+        y: y,
+        id: id,
+        arrowType: type
+    });
+    arrow.start();
+    this._arrows.push(arrow);
+    this.addChild(arrow);
+    return arrow;
 };
 
 /**
- * Создает содержимое окна
- *
+ * Создает стрелки
+ */
+DKTools.Window.prototype.createArrows = function() {
+    const w = this._width;
+    const h = this._height;
+    const q = 12;
+    if (this.needsCreateUpArrowSprite()) {
+        const arrow = this.createArrow('up', 'up', w / 2, q);
+        arrow.addEvent({
+            type: 'update',
+            onUpdate: this.updateUpArrow.bind(this)
+        });
+    }
+    if (this.needsCreateDownArrowSprite()) {
+        const arrow = this.createArrow('down', 'down', w / 2, h - q);
+        arrow.addEvent({
+            type: 'update',
+            onUpdate: this.updateDownArrow.bind(this)
+        });
+    }
+    if (this.needsCreateLeftArrowSprite()) {
+        const arrow = this.createArrow('left', 'left', q, h / 2);
+        arrow.addEvent({
+            type: 'update',
+            onUpdate: this.updateLeftArrow.bind(this)
+        });
+    }
+    if (this.needsCreateRightArrowSprite()) {
+        const arrow = this.createArrow('right', 'right', w - q, h / 2);
+        arrow.addEvent({
+            type: 'update',
+            onUpdate: this.updateRightArrow.bind(this)
+        });
+    }
+};
+
+// add methods
+
+/**
  * @override
  */
-DKTools.Window.prototype.createContents = function() {
-    if (this.hasContentsSprite()) {
-        this._windowContentsSprite.resize(this.getContentsWidth(), this.getContentsHeight());
-        this._refreshContents();
-    }
+DKTools.Window.prototype.addAllChildren = function() {
+    DKTools.Base.prototype.addAllChildren.call(this);
+    this.addContentsSprite();
+};
+
+DKTools.Window.prototype.addContentsSprite = function() {
+    this._addContentsSprite();
+    this._refreshContents();
 };
 
 // is method
@@ -16150,9 +16323,9 @@ DKTools.Window.prototype.isOpenAndActive = function() {
  * @return {Boolean} Координаты находятся внутри окна
  */
 DKTools.Window.prototype.isInside = function(x, y) {
-    let localX = this.canvasToLocalX(x);
-    let localY = this.canvasToLocalY(y);
-    let frame = new Rectangle(this.x, this.y, this.width, this.height);
+    const localX = this.canvasToLocalX(x);
+    const localY = this.canvasToLocalY(y);
+    const frame = new Rectangle(this.x, this.y, this.width, this.height);
     return frame.contains(localX, localY);
 };
 
@@ -16257,22 +16430,22 @@ DKTools.Window.prototype.hasContentsSprite = function() {
 };
 
 /**
+ *
+ * @param {*} id
+ * @returns {Boolean}
+ */
+DKTools.Window.prototype.hasArrow = function(id) {
+    return !!this.getArrow(id);
+};
+
+/**
  * Возвращает true, если окно содержит спрайты стрелок
  *
  * @return {Boolean} Окно содержит спрайты стрелок
  */
 DKTools.Window.prototype.hasArrowSprites = function() {
-    return this.hasDownArrowSprite() && this.hasUpArrowSprite() &&
+    return this.hasUpArrowSprite() && this.hasDownArrowSprite() &&
             this.hasLeftArrowSprite() && this.hasRightArrowSprite();
-};
-
-/**
- * Возвращает true, если окно содержит спрайт стрелки вниз
- *
- * @return {Boolean} Окно содержит спрайт стрелки вниз
- */
-DKTools.Window.prototype.hasDownArrowSprite = function() {
-    return !!this._downArrowSprite;
 };
 
 /**
@@ -16281,7 +16454,16 @@ DKTools.Window.prototype.hasDownArrowSprite = function() {
  * @return {Boolean} Окно содержит спрайт стрелки вверх
  */
 DKTools.Window.prototype.hasUpArrowSprite = function() {
-    return !!this._upArrowSprite;
+    return this.hasArrow('up');
+};
+
+/**
+ * Возвращает true, если окно содержит спрайт стрелки вниз
+ *
+ * @return {Boolean} Окно содержит спрайт стрелки вниз
+ */
+DKTools.Window.prototype.hasDownArrowSprite = function() {
+    return this.hasArrow('down');
 };
 
 /**
@@ -16290,7 +16472,7 @@ DKTools.Window.prototype.hasUpArrowSprite = function() {
  * @return {Boolean} Окно содержит спрайт стрелки влево
  */
 DKTools.Window.prototype.hasLeftArrowSprite = function() {
-    return !!this._leftArrowSprite;
+    return this.hasArrow('left');
 };
 
 /**
@@ -16299,7 +16481,7 @@ DKTools.Window.prototype.hasLeftArrowSprite = function() {
  * @return {Boolean} Окно содержит спрайт стрелки вправо
  */
 DKTools.Window.prototype.hasRightArrowSprite = function() {
-    return !!this._rightArrowSprite;
+    return this.hasArrow('right');
 };
 
 /**
@@ -16353,45 +16535,26 @@ DKTools.Window.prototype.deactivate = function() {
  * @param {Number} [width] - Ширина окна
  * @param {Number} [height] - Высота окна
  * @param {Boolean} [blockStart] - Блокировка вызова функции start
+ * @param {Boolean} [activate]
  *
  * @return {Boolean} Изменение произошло
  */
-DKTools.Window.prototype.resize = function(width, height, blockStart) {
+DKTools.Window.prototype.resize = function(width, height, blockStart, activate) {
     width = (width == null ? this.getMinWidth() : width);
     height = (height == null ? this.getMinHeight() : height);
-    if (this.width === width && this.height === height) {
+    if (this._width === width && this._height === height) {
         return false;
     }
-    let lastWidth = this.width;
-    let lastHeight = this.height;
+    const lastWidth = this._width;
+    const lastHeight = this._height;
     this.setupSize(width, height);
-    if (this.width === lastWidth  && this.height === lastHeight) {
+    if (this._width === lastWidth && this._height === lastHeight) {
         return false;
     }
     if (!blockStart) {
-        this.start();
+        this.start(activate);
     }
     return true;
-};
-
-/**
- * Возвращает минимальную ширину окна
- *
- * @override
- * @return {Number} Минимальная ширина окна
-*/
-DKTools.Window.prototype.getMinWidth = function() {
-    return this.standardPadding() * 2 + DKTools.Base.prototype.getMinWidth.call(this);
-};
-
-/**
- * Возвращает минимальную высоту окна
- *
- * @override
- * @return {Number} Минимальная высота окна
- */
-DKTools.Window.prototype.getMinHeight = function() {
-	return this.standardPadding() * 2 + DKTools.Base.prototype.getMinHeight.call(this);
 };
 
 // load methods
@@ -16519,28 +16682,6 @@ DKTools.Window.prototype._updateContents = function() {
 };
 
 /**
- * Обновляет видимость спрайтов стрелок
- *
- * @private
- * @override
- */
-DKTools.Window.prototype._updateArrows = function() {
-    let isOpen = this.isOpen();
-    if (this.hasDownArrowSprite()) {
-        this._downArrowSprite.visible = isOpen && this.downArrowVisible;
-    }
-    if (this.hasUpArrowSprite()) {
-        this._upArrowSprite.visible = isOpen && this.upArrowVisible;
-    }
-    if (this.hasLeftArrowSprite()) {
-        this._leftArrowSprite.visible = isOpen && this.leftArrowVisible;
-    }
-    if (this.hasRightArrowSprite()) {
-        this._rightArrowSprite.visible = isOpen && this.rightArrowVisible;
-    }
-};
-
-/**
  * Обновляет спрайт знака паузы
  *
  * @private
@@ -16582,7 +16723,6 @@ DKTools.Window.prototype.updateContents = function() {
  */
 DKTools.Window.prototype.updateTransform = function() {
     this._updateContents();
-    this._updateArrows();
     this._updatePauseSign();
     PIXI.Container.prototype.updateTransform.call(this);
 };
@@ -16649,10 +16789,19 @@ DKTools.Window.prototype.updateClose = function() {
 	}
 };
 
-/**
- * Обновляет стрелки окна
- */
-DKTools.Window.prototype.updateArrows = function() {
+DKTools.Window.prototype.updateUpArrow = function(event) {
+    // to be overriden by plugins
+};
+
+DKTools.Window.prototype.updateDownArrow = function(event) {
+    // to be overriden by plugins
+};
+
+DKTools.Window.prototype.updateLeftArrow = function(event) {
+    // to be overriden by plugins
+};
+
+DKTools.Window.prototype.updateRightArrow = function(event) {
     // to be overriden by plugins
 };
 
@@ -16666,7 +16815,6 @@ DKTools.Window.prototype.update = function() {
 	this.updateOpen();
 	this.updateClose();
 	this.updateBackgroundDimmer();
-    this.updateArrows();
 };
 
 
@@ -16680,46 +16828,94 @@ DKTools.Window.prototype.update = function() {
 DKTools.Window.Selectable.prototype = Object.create(DKTools.Window.prototype);
 DKTools.Window.Selectable.prototype.constructor = DKTools.Window.Selectable;
 
-// _create methods
+// standard methods
 
 /**
- * @private
  * @override
  */
-DKTools.Window.Selectable.prototype._createContentsSprite = function() {
-    this._windowContentsSprite = new DKTools.Sprite.Selectable();
-};
-
-// is methods
-
-DKTools.Window.Selectable.prototype.isHorizontal = function() {
-    if (this.hasContentsSprite()) {
-        return this._windowContentsSprite.isHorizontal();
-    }
-    return false;
+DKTools.Window.Selectable.prototype.standardContentsSprite = function() {
+    return new DKTools.Sprite.Selectable();
 };
 
 // refresh methods
 
 DKTools.Window.Selectable.prototype.refreshAll = function() {
-    DKTools.Window.prototype.refreshAll.call(this);
     if (this.hasContentsSprite()) {
         this._windowContentsSprite.refreshAll();
     }
+    DKTools.Window.prototype.refreshAll.call(this);
 };
 
-// udpdate methods
+// needs create methods
 
-DKTools.Window.Selectable.prototype.updateArrows = function() {
+/**
+ * @override
+ * @returns {Boolean}
+ */
+DKTools.Window.Selectable.prototype.needsCreateArrowSprites = function() {
+    return true;
+};
+
+// upddate methods
+
+/**
+ * @override
+ * @param {DKTools.Event} event
+ */
+DKTools.Window.Selectable.prototype.updateUpArrow = function(event) {
     if (this.hasContentsSprite()) {
-        var contentsSprite = this._windowContentsSprite;
-        if (contentsSprite.isSelectable()) {
-            if (contentsSprite.isVertical()) {
-                var getTopRow = contentsSprite.getTopRow();
-                var getMaxTopRow = contentsSprite.getMaxTopRow();
-                this.downArrowVisible = getMaxTopRow > 0 && getTopRow < getMaxTopRow;
-                this.upArrowVisible = getTopRow > 0;
-            }
+        const contentsSprite = this._windowContentsSprite;
+        if (contentsSprite.isSelectable() && contentsSprite.isVertical()) {
+            event.target.setVisible(contentsSprite.getTopRow() > 0);
+        } else {
+            event.target.setVisible(false);
+        }
+    }
+};
+
+/**
+ * @override
+ * @param {DKTools.Event} event
+ */
+DKTools.Window.Selectable.prototype.updateDownArrow = function(event) {
+    if (this.hasContentsSprite()) {
+        const contentsSprite = this._windowContentsSprite;
+        if (contentsSprite.isSelectable() && contentsSprite.isVertical()) {
+            const topRow = contentsSprite.getTopRow();
+            const maxTopRow = contentsSprite.getMaxTopRow();
+            event.target.setVisible(maxTopRow > 0 && topRow < maxTopRow);
+        } else {
+            event.target.setVisible(false);
+        }
+    }
+};
+
+/**
+ * @override
+ * @param {DKTools.Event} event
+ */
+DKTools.Window.Selectable.prototype.updateLeftArrow = function(event) {
+    if (this.hasContentsSprite()) {
+        const contentsSprite = this._windowContentsSprite;
+        if (contentsSprite.isSelectable() && contentsSprite.isHorizontal()) {
+            event.target.setVisible(contentsSprite.getTopCol() > 0);
+        } else {
+            event.target.setVisible(false);
+        }
+    }
+};
+
+/**
+ * @override
+ * @param {DKTools.Event} event
+ */
+DKTools.Window.Selectable.prototype.updateRightArrow = function(event) {
+    if (this.hasContentsSprite()) {
+        const contentsSprite = this._windowContentsSprite;
+        if (contentsSprite.isSelectable() && contentsSprite.isHorizontal()) {
+            const topCol = contentsSprite.getTopCol();
+            const maxTopCol = contentsSprite.getMaxTopCol();
+            event.target.setVisible(maxTopCol > 0 && topCol < maxTopCol);
         }
     }
 };
@@ -16735,85 +16931,14 @@ DKTools.Window.Selectable.prototype.updateArrows = function() {
 DKTools.Window.Tab.prototype = Object.create(DKTools.Window.prototype);
 DKTools.Window.Tab.prototype.constructor = DKTools.Window.Tab;
 
-// _create methods
-
-DKTools.Window.Tab.prototype._createContentsSprite = function() {
-    this._windowContentsSprite = new DKTools.Sprite.Tab();
-
-    this._windowContentsSprite.setupSize(this.getContentsWidth(), this.getContentsHeight());
-};
-
 // standard methods
 
-// setup methods
-
-// DKTools.Window.Tab.prototype.setupTabs = function(tabs) {
-//
-// };
-
-// add methods
-
-// DKTools.Window.Tab.prototype.addTab = function(name, tab) {
-//     this._windowTabSprite.addCommand(name);
-//     this._tabs[name] = tab;
-// };
-
-// start methods
-
-// create methods
-
-// start methods
-
-// DKTools.Window.Tab.prototype.standardVerticalSpacing = function() {
-//     return 12;
-// };
-
-// other methods
-
-// DKTools.Window.Tab.prototype.showTab = function(tab) {
-//
-// };
-//
-// DKTools.Window.Tab.prototype.hideTab = function(tab) {
-//
-// };
-//
-// DKTools.Window.Tab.prototype.tabName = function(tab) {
-//
-// };
-//
-// DKTools.Window.Tab.prototype.tabIndex = function() {
-//
-// };
-//
-// DKTools.Window.Tab.prototype.tabHeight = function() {
-//     return this.getLineHeight();
-// };
-//
-// DKTools.Window.Tab.prototype.tabPadding = function() {
-//     return 0;
-// };
-//
-// DKTools.Window.Tab.prototype.tabContentsSize = function() {
-//     return {
-//         width: this.width - this.standardPadding() * 2,
-//         height: this.height - this.standardPadding() * 2 - this.tabHeight() - this.tabPadding()
-//     }
-// };
-//
-// DKTools.Window.Tab.prototype.selectTab = function(index) {
-//     if (this._windowContentsSprite) {
-//         this.removeChild(this._windowContentsSprite);
-//         this._windowContentsSprite = null;
-//     }
-//     var item = this._windowTabSprite.getItem(index);
-//     this._windowContentsSprite = item.content;
-//     this._windowContentsSprite.move(this.standardPadding(), this.standardPadding() * 3 + this.standardVerticalSpacing() + this._windowTabSprite.height);
-//     if (!this._windowContentsSprite.isStarted()) {
-//         this._windowContentsSprite.start();
-//     }
-//     this.addChild(this._windowContentsSprite);
-// };
+DKTools.Window.Tab.prototype.standardContentsSprite = function() {
+    return new DKTools.Sprite.Tab({
+        width: this.getContentsWidth(),
+        height: this.getContentsHeight()
+    });
+};
 
 
 
@@ -16833,8 +16958,8 @@ DKTools.Scene.prototype.constructor = DKTools.Scene;
  */
 DKTools.Scene.prototype.initialize = function() {
     this._clearAll();
-    this._setupAll();
     this._createAll();
+    this._setupAll();
     this._addAllChildren();
     Scene_Base.prototype.initialize.call(this);
 };
@@ -16850,17 +16975,6 @@ DKTools.Scene.prototype._clearAll = function() {
     // to be overriden by plugins
 };
 
-// _setup methods
-
-/**
- * Устанавливает все данные
- *
- * @private
- */
-DKTools.Scene.prototype._setupAll = function() {
-    // to be overriden by plugins
-};
-
 // _create methods
 
 /**
@@ -16869,6 +16983,17 @@ DKTools.Scene.prototype._setupAll = function() {
  * @private
  */
 DKTools.Scene.prototype._createAll = function() {
+    // to be overriden by plugins
+};
+
+// _setup methods
+
+/**
+ * Устанавливает все данные
+ *
+ * @private
+ */
+DKTools.Scene.prototype._setupAll = function() {
     // to be overriden by plugins
 };
 
@@ -17037,17 +17162,127 @@ DKTools.Scene.prototype.iterateChildren = function(callback) {
 // DKTools Updates
 //===========================================================================
 
+/**
+ * @private
+ * @readonly
+ * @type {String}
+ */
+DKTools.Updates._baseUrl = 'https://rmmv-plugins.herokuapp.com';
+
+DKTools.Updates._pages = {};
+
 DKTools.Updates.checkUpdates = function() {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://dk-plugins.ru/updates.json');
+    this.loadStats(function() {
+        if (this.status === 200) {
+            SceneManager.push(DKTools.Updates.Scene);
+            SceneManager.prepareNextScene(JSON.parse(this.responseText));
+        }
+    });
+};
+
+DKTools.Updates.autoCheckUpdates = function() {
+    _.forEach(Imported, function(version, plugin) {
+        if (!_.isBoolean(version)) {
+            this.findPluginByNameFragment(plugin, function() {
+                if (this.status === 200) {
+                    const data = JSON.parse(this.responseText);
+
+                    DKTools.Updates.loadPluginVersion(data.ID, function() {
+                        if (this.status === 200) {
+                            const versionInfo = JSON.parse(this.responseText)[0];
+                            if (versionInfo.version.toString() < version.toString()) {
+                                // p(versionInfo.version);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+    }.bind(this));
+};
+
+/**
+ *
+ * @param {Function} onload
+ * @param {Number} [page=1] - Страница
+ * @param {Function} [onerror]
+ */
+DKTools.Updates.loadPage = function(onload, page, onerror) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', this._baseUrl + '/plugins?page=' + page || 1);
     xhr.setRequestHeader('Cache-Control', 'no-cache');
     xhr.overrideMimeType('application/json');
-    xhr.onload = function() {
-        if (xhr.status < 400) {
-            SceneManager.push(DKTools.Updates.Scene);
-            SceneManager.prepareNextScene(JSON.parse(xhr.responseText));
-        }
-    }
+    xhr.onload = onload.bind(xhr);
+    xhr.onerror = onerror || function() {
+        throw new Error('Failed to load page: ' + page);
+    }.bind(xhr);
+    xhr.send();
+};
+
+DKTools.Updates.loadStats = function(onload, pageSize, onerror) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://rmmv-plugins.herokuapp.com/plugins/stats');
+    xhr.setRequestHeader('Cache-Control', 'no-cache');
+    xhr.overrideMimeType('application/json');
+    xhr.onload = onload.bind(xhr);
+    xhr.onerror = onerror || function() {
+        throw new Error('Failed to load stats');
+    }.bind(xhr);
+    xhr.send('page_size=' + pageSize || DKToolsParam.get('Page Size'));
+};
+
+DKTools.Updates.loadPluginVersion = function(id, onload, onerror) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://rmmv-plugins.herokuapp.com/plugins/versions/' + id);
+    xhr.setRequestHeader('Cache-Control', 'no-cache');
+    xhr.overrideMimeType('application/json');
+    xhr.onload = onload.bind(xhr);
+    xhr.onerror = onerror || function() {
+        throw new Error('Failed to load plugin version with id: ' + id);
+    }.bind(xhr);
+    xhr.send();
+};
+
+/**
+ *
+ * @param {String} fragment
+ * @param {Function} onload
+ * @param {Function} [onerror]
+ */
+DKTools.Updates.findPluginByNameFragment = function(fragment, onload, onerror) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://rmmv-plugins.herokuapp.com/plugins/findByNameFragment/' + fragment);
+    xhr.setRequestHeader('Cache-Control', 'no-cache');
+    xhr.overrideMimeType('application/json');
+    xhr.onload = onload.bind(xhr);
+    xhr.onerror = onerror || function() {
+        throw new Error('Failed to load plugin by name fragment:' + fragment);
+    }.bind(xhr);
+    xhr.send();
+};
+
+DKTools.Updates.findAllPluginsByNameFragment = function(fragment, onload, onerror) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', this._baseUrl + '/plugins');
+    xhr.setRequestHeader('Cache-Control', 'no-cache');
+    xhr.overrideMimeType('application/json');
+    xhr.onload = onload.bind(xhr);
+    xhr.onerror = onerror || function() {
+        throw new Error('Failed to load all plugins by name fragment:' + fragment);
+    }.bind(xhr);
+    xhr.send();
+};
+
+DKTools.Updates.loadTags = function(onload, onerror) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://rmmv-plugins.herokuapp.com/plugins/tags/');
+    xhr.setRequestHeader('Cache-Control', 'no-cache');
+    xhr.overrideMimeType('application/json');
+    xhr.onload = onload.bind(xhr);
+    xhr.onerror = onerror || function() {
+        throw new Error('Failed to load tags');
+    }.bind(xhr);
     xhr.send();
 };
 
@@ -17066,18 +17301,143 @@ DKTools.Updates.Scene = function() {
 DKTools.Updates.Scene.prototype = Object.create(DKTools.Scene.prototype);
 DKTools.Updates.Scene.prototype.constructor = DKTools.Updates.Scene;
 
-DKTools.Updates.Scene.prototype.prepare = function(updates) {
-    this._updates = updates;
+DKTools.Updates.Scene.prototype.prepare = function(stats) {
+    this._stats = stats;
 };
 
 // create methods
 
 DKTools.Updates.Scene.prototype.createAllWindows = function() {
-    this.createTitleWindow();
+    this.createCommandWindow();
 };
 
-DKTools.Updates.Scene.prototype.createTitleWindow = function() {
-    this._titleWindow = new DKTools.Window(0, 0, Graphics.boxWidth);
-    this._titleWindow.setText('DKPlugins Updates');
-    this.addWindow(this._titleWindow);
+DKTools.Updates.Scene.prototype.createCommandWindow = function() {
+
+    const catalogContentsSprite = new DKTools.Sprite.Tab();
+    this._catalogContentsSprite = catalogContentsSprite;
+    const tabSprite = this._catalogContentsSprite.tabSprite;
+    tabSprite.setupFixedHorizontal(true);
+    tabSprite.setupMaxCols(10);
+    let items = [];
+    const _contents = new DKTools.Sprite.Selectable();
+    _contents.setupItemHeight(function() {
+        return this.getLineHeight() * 3;
+    }.bind(_contents));
+    _contents.setHandler('cancel', function() {
+        tabSprite.activate();
+    });
+    _.times(this._stats.pages, function(page) {
+        items.push({
+            name: page + 1,
+            symbol: 'ok',
+            handler: function() {
+                _contents.activate();
+            },
+            contents: _contents
+        });
+    });
+    tabSprite.setupItems(items);
+
+    this._commandWindow = new DKTools.Window.Tab(0, 0, Graphics.boxWidth, Graphics.boxHeight);
+    const contentsSprite = this._commandWindow.contentsSprite;
+
+    const categorySprite = contentsSprite.tabSprite;
+    categorySprite.setupFixedHorizontal(true);
+
+    catalogContentsSprite.addEvent({
+        type: 'selectTab',
+        onUpdate: function() {
+            const index = tabSprite.index + 1;
+            const items = DKTools.Updates._pages[index];
+            if (!items) {
+                DKTools.Updates.loadPage(function() {
+                    if (this.status === 200) {
+                        const data = JSON.parse(this.responseText);
+                        let items = [];
+                        _.forEach(data, function(plugin) {
+                            items.push({
+                                name: plugin.title
+                            });
+                        });
+                        const contents = catalogContentsSprite.getCurrentTabContents();
+                        if (contents) {
+                            contents.setItems(items);
+                        }
+                        DKTools.Updates._pages[index] = items;
+                    }
+                }, index);
+            } else {
+                const contents = catalogContentsSprite.getCurrentTabContents();
+                if (contents) {
+                    contents.setItems(items);
+                }
+            }
+
+        }.bind(this)
+    });
+
+    const width = contentsSprite.getContentsWidth();
+    const height = contentsSprite.getContentsHeight();
+
+    const catalogTab = this._catalogContentsSprite.tabSprite;
+    catalogTab.setupSize(width, '1');
+    catalogTab.setHandler('cancel', function() {
+        categorySprite.activate();
+    });
+    catalogTab.setupHorizontalSpacing(6);
+
+    _contents.setupSize(width, height);
+
+    categorySprite.setupItems([
+        {
+            name: 'Каталог',
+            symbol: 'catalog',
+            handler: function() {
+                catalogTab.activate();
+            }.bind(this),
+            contents: this._catalogContentsSprite
+        },
+        {
+            name: 'Поиск',
+            symbol: 'search',
+            contents: null
+        },
+        {
+            name: 'Теги',
+            symbol: 'tags',
+            contents: null
+        }
+    ]);
+    categorySprite.setupMaxCols(3);
+    categorySprite.setHandler('cancel', SceneManager.pop.bind(SceneManager));
+    this.addWindow(this._commandWindow);
+};
+
+// start methods
+
+DKTools.Updates.Scene.prototype.startAllWindows = function() {
+    this._commandWindow.start(true);
+};
+
+// page methods
+
+DKTools.Updates.Scene.prototype.setPage = function(page) {
+
+};
+
+DKTools.Updates.Scene.prototype.nextPage = function() {
+
+};
+
+DKTools.Updates.Scene.prototype.prevPage = function() {
+
+};
+
+// other methods
+
+DKTools.Updates.Scene.prototype.setPageData = function(data, page) {
+    this._page = {
+        index: page || 1,
+        data: data
+    };
 };
