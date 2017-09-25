@@ -16,15 +16,19 @@
  
 ## **4 steps to use DKTools**
 1. Create element
+
 Create element from DKTools through "new" operator, like: var object = new DKTools.Sprite(x, y, width);
  
 2. Set parameters through "setup" functions
+
 Each element contain "setup" functions, which set the parameters. All functions have default parameters.
  
 3. Start element
+
 Call start function of element.
  
 4. Add element to your scene
+
 Use "addChild" function for add element to your scene.
  
 ## **List of elements:**
