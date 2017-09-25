@@ -35,29 +35,29 @@ Use "addChild" function for add element to your scene.
 5. DKTools.Utils.Point
 6. DKTools.Utils.Rectangle
 7. DKTools.Utils.Random
-8. DKTools.ParameterManager
-9. DKTools.FileManager
-10. DKTools.Localization
-11. DKTools.PluginManager
-12. DKTools.Audio
-13. DKTools.Event
-14. DKTools.Animation
-15. DKTools.Animation.Action
-16. DKTools.Base
-17. DKTools.Sprite
-18. DKTools.Sprite.Button
-19. DKTools.Sprite.Cursor
-20. DKTools.Sprite.Selectable
-21. DKTools.Sprite.Command
-22. DKTools.Sprite.Tab
-23. DKTools.Viewport
-24. DKTools.Layout
-25. DKTools.Window
-26. DKTools.Window.Selectable
-27. DKTools.Window.Tab
-28. DKTools.Scene
-
-**Warning:** not all elements are ready
+8. DKTools.Utils.Sequence
+9. DKTools.Utils.Sequence.Alphabet
+10. DKTools.ParameterManager
+11. DKTools.FileManager
+12. DKTools.Localization
+13. DKTools.PluginManager
+14. DKTools.Audio
+15. DKTools.Event
+16. DKTools.Animation
+17. DKTools.Animation.Action
+18. DKTools.Base
+19. DKTools.Sprite
+20. DKTools.Sprite.Button
+21. DKTools.Sprite.Cursor
+22. DKTools.Sprite.Arrow
+23. DKTools.Sprite.Selectable
+24. DKTools.Sprite.Tab
+25. DKTools.Viewport
+26. DKTools.Layout
+27. DKTools.Window
+28. DKTools.Window.Selectable
+29. DKTools.Window.Tab
+30. DKTools.Scene
  
 ## **3 main reasons for use DKTools:**
 1. Not need to waste time for creating a special sprites or windows
