@@ -11,8 +11,6 @@
 2. Copy DKTools.js to the js/plugins/ of your project
 3. Enable DKTools in the plugin manager
 4. Add at least one game language in the parameters of the DKTools
-
-**Warning:** May contain bugs in some elements
  
 ## **4 steps to use DKTools**
 1. Create element
@@ -33,32 +31,58 @@ Use "addChild" function for add element to your scene.
  
 ## **List of elements:**
 DKTools.Utils
- DKTools.Utils.String
- DKTools.Utils.Array
- DKTools.Utils.Bitmap
- DKTools.Utils.Point
- DKTools.Utils.Rectangle
- DKTools.Utils.Random
- DKTools.Utils.Sequence
- DKTools.Utils.Sequence.Alphabet
- DKTools.FileManager
- DKTools.Localization
- DKTools.PluginManager
- DKTools.Audio
- DKTools.Event
- DKTools.Animation
- DKTools.Animation.Action
- DKTools.Base
- DKTools.Sprite
- DKTools.Sprite.Button
- DKTools.Sprite.Cursor
- DKTools.Sprite.Arrow
- DKTools.Sprite.Selectable
- DKTools.Viewport
- DKTools.Layout
- DKTools.Window
- DKTools.Window.Selectable
- DKTools.Scene
+
+DKTools.Utils.String
+
+DKTools.Utils.Array
+
+DKTools.Utils.Bitmap
+
+DKTools.Utils.Point
+
+DKTools.Utils.Rectangle
+
+DKTools.Utils.Random
+
+DKTools.Utils.Sequence
+
+DKTools.Utils.Sequence.Alphabet
+
+DKTools.FileManager
+
+DKTools.Localization
+
+DKTools.PluginManager
+
+DKTools.Audio
+
+DKTools.Event
+
+DKTools.Animation
+
+DKTools.Animation.Action
+
+DKTools.Base
+
+DKTools.Sprite
+
+DKTools.Sprite.Button
+
+DKTools.Sprite.Cursor
+
+DKTools.Sprite.Arrow
+
+DKTools.Sprite.Selectable
+
+DKTools.Viewport
+
+DKTools.Layout
+
+DKTools.Window
+
+DKTools.Window.Selectable
+
+DKTools.Scene
  
 ## **3 main reasons for use DKTools:**
 1. Not need to waste time for creating a special sprites or windows
