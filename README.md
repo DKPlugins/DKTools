@@ -1,8 +1,8 @@
 **Author**: DK
 
-**Version**: Public 0.98 **Beta**
+**Version**: Public 0.99 **Beta**
  
-**Description**: Library for RPG Maker MV
+**Description**: Library for RPG Maker MV. Contains many tools for developing.
  
 **Dependencies**: RPG Maker MV 1.5+ and lodash.js
 
@@ -32,36 +32,33 @@ Call start function of element.
 Use "addChild" function for add element to your scene.
  
 ## **List of elements:**
-1. DKTools.Utils
-2. DKTools.Utils.String
-3. DKTools.Utils.Array
-4. DKTools.Utils.Bitmap
-5. DKTools.Utils.Point
-6. DKTools.Utils.Rectangle
-7. DKTools.Utils.Random
-8. DKTools.Utils.Sequence
-9. DKTools.Utils.Sequence.Alphabet
-10. DKTools.ParameterManager
-11. DKTools.FileManager
-12. DKTools.Localization
-13. DKTools.PluginManager
-14. DKTools.Audio
-15. DKTools.Event
-16. DKTools.Animation
-17. DKTools.Animation.Action
-18. DKTools.Base
-19. DKTools.Sprite
-20. DKTools.Sprite.Button
-21. DKTools.Sprite.Cursor
-22. DKTools.Sprite.Arrow
-23. DKTools.Sprite.Selectable
-24. DKTools.Sprite.Tab
-25. DKTools.Viewport
-26. DKTools.Layout
-27. DKTools.Window
-28. DKTools.Window.Selectable
-29. DKTools.Window.Tab
-30. DKTools.Scene
+DKTools.Utils
+ DKTools.Utils.String
+ DKTools.Utils.Array
+ DKTools.Utils.Bitmap
+ DKTools.Utils.Point
+ DKTools.Utils.Rectangle
+ DKTools.Utils.Random
+ DKTools.Utils.Sequence
+ DKTools.Utils.Sequence.Alphabet
+ DKTools.FileManager
+ DKTools.Localization
+ DKTools.PluginManager
+ DKTools.Audio
+ DKTools.Event
+ DKTools.Animation
+ DKTools.Animation.Action
+ DKTools.Base
+ DKTools.Sprite
+ DKTools.Sprite.Button
+ DKTools.Sprite.Cursor
+ DKTools.Sprite.Arrow
+ DKTools.Sprite.Selectable
+ DKTools.Viewport
+ DKTools.Layout
+ DKTools.Window
+ DKTools.Window.Selectable
+ DKTools.Scene
  
 ## **3 main reasons for use DKTools:**
 1. Not need to waste time for creating a special sprites or windows
