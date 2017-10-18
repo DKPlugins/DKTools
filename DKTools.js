@@ -3,8 +3,8 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 0.98 beta
-Release: 31.07.2017
+Version: 0.99 beta
+Release: 18.10.2017
 First release: 13.01.2016
 Supported languages: Russian, English
 */
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 0.98 beta
-Релиз: 31.07.2017
+Версия: 0.99 beta
+Релиз: 18.10.2017
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.0.98 beta Basic elements
+* @plugindesc v.0.99 beta Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: http://dk-plugins.ru
- Version: 0.98 beta
- Release: 31.07.2017
+ Version: 0.99 beta
+ Release: 18.10.2017
  First release: 13.01.2016
  Supported languages: Russian, English
 
@@ -45,18 +45,33 @@ E-mail: kuznetsovdenis96@gmail.com
  4. Add at least one game language in the parameters of the DKTools
 
  ### Elements ###
- 1. DKTools.Sprite
- 2. DKTools.Sprite.Button
- 3. DKTools.Sprite.Selectable
- 4. DKTools.Sprite.Command
- 5. DKTools.Sprite.Tab
- 6. DKTools.Viewport
- 7. DKTools.Layout
- 8. DKTools.Window
- 9. DKTools.Window.Selectable
- 10. DKTools.Window.Command
- 11. DKTools.Window.Tab
- 12. DKTools.Scene
+ DKTools.Utils
+ DKTools.Utils.String
+ DKTools.Utils.Array
+ DKTools.Utils.Bitmap
+ DKTools.Utils.Point
+ DKTools.Utils.Rectangle
+ DKTools.Utils.Random
+ DKTools.Utils.Sequence
+ DKTools.Utils.Sequence.Alphabet
+ DKTools.FileManager
+ DKTools.Localization
+ DKTools.PluginManager
+ DKTools.Audio
+ DKTools.Event
+ DKTools.Animation
+ DKTools.Animation.Action
+ DKTools.Base
+ DKTools.Sprite
+ DKTools.Sprite.Button
+ DKTools.Sprite.Cursor
+ DKTools.Sprite.Arrow
+ DKTools.Sprite.Selectable
+ DKTools.Viewport
+ DKTools.Layout
+ DKTools.Window
+ DKTools.Window.Selectable
+ DKTools.Scene
 
  ### License and terms of use ###
 
@@ -110,39 +125,10 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type boolean
  * @default false
 
- * @param Updates
- * @text Checking for updates
- * @default ---------------------------------
-
- * @param Auto Updates
- * @text Automatic check for updates
- * @parent Updates
- * @desc Check for plugin updates automatically? Information is output to the debug console.
- * @type boolean
- * @default false
-
- * @param Beta Updates
- * @text Beta updates
- * @parent Updates
- * @desc Check for beta updates?
- * @type boolean
- * @default false
-
- * @param Updates Language
- * @text Interface language
- * @parent Updates
- * @desc Interface language when checking for updates
- * @type select
- * @option English
- * @value en
- * @option Russian
- * @value ru
- * @default en
-
 */
 
 /*:ru
-* @plugindesc v.0.98 beta Базовые элементы
+* @plugindesc v.0.99 beta Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -150,8 +136,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 0.98 beta
- Релиз: 31.07.2017
+ Версия: 0.99 beta
+ Релиз: 18.10.2017
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
 
@@ -166,19 +152,34 @@ E-mail: kuznetsovdenis96@gmail.com
  4. Добавить хотя бы один язык игры в параметрах плагина DKTools
 
  ### Элементы ###
- 1. DKTools.Sprite
- 2. DKTools.Sprite.Button
- 3. DKTools.Sprite.Selectable
- 4. DKTools.Sprite.Command
- 5. DKTools.Sprite.Tab
- 6. DKTools.Viewport
- 7. DKTools.Layout
- 8. DKTools.Window
- 9. DKTools.Window.Selectable
- 10. DKTools.Window.Command
- 11. DKTools.Window.Tab
- 12. DKTools.Scene
- 
+ DKTools.Utils
+ DKTools.Utils.String
+ DKTools.Utils.Array
+ DKTools.Utils.Bitmap
+ DKTools.Utils.Point
+ DKTools.Utils.Rectangle
+ DKTools.Utils.Random
+ DKTools.Utils.Sequence
+ DKTools.Utils.Sequence.Alphabet
+ DKTools.FileManager
+ DKTools.Localization
+ DKTools.PluginManager
+ DKTools.Audio
+ DKTools.Event
+ DKTools.Animation
+ DKTools.Animation.Action
+ DKTools.Base
+ DKTools.Sprite
+ DKTools.Sprite.Button
+ DKTools.Sprite.Cursor
+ DKTools.Sprite.Arrow
+ DKTools.Sprite.Selectable
+ DKTools.Viewport
+ DKTools.Layout
+ DKTools.Window
+ DKTools.Window.Selectable
+ DKTools.Scene
+
  ### Лицензия и правила использования плагина ###
 
  Актуальная информация о правилах использования: https://dk-plugins.ru/terms-of-use
@@ -230,37 +231,6 @@ E-mail: kuznetsovdenis96@gmail.com
  * @desc Открыть отладочную консоль при запуске игры ?
  * @type boolean
  * @default false
-
- * @param Updates
- * @text Проверка обновлений
- * @default ---------------------------------
-
- * @param Auto Updates
- * @text Автоматическая проверка обновлений
- * @parent Updates
- * @desc Проверять обновления для плагинов автоматически ? Информация выводится в отладочную консоль.
- * @type boolean
- * @default false
-
- * @param Page Size
- * @text Количество плагинов
- * @parent Updates
- * @desc Количество плагинов на одной странице
- * @type number
- * @min 1
- * @max 25
- * @default 10
-
- * @param Updates Language
- * @text Язык интерфейса
- * @parent Updates
- * @desc Язык интерфейса при проверке обновлений
- * @type select
- * @option Русский
- * @value ru
- * @option Английский
- * @value en
- * @default ru
  
 */
 
@@ -313,13 +283,14 @@ try {
  * @type {Object}
  */
 var Imported = Imported || {};
-Imported.DKTools = 0.98;
+Imported.DKTools = 0.99;
 
 //===========================================================================
 // DKTools
 //===========================================================================
 
 /**
+ * @namespace DKTools
  * @type {Object}
  */
 const DKTools = {};
@@ -358,74 +329,83 @@ Object.defineProperties(DKTools, {
 /**
  * Статический класс утилит
  *
- * @type {Object}
+ * @class DKTools.Utils
+ * @constructor
  * @memberOf DKTools
  */
-DKTools.Utils = {};
+DKTools.Utils = function() {};
 
 /**
  * Статический класс, содержащий функции для String
  *
- * @type {Object}
+ * @class DKTools.Utils.String
+ * @constructor
  * @memberOf DKTools.Utils
  */
-DKTools.Utils.String = {};
+DKTools.Utils.String = function() {};
 
 /**
  * Статический класс, содержащий функции для Array
  *
- * @type {Object}
+ * @class DKTools.Utils.Array
+ * @constructor
  * @memberOf DKTools.Utils
  */
-DKTools.Utils.Array = {};
+DKTools.Utils.Array = function() {};
 
 /**
  * Статический класс, содержащий функции для Bitmap
  *
- * @type {Object}
+ * @class DKTools.Utils.Bitmap
+ * @constructor
  * @memberOf DKTools.Utils
  */
-DKTools.Utils.Bitmap = {};
+DKTools.Utils.Bitmap = function() {};
 
 /**
  * Статический класс, содержащий функции для Point
  *
- * @type {Object}
+ * @class DKTools.Utils.Point
+ * @constructor
  * @memberOf DKTools.Utils
  */
-DKTools.Utils.Point = {};
+DKTools.Utils.Point = function() {};
 
 /**
  * Статический класс, содержащий функции для Rectangle
  *
- * @type {Object}
+ * @class DKTools.Utils.Rectangle
+ * @constructor
  * @memberOf DKTools.Utils
  */
-DKTools.Utils.Rectangle = {};
+DKTools.Utils.Rectangle = function() {};
 
 /**
  * Статический класс, содержащий функции рандома
  *
- * @type {Object}
+ * @class DKTools.Utils.Random
+ * @constructor
  * @memberOf DKTools.Utils
  */
-DKTools.Utils.Random = {};
+DKTools.Utils.Random = function() {};
 
 /**
  * Статический класс, содержащий последовательности
  *
- * @type {Object}
+ * @class DKTools.Utils.Sequence
+ * @constructor
  * @memberOf DKTools.Utils
  */
-DKTools.Utils.Sequence = {};
+DKTools.Utils.Sequence = function() {};
 
 /**
  * Статический класс, содержащий последовательности алфавита
  *
- * @type {Object}
+ * @class DKTools.Utils.Sequence.Alphabet
+ * @constructor
  * @memberOf DKTools.Utils.Sequence
  */
-DKTools.Utils.Sequence.Alphabet = {};
+DKTools.Utils.Sequence.Alphabet = function() {};
 
 /**
  * @class DKTools.ParameterManager
@@ -443,26 +423,29 @@ DKTools.ParameterManager = function(pluginName, convertible) {
 /**
  * Статический класс, который управляет файловой системой
  *
- * @type {Object}
+ * @class DKTools.FileManager
+ * @constructor
  * @memberOf DKTools
  */
-DKTools.FileManager = {};
+DKTools.FileManager = function() {};
 
 /**
  * Статический класс локализации
  *
- * @type {Object}
+ * @class DKTools.Localization
+ * @constructor
  * @memberOf DKTools
  */
-DKTools.Localization = {};
+DKTools.Localization = function() {};
 
 /**
  * Статический класс, который управляет плагинами
  *
- * @type {Object}
+ * @class DKTools.PluginManager
+ * @constructor
  * @memberOf DKTools
  */
-DKTools.PluginManager = {};
+DKTools.PluginManager = function() {};
 
 /**
  * Класс аудиофайла
@@ -486,23 +469,28 @@ DKTools.Audio = function(object) {
 };
 
 /**
- * Класс события
+ * Event class
  *
  * @class DKTools.Event
  * @constructor
  *
  * @memberOf DKTools
  *
- * @param {Object} object - Объект типа {}
+ * @param {Object} object - Parameters
  *
- * @param {DKTools.Sprite | DKTools.Window | *} [object.target] - Объект, для которого установлено событие
- * @param {String} [object.type] - Тип события
- * @param {Function} [object.onStart] - Обработчик начала работы события
- * @param {Function} object.onUpdate - Обработчик события
- * @param {Function} [object.onFinish] - Обработчик окончания работы события
+ * @param {DKTools.Sprite | DKTools.Window | *} [object.target] - The object for which the event is set
+ * @param {String} [object.type] - Type of event
+ * @param {Number} [object.repeatTime]
+ * @param {Number} [object.repeatTime] - Длительность повтора события
+ * @param {Number} [object.repeats] - Количество повторов события
+ * @param {Number} [object.remainingPauseTime] - Длительность паузы
+ * @param {Function} [object.onStart] - Обработчик начала работы
+ * @param {Function} object.onUpdate - Обработчик обновления
  * @param {Function} [object.onPause] - Обработчик паузы события
- * @param {Number} [object.remainingPauseTime] - Длительность паузы события
- * // TODO: добавить остальные свойства
+ * @param {Function} [object.onReset] - Обработчик сброса события
+ * @param {Function} [object.onRepeat] - Обработчик повтора события
+ * @param {Function} [object.onSuccess] - Обработчик успешного завершения работы
+ * @param {Function} [object.onFailure] - Обработчик провального завершения работы
  */
 DKTools.Event = function(object) {
     this.initialize.apply(this, arguments);
@@ -659,32 +647,6 @@ DKTools.Sprite.Selectable = function(object, y, width, height) {
 };
 
 /**
- * @class DKTools.Sprite.Command
- * @augments DKTools.Sprite.Selectable
- *
- * @override
- * @constructor
- *
- * @memberOf DKTools.Sprite
- */
-DKTools.Sprite.Command = function(object, y, width, height) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
- * @class DKTools.Sprite.Tab
- * @augments DKTools.Sprite
- *
- * @override
- * @constructor
- *
- * @memberOf DKTools.Sprite
- */
-DKTools.Sprite.Tab = function(object, y, width, height) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
  * Класс вьюпорта
  *
  * @class DKTools.Viewport
@@ -752,10 +714,6 @@ DKTools.Window.Selectable = function(object, y, width, height) {
     this.initialize.apply(this, arguments);
 };
 
-DKTools.Window.Tab = function(object, y, width, height) {
-    this.initialize.apply(this, arguments);
-};
-
 /**
  * Класс сцены
  *
@@ -769,12 +727,6 @@ DKTools.Window.Tab = function(object, y, width, height) {
 DKTools.Scene = function() {
 	this.initialize.apply(this, arguments);
 };
-
-/**
- * @type {Object}
- * @memberOf DKTools
- */
-DKTools.Updates = {};
 
 
 
@@ -831,9 +783,9 @@ DKTools.Utils.initialize = function() {
         this.openConsole();
     }
 
-    if (DKToolsParam.get('Auto Updates')) {
-        DKTools.Updates.autoCheckUpdates();
-    }
+    // if (DKToolsParam.get('Auto Updates')) {
+    //     DKTools.Updates.autoCheckUpdates();
+    // }
 };
 
 /**
@@ -850,7 +802,7 @@ DKTools.Utils.isNwjs = function() {
  * Возвращает true, если используется мобильный телефон
  *
  * @static
- * @return {Boolean} Используется мобильный телефон
+ * @returns {Boolean} Используется мобильный телефон
  */
 DKTools.Utils.isMobileDevice = function() {
     return this._isMobileDevice;
@@ -884,10 +836,10 @@ DKTools.Utils.isAndroidChrome = function() {
  * @param {Object} source - Откуда копируем
 */
 DKTools.Utils.mixin = function(target, source) {
-    let keys = Object.getOwnPropertyNames(source);
-    _.forEach(keys, function(key) {
-        var property = Object.getOwnPropertyDescriptor(source, key);
-        Object.defineProperty(target, key, property);
+    const properties = Object.getOwnPropertyNames(source);
+    _.forEach(properties, function(property) {
+        const descriptor = Object.getOwnPropertyDescriptor(source, property);
+        Object.defineProperty(target, property, descriptor);
     });
 };
 
@@ -1385,10 +1337,10 @@ DKTools.Utils.Point.equals = function(point1, point2) {
  *
  * @static
  * @param {PIXI.Point | PIXI.ObservablePoint | Point} point - Point, который требуется клонировать
- * @return {*} Клонированный Point
+ * @return {Point} Клонированный Point
  */
 DKTools.Utils.Point.clone = function(point) {
-    let newPoint = new (point.constructor)();
+    const newPoint = new Point();
     newPoint.copy(point);
     return newPoint;
 };
@@ -1474,7 +1426,7 @@ DKTools.Utils.Rectangle.equals = function(rect1, rect2) {
  * @return {Rectangle} Клонированный Rectangle
  */
 DKTools.Utils.Rectangle.clone = function(rect) {
-    let newRect = new (rect.constructor)();
+    const newRect = new Rectangle();
     newRect.copy(rect);
     return newRect;
 };
@@ -1532,9 +1484,9 @@ DKTools.Utils.Random.getBoolean = function() {
  * @returns {String} Случайный цвет в формате rgba
  */
 DKTools.Utils.Random.getRgbaColor = function(alpha) {
-    let r = this.getInt(255);
-    let g = this.getInt(255);
-    let b = this.getInt(255);
+    const r = this.getInt(255);
+    const g = this.getInt(255);
+    const b = this.getInt(255);
     let a = 1;
     if (!_.isUndefined(alpha)) {
         a = alpha;
@@ -1561,8 +1513,8 @@ DKTools.Utils.Random.getHexColor = function() {
 //===========================================================================
 
 /**
- *
- * @param {Number} [max=Number.MAX_SAFE_INTEGER]
+ * @param {Number} [max=Number.MAX_SAFE_INTEGER] - Максимальное число последовательности
+ * @returns {Number} Следующее значение последовательности
  */
 DKTools.Utils.Sequence.Number = function*(max) {
     max = max || Number.MAX_SAFE_INTEGER;
@@ -1573,8 +1525,8 @@ DKTools.Utils.Sequence.Number = function*(max) {
 };
 
 /**
- *
- * @param [Boolean} [start=false]
+ * @param [Boolean} [start=false] - Стартовое значение последовательности
+ * @returns {Boolean} Следующее значение последовательности
  */
 DKTools.Utils.Sequence.Boolean = function*(start) {
     let value = start || false;
@@ -1585,8 +1537,8 @@ DKTools.Utils.Sequence.Boolean = function*(start) {
 };
 
 /**
- *
- * @param {Boolean} [upper]
+ * @param {Boolean} [upper] - Верхний регистр
+ * @returns {String} Следующее значение последовательности
  */
 DKTools.Utils.Sequence.Alphabet.ru = function*(upper) {
     let alphabet = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
@@ -1597,8 +1549,8 @@ DKTools.Utils.Sequence.Alphabet.ru = function*(upper) {
 };
 
 /**
- *
- * @param {Boolean} [upper]
+ * @param {Boolean} [upper] - Верхний регистр
+ * @returns {String} Следующее значение последовательности
  */
 DKTools.Utils.Sequence.Alphabet.en = function*(upper) {
     let alphabet = 'abcdefghijklmnopqrstuvwxyz';
@@ -1613,7 +1565,7 @@ DKTools.Utils.Sequence.Alphabet.en = function*(upper) {
 
 
 //===========================================================================
-// DKTools Parameter Manager
+// DKTools ParameterManager
 //===========================================================================
 
 // properties
@@ -1625,7 +1577,7 @@ Object.defineProperties(DKTools.ParameterManager.prototype, {
      *
      * @readonly
      * @type {String}
-     * @memberOf DKTools.ParameterManager
+     * @memberOf DKTools.ParameterManager.prototype
      */
     pluginName: {
         get: function() {
@@ -1639,7 +1591,7 @@ Object.defineProperties(DKTools.ParameterManager.prototype, {
      *
      * @readonly
      * @type {Object}
-     * @memberOf DKTools.ParameterManager
+     * @memberOf DKTools.ParameterManager.prototype
      */
     initialParams: {
         get: function() {
@@ -1653,7 +1605,7 @@ Object.defineProperties(DKTools.ParameterManager.prototype, {
      *
      * @readonly
      * @type {Object}
-     * @memberOf DKTools.ParameterManager
+     * @memberOf DKTools.ParameterManager.prototype
      */
     params: {
         get: function() {
@@ -1768,14 +1720,14 @@ DKTools.ParameterManager.prototype.convertParameters = function(convertible) {
 DKTools.ParameterManager.prototype.get = function(parameterName, item) {
     let param = this._params[parameterName];
     if (_.isUndefined(param) && parameterName !== 'Localization') {
-        let localization = this.get('Localization');
+        const localization = this.get('Localization');
         if (localization) {
             param = localization[parameterName];
             if (param) {
-                let locale = DKTools.Localization.locale;
-                let localizedParam = param[locale];
+                const locale = DKTools.Localization.locale;
+                const localizedParam = param[locale];
                 if (_.isUndefined(localizedParam)) {
-                    throw new Error('Localized param is undefined'); // TODO: норм описание (про локаль)
+                    throw new Error('Localized param is undefined for locale: ' + locale);
                 }
                 param = localizedParam;
             }
@@ -1810,7 +1762,7 @@ var DKToolsParam = new DKTools.ParameterManager('DKTools');
 
 
 //===========================================================================
-// DKTools Plugin Manager
+// DKTools PluginManager
 //===========================================================================
 
 /**
@@ -1889,13 +1841,13 @@ DKTools.PluginManager.initialize = function() {
  */
 DKTools.PluginManager._checkRequirements = function() {
     _.forEach(this._requirements, function(pluginInfo, pluginName) {
-        let maxVersion = _.max(pluginInfo);
-        let pluginVersion = this.pluginVersion(pluginName);
+        const maxVersion = _.max(pluginInfo);
+        const pluginVersion = this.pluginVersion(pluginName);
         if (_.isUndefined(pluginVersion)) {
-            let error = 'Required to install the plugin "%1". Minimal version: %2'.format(pluginName, maxVersion);
+            const error = 'Required to install the plugin "%1". Minimal version: %2'.format(pluginName, maxVersion);
             throw new Error(error);
         } else if (pluginVersion < maxVersion) {
-            let error = 'Required to update the plugin "%1" to minimal version %2 (Installed: %3)'.format(pluginName,
+            const error = 'Required to update the plugin "%1" to minimal version %2 (Installed: %3)'.format(pluginName,
                 maxVersion, pluginVersion);
             throw new Error(error);
         }
@@ -1936,14 +1888,10 @@ DKTools.PluginManager.isRequired = function(pluginName) {
  *
  * @static
  * @param {String} pluginName - Название плагина
- * @param {Number} version - Версия плагина
+ * @param {Number | String} version - Версия плагина
  */
 DKTools.PluginManager.registerPlugin = function(pluginName, version) {
-    if (this.isRegistered(pluginName)) {
-        return;
-    }
-    if (!_.isFinite(version)) {
-        console.warn('Version is not a Number: ' + pluginName); // TODO: норм описание
+    if (this.isRegistered(pluginName) || !version || _.isBoolean(version)) {
         return;
     }
     this._plugins[pluginName] = version;
@@ -1954,6 +1902,8 @@ DKTools.PluginManager.registerPlugin = function(pluginName, version) {
  *
  * @static
  * @param {Object[]} plugins - Плагины
+ *
+ * @see DKTools.PluginManager.registerPlugin
  */
 DKTools.PluginManager.registerPlugins = function(plugins) {
     _.forEach(plugins, function(version, pluginName) {
@@ -1967,11 +1917,11 @@ DKTools.PluginManager.registerPlugins = function(plugins) {
  * Регистрирует требование к минимальной версии плагина
  *
  * @example
- * DKTools.PluginManager.requirePlugin('DKTools', 0.98);
+ * DKTools.PluginManager.requirePlugin('DKTools', 0.99);
  *
  * @static
  * @param {String} pluginName - Название плагина
- * @param {Number} minVersion - Минимальная версия
+ * @param {Number | String} minVersion - Минимальная версия
  */
 DKTools.PluginManager.requirePlugin = function(pluginName, minVersion) {
     if (!this._requirements[pluginName]) {
@@ -1985,6 +1935,8 @@ DKTools.PluginManager.requirePlugin = function(pluginName, minVersion) {
  *
  * @static
  * @param {Object[]} plugins - Плагины
+ *
+ * @see DKTools.PluginManager.requirePlugin
  */
 DKTools.PluginManager.requirePlugins = function(plugins) {
     _.forEach(plugins, function(version, pluginName) {
@@ -1998,11 +1950,11 @@ DKTools.PluginManager.requirePlugins = function(plugins) {
  * Возвращает версию плагина
  *
  * @example
- * DKTools.PluginManager.pluginVersion('DKTools'); // => 0.98
+ * DKTools.PluginManager.pluginVersion('DKTools'); // => 0.99
  *
  * @static
- * @param {String} pluginName - Название плагина
- * @returns {Number | undefined} Версия плагина
+ * @param {String | String} pluginName - Название плагина
+ * @returns {Number | String | undefined} Версия плагина
  */
 DKTools.PluginManager.pluginVersion = function(pluginName) {
     return this._plugins[pluginName];
@@ -2013,7 +1965,7 @@ DKTools.PluginManager.pluginVersion = function(pluginName) {
 
 
 //===========================================================================
-// DKTools File Manager
+// DKTools FileManager
 //===========================================================================
 
 // properties
@@ -2573,17 +2525,17 @@ DKTools.Localization.initialize = function() {
         }
     }.bind(this));
 
-    let locales = this.locales;
+    const locales = this.locales;
     if (!DKTools.Utils.Array.isEmpty(locales)) {
         this.loadLocale();
         if (!this._locale) {
             this._locale = locales[0];
-            console.warn('Вы не установили основной язык игры! Автоматически установлена локаль: ' + this._locale); // TODO локализация
+            console.warn('You have not installed the primary language of the game! Automatically selected locale: ' + this._locale);
             this.saveLocale();
         }
     } else {
         this.removeLocale();
-        throw new Error('Добавьте хотя бы один язык! See help of plugin: 1'); // TODO локализация
+        throw new Error('Add at least one language! See help of plugin: 1');
     }
 };
 
@@ -2604,7 +2556,7 @@ DKTools.Localization.saveLocale = function() {
  * @static
  */
 DKTools.Localization.loadLocale = function() {
-    let locale = DKTools.FileManager.loadFromFile(this._getFileObject());
+    const locale = DKTools.FileManager.loadFromFile(this._getFileObject());
     if (locale) {
         this._locale = locale;
     }
@@ -2731,10 +2683,10 @@ DKTools.Localization._setLocale = function(locale) {
             const lastLocale = this._locale;
             this._locale = locale;
             this.saveLocale();
-            this.onLocaleChange(lastLocale);
+            this._onLocaleChange(lastLocale);
         }
     } else {
-        throw new Error('Вы пытаетесь установить несуществующую локаль'); // TODO локализация
+        throw new Error('You are trying to establish a non-existent locale: ' + locale);
     }
 };
 
@@ -2750,10 +2702,11 @@ DKTools.Localization.checkLocale = function(locale) {
 /**
  * Обрабатывает изменение локали игры
  *
+ * @private
  * @static
  * @param {String} lastLocale - Предыдущая локаль игры
  */
-DKTools.Localization.onLocaleChange = function(lastLocale) {
+DKTools.Localization._onLocaleChange = function(lastLocale) {
     _.forEach(this._listeners, function(listener) {
         listener(lastLocale);
     });
@@ -3019,7 +2972,7 @@ TouchInput.isRightButtonReleased = function() {
 
 // event methods
 
-let DKTools_TouchInput_onLeftButtonDown = TouchInput._onLeftButtonDown;
+const DKTools_TouchInput_onLeftButtonDown = TouchInput._onLeftButtonDown;
 TouchInput._onLeftButtonDown = function(event) {
     DKTools_TouchInput_onLeftButtonDown.call(this, event);
 
@@ -3030,7 +2983,7 @@ TouchInput._onLeftButtonDown = function(event) {
     }
 };
 
-let DKTools_TouchInput_onMiddleButtonDown = TouchInput._onMiddleButtonDown;
+const DKTools_TouchInput_onMiddleButtonDown = TouchInput._onMiddleButtonDown;
 TouchInput._onMiddleButtonDown = function(event) {
     DKTools_TouchInput_onMiddleButtonDown.call(this, event);
 
@@ -3041,7 +2994,7 @@ TouchInput._onMiddleButtonDown = function(event) {
     }
 };
 
-let DKTools_TouchInput_onRightButtonDown = TouchInput._onRightButtonDown;
+const DKTools_TouchInput_onRightButtonDown = TouchInput._onRightButtonDown;
 TouchInput._onRightButtonDown = function(event) {
     DKTools_TouchInput_onRightButtonDown.call(this, event);
 
@@ -3052,7 +3005,7 @@ TouchInput._onRightButtonDown = function(event) {
     }
 };
 
-let DKTools_TouchInput_onMouseMove = TouchInput._onMouseMove;
+const DKTools_TouchInput_onMouseMove = TouchInput._onMouseMove;
 TouchInput._onMouseMove = function(event) {
     DKTools_TouchInput_onMouseMove.call(this, event);
     let x = Graphics.pageToCanvasX(event.pageX);
@@ -3064,7 +3017,7 @@ TouchInput._onMouseMove = function(event) {
     }
 };
 
-let DKTools_TouchInput_onMouseUp = TouchInput._onMouseUp;
+const DKTools_TouchInput_onMouseUp = TouchInput._onMouseUp;
 TouchInput._onMouseUp = function(event) {
     DKTools_TouchInput_onMouseUp.call(this, event);
 
@@ -3109,7 +3062,7 @@ Object.defineProperties(DKTools.Audio.prototype, {
      *
      * @readonly
      * @type {String}
-     * @memberOf DKTools.Audio
+     * @memberOf DKTools.Audio.prototype
      */
     type: {
         get: function() {
@@ -3123,7 +3076,7 @@ Object.defineProperties(DKTools.Audio.prototype, {
      *
      * @readonly
      * @type {String}
-     * @memberOf DKTools.Audio
+     * @memberOf DKTools.Audio.prototype
      */
     name: {
         get: function() {
@@ -3136,7 +3089,7 @@ Object.defineProperties(DKTools.Audio.prototype, {
      * Громкость аудиофайла
      *
      * @type {Number}
-     * @memberOf DKTools.Audio
+     * @memberOf DKTools.Audio.prototype
      */
     volume: {
         get: function() {
@@ -3156,7 +3109,7 @@ Object.defineProperties(DKTools.Audio.prototype, {
      * Темп аудиофайла
      *
      * @type {Number}
-     * @memberOf DKTools.Audio
+     * @memberOf DKTools.Audio.prototype
      */
     pitch: {
         get: function() {
@@ -3175,7 +3128,7 @@ Object.defineProperties(DKTools.Audio.prototype, {
      * Панорама аудиофайла
      *
      * @type {Number}
-     * @memberOf DKTools.Audio
+     * @memberOf DKTools.Audio.prototype
      */
     pan: {
         get: function() {
@@ -3195,7 +3148,7 @@ Object.defineProperties(DKTools.Audio.prototype, {
      *
      * @readonly
      * @type {Boolean}
-     * @memberOf DKTools.Audio
+     * @memberOf DKTools.Audio.prototype
      */
     loop: {
         get: function() {
@@ -3209,7 +3162,7 @@ Object.defineProperties(DKTools.Audio.prototype, {
      *
      * @readonly
      * @type {WebAudio | Html5Audio}
-     * @memberOf DKTools.Audio
+     * @memberOf DKTools.Audio.prototype
      */
     buffer: {
         get: function() {
@@ -3222,7 +3175,7 @@ Object.defineProperties(DKTools.Audio.prototype, {
      * Текущая позиция аудиофайла
      *
      * @type {Number}
-     * @memberOf DKTools.Audio
+     * @memberOf DKTools.Audio.prototype
      */
     pos: {
         get: function() {
@@ -3547,7 +3500,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      *
      * @readonly
      * @type {DKTools.Sprite | DKTools.Window | *}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     target: {
         get: function() {
@@ -3561,7 +3514,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      *
      * @readonly
      * @type {String}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     type: {
         get: function() {
@@ -3574,7 +3527,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     repeatTime: {
         get: function() {
@@ -3588,7 +3541,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     repeats: {
         get: function() {
@@ -3600,7 +3553,7 @@ Object.defineProperties(DKTools.Event.prototype, {
     /**
      *
      * @type {Number}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     remainingTime: {
         get: function() {
@@ -3616,7 +3569,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      * Оставшееся количество повторов события
      *
      * @type {Number}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     remainingRepeats: {
         get: function() {
@@ -3631,7 +3584,7 @@ Object.defineProperties(DKTools.Event.prototype, {
     /**
      *
      * @type {Number}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     remainingPauseTime: {
         get: function() {
@@ -3648,7 +3601,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      *
      * @readonly
      * @type {Function}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     onStart: {
         get: function() {
@@ -3662,7 +3615,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      *
      * @readonly
      * @type {Function}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     onUpdate: {
         get: function() {
@@ -3676,7 +3629,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      *
      * @readonly
      * @type {Function}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     onPause: {
         get: function() {
@@ -3690,7 +3643,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      *
      * @readonly
      * @type {Function}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     onReset: {
         get: function() {
@@ -3704,7 +3657,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      *
      * @readonly
      * @type {Function}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     onRepeat: {
         get: function() {
@@ -3718,7 +3671,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      *
      * @readonly
      * @type {Function}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     onSuccess: {
         get: function() {
@@ -3732,7 +3685,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      *
      * @readonly
      * @type {Function}
-     * @memberOf DKTools.Event
+     * @memberOf DKTools.Event.prototype
      */
     onFailure: {
         get: function() {
@@ -3746,9 +3699,7 @@ Object.defineProperties(DKTools.Event.prototype, {
 // initialize methods
 
 /**
- * Инициализирует объект класса
- *
- * @param {Object} object - Объект типа {}
+ * @param {Object} object - Parameters
  *
  * @param {DKTools.Sprite | DKTools.Window | *} [object.target] - Объект, для которого установлено событие
  * @param {String} [object.type] - Тип события
@@ -4458,7 +4409,7 @@ Object.defineProperties(DKTools.Animation.prototype, {
      *
      * @readonly
      * @type {Array}
-     * @memberOf DKTools.Animation
+     * @memberOf DKTools.Animation.prototype
      */
     actions: {
         get: function() {
@@ -4667,7 +4618,7 @@ Object.defineProperties(DKTools.Animation.Action.prototype, {
     /**
      * @readonly
      * @type {DKTools.Animation}
-     * @memberOf DKTools.Animation.Action
+     * @memberOf DKTools.Animation.Action.prototype
      */
     animation: {
         get: function() {
@@ -4678,7 +4629,7 @@ Object.defineProperties(DKTools.Animation.Action.prototype, {
 
     /**
      * @type {Number}
-     * @memberOf DKTools.Animation.Action
+     * @memberOf DKTools.Animation.Action.prototype
      */
     startTime: {
         get: function() {
@@ -4692,7 +4643,7 @@ Object.defineProperties(DKTools.Animation.Action.prototype, {
 
     /**
      * @type {Number}
-     * @memberOf DKTools.Animation.Action
+     * @memberOf DKTools.Animation.Action.prototype
      */
     endTime: {
         get: function() {
@@ -4707,7 +4658,7 @@ Object.defineProperties(DKTools.Animation.Action.prototype, {
     /**
      * @readonly
      * @type {*}
-     * @memberOf DKTools.Animation.Action
+     * @memberOf DKTools.Animation.Action.prototype
      */
     data: {
         get: function() {
@@ -5091,7 +5042,7 @@ Object.defineProperties(DKTools.Base.prototype, {
      *
      * @readonly
      * @type {Number | String | null}
-     * @memberOf DKTools.Base
+     * @memberOf DKTools.Base.prototype
      */
     id : {
         get: function() {
@@ -5105,7 +5056,7 @@ Object.defineProperties(DKTools.Base.prototype, {
      *
      * @readonly
      * @type {Object}
-     * @memberOf DKTools.Base
+     * @memberOf DKTools.Base.prototype
      */
     font: {
         get: function() {
@@ -5119,7 +5070,7 @@ Object.defineProperties(DKTools.Base.prototype, {
      *
      * @readonly
      * @type {String}
-     * @memberOf DKTools.Base
+     * @memberOf DKTools.Base.prototype
      */
     textColor: {
         get: function() {
@@ -5133,7 +5084,7 @@ Object.defineProperties(DKTools.Base.prototype, {
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Base
+     * @memberOf DKTools.Base.prototype
      */
     paintOpacity: {
         get: function() {
@@ -5147,7 +5098,7 @@ Object.defineProperties(DKTools.Base.prototype, {
      *
      * @readonly
      * @type {String | null}
-     * @memberOf DKTools.Base
+     * @memberOf DKTools.Base.prototype
      */
     fillColor: {
         get: function() {
@@ -5157,25 +5108,11 @@ Object.defineProperties(DKTools.Base.prototype, {
     },
 
     /**
-     * Отображаемый текст
-     *
-     * @readonly
-     * @type {String}
-     * @memberOf DKTools.Base
-     */
-    text: {
-        get: function() {
-            return this._text;
-        },
-        configurable: true
-    },
-
-    /**
      * Выравнивание текста
      *
      * @readonly
      * @type {String}
-     * @memberOf DKTools.Base
+     * @memberOf DKTools.Base.prototype
      */
     align: {
         get: function() {
@@ -5185,11 +5122,25 @@ Object.defineProperties(DKTools.Base.prototype, {
     },
 
     /**
+     * Отображаемые тексты
+     *
+     * @readonly
+     * @type {Object[]}
+     * @memberOf DKTools.Base.prototype
+     */
+    texts: {
+        get: function() {
+            return this._texts;
+        },
+        configurable: true
+    },
+
+    /**
      * Координата X мыши внутри объекта
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Base
+     * @memberOf DKTools.Base.prototype
      */
     mouseX : {
         get: function() {
@@ -5203,7 +5154,7 @@ Object.defineProperties(DKTools.Base.prototype, {
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Base
+     * @memberOf DKTools.Base.prototype
      */
     mouseY : {
         get: function() {
@@ -5217,7 +5168,7 @@ Object.defineProperties(DKTools.Base.prototype, {
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Base
+     * @memberOf DKTools.Base.prototype
      */
     wheelX: {
         get: function() {
@@ -5231,7 +5182,7 @@ Object.defineProperties(DKTools.Base.prototype, {
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Base
+     * @memberOf DKTools.Base.prototype
      */
     wheelY: {
         get: function() {
@@ -5245,7 +5196,7 @@ Object.defineProperties(DKTools.Base.prototype, {
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Base
+     * @memberOf DKTools.Base.prototype
      */
     mouseEnteredTime: {
         get: function() {
@@ -5300,10 +5251,20 @@ DKTools.Base.prototype.initialize = function(object, y, width, height) {
  * @private
  */
 DKTools.Base.prototype._clearAll = function() {
+    this._clearTexts();
     this._clearOptions();
     this._clearEvents();
     this._clearWheel();
     this._clearMouseEnteredTime();
+};
+
+DKTools.Base.prototype._clearTexts = function() {
+    /**
+     * @private
+     * @readonly
+     * @type {Object[]}
+     */
+    this._texts = [];
 };
 
 /**
@@ -5429,6 +5390,10 @@ DKTools.Base.prototype.clearRect = function(object, y, width, height) {
     return true;
 };
 
+DKTools.Base.prototype.clearLine = function(line) {
+    this.clearRect(this.getLineRect(line));
+};
+
 /**
  * Очищает весь Bitmap
  * Возвращает true, если Bitmap существует
@@ -5437,15 +5402,6 @@ DKTools.Base.prototype.clearRect = function(object, y, width, height) {
  */
 DKTools.Base.prototype.clear = function() {
     return this.clearRect();
-};
-
-/**
- * Очищает отображаемый текст
- *
- * @param {Boolean} [blockStart] - Блокировка вызова функции start
- */
-DKTools.Base.prototype.clearText = function(blockStart) {
-    this.setText('', blockStart); // или null
 };
 
 // _create methods
@@ -5544,7 +5500,7 @@ DKTools.Base.prototype.standardDrawHeight = function() {
 /**
  * Возвращает стандартную видимость
  *
- * @return {Boolean} Стандартная видимость
+ * @returns {Boolean} Стандартная видимость
  */
 DKTools.Base.prototype.standardVisible = function() {
     return true;
@@ -5627,15 +5583,6 @@ DKTools.Base.prototype.standardPaintOpacity = function() {
  */
 DKTools.Base.prototype.standardFillColor = function() {
     return null;
-};
-
-/**
- * Возвращает стандартный текст
- *
- * @return {String} Стандартный текст
- */
-DKTools.Base.prototype.standardText = function() {
-    return '';
 };
 
 /**
@@ -5733,7 +5680,6 @@ DKTools.Base.prototype.standardTextStyle = function() {
  * @param {String} [object.textColor] - Цвет текста
  * @param {Number} [object.paintOpacity] - Прозрачность рисования
  * @param {String} [object.fillColor] - Цвет заливки
- * @param {String} [object.text] - Текст
  * @param {String} [object.align] - Выравнивание текста
  * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.scale] - Масштабирование объекта
  * @param {PPIXI.Point | PIXI.ObservablePoint | Point | Object} [object.pivot] - Точка привязки
@@ -5763,7 +5709,6 @@ DKTools.Base.prototype.setupAll = function(object) {
     this.setupTextColor(object.textColor);
     this.setupPaintOpacity(object.paintOpacity);
     this.setupFillColor(object.fillColor);
-    this.setupText(object.text);
     this.setupAlign(object.align);
     this.setupScale(object.scale);
     this.setupPivot(object.pivot);
@@ -5884,21 +5829,6 @@ DKTools.Base.prototype.setupFillColor = function(color) {
 };
 
 /**
- * Устанавливает отображаемый текст
- *
- * @param {String} text - Отображаемый текст
- */
-DKTools.Base.prototype.setupText = function(text) {
-    /**
-     * Отображаемый текст
-     *
-     * @private
-     * @type {String}
-     */
-    this._text = (text == null ? this.standardText() : String(text));
-};
-
-/**
  * Устанавливает выравнивание текста
  *
  * @param {String} [align] - Выравнивание текста
@@ -5923,8 +5853,8 @@ DKTools.Base.prototype.setupAlign = function(align) {
  * @param {Number} [object.y] - Масштабирование по оси Y
  */
 DKTools.Base.prototype.setupScale = function(object, y) {
-    let scale = DKTools.Utils.Point.convertToPoint(object, y);
-    let newScale = Object.assign(this.standardScale(), scale);
+    const scale = DKTools.Utils.Point.convertToPoint(object, y);
+    const newScale = Object.assign(this.standardScale(), scale);
 
     /**
      * Масштабирование объекта
@@ -5944,8 +5874,8 @@ DKTools.Base.prototype.setupScale = function(object, y) {
  * @param {Number} [object.y] - Координата Y
  */
 DKTools.Base.prototype.setupPivot = function(object, y) {
-    let pivot = DKTools.Utils.Point.convertToPoint(object, y);
-    let newPivot = Object.assign(this.standardPivot(), pivot);
+    const pivot = DKTools.Utils.Point.convertToPoint(object, y);
+    const newPivot = Object.assign(this.standardPivot(), pivot);
 
     /**
      * Точка привязки объекта
@@ -5965,8 +5895,8 @@ DKTools.Base.prototype.setupPivot = function(object, y) {
  * @param {Number} [object.y] - Перекос по оси Y
  */
 DKTools.Base.prototype.setupSkew = function(object, y) {
-    let skew = DKTools.Utils.Point.convertToPoint(object, y);
-    let newSkew = Object.assign(this.standardSkew(), skew);
+    const skew = DKTools.Utils.Point.convertToPoint(object, y);
+    const newSkew = Object.assign(this.standardSkew(), skew);
 
     /**
      * Перекос объекта
@@ -6010,13 +5940,14 @@ DKTools.Base.prototype.setupTint = function(tint) {
  * Изменяет все параметры
  * Возвращает количество измененных параметров
  *
- * @param {Object} [object] - Объект типа {}
+ * @param {Object} [object] - Параметры объекта
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
+ * @param {Boolean} [activate] - Активирует объект
  *
  * @param {Object} [object.font] - Шрифт текста
  * @param {String} [object.textColor] - Цвет текста
  * @param {Number} [object.paintOpacity] - Прозрачность рисования
  * @param {String} [object.fillColor] - Цвет заливки
- * @param {String} [object.text] - Текст
  * @param {String} [object.align] - Выравнивание текста
  * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.scale] - Масштабирование объекта
  * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.pivot] - Точка привязки объекта
@@ -6038,10 +5969,10 @@ DKTools.Base.prototype.setupTint = function(tint) {
  *
  * @return {Number} Количество измененных параметров
  */
-DKTools.Base.prototype.setAll = function(object) {
+DKTools.Base.prototype.setAll = function(object, blockStart, activate) {
     object = object || {};
-    var changed = 0;
-    var block = true;
+    const block = true;
+    let changed = 0;
     if (this.setFont(object.font, block)) {
         changed++;
     }
@@ -6051,10 +5982,7 @@ DKTools.Base.prototype.setAll = function(object) {
     if (this.setPaintOpacity(object.paintOpacity, block)) {
         changed++;
     }
-    if (this.setBackgroundColor(object.backgroundColor, block)) {
-        changed++;
-    }
-    if (this.setText(object.text, block)) {
+    if (this.setFillColor(object.fillColor, block)) {
         changed++;
     }
     if (this.setAlign(object.align, block)) {
@@ -6071,6 +5999,14 @@ DKTools.Base.prototype.setAll = function(object) {
     }
     if (this.setRotation(object.rotation)) {
         changed++;
+    }
+    if (changed) {
+        if (!blockStart) {
+            this.start();
+        }
+        if (activate) {
+            this.activate();
+        }
     }
     return changed;
 };
@@ -6203,30 +6139,6 @@ DKTools.Base.prototype.setFillColor = function(color, blockRefresh) {
 };
 
 /**
- * Изменяет отображаемый текст
- * Возвращает true, если изменение произошло
- *
- * @param {String} [text] - Отображаемый текст
- * @param {Boolean} [blockStart] - Блокировка вызова функции start
- *
- * @return {Boolean} Изменение произошло
- */
-DKTools.Base.prototype.setText = function(text, blockStart) {
-    if (this._text === text) {
-        return false;
-    }
-    var lastText = this._text;
-    this.setupText(text);
-    if (lastText === this._text) {
-        return false;
-    }
-    if (!blockStart) {
-        this.start();
-    }
-    return true;
-};
-
-/**
  * Изменяет выравнивание текста
  * Возвращает true, если изменение произошло
  *
@@ -6348,7 +6260,7 @@ DKTools.Base.prototype.setTint = function(tint) {
     if (this.tint === tint) {
         return false;
     }
-    let lastTint = this.tint;
+    const lastTint = this.tint;
     this.setupTint(tint);
     return lastTint !== this.tint;
 };
@@ -6402,14 +6314,13 @@ DKTools.Base.prototype.removeAll = function() {
     // to be overriden by plugins
 };
 
-/**
- * Удаляет текст, добвленный с помощью addText
- *
- * @param {PIXI.Text} text - Объект текста
- */
-DKTools.Base.prototype.removeText = function(text) {
-    if (text instanceof PIXI.Text) {
-        this.removeChild(text);
+DKTools.Base.prototype.removeText = function(id, blockRefreshAll) {
+    const textObj = this.getTextById(id);
+    if (textObj) {
+        DKTools.Utils.Array.remove(this._texts, textObj);
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
     }
 };
 
@@ -6432,7 +6343,7 @@ DKTools.Base.prototype.removeMask = function() {
  *
  */
 DKTools.Base.prototype._checkWidth = function(width) {
-    let minWidth = this.getMinWidth();
+    const minWidth = this.getMinWidth();
     return (width ? Math.max(minWidth, width) : minWidth);
 };
 
@@ -6446,7 +6357,7 @@ DKTools.Base.prototype._checkWidth = function(width) {
  *
  */
 DKTools.Base.prototype._checkHeight = function(height) {
-    let minHeight = this.getMinHeight();
+    const minHeight = this.getMinHeight();
     return (height ? Math.max(minHeight, height) : minHeight);
 };
 
@@ -6482,25 +6393,28 @@ DKTools.Base.prototype.addAllChildren = function() {
 };
 
 /**
- * Добавляет текст в объект
- * Возвращает добавленный текст
  *
- * @param {String | PIXI.Text} text - Текст или Объект типа PIXI.Text
- * @param {PIXI.TextStyle | Object} [style] - Стиль текста
+ * @param {String | Number} text - Текст
+ * @param {Object} options - Опции
+ * @param {Boolean} [refreshAll] - Перерисовать все
  *
- * @see свойства style: PIXI.TextStyle
- *
- * @return {PIXI.Text} Добавленный текст
+ * @param {String | Number} [options.id] - ID текста
+ * @param {String} [options.type] - Тип рисования текста
  */
-DKTools.Base.prototype.addText = function(text, style) {
-    let textSprite;
-    if (text instanceof PIXI.Text) {
-        textSprite = text;
-    } else {
-        textSprite = new PIXI.Text(text, Object.assign(this.standardTextStyle(), style));
+DKTools.Base.prototype.addText = function(text, options, refreshAll) {
+    text = String(text);
+    options = options || {};
+
+    this._texts.push({
+        text: text,
+        id: options.id,
+        options: options,
+        type: options.type || 'drawText'
+    });
+
+    if (refreshAll) {
+        this.refreshAll();
     }
-    this.addChild(textSprite);
-    return textSprite;
 };
 
 // refresh methods
@@ -6530,8 +6444,17 @@ DKTools.Base.prototype.redrawAll = function() {
 
 // get methods
 
+/**
+ *
+ * @param {Number | String | *} id - ID объекта
+ * @returns {* | undefined}
+ */
 DKTools.Base.prototype.getChildById = function(id) {
     return _.find(this.children, { id: id });
+};
+
+DKTools.Base.prototype.getTextById = function(id) {
+    return _.find(this._texts, { id: id });
 };
 
 /**
@@ -6549,6 +6472,24 @@ DKTools.Base.prototype.getTextWidth = function(text) {
         return this.bitmap.measureTextWidth(text);
     }
     return 0;
+};
+
+/**
+ *
+ *
+ * @param {String} text - Текст
+ * @param {Object} [options] - Опции
+ *
+ * @see DKTools.Base.prototype.drawTextEx
+ *
+ * @returns {Number}
+ */
+DKTools.Base.prototype.getTextWidthEx = function(text, options) {
+    if (text == null) {
+        return 0;
+    }
+    const clone = this.clone(options);
+    return clone.drawTextEx(text, options);
 };
 
 /**
@@ -6607,7 +6548,7 @@ DKTools.Base.prototype.getRealSize = function() {
  * @return {Number} Минимальная ширина Bitmap
  */
 DKTools.Base.prototype.getMinWidth = function() {
-    return (this.hasText() ? this.getTextWidth(this.text) : 0);
+    return 0;
 };
 
 /**
@@ -6616,7 +6557,7 @@ DKTools.Base.prototype.getMinWidth = function() {
  * @return {Number} Минимальная высота Bitmap
  */
 DKTools.Base.prototype.getMinHeight = function() {
-    return (this.hasText() ? this.getLineHeight() : 0);
+    return 0;
 };
 
 /**
@@ -6639,6 +6580,42 @@ DKTools.Base.prototype.getLineHeight = function() {
     } catch (e) {
         return 36;
     }
+};
+
+/**
+ *
+ * @returns {Number}
+ */
+DKTools.Base.prototype.getLines = function() {
+    return this.realHeight / this.getLineHeight();
+};
+
+/**
+ *
+ * @param {String | Number} text
+ * @returns {Number}
+ */
+DKTools.Base.prototype.getTextLines = function(text) {
+    return text.split('\n').length;
+};
+
+/**
+ *
+ * @param {String | Number} text
+ * @returns {Number}
+ */
+DKTools.Base.prototype.getTextHeight = function(text) {
+    return this.getTextLines(text) * this.getLineHeight();
+};
+
+/**
+ *
+ * @param {Number | String} line
+ * @returns {Rectangle}
+ */
+DKTools.Base.prototype.getLineRect = function(line) {
+    const lineHeight = this.getLineHeight();
+    return new Rectangle(0, lineHeight * Number(line), this.realWidth, lineHeight);
 };
 
 // active methods
@@ -6696,13 +6673,32 @@ DKTools.Base.prototype.hide = function(blockDeactivate) {
 /**
  * Клонирует текущий объект
  *
- * @param {Boolean} [blockStart] - Блокировка вызова функции start
- * @return {DKToolsSprite | DKToolsWindow | *} Клонированный объект
+ * @param {Object} [options] - Опции клонирования
+ *
+ * @param {Boolean} [options.cloneTexts] - Клонировать тексты
+ * @param {Boolean} [options.cloneOptions] - Клонировать опции
+ * @param {Boolean} [options.blockStart] - Блокировать вызов функции start у клонированного объекта
+ * @param {Boolean} [options.activate] - Активировать клонированный объект
+ *
+ * @returns {DKTools.Sprite | DKTools.Window | *} Клонированный объект
  */
-DKTools.Base.prototype.clone = function(blockStart) {
-    let clone = new (this.constructor)(this);
-    if (!blockStart) {
+DKTools.Base.prototype.clone = function(options) {
+    options = options || {};
+
+    const clone = new (this.constructor)(this);
+    if (options.cloneTexts) {
+        _.forEach(this._texts, function(textObj) {
+            clone.addText(textObj.text, textObj.options);
+        });
+    }
+    if (options.cloneOptions) {
+        clone.enableOptions(this._options);
+    }
+    if (!options.blockStart) {
         clone.start();
+    }
+    if (options.activate) {
+        clone.activate();
     }
     return clone;
 };
@@ -6723,17 +6719,29 @@ DKTools.Base.prototype.canRefreshAll = function() {
 /**
  * Перемещает объект
  *
- * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - Координата X или Point, или Объект типа {}
- * @param {Number} [y] - Координата Y
+ * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - Координата X или Позиция
+ * @param {Number | String} [y] - Координата Y
  *
  * @param {Number} [object.x] - Координата X
- * @param {Number} [object.y] - Координата Y
+ * @param {Number | String} [object.y] - Координата Y
+ *
+ * @example
+ * var sprite = new DKTools.Sprite();
+ * var pos = new Point(100, 100);
+ * sprite.move(pos);
+ *
+ * @example
+ * var sprite = new DKTools.Sprite();
+ * sprite.move(100, 100);
  */
 DKTools.Base.prototype.move = function(object, y) {
     let x = object; // object - Number
     if (object instanceof Object) {
         x = object.x;
         y = object.y;
+    }
+    if (_.isString(y)) {
+        y = this.getLineHeight() * Number(y);
     }
     this.x = x || 0;
     this.y = y || 0;
@@ -6845,13 +6853,13 @@ DKTools.Base.prototype.hasFillColor = function() {
 };
 
 /**
- * Проверяет объект на наличие текста
- * Возвращает true, если текст установлен
+ * Проверяет объект на наличие текстов
+ * Возвращает true, если тексты установлены
  *
- * @return {Boolean} Текст установлен
+ * @return {Boolean} Тексты установлены
  */
-DKTools.Base.prototype.hasText = function() {
-    return !!this.text;
+DKTools.Base.prototype.hasTexts = function() {
+    return _.size(this.texts) > 0;
 };
 
 /**
@@ -7053,7 +7061,13 @@ DKTools.Base.prototype.isChild = function(object) {
  */
 DKTools.Base.prototype.drawAll = function() {
     this.updateFill();
-    this.updateText();
+    this.drawAllTexts();
+};
+
+DKTools.Base.prototype.drawAllTexts = function() {
+    _.forEach(this._texts, function(obj) {
+        this[obj.type](obj.text, obj.options);
+    }.bind(this));
 };
 
 /**
@@ -7074,17 +7088,70 @@ DKTools.Base.prototype.drawAll = function() {
  *
  * @return {Boolean} Bitmap существует
  */
-DKTools.Base.prototype.drawText = function(text, align, object, y, width, height) {
+DKTools.Base.prototype.drawText = function(text, options) {
     text = String(text);
+    options = options || {};
+
     if (!this.hasBitmap() || !text) {
         return false;
     }
-    if (object instanceof Object) {
-        return this.drawText(text, align, object.x, object.y, object.width, object.height);
+
+    if (options.font) {
+        this.changeFont(options.font);
     }
+    if (options.textColor) {
+        this.changeTextColor(options.textColor);
+    }
+    if (options.paintOpacity) {
+        this.changePaintOpacity(options.paintOpacity);
+    }
+
+    let x = options.x;
+    let y = options.y;
+    let width = options.width;
+    let height = options.height;
+
+    const pos = options.pos;
+    if (pos instanceof Object) {
+        x = pos.x;
+        y = pos.y;
+    }
+
+    const rect = options.rect;
+    if (rect instanceof Object) {
+        x = rect.x;
+        y = rect.y;
+        width = rect.width;
+        height = rect.height;
+    }
+
+    if (_.isString(y)) { // line
+        y = this.getLineHeight() * Number(y);
+    }
+
+    if (_.isString(height)) { // lines
+        height = this.getLineHeight() * Number(height);
+    }
+
+    x = x || 0;
+    y = y || 0;
     width = width || this.standardDrawWidth();
-    height = height || this.standardDrawHeight();
-    this.bitmap.drawText(text, object || 0, y || 0, width, height, align || this.align);
+    height = height || this.getLineHeight();
+
+    const align = options.align || this.align;
+
+    this.bitmap.drawText(text, x, y, width, height, align);
+
+    if (options.resetFont) {
+        this.resetFont();
+    }
+    if (options.resetTextColor) {
+        this.resetTextColor();
+    }
+    if (options.resetPaintOpacity) {
+        this.resetPaintOpacity();
+    }
+
     return true;
 };
 
@@ -7093,31 +7160,55 @@ DKTools.Base.prototype.drawText = function(text, align, object, y, width, height
  * Возвращает ширину текста
  *
  * @param {String} text - Текст
- * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - Координата X или Point, или Объект типа {}
- * @param {Number} [y] - Координата Y
+ * @param {Object} [options] - Опции
  *
- * @param {Number} [object.x] - Координата X
- * @param {Number} [object.y] - Координата Y
+ * @param {Object} [options.wrap] - Опции переноса текста
+ * @param {Number} [options.x] - Координата X
+ * @param {Number | String} [options.y] - Координата Y или номер линии (String)
+ * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.pos] - Позиция
+ *
+ * @param {Number} [object.pos.x] - Координата X
+ * @param {Number | String} [object.pos.y] - Координата Y или номер линии (String)
+ *
+ * @see DKTools.Base.prototype.textWrap
  *
  * @returns {Number} Ширина текста
  */
-DKTools.Base.prototype.drawTextEx = function(text, object, y) {
+DKTools.Base.prototype.drawTextEx = function(text, options) {
     text = String(text);
+    options = options || {};
+
     if (!this.hasBitmap() || !text) {
         return 0;
     }
-    if (object instanceof Object) {
-        return this.drawTextEx(text, object.x, object.y);
+
+    if (options.wrap) {
+        text = this.textWrap(text, options.wrap);
     }
-    let x = object || 0; // object - Number
+
+    let x = options.x;
+    let y = options.y;
+
+    const pos = options.pos;
+    if (pos instanceof Object) {
+        x = pos.x;
+        y = pos.y;
+    }
+
+    if (_.isString(y)) { // line
+        y = this.getLineHeight() * Number(y);
+    }
+
+    x = x || 0;
     y = y || 0;
-    let textState = { index: 0, x: x, y: y, left: x };
+
+    const textState = { index: 0, x, y, left: x };
     textState.text = this.convertEscapeCharacters(text);
     textState.height = this.calcTextHeight(textState, false);
     while (textState.index < textState.text.length) {
         this.processCharacter(textState);
     }
-    return textState.x - x;
+    return textState.width || textState.x - x;
 };
 
 /**
@@ -7250,11 +7341,11 @@ DKTools.Base.prototype.drawIcon = function(iconIndex, object, y) {
     if (object instanceof Object) {
         return this.drawIcon(iconIndex, object.x, object.y);
     }
-    let bitmap = ImageManager.loadSystem('IconSet');
-    let pw = Window_Base._iconWidth;
-    let ph = Window_Base._iconHeight;
-    let sx = iconIndex % 16 * pw;
-    let sy = Math.floor(iconIndex / 16) * ph;
+    const bitmap = ImageManager.loadSystem('IconSet');
+    const pw = Window_Base._iconWidth;
+    const ph = Window_Base._iconHeight;
+    const sx = iconIndex % 16 * pw;
+    const sy = Math.floor(iconIndex / 16) * ph;
     // object - Number
     this.bitmap.blt(bitmap, sx, sy, pw, ph, object || 0, y || 0);
     return true;
@@ -7287,16 +7378,16 @@ DKTools.Base.prototype.drawFace = function(faceName, faceIndex, object, y, width
     }
     width = width || Window_Base._faceWidth;
     height = height || Window_Base._faceHeight;
-    let bitmap = ImageManager.loadFace(faceName);
-    let pw = Window_Base._faceWidth;
-    let ph = Window_Base._faceHeight;
-    let sw = Math.min(width, pw);
-    let sh = Math.min(height, ph);
+    const bitmap = ImageManager.loadFace(faceName);
+    const pw = Window_Base._faceWidth;
+    const ph = Window_Base._faceHeight;
+    const sw = Math.min(width, pw);
+    const sh = Math.min(height, ph);
     // object - Number
-    let dx = Math.floor(object || 0 + Math.max(width - pw, 0) / 2);
-    let dy = Math.floor(y || 0 + Math.max(height - ph, 0) / 2);
-    let sx = faceIndex % 4 * pw + (pw - sw) / 2;
-    let sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
+    const dx = Math.floor(object || 0 + Math.max(width - pw, 0) / 2);
+    const dy = Math.floor(y || 0 + Math.max(height - ph, 0) / 2);
+    const sx = faceIndex % 4 * pw + (pw - sw) / 2;
+    const sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
     this.bitmap.blt(bitmap, sx, sy, sw, sh, dx, dy);
     return true;
 };
@@ -7322,13 +7413,13 @@ DKTools.Base.prototype.drawCharacter = function(characterName, characterIndex, o
     if (object instanceof Object) {
         return this.drawCharacter(characterName, characterIndex, object.x, object.y);
     }
-    let bitmap = ImageManager.loadCharacter(characterName);
-    let big = ImageManager.isBigCharacter(characterName);
-    let pw = bitmap.width / (big ? 3 : 12);
-    let ph = bitmap.height / (big ? 4 : 8);
-    let n = characterIndex;
-    let sx = (n % 4 * 3 + 1) * pw;
-    let sy = (Math.floor(n / 4) * 4) * ph;
+    const bitmap = ImageManager.loadCharacter(characterName);
+    const big = ImageManager.isBigCharacter(characterName);
+    const pw = bitmap.width / (big ? 3 : 12);
+    const ph = bitmap.height / (big ? 4 : 8);
+    const n = characterIndex;
+    const sx = (n % 4 * 3 + 1) * pw;
+    const sy = (Math.floor(n / 4) * 4) * ph;
     // object - Number
     this.bitmap.blt(bitmap, sx, sy, pw, ph, object || 0 - pw / 2, y || 0 - ph);
     return true;
@@ -7343,11 +7434,16 @@ DKTools.Base.prototype.drawCharacter = function(characterName, characterIndex, o
  * @param {Number} width
  */
 DKTools.Base.prototype.drawItemName = function(item, x, y, width) {
-    width = width || 312;
     if (item) {
-        let iconBoxWidth = Window_Base._iconWidth + 4;
+        const iconBoxWidth = Window_Base._iconWidth + 4;
         this.drawIcon(item.iconIndex, x + 2, y + 2);
-        this.drawText(item.name, 'left', x + iconBoxWidth, y, width - iconBoxWidth, this.getLineHeight());
+        this.drawText(item.name, {
+            align: 'left',
+            x: x + iconBoxWidth,
+            y: y,
+            width: width || 312 - iconBoxWidth,
+            height: this.getLineHeight()
+        });
     }
 };
 
@@ -7546,17 +7642,6 @@ DKTools.Base.prototype.gradientFillAll = function(color1, color2, vertical) {
 // change methods
 
 /**
- * Изменяет цвет текста
- *
- * @param {String} color - Цвет текста
- */
-DKTools.Base.prototype.changeTextColor = function(color) {
-    if (this.hasBitmap() && this.setTextColor(color, true)) {
-        this.updateTextColor();
-    }
-};
-
-/**
  * Изменяет шрифт текста
  *
  * @param {Object} font - Объект типа {}
@@ -7566,8 +7651,19 @@ DKTools.Base.prototype.changeTextColor = function(color) {
  * @param {Boolean} [font.fontItalic] - Курсив шрифта
  */
 DKTools.Base.prototype.changeFont = function(font) {
-    if (this.hasBitmap() && this.setFont(font, true)) {
-        this.updateFont();
+    if (this.hasBitmap()) {
+        this.updateFont(font);
+    }
+};
+
+/**
+ * Изменяет цвет текста
+ *
+ * @param {String} textColor - Цвет текста
+ */
+DKTools.Base.prototype.changeTextColor = function(textColor) {
+    if (this.hasBitmap()) {
+        this.updateTextColor(textColor);
     }
 };
 
@@ -7577,12 +7673,115 @@ DKTools.Base.prototype.changeFont = function(font) {
  * @param {Number} paintOpacity - Прозрачность рисования
  */
 DKTools.Base.prototype.changePaintOpacity = function(paintOpacity) {
-    if (this.hasBitmap() && this.setPaintOpacity(paintOpacity, true)) {
-        this.updatePaintOpacity();
+    if (this.hasBitmap()) {
+        this.updatePaintOpacity(paintOpacity);
     }
 };
 
+// reset methods
+
+DKTools.Base.prototype.resetAll = function() {
+    this.resetFont();
+    this.resetTextColor();
+    this.resetPaintOpacity();
+};
+
+/**
+ * Сбрасывает шрифт текста
+ *
+ * @override
+ */
+DKTools.Base.prototype.resetFont = function() {
+    this.changeFont(this.font);
+};
+
+/**
+ * Сбрасывает цвет текста
+ *
+ * @override
+ */
+DKTools.Base.prototype.resetTextColor = function() {
+    this.changeTextColor(this.textColor);
+};
+
+DKTools.Base.prototype.resetPaintOpacity = function() {
+    this.changePaintOpacity(this.paintOpacity);
+};
+
 // draw text ex methods
+
+/**
+ *
+ * @param {String} text
+ * @param {Object} options
+ *
+ * @param {Number} options.maxWidth
+ * @param {Number} [options.maxLines]
+ * @param {Boolean} [options.breakWords]
+ *
+ * @returns {String}
+ */
+DKTools.Base.prototype.textWrap = function(text, options) {
+    text = String(text);
+    options = options || {};
+
+    const lines = text.split('\n');
+    const maxWidth = options.maxWidth;
+    const spaceWidth = this.getTextWidth(' ');
+
+    let result = '';
+    let newLines = 1;
+
+    for (let i = 0; i < lines.length; i++) {
+        let spaceLeft = maxWidth;
+        const words = lines[i].split(' ');
+
+        for (var j = 0; j < words.length; j++) {
+            const wordWidth = this.getTextWidth(words[j]);
+
+            if (options.breakWords && wordWidth > maxWidth) {
+                const characters = words[j].split('');
+                for (let c = 0; c < characters.length; c++) {
+                    const characterWidth = this.getTextWidth(characters[c]);
+
+                    if (characterWidth > spaceLeft) {
+                        result += '\n' + characters[c];
+                        spaceLeft = maxWidth - characterWidth;
+                    } else {
+                        if (c === 0) {
+                            result += ' ';
+                        }
+                        result += characters[c];
+                        spaceLeft -= characterWidth;
+                    }
+                }
+            } else {
+                const wordWidthWithSpace = wordWidth + spaceWidth;
+
+                if (j === 0 || wordWidthWithSpace > spaceLeft) {
+                    if (j > 0) {
+                        if (options.maxLines === newLines) {
+                            return result;
+                        }
+                        result += '\n';
+                        newLines++;
+                    }
+                    result += words[j];
+                    spaceLeft = maxWidth - wordWidth;
+                } else {
+                    spaceLeft -= wordWidthWithSpace;
+                    result += ' ' + words[j];
+                }
+            }
+        }
+
+        if (i < lines.length - 1) {
+            result += '\n';
+        }
+    }
+
+    return result;
+};
 
 /**
  * Конвертирует экранированные символы
@@ -7592,23 +7791,24 @@ DKTools.Base.prototype.changePaintOpacity = function(paintOpacity) {
  * @returns {String} Текст с конвертированными символами
  */
 DKTools.Base.prototype.convertEscapeCharacters = function(text) {
-    text = text.replace(/\\/g, '\x1b');
-    text = text.replace(/\x1b\x1b/g, '\\');
-    text = text.replace(/\x1bV\[(\d+)\]/gi, function() {
-        return $gameVariables.value(parseInt(arguments[1]));
-    }.bind(this));
-    text = text.replace(/\x1bV\[(\d+)\]/gi, function() {
-        return $gameVariables.value(parseInt(arguments[1]));
-    }.bind(this));
-    text = text.replace(/\x1bG/gi, TextManager.currencyUnit);
-    return text;
+    return Window_Base.prototype.convertEscapeCharacters.call(this, text);
+};
+
+DKTools.Base.prototype.actorName = function(n) {
+    const actor = n >= 1 ? $gameActors.actor(n) : null;
+    return actor ? actor.name() : '';
+};
+
+DKTools.Base.prototype.partyMemberName = function(n) {
+    const actor = n >= 1 ? $gameParty.members()[n - 1] : null;
+    return actor ? actor.name() : '';
 };
 
 /**
  * Делает размер шрифта больше
  */
 DKTools.Base.prototype.makeFontBigger = function() {
-    if (this.bitmap.fontSize <= 96) {
+    if (this.hasBitmap() && this.bitmap.fontSize <= 96) {
         this.bitmap.fontSize += 12;
     }
 };
@@ -7617,7 +7817,7 @@ DKTools.Base.prototype.makeFontBigger = function() {
  * Делает размер шрифта меньше
  */
 DKTools.Base.prototype.makeFontSmaller = function() {
-    if (this.bitmap.fontSize >= 24) {
+    if (this.hasBitmap() && this.bitmap.fontSize >= 24) {
         this.bitmap.fontSize -= 12;
     }
 };
@@ -7628,16 +7828,16 @@ DKTools.Base.prototype.makeFontSmaller = function() {
  * @returns {Number}
  */
 DKTools.Base.prototype.calcTextHeight = function(textState, all) {
-    var lastFontSize = this.bitmap.fontSize;
-    var textHeight = 0;
-    var lines = textState.text.slice(textState.index).split('\n');
-    var maxLines = all ? lines.length : 1;
+    const lastFontSize = this.bitmap.fontSize;
+    const lines = textState.text.slice(textState.index).split('\n');
+    const maxLines = all ? lines.length : 1;
+    let textHeight = 0;
 
-    for (var i = 0; i < maxLines; i++) {
-        var maxFontSize = this.bitmap.fontSize;
-        var regExp = /\x1b[\{\}]/g;
+    for (let i = 0; i < maxLines; i++) {
+        const regExp = /\x1b[\{\}]/g;
+        let maxFontSize = this.bitmap.fontSize;
         for (;;) {
-            var array = regExp.exec(lines[i]);
+            const array = regExp.exec(lines[i]);
             if (array) {
                 if (array[0] === '\x1b{') {
                     this.makeFontBigger();
@@ -7670,9 +7870,14 @@ DKTools.Base.prototype.processCharacter = function(textState) {
  * @param {Object} textState
  */
 DKTools.Base.prototype.processNormalCharacter = function(textState) {
-    let c = textState.text[textState.index++];
-    let w = this.getTextWidth(c);
-    this.bitmap.drawText(c, textState.x, textState.y, w * 2, textState.height);
+    const c = textState.text[textState.index++];
+    const w = this.getTextWidth(c);
+    this.drawText(c, {
+        align: 'left',
+        pos: textState,
+        width: w * 2,
+        height: textState.height
+    });
     textState.x += w;
 };
 
@@ -7680,6 +7885,11 @@ DKTools.Base.prototype.processNormalCharacter = function(textState) {
  * @param {Object} textState
  */
 DKTools.Base.prototype.processNewLine = function(textState) {
+    if (!textState.width) {
+        textState.width = textState.x;
+    } else if (textState.width < textState.x) {
+        textState.width = textState.x;
+    }
     Window_Base.prototype.processNewLine.call(this, textState);
 };
 
@@ -8489,6 +8699,10 @@ DKTools.Base.prototype.onOptionChange = function(option, value) {
     // to be overridden by plugins
 };
 
+DKTools.Base.prototype.addOptionChangeListener = function(option, listener) {
+    // this._listeners.push(listener);
+};
+
 /**
  * Включает опцию
  *
@@ -8902,7 +9116,7 @@ DKTools.Base.prototype.updateWheelYEvents = function(type) {
  * Обновляет события типа wheelX и wheelY
  */
 DKTools.Base.prototype.updateWheelEvents = function() {
-    var type;
+    let type;
     if (this.isMouseEntered()) {
         type = 'inside';
     } else {
@@ -9010,16 +9224,19 @@ DKTools.Base.prototype.addEventToContainer = function(event) {
 /**
  * Добавляет событие
  *
- * @param {DKTools.Event | Object} object - Таймер или Объект типа {}
+ * @param {DKTools.Event | Object} object - Событие или параметры события
  *
- * @param {String} object.type - Тип таймера
- * @param {Number} [object.totalDuration] - Длительность события
- * @param {Number} [object.totalRepeats] -
- * @param {Function} [object.onStart] - Обработчик начала работы события
- * @param {Function} object.onUpdate - Обработчик события
- * @param {Function} [object.onFinish] - Обработчик окончания работы события
+ * @param {String} [object.type] - Тип события
+ * @param {Number} [object.repeatTime] - Длительность повтора события
+ * @param {Number} [object.repeats] - Количество повторов события
+ * @param {Number} [object.remainingPauseTime] - Длительность паузы
+ * @param {Function} [object.onStart] - Обработчик начала работы
+ * @param {Function} object.onUpdate - Обработчик обновления
  * @param {Function} [object.onPause] - Обработчик паузы события
- * // TODO: добавить остальные обработчики
+ * @param {Function} [object.onReset] - Обработчик сброса события
+ * @param {Function} [object.onRepeat] - Обработчик повтора события
+ * @param {Function} [object.onSuccess] - Обработчик успешного завершения работы
+ * @param {Function} [object.onFailure] - Обработчик провального завершения работы
  *
  * @returns {DKTools.Event} Добавленное событие
  */
@@ -9100,7 +9317,7 @@ DKTools.Base.prototype.processMouseEnter = function() {
  * Обновляет все
  */
 DKTools.Base.prototype.updateAll = function() {
-    // to be overriden by plugins
+    this.updateOpacity();
 };
 
 /**
@@ -9115,26 +9332,34 @@ DKTools.Base.prototype.update = function() {
 };
 
 /**
+ * Обновляет прозрачность объекта
+ */
+DKTools.Base.prototype.updateOpacity = function() {
+    // to be overriden by plugins
+};
+
+/**
  * Обновляет шрифт текста
  */
-DKTools.Base.prototype.updateFont = function() {
-    this.bitmap.fontFace = this.font.fontFace;
-    this.bitmap.fontSize = this.font.fontSize;
-    this.bitmap.fontItalic = this.font.fontItalic;
+DKTools.Base.prototype.updateFont = function(font) {
+    font = font || this.font;
+    this.bitmap.fontFace = font.fontFace;
+    this.bitmap.fontSize = font.fontSize;
+    this.bitmap.fontItalic = font.fontItalic;
 };
 
 /**
  * Обновляет цвет текста
  */
-DKTools.Base.prototype.updateTextColor = function() {
-    this.bitmap.textColor = this.textColor;
+DKTools.Base.prototype.updateTextColor = function(textColor) {
+    this.bitmap.textColor = textColor || this.textColor;
 };
 
 /**
  * Обновление прозрачности рисования окна
  */
-DKTools.Base.prototype.updatePaintOpacity = function() {
-    this.bitmap.paintOpacity = this.paintOpacity;
+DKTools.Base.prototype.updatePaintOpacity = function(paintOpacity) {
+    this.bitmap.paintOpacity = paintOpacity || this.paintOpacity;
 };
 
 /**
@@ -9143,15 +9368,6 @@ DKTools.Base.prototype.updatePaintOpacity = function() {
 DKTools.Base.prototype.updateFill = function() {
     if (this.hasFillColor()) {
         this.fillAll(this.fillColor);
-    }
-};
-
-/**
- * Обновляет отображаемый текст
- */
-DKTools.Base.prototype.updateText = function() {
-    if (this.hasText()) {
-        this.drawText(this.text, this.align);
     }
 };
 
@@ -9193,7 +9409,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
      *
      * @readonly
      * @type {Bitmap | null}
-     * @memberOf DKTools.Sprite
+     * @memberOf DKTools.Sprite.prototype
      */
     windowskin: {
         get: function() {
@@ -9207,7 +9423,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
      *
      * @readonly
      * @type {Rectangle}
-     * @memberOf DKTools.Sprite
+     * @memberOf DKTools.Sprite.prototype
      */
     frame: {
         get: function() {
@@ -9221,7 +9437,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Sprite
+     * @memberOf DKTools.Sprite.prototype
      */
     realWidth: {
         get: function() {
@@ -9239,7 +9455,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Sprite
+     * @memberOf DKTools.Sprite.prototype
      */
     realHeight: {
         get: function() {
@@ -9256,7 +9472,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
      * Ширина спрайта (с учетом масштабирования)
      *
      * @type {Number}
-     * @memberOf DKTools.Sprite
+     * @memberOf DKTools.Sprite.prototype
      */
     width: {
         get: function() {
@@ -9272,7 +9488,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
      * Высота спрайта (с учетом масштабирования)
      *
      * @type {Number}
-     * @memberOf DKTools.Sprite
+     * @memberOf DKTools.Sprite.prototype
      */
     height: {
         get: function() {
@@ -9289,7 +9505,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
      *
      * @readonly
      * @type {String}
-     * @memberOf DKTools.Sprite
+     * @memberOf DKTools.Sprite.prototype
      */
     graphicFolder: {
         get: function() {
@@ -9303,11 +9519,25 @@ Object.defineProperties(DKTools.Sprite.prototype, {
      *
      * @readonly
      * @type {String}
-     * @memberOf DKTools.Sprite
+     * @memberOf DKTools.Sprite.prototype
      */
     graphicName: {
         get: function() {
             return this._graphicName;
+        },
+        configurable: true
+    },
+
+    /**
+     * Прозрачность спрайта
+     *
+     * @readonly
+     * @type {Number}
+     * @memberOf DKTools.Sprite.prototype
+     */
+    opacity: {
+        get: function() {
+            return this._opacity;
         },
         configurable: true
     }
@@ -9366,7 +9596,7 @@ DKTools.Sprite.prototype.standardGraphicFolder = function() {
 /**
  * Возвращает стандартное название файла графики
  *
- * @return {String} Стандартное название файла графики
+ * @returns {String} Стандартное название файла графики
  */
 DKTools.Sprite.prototype.standardGraphicName = function() {
     return '';
@@ -9393,7 +9623,7 @@ DKTools.Sprite.prototype.standardFrame = function() {
 /**
  * Возвращает стандартную точку привязки текстуры
  *
- * @return {Point} Стандартная точка привязки текстуры
+ * @returns {Point} Стандартная точка привязки текстуры
  */
 DKTools.Sprite.prototype.standardAnchor = function() {
     return new Point(0, 0);
@@ -9424,7 +9654,7 @@ DKTools.Sprite.prototype.standardAnchor = function() {
  * @param {Number} [object.anchor.x] - Координата X
  * @param {Number] [object.anchor.y] - Координата Y
  *
- * @see свойства object: DKTools.Base.prototype.setupAll
+ * @see DKTools.Base.prototype.setupAll
 */
 DKTools.Sprite.prototype.setupAll = function(object) {
 	object = object || {};
@@ -9464,9 +9694,13 @@ DKTools.Sprite.prototype.setupWidth = function(width) {
 /**
  * Устанавливает высоту Bitmap
  *
- * @param {Number} [height] - Высота Bitmap
+ * @param {Number | String} [height] - Высота Bitmap
 */
 DKTools.Sprite.prototype.setupHeight = function(height) {
+    if (_.isString(height)) {
+        height = this.getLineHeight() * Number(height);
+    }
+
     /**
      * Высота Bitmap
      *
@@ -9489,9 +9723,6 @@ DKTools.Sprite.prototype.setupHeight = function(height) {
 DKTools.Sprite.prototype.setupSize = function(object, height) {
     if (object instanceof Object) {
         return this.setupSize(object.width, object.height);
-    }
-    if (_.isString(height)) {
-        height = this.getLineHeight() * Number(height);
     }
     this.setupWidth(object);
     this.setupHeight(height);
@@ -9532,7 +9763,7 @@ DKTools.Sprite.prototype.setupBitmap = function(object) {
  * @param {Number} [opacity] - Прозрачность спрайта
  */
 DKTools.Sprite.prototype.setupOpacity = function(opacity) {
-    this.opacity = (opacity == null ? this.standardOpacity() : opacity); // TODO: или this._opacity ?
+    this._opacity = (opacity == null ? this.standardOpacity() : opacity);
 };
 
 /**
@@ -9605,8 +9836,6 @@ DKTools.Sprite.prototype.setupAnchor = function(object, y) {
 
 // set methods
 
-// TODO: проверить setAll у всех
-
 /**
  * Изменяет все параметры спрайта
  * Возвращает количество измененных параметров
@@ -9615,26 +9844,32 @@ DKTools.Sprite.prototype.setupAnchor = function(object, y) {
  *
  * @param {Object} [object] - Объект типа {}
  * @param {Boolean} [blockStart] - Блокировка вызова функции start
+ * @param {Boolean} [activate] - Активирует спрайт
  *
  * @param {Number} [object.opacity] - Прозрачность спрайта
  * @param {String} [object.graphicName] - Название файла графики
  *
- * @see свойства object: DKTools.Base.prototype.setAll
+ * @see DKTools.Base.prototype.setAll
  *
- * @return {Number} Количество измененных параметров
+ * @returns {Number} Количество измененных параметров
 */
-DKTools.Sprite.prototype.setAll = function(object, blockStart) {
+DKTools.Sprite.prototype.setAll = function(object, blockStart, activate) {
 	object = object || {};
-    let block = true;
-    let changed = DKTools.Base.prototype.setAll.call(this, object);
+    const block = true;
+    let changed = DKTools.Base.prototype.setAll.call(this, object, block);
     if (this.setGraphicName(object.graphicName, block)) {
         changed++;
     }
-    if (changed && !blockStart) {
-        this.start();
-    }
-    if (this.setOpacity(object.opacity)) {
+    if (this.setOpacity(object.opacity, block)) {
         changed++;
+    }
+    if (changed) {
+        if (!blockStart) {
+            this.start();
+        }
+        if (activate) {
+            this.activate();
+        }
     }
 	return changed;
 };
@@ -9678,7 +9913,7 @@ DKTools.Sprite.prototype.setGraphicName = function(graphicName, blockStart) {
     if (this._graphicName === graphicName) {
         return false;
     }
-    let lastGraphic = this._graphicName;
+    const lastGraphic = this._graphicName;
     this.setupGraphicName(graphicName);
     if (this._graphicName === lastGraphic) {
         return false;
@@ -9696,13 +9931,19 @@ DKTools.Sprite.prototype.setGraphicName = function(graphicName, blockStart) {
  * @param {Number} [opacity] - Прозрачность спрайта
  * @return {Boolean} Изменение произошло
 */
-DKTools.Sprite.prototype.setOpacity = function(opacity) {
-	if (this.opacity === opacity) {
+DKTools.Sprite.prototype.setOpacity = function(opacity, blockUpdate) {
+	if (this._opacity === opacity) {
         return false;
     }
-    let lastOpacity = this.opacity;
+    const lastOpacity = this._opacity;
 	this.setupOpacity(opacity);
-	return this.opacity !== lastOpacity;
+	if (this._opacity === lastOpacity) {
+	    return false;
+    }
+	if (!blockUpdate) {
+	    this.updateOpacity();
+    }
+	return this._opacity !== lastOpacity;
 };
 
 /**
@@ -9778,6 +10019,15 @@ DKTools.Sprite.prototype.setAnchor = function(object, y) {
     return !DKTools.Utils.Point.equals(this.anchor, lastAnchor);
 };
 
+/**
+ * Устанавливает обработчик загрузки графики
+ *
+ * @param {Function} listener - Обработчик загрузки графики
+ */
+DKTools.Sprite.prototype.setGraphicLoadListener = function(listener) {
+    this._graphicLoadListener = listener;
+};
+
 // check methods
 
 /**
@@ -9826,7 +10076,13 @@ DKTools.Sprite.prototype.createBitmap = function() {
     }
 };
 
-// uncategorized methods
+// get methods
+
+DKTools.Sprite.prototype.getCurrentOpacity = function() {
+    return this.alpha * 255;
+};
+
+// size methods
 
 /**
  * Изменяет ширину и высоту Bitmap, если они отличаются от текущих
@@ -9844,6 +10100,9 @@ DKTools.Sprite.prototype.resize = function(width, height, blockStart) {
     }
     width = (width == null ? this.getMinWidth() : width);
     height = (height == null ? this.getMinHeight() : height);
+    if (_.isString(height)) {
+        height = this.getLineHeight() * Number(height);
+    }
     if (this._bitmapWidth === width && this._bitmapHeight === height) {
         return false;
     }
@@ -9983,9 +10242,9 @@ DKTools.Sprite.prototype.isResizable = function() {
  * @return {Boolean} Координаты находятся внутри спрайта
  */
 DKTools.Sprite.prototype.isInside = function(x, y) {
-    let localX = this.canvasToLocalX(x);
-    let localY = this.canvasToLocalY(y);
-    let frame = DKTools.Utils.Rectangle.clone(this.frame);
+    const localX = this.canvasToLocalX(x);
+    const localY = this.canvasToLocalY(y);
+    const frame = DKTools.Utils.Rectangle.clone(this.frame);
     frame.x -= this.width * this.anchor.x;
     frame.y -= this.height * this.anchor.y;
     frame.width *= this.scale.x;
@@ -10066,23 +10325,15 @@ DKTools.Sprite.prototype.reserveBitmap = function(object, filename, listener, hu
 // graphic methods
 
 /**
- * Обрабатывает загрузку графики
- */
-DKTools.Sprite.prototype.onGraphicLoad = function() {
-    // TODO: сделать через параметр
-    // to be overriden by plugins
-};
-
-/**
  * Загружает графику из названия файла графики
  *
  * @private
  */
 DKTools.Sprite.prototype._loadGraphic = function() {
     if (this.hasGraphicName()) {
-        let folder = this.graphicFolder;
-        let filename = this.graphicName;
-        let listener = this.onGraphicLoad.bind(this);
+        const folder = this.graphicFolder;
+        const filename = this.graphicName;
+        const listener = this._graphicLoadListener;
         this.loadBitmap(folder, filename, listener);
         this.updateReadyEvents();
     }
@@ -10098,6 +10349,20 @@ DKTools.Sprite.prototype._loadGraphic = function() {
 DKTools.Sprite.prototype.updateAll = function() {
     DKTools.Base.prototype.updateAll.call(this);
     this.updateBitmap();
+};
+
+/**
+ * Обновляет прозрачность спрайта
+ *
+ * @override
+ *
+ * @param {Number} [opacity] - Прозрачность спрайта
+ */
+DKTools.Sprite.prototype.updateOpacity = function(opacity) {
+    if (opacity == null) {
+        opacity = this._opacity;
+    }
+    this.alpha = opacity.clamp(0, 255) / 255;
 };
 
 /**
@@ -10138,7 +10403,7 @@ Object.defineProperties(DKTools.Sprite.Button.prototype, {
     /**
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Sprite.Button
+     * @memberOf DKTools.Sprite.Button.prototype
      */
     longPressInterval: {
         get: function() {
@@ -10152,7 +10417,7 @@ Object.defineProperties(DKTools.Sprite.Button.prototype, {
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Sprite.Button
+     * @memberOf DKTools.Sprite.Button.prototype
      */
     pressedTime: {
         get: function() {
@@ -10166,7 +10431,7 @@ Object.defineProperties(DKTools.Sprite.Button.prototype, {
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Sprite.Button
+     * @memberOf DKTools.Sprite.Button.prototype
      */
     pressX : {
         get: function() {
@@ -10180,7 +10445,7 @@ Object.defineProperties(DKTools.Sprite.Button.prototype, {
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Sprite.Button
+     * @memberOf DKTools.Sprite.Button.prototype
      */
     pressY : {
         get: function() {
@@ -10227,6 +10492,11 @@ DKTools.Sprite.Button.prototype._clearPressedTime = function() {
 DKTools.Sprite.Button.prototype._setupEvents = function() {
     DKTools.Sprite.prototype._setupEvents.call(this);
     this._setupUpdateEvent();
+};
+
+DKTools.Sprite.Button.prototype._setupOptions = function() {
+    DKTools.Sprite.prototype._setupEvents.call(this);
+    this.enableOption('mouseEnter');
 };
 
 /**
@@ -10281,6 +10551,16 @@ DKTools.Sprite.Button.prototype.setupAll = function(object) {
  */
 DKTools.Sprite.Button.prototype.setupLongPressInterval = function(interval) {
     this._longPressInterval = interval || this.standardLongPressInterval();
+};
+
+// set methods
+
+DKTools.Sprite.Button.prototype.setAll = function(object, blockStart, activate) {
+
+};
+
+DKTools.Sprite.Button.prototype.setLongPressInterval = function(interval) {
+
 };
 
 // is methods
@@ -10468,7 +10748,7 @@ Object.defineProperties(DKTools.Sprite.Cursor.prototype, {
     /**
      * @readonly
      * @type {Rectangle}
-     * @memberOf DKTools.Sprite.Cursor
+     * @memberOf DKTools.Sprite.Cursor.prototype
      */
     cursorRect: {
         get: function() {
@@ -10480,7 +10760,7 @@ Object.defineProperties(DKTools.Sprite.Cursor.prototype, {
     /**
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Sprite.Cursor
+     * @memberOf DKTools.Sprite.Cursor.prototype
      */
     blinkSpeed: {
         get: function() {
@@ -10601,7 +10881,7 @@ DKTools.Sprite.Cursor.prototype.setupAll = function(object) {
 }
 
 /**
- * Устанавливает рамку курсора
+ * Устанавливает размер курсора
  *
  * @param {Number | PIXI.Rectangle | Rectangle | Object} [object] -
  * @param {Number} [y] -
@@ -10609,7 +10889,7 @@ DKTools.Sprite.Cursor.prototype.setupAll = function(object) {
  * @param {Number} [height] -
  */
 DKTools.Sprite.Cursor.prototype.setupCursorRect = function(object, y, width, height) {
-    let rect = DKTools.Utils.Rectangle.convertToRectangle(object, y, width, height);
+    const rect = DKTools.Utils.Rectangle.convertToRectangle(object, y, width, height);
 
     /**
      * @private
@@ -10635,33 +10915,44 @@ DKTools.Sprite.Cursor.prototype.setupBlinkSpeed = function(blinkSpeed) {
 
 /**
  * Изменяет все параметры
- *
+ * Возвращает количество измененных параметров
  *
  * @override
  *
- * @param {Object} [object] - Объект типа {}
- * @param {Boolean} [blockStart=false] - Блокировка вызова функции start
+ * @param {Object} [object] - Параметры
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
+ * @param {Boolean} [activate] - Активирует спрайт
  *
- * @returns {Number}
+ * @param {PIXI.Rectangle | Rectangle | Object} [object.cursorRect] - Размер курсора
+ * @param {Number} [object.blinkSpeed] -
+ *
+ * @see DKTools.Sprite.prototype.setAll
+ *
+ * @returns {Number} Количество измененных параметров
  */
-DKTools.Sprite.Cursor.prototype.setAll = function(object, blockStart) {
+DKTools.Sprite.Cursor.prototype.setAll = function(object, blockStart, activate) {
     object = object || {};
-    let block = true;
+    const block = true;
     let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
-    if (changed && !blockStart) {
-        this.start();
-    }
     if (this.setCursorRect(object.cursorRect)) {
         changed++;
     }
     if (this.setBlinkSpeed(object.blinkSpeed)) {
         changed++;
     }
+    if (changed) {
+        if (!blockStart) {
+            this.start();
+        }
+        if (activate) {
+            this.activate();
+        }
+    }
     return changed;
 };
 
 /**
- * Изменяет рамку курсора
+ * Изменяет размер курсора
  * Возвращает true, если изменение произошло
  *
  * @param {Number | PIXI.Rectangle | Rectangle | Object} object - Координата X или Rectangle, или Объект типа {}
@@ -10673,13 +10964,13 @@ DKTools.Sprite.Cursor.prototype.setAll = function(object, blockStart) {
  */
 DKTools.Sprite.Cursor.prototype.setCursorRect = function(object, y, width, height) {
     if (object instanceof Object) {
-        return this.setCursorRect(object.x, object.y, object.width, object.height)
+        return this.setCursorRect(object.x, object.y, object.width, object.height);
     }
-    let newRect = DKTools.Utils.Rectangle.convertToRectangle(object, y, width, height);
+    const newRect = DKTools.Utils.Rectangle.convertToRectangle(object, y, width, height);
     if (DKTools.Utils.Rectangle.equals(this._cursorRect, newRect)) {
         return false;
     }
-    let lastRect = DKTools.Utils.Rectangle.clone(this._cursorRect);
+    const lastRect = DKTools.Utils.Rectangle.clone(this._cursorRect);
     this.setupCursorRect(newRect);
     if (!DKTools.Utils.Rectangle.equals(this._cursorRect, lastRect)) {
         this.refreshCursor();
@@ -10723,8 +11014,8 @@ DKTools.Sprite.Cursor.prototype.refreshCursor = function() {
     const m = 4;
     const ox = 0;
     const oy = 0;
-    const w2 = Math.min(w, this.parent.width - x);
-    const h2 = Math.min(h, this.parent.height - y);
+    const w2 = Math.min(w, this.parent.realWidth - x);
+    const h2 = Math.min(h, this.parent.realHeight - y);
 
     this.move(x, y);
 
@@ -10752,8 +11043,8 @@ DKTools.Sprite.Cursor.prototype.refreshCursor = function() {
  * Обновляет анимацию курсора
  */
 DKTools.Sprite.Cursor.prototype.updateCursorAnimation = function() {
-    let blinkCount = this._animationCount % 40;
-    let parentOpacity = this.parent.opacity;
+    const blinkCount = this._animationCount % 40;
+    let parentOpacity = this.parent.getCurrentOpacity();
     if (this.parent.isVisibleAndActive()) {
         this._animationCount++;
         if (blinkCount < 20) {
@@ -10780,6 +11071,13 @@ DKTools.Sprite.Arrow.prototype.constructor = DKTools.Sprite.Arrow;
 
 Object.defineProperties(DKTools.Sprite.Arrow.prototype, {
 
+    /**
+     * Тип стрелки
+     *
+     * @readonly
+     * @type {String}
+     * @memberOf DKTools.Sprite.Arrow.prototype
+     */
     arrowType: {
         get: function() {
             return this._arrowType;
@@ -10791,30 +11089,69 @@ Object.defineProperties(DKTools.Sprite.Arrow.prototype, {
 
 // standard methods
 
+/**
+ * Возвращает стандартную видимость
+ *
+ * @override
+ * @returns {Boolean}
+ */
 DKTools.Sprite.Arrow.prototype.standardVisible = function() {
     return false;
 };
 
+/**
+ * Возвращает стандартное название файла графики
+ *
+ * @override
+ * @returns {String} Стандартное название файла графики
+ */
 DKTools.Sprite.Arrow.prototype.standardGraphicName = function() {
     return this.standardWindowskin();
 };
 
+/**
+ * Возвращает стандартную точку привязки текстуры
+ *
+ * @override
+ * @returns {Point} Стандартная точка привязки текстуры
+ */
 DKTools.Sprite.Arrow.prototype.standardAnchor = function() {
     return new Point(0.5, 0.5);
 };
 
+/**
+ * Возвращает стандартный тип стрелки
+ *
+ * @returns {null}
+ */
 DKTools.Sprite.Arrow.prototype.standardArrowType = function() {
     return null;
 };
 
 // setup methods
 
+/**
+ * Устанавливает все параметры спрайта
+ *
+ * @override
+ *
+ * @param {Object} [object] - Объект типа {}
+ *
+ * @param {String} [object.arrowType] - Тип стрелки
+ *
+ * @see DKTools.Sprite.prototype.setupAll
+ */
 DKTools.Sprite.Arrow.prototype.setupAll = function(object) {
     object = object || {};
     DKTools.Sprite.Button.prototype.setupAll.call(this, object);
     this.setupArrowType(object.arrowType);
 };
 
+/**
+ * Устанавливает тип стрелки
+ *
+ * @param {String} [type] - Тип стрелки
+ */
 DKTools.Sprite.Arrow.prototype.setupArrowType = function(type) {
     /**
      * @private
@@ -10824,13 +11161,81 @@ DKTools.Sprite.Arrow.prototype.setupArrowType = function(type) {
     this._arrowType = type || this.standardArrowType();
 };
 
+// set methods
+
+/**
+ * Изменяет все параметры спрайта
+ * Возвращает количество измененных параметров
+ *
+ * @override
+ *
+ * @param {Object} [object] - Объект типа {}
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
+ * @param {Boolean} [activate] - Активирует спрайт
+ *
+ * @param {String} [object.arrowType] -
+ *
+ * @see DKTools.Sprite.prototype.setAll
+ *
+ * @returns {Number} Количество измененных параметров
+ */
+DKTools.Sprite.Arrow.prototype.setAll = function(object, blockStart, activate) {
+    object = object || {};
+    const block = true;
+    let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
+    if (this.setArrowType(object.arrowType, block)) {
+        changed++;
+    }
+    if (changed) {
+        if (!blockStart) {
+            this.start();
+        }
+        if (activate) {
+            this.activate();
+        }
+    }
+    return changed;
+};
+
+/**
+ * Изменяет тип стрелки
+ * Возвращает true, если изменение произошло
+ *
+ * @param {String} [type] - Тип стрелки
+ * @param {Boolean} [blockRefresh] - Блокировка вызова функции refreshAll
+ *
+ * @returns {Boolean} Изменение произошло
+ */
+DKTools.Sprite.Arrow.prototype.setArrowType = function(type, blockRefresh) {
+    if (this._arrowType === type) {
+        return false;
+    }
+    const lastType = this._arrowType;
+    this.setupArrowType(type);
+    if (this._arrowType === lastType) {
+        return false;
+    }
+    if (!blockRefresh) {
+        this.refreshAll();
+    }
+    return true;
+};
+
 // refresh methods
 
+/**
+ * Обновляет и перерисовывает все
+ *
+ * @override
+ */
 DKTools.Sprite.Arrow.prototype.refreshAll = function() {
     DKTools.Sprite.Button.prototype.refreshAll.call(this);
     this.refreshArrow();
 };
 
+/**
+ * Обновляет и перерисовывает стрелку
+ */
 DKTools.Sprite.Arrow.prototype.refreshArrow = function() {
     const p = 24;
     const q = p / 2;
@@ -10865,9 +11270,6 @@ DKTools.Sprite.Arrow.prototype.refreshArrow = function() {
 // DKTools Sprite Selectable
 //===========================================================================
 
-// TODO: при клонировании могут клонироваться обработчики item с bind на клонируемый объект
-// TODO: Написать про осторожность клонирования
-
 DKTools.Sprite.Selectable.prototype = Object.create(DKTools.Sprite.Button.prototype);
 DKTools.Sprite.Selectable.prototype.constructor = DKTools.Sprite.Selectable;
 
@@ -10876,11 +11278,21 @@ DKTools.Sprite.Selectable.prototype.constructor = DKTools.Sprite.Selectable;
 Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
 
     /**
+     * @memberOf DKTools.Sprite.Selectable.prototype
+     */
+    cursorSprite: {
+        get: function() {
+            return this._cursorSprite;
+        },
+        configurable: true
+    },
+
+    /**
      * Индекс
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Sprite.Selectable
+     * @memberOf DKTools.Sprite.Selectable.prototype
      */
     index: {
         get: function() {
@@ -10891,8 +11303,20 @@ Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
 
     /**
      * @readonly
+     * @type {Number}
+     * @memberOf DKTools.Sprite.Selectable.prototype
+     */
+    maxCols: {
+        get: function() {
+            return this._maxCols;
+        },
+        configurable: true
+    },
+
+    /**
+     * @readonly
      * @type {Boolean}
-     * @memberOf DKTools.Sprite.Selectable
+     * @memberOf DKTools.Sprite.Selectable.prototype
      */
     cursorFixed: {
         get: function() {
@@ -10904,7 +11328,7 @@ Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
     /**
      * @readonly
      * @type {Boolean}
-     * @memberOf DKTools.Sprite.Selectable
+     * @memberOf DKTools.Sprite.Selectable.prototype
      */
     cursorAll: {
         get: function() {
@@ -10915,44 +11339,8 @@ Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
 
     /**
      * @readonly
-     * @type {Function | null}
-     * @memberOf DKTools.Sprite.Selectable
-     */
-    drawItemHandler: {
-        get: function() {
-            return this._drawItemHandler;
-        },
-        configurable: true
-    },
-
-    /**
-     * @readonly
-     * @type {Object[]}
-     * @memberOf DKTools.Sprite.Selectable
-     */
-    items: {
-        get: function() {
-            return this._items;
-        },
-        configurable: true
-    },
-
-    /**
-     * @readonly
      * @type {Number}
-     * @memberOf DKTools.Sprite.Selectable
-     */
-    maxCols: {
-        get: function() {
-            return this._maxCols;
-        },
-        configurable: true
-    },
-
-    /**
-     * @readonly
-     * @type {Number}
-     * @memberOf DKTools.Sprite.Selectable
+     * @memberOf DKTools.Sprite.Selectable.prototype
      */
     horizontalSpacing: {
         get: function() {
@@ -10964,7 +11352,7 @@ Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
     /**
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Sprite.Selectable
+     * @memberOf DKTools.Sprite.Selectable.prototype
      */
     verticalSpacing: {
         get: function() {
@@ -10976,7 +11364,7 @@ Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
     /**
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Sprite.Selectable
+     * @memberOf DKTools.Sprite.Selectable.prototype
      */
     textPadding: {
         get: function() {
@@ -10986,11 +11374,35 @@ Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
     },
 
     /**
+     * @readonly
+     * @type {Object[]}
+     * @memberOf DKTools.Sprite.Selectable.prototype
+     */
+    items: {
+        get: function() {
+            return this._items;
+        },
+        configurable: true
+    },
+
+    /**
+     * @readonly
+     * @type {Function | null}
+     * @memberOf DKTools.Sprite.Selectable.prototype
+     */
+    drawItemHandler: {
+        get: function() {
+            return this._drawItemHandler;
+        },
+        configurable: true
+    },
+
+    /**
      * Ширина пункта
      *
      * @readonly
      * @type {Function | Number}
-     * @memberOf DKTools.Sprite.Selectable
+     * @memberOf DKTools.Sprite.Selectable.prototype
      */
     itemWidth: {
         get: function() {
@@ -11004,7 +11416,7 @@ Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
      *
      * @readonly
      * @type {Function | Number}
-     * @memberOf DKTools.Sprite.Selectable
+     * @memberOf DKTools.Sprite.Selectable.prototype
      */
     itemHeight: {
         get: function() {
@@ -11013,20 +11425,13 @@ Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
         configurable: true
     },
 
-    itemAlign: {
-        get: function() {
-            return this._itemAlign;
-        },
-        configurable: true
-    },
-
-    itemTextColor: {
-        get: function() {
-            return this._itemTextColor;
-        },
-        configurable: true
-    },
-
+    /**
+     * Шрифт текста пункта
+     *
+     * @readonly
+     * @type {Function | Object}
+     * @memberOf DKTools.Sprite.Selectable.prototype
+     */
     itemFont: {
         get: function() {
             return this._itemFont;
@@ -11034,6 +11439,19 @@ Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
         configurable: true
     },
 
+    /**
+     * @memberOf DKTools.Sprite.Selectable.prototype
+     */
+    itemTextColor: {
+        get: function() {
+            return this._itemTextColor;
+        },
+        configurable: true
+    },
+
+    /**
+     * @memberOf DKTools.Sprite.Selectable.prototype
+     */
     itemPaintOpacity: {
         get: function() {
             return this._itemPaintOpacity;
@@ -11041,9 +11459,12 @@ Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
         configurable: true
     },
 
-    cursorSprite: {
+    /**
+     * @memberOf DKTools.Sprite.Selectable.prototype
+     */
+    itemAlign: {
         get: function() {
-            return this._cursorSprite;
+            return this._itemAlign;
         },
         configurable: true
     }
@@ -11237,39 +11658,12 @@ DKTools.Sprite.Selectable.prototype._addCursorSprite = function() {
 // standard methods
 
 /**
- * @returns {Function}
- */
-DKTools.Sprite.Selectable.prototype.standardDrawItemHandler = function() {
-    return function(index) {
-        const name = this.getItemName(index);
-        const rect = this.getItemRectForTextByIndex(index);
-        const align = this.getItemAlignByIndex(index);
-        const textColor = this.getItemTextColorByIndex(index);
-        const font = this.getItemFontByIndex(index);
-        const paintOpacity = this.getItemPaintOpacityByIndex(index);
-        this.changeTextColor(textColor);
-        this.changeFont(font);
-        this.changePaintOpacity(paintOpacity);
-        this.drawText(name, align, rect);
-    }.bind(this);
-};
-
-/**
  * Возвращает стандартный индекс
  *
  * @returns {Number} Стандартный индекс
  */
 DKTools.Sprite.Selectable.prototype.standardIndex = function() {
     return 0;
-};
-
-/**
- * Возвращает стандартный список пунктов
- *
- * @returns {Array}
- */
-DKTools.Sprite.Selectable.prototype.standardItems = function() {
-    return [];
 };
 
 /**
@@ -11324,6 +11718,36 @@ DKTools.Sprite.Selectable.prototype.standardTextPadding = function() {
 };
 
 /**
+ * Возвращает стандартный список пунктов
+ *
+ * @returns {Array}
+ */
+DKTools.Sprite.Selectable.prototype.standardItems = function() {
+    return [];
+};
+
+/**
+ * @returns {Function}
+ */
+DKTools.Sprite.Selectable.prototype.standardDrawItemHandler = function() {
+    return function(index) {
+        const name = this.getItemName(index);
+        const font = this.getItemFontByIndex(index);
+        const textColor = this.getItemTextColorByIndex(index);
+        const paintOpacity = this.getItemPaintOpacityByIndex(index);
+        const align = this.getItemAlignByIndex(index);
+        const rect = this.getItemRectForTextByIndex(index);
+        this.drawText(name, {
+            font: font,
+            textColor: textColor,
+            painOpacity: paintOpacity,
+            align: align,
+            rect: rect
+        });
+    }.bind(this);
+};
+
+/**
  * Возвращает стандартную ширину пункта
  *
  * @returns {Function} Стандартная ширина пункта
@@ -11345,12 +11769,12 @@ DKTools.Sprite.Selectable.prototype.standardItemHeight = function() {
 };
 
 /**
- * Возвращает стандартное выравнивание текста пункта
+ * Возвращает стандартный шрифт текста пункта
  *
- * @returns {String} Стандартное выравнивание текста пункта
+ * @returns {Object} Стандартный шрифт текста пункта
  */
-DKTools.Sprite.Selectable.prototype.standardItemAlign = function() {
-    return this.align;
+DKTools.Sprite.Selectable.prototype.standardItemFont = function() {
+    return this.font;
 };
 
 /**
@@ -11360,15 +11784,6 @@ DKTools.Sprite.Selectable.prototype.standardItemAlign = function() {
  */
 DKTools.Sprite.Selectable.prototype.standardItemTextColor = function() {
     return this.textColor;
-};
-
-/**
- * Возвращает стандартный шрифт текста пункта
- *
- * @returns {Object} Стандартный шрифт текста пункта
- */
-DKTools.Sprite.Selectable.prototype.standardItemFont = function() {
-    return this.font;
 };
 
 /**
@@ -11402,6 +11817,15 @@ DKTools.Sprite.Selectable.prototype.standardDisabledItemPaintOpacity = function(
     return Window_Base.prototype.translucentOpacity.call(this);
 };
 
+/**
+ * Возвращает стандартное выравнивание текста пункта
+ *
+ * @returns {String} Стандартное выравнивание текста пункта
+ */
+DKTools.Sprite.Selectable.prototype.standardItemAlign = function() {
+    return this.align;
+};
+
 // setup methods
 
 /**
@@ -11411,26 +11835,29 @@ DKTools.Sprite.Selectable.prototype.standardDisabledItemPaintOpacity = function(
  *
  * @param {Object} [object] - Объект типа {}
  *
- * @param {Function} [object.drawItemHandler] - Обработчик рисования пункта
- * @param {Object[]} [object.items] - Список пунктов
- * @param {Number} [object.cols] - Количество столбцов
+ * @param {Number} [object.index] - Индекс
+ * @param {Number} [object.maxCols] - Количество столбцов
+ * @param {Boolean} [object.fixedHorizontal] -
  * @param {Boolean} [object.cursorFixed] -
  * @param {Boolean} [object.cursorAll] -
- * @param {Number} [object.textPadding] -
+ * @param {Number} [object.horizontalSpacing] -
+ * @param {Number} [object.verticalSpacing] -
+ * @param {Number} [object.textPadding] - Отступ для текста
+ * @param {Object[]} [object.items] - Список пунктов
+ * @param {Function} [object.drawItemHandler] - Обработчик рисования пункта
  * @param {Function | Number} [object.itemWidth] - Ширина пункта
  * @param {Function | Number} [object.itemHeight] - Высота пункта
+ * @param {Function | Object} [object.itemFont] - Шрифт текста пункта
+ * @param {Function | String} [object.itemTextColor] - Цвет текста пункта
+ * @param {Function | Number} [object.itemPaintOpacity] - Прозрачность рисования пункта
  * @param {Function | String} [object.itemAlign] - Выравнивание текста пункта
- * @param {Function | String} [object.itemTextColor] -
- * @param {Function | Object} [object.itemFont] -
- * @param {Function | Number} [object.itemPaintOpacity] -
- * @param {Boolean} [object.fixedHorizontal] -
  *
  * @param {String} [object.itemFont.fontFace] - Название шрифта
  * @param {Number} [object.itemFont.fontSize] - Размер шрифта
  * @param {Boolean} [object.itemFont.fontItalic] - Курсив шрифта
  *
- * @see object properties: DKTools.Sprite.Button.prototype.setupAll
- * @see items properties: DKTools.Sprite.Selectable.prototype.setupItems
+ * @see DKTools.Sprite.Button.prototype.setupAll
+ * @see DKTools.Sprite.Selectable.prototype.setupItems
  */
 DKTools.Sprite.Selectable.prototype.setupAll = function(object) {
     object = object || {};
@@ -11441,10 +11868,7 @@ DKTools.Sprite.Selectable.prototype.setupAll = function(object) {
     this.setupMaxCols(object.maxCols);
     this.setupCursorFixed(object.cursorFixed);
     this.setupCursorAll(object.cursorAll);
-
-    this.setupHorizontalSpacing(object.horizontalSpacing);
-    this.setupVerticalSpacing(object.verticalSpacing);
-
+    this.setupSpacing(object.horizontalSpacing, object.verticalSpacing);
     this.setupTextPadding(object.textPadding);
     this.setupItemWidth(object.itemWidth);
     this.setupItemHeight(object.itemHeight);
@@ -11470,6 +11894,35 @@ DKTools.Sprite.Selectable.prototype.setupIndex = function(index) {
 };
 
 /**
+ * Устанавливает количество столбцов
+ *
+ * @param {Number} [cols] - Количество столбцов
+ */
+DKTools.Sprite.Selectable.prototype.setupMaxCols = function(cols) {
+    /**
+     * Количество столбцов
+     *
+     * @private
+     * @readonly
+     * @type {Number}
+     */
+    this._maxCols = cols || this.standardMaxCols();
+};
+
+/**
+ *
+ * @param {Boolean} [fixedHorizontal] -
+ */
+DKTools.Sprite.Selectable.prototype.setupFixedHorizontal = function(fixedHorizontal) {
+    /**
+     * @private
+     * @readonly
+     * @type {Boolean}
+     */
+    this._fixedHorizontal = (fixedHorizontal == null ? this.standardFixedHorizontal() : fixedHorizontal);
+};
+
+/**
  * @param {Boolean} cursorFixed
  */
 DKTools.Sprite.Selectable.prototype.setupCursorFixed = function(cursorFixed) {
@@ -11491,64 +11944,6 @@ DKTools.Sprite.Selectable.prototype.setupCursorAll = function(cursorAll) {
      * @type {Boolean}
      */
     this._cursorAll = (cursorAll == null ? this.standardCursorAll() : cursorAll);
-};
-
-/**
- * Устанавливает обработчик рисования пункта
- *
- * @param {Function} handler - Обработчик рисования пункта
- */
-DKTools.Sprite.Selectable.prototype.setupDrawItemHandler = function(handler) {
-    /**
-     * Обработчик рисования пункта
-     *
-     * @private
-     * @readonly
-     * @type {Function | null}
-     */
-    this._drawItemHandler = handler || this.standardDrawItemHandler();
-};
-
-/**
- * Устанавливает список пунктов
- *
- * @param {Object[]} items - Пункты
- * @param {Function | String} items[].name - Название пункта
- * @param {Function | String} [items[].align] - Выравнивание текста пункта
- * @param {Function | String} [items[].textColor] - Цвет текста пункта
- * @param {Function | Object} [items[].font] - Шрифт текста пункта
- * @param {Function | Number} [items[].paintOpacity] - Прозрачность рисования пункта
- * @param {Function | Boolean} [items[].enabled] - Активность пункта
- * @param {String} [items[].symbol] - Символ пункта
- * @param {Function} [items[].handler] - Обработчик выбора
- * @param {String} [items[].font.fontFace] - Название шрифта
- * @param {Number} [items[].font.fontSize] - Размер шрифта
- * @param {Boolean} [items[].font.fontItalic] - Курсив шрифта
- */
-DKTools.Sprite.Selectable.prototype.setupItems = function(items) { // TODO: проверить логику еще раз (06.09.2017)
-    if (items == null) {
-        items = this.standardItems();
-    }
-
-    _.forEach(items, this._checkItem.bind(this));
-
-    this._items = items;
-};
-
-/**
- * Устанавливает количество столбцов
- *
- * @param {Number} [cols] - Количество столбцов
- */
-DKTools.Sprite.Selectable.prototype.setupMaxCols = function(cols) {
-    /**
-     * Количество столбцов
-     *
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._maxCols = cols || this.standardMaxCols();
 };
 
 /**
@@ -11580,6 +11975,17 @@ DKTools.Sprite.Selectable.prototype.setupVerticalSpacing = function(spacing) {
 };
 
 /**
+ * Устанавливает горизонтальный и вертикальный интервалы
+ *
+ * @param {Number} [horizontalSpacing] - Горизонтальный интервал
+ * @param {Number} [verticalSpacing] - Вертикальный интервал
+ */
+DKTools.Sprite.Selectable.prototype.setupSpacing = function(horizontalSpacing, verticalSpacing) {
+    this.setupHorizontalSpacing(horizontalSpacing);
+    this.setupVerticalSpacing(verticalSpacing);
+};
+
+/**
  * Устанавливает отступ текста
  *
  * @param {Number} [textPadding] - Отступ текста
@@ -11591,6 +11997,48 @@ DKTools.Sprite.Selectable.prototype.setupTextPadding = function(textPadding) {
      * @type {Number}
      */
     this._textPadding = (textPadding == null ? this.standardTextPadding() : textPadding);
+};
+
+/**
+ * Устанавливает список пунктов
+ *
+ * @param {Object[]} items - Пункты
+ * @param {Function | String} items[].name - Название пункта
+ * @param {Function | String} [items[].align] - Выравнивание текста пункта
+ * @param {Function | String} [items[].textColor] - Цвет текста пункта
+ * @param {Function | Object} [items[].font] - Шрифт текста пункта
+ * @param {Function | Number} [items[].paintOpacity] - Прозрачность рисования пункта
+ * @param {Function | Boolean} [items[].enabled] - Активность пункта
+ * @param {String} [items[].symbol] - Символ пункта
+ * @param {Function} [items[].handler] - Обработчик выбора
+ * @param {String} [items[].font.fontFace] - Название шрифта
+ * @param {Number} [items[].font.fontSize] - Размер шрифта
+ * @param {Boolean} [items[].font.fontItalic] - Курсив шрифта
+ */
+DKTools.Sprite.Selectable.prototype.setupItems = function(items) {
+    if (items == null) {
+        items = this.standardItems();
+    }
+
+    _.forEach(items, this._checkItem.bind(this));
+
+    this._items = items;
+};
+
+/**
+ * Устанавливает обработчик рисования пункта
+ *
+ * @param {Function} handler - Обработчик рисования пункта
+ */
+DKTools.Sprite.Selectable.prototype.setupDrawItemHandler = function(handler) {
+    /**
+     * Обработчик рисования пункта
+     *
+     * @private
+     * @readonly
+     * @type {Function | null}
+     */
+    this._drawItemHandler = handler || this.standardDrawItemHandler();
 };
 
 /**
@@ -11626,38 +12074,6 @@ DKTools.Sprite.Selectable.prototype.setupItemHeight = function(itemHeight) {
 };
 
 /**
- * Устанавливает выравнивание текста пункта
- *
- * @param {Function | String} [itemAlign] - Выравнивание текста пункта
- */
-DKTools.Sprite.Selectable.prototype.setupItemAlign = function(itemAlign) {
-    /**
-     * Выравнивание текста пункта
-     *
-     * @private
-     * @readonly
-     * @type {Function | String}
-     */
-    this._itemAlign = itemAlign || this.standardItemAlign();
-};
-
-/**
- * Устанавливает цвет текста пункта
- *
- * @param {Function | String} [itemTextColor] - Цвет текста пункта
- */
-DKTools.Sprite.Selectable.prototype.setupItemTextColor = function(itemTextColor) {
-    /**
-     * Цвет текста пункта
-     *
-     * @private
-     * @readonly
-     * @type {Function | String}
-     */
-    this._itemTextColor = itemTextColor || this.standardItemTextColor();
-};
-
-/**
  * Устанавливает шрифт текста пункта
  *
  * @param {Function | Object} [itemFont] - Шрифт текста пункта
@@ -11678,6 +12094,22 @@ DKTools.Sprite.Selectable.prototype.setupItemFont = function(itemFont) {
 };
 
 /**
+ * Устанавливает цвет текста пункта
+ *
+ * @param {Function | String} [itemTextColor] - Цвет текста пункта
+ */
+DKTools.Sprite.Selectable.prototype.setupItemTextColor = function(itemTextColor) {
+    /**
+     * Цвет текста пункта
+     *
+     * @private
+     * @readonly
+     * @type {Function | String}
+     */
+    this._itemTextColor = itemTextColor || this.standardItemTextColor();
+};
+
+/**
  * Устанавливает прозрачность рисования пункта
  *
  * @param {Function | Number} [itemPaintOpacity] - Прозрачность рисования пункта
@@ -11694,16 +12126,19 @@ DKTools.Sprite.Selectable.prototype.setupItemPaintOpacity = function(itemPaintOp
 };
 
 /**
+ * Устанавливает выравнивание текста пункта
  *
- * @param {Boolean} [fixedHorizontal] -
+ * @param {Function | String} [itemAlign] - Выравнивание текста пункта
  */
-DKTools.Sprite.Selectable.prototype.setupFixedHorizontal = function(fixedHorizontal) {
+DKTools.Sprite.Selectable.prototype.setupItemAlign = function(itemAlign) {
     /**
+     * Выравнивание текста пункта
+     *
      * @private
      * @readonly
-     * @type {Boolean}
+     * @type {Function | String}
      */
-    this._fixedHorizontal = (fixedHorizontal == null ? this.standardFixedHorizontal() : fixedHorizontal);
+    this._itemAlign = itemAlign || this.standardItemAlign();
 };
 
 // set methods
@@ -11714,22 +12149,89 @@ DKTools.Sprite.Selectable.prototype.setupFixedHorizontal = function(fixedHorizon
  *
  * @override
  *
- * @param {Object} [object] - Объект типа {}
- * @param {Boolean} [blockStart=false] - Блокировка вызова функции start
+ * @param {Object} [object] - Параметры
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
+ * @param {Boolean} [activate] - Активировать спрайт
  *
- * @param {Number} [object.cols] - Количество столбцов
+ * @param {Number} [object.index] - Индекс
+ * @param {Number} [object.maxCols] - Количество столбцов
+ * @param {Boolean} [object.fixedHorizontal] -
+ * @param {Boolean} [object.cursorFixed] -
+ * @param {Boolean} [object.cursorAll] -
+ * @param {Number} [object.horizontalSpacing] -
+ * @param {Number} [object.verticalSpacing] -
+ * @param {Number} [object.textPadding] - Отступ для текста
+ * @param {Object[]} [object.items] - Список пунктов
+ * @param {Function} [object.drawItemHandler] - Обработчик рисования пункта
+ * @param {Function | Number} [object.itemWidth] - Ширина пункта
+ * @param {Function | Number} [object.itemHeight] - Высота пункта
+ * @param {Function | Object} [object.itemFont] - Шрифт текста пункта
+ * @param {Function | String} [object.itemTextColor] - Цвет текста пункта
+ * @param {Function | Number} [object.itemPaintOpacity] - Прозрачность рисования пункта
+ * @param {Function | String} [object.itemAlign] - Выравнивание текста пункта
+ *
+ * @param {String} [object.itemFont.fontFace] - Название шрифта
+ * @param {Number} [object.itemFont.fontSize] - Размер шрифта
+ * @param {Boolean} [object.itemFont.fontItalic] - Курсив шрифта
+ *
+ * @see DKTools.Sprite.Button.prototype.setAll
  *
  * @returns {Number} Количество измененных параметров
  */
-DKTools.Sprite.Selectable.prototype.setAll = function(object, blockStart) {
+DKTools.Sprite.Selectable.prototype.setAll = function(object, blockStart, activate) {
     object = object || {};
-    var block = true;
-    var changed = DKTools.Sprite.Button.prototype.setAll.call(this, object, block);
+    const block = true;
+    let changed = DKTools.Sprite.Button.prototype.setAll.call(this, object, block);
+    if (this.setIndex(object.index, block)) {
+        changed++;
+    }
     if (this.setMaxCols(object.maxCols, block)) {
         changed++;
     }
-    if (changed && !blockStart) {
-        this.start();
+    if (this.setFixedHorizontal(object.fixedHorizontal, block)) {
+        changed++;
+    }
+    if (this.setCursorFixed(object.cursorFixed, block)) {
+        changed++;
+    }
+    if (this.setCursorAll(object.cursorAll, block)) {
+        changed++;
+    }
+    changed += this.setSpacing(object.horizontalSpacing, object.verticalSpacing, block);
+    if (this.setTextPadding(object.textPadding, block)) {
+        changed++;
+    }
+    if (this.setItems(object.items, block)) {
+        changed++;
+    }
+    if (this.setDrawItemHandler(object.drawItemHandler, block)) {
+        changed++;
+    }
+    if (this.setItemWidth(object.itemWidth, block)) {
+        changed++;
+    }
+    if (this.setItemHeight(object.itemHeight, block)) {
+        changed++;
+    }
+    if (this.setItemFont(object.itemFont, block)) {
+        changed++;
+    }
+    if (this.setItemTextColor(object.itemTextColor, block)) {
+        changed++;
+    }
+    if (this.setItemPaintOpacity(object.itemPaintOpacity, block)) {
+        changed++;
+    }
+    if (this.setItemAlign(object.itemAlign, block)) {
+        changed++;
+    }
+    if (changed) {
+        if (!blockStart) {
+            this.start();
+        }
+        if (activate) {
+            this.activate();
+        }
     }
     return changed;
 };
@@ -11782,11 +12284,15 @@ DKTools.Sprite.Selectable.prototype.setMaxCols = function(cols, blockRefresh) {
     return true;
 };
 
-DKTools.Sprite.Selectable.prototype.setItems = function(items, blockRefresh) {
-    if (this._items == items) {
+DKTools.Sprite.Selectable.prototype.setFixedHorizontal = function(fixedHorizontal, blockRefresh) {
+    if (this._fixedHorizontal === fixedHorizontal) {
         return false;
     }
-    this.setupItems(items);
+    const lastFixed = this._fixedHorizontal;
+    this.setupFixedHorizontal(fixedHorizontal);
+    if (this._fixedHorizontal === lastFixed) {
+        return false;
+    }
     if (!blockRefresh) {
         this.refreshAll();
     }
@@ -11801,7 +12307,7 @@ DKTools.Sprite.Selectable.prototype.setCursorFixed = function(cursorFixed, block
     if (this._cursorFixed === cursorFixed) {
         return false;
     }
-    var lastFixed = this._cursorFixed;
+    const lastFixed = this._cursorFixed;
     this.setupCursorFixed(cursorFixed);
     if (this._cursorFixed === lastFixed) {
         return false;
@@ -11820,9 +12326,185 @@ DKTools.Sprite.Selectable.prototype.setCursorAll = function(cursorAll, blockRefr
     if (this._cursorAll === cursorAll) {
         return false;
     }
-    var lastAll = this._cursorAll;
+    const lastAll = this._cursorAll;
     this.setupCursorAll(cursorAll);
     if (this._cursorAll === lastAll) {
+        return false;
+    }
+    if (!blockRefresh) {
+        this.refreshAll();
+    }
+    return true;
+};
+
+DKTools.Sprite.Selectable.prototype.setHorizontalSpacing = function(spacing, blockRefresh) {
+    if (this._horizontalSpacing === spacing) {
+        return false;
+    }
+    const lastSpacing = this._horizontalSpacing;
+    this.setupHorizontalSpacing(spacing);
+    if (this._horizontalSpacing === lastSpacing) {
+        return false;
+    }
+    if (!blockRefresh) {
+        this.refreshAll();
+    }
+    return true;
+};
+
+DKTools.Sprite.Selectable.prototype.setVerticalSpacing = function(spacing, blockRefresh) {
+    if (this._verticalSpacing === spacing) {
+        return false;
+    }
+    const lastSpacing = this._verticalSpacing;
+    this.setupVerticalSpacing(spacing);
+    if (this._verticalSpacing === lastSpacing) {
+        return false;
+    }
+    if (!blockRefresh) {
+        this.refreshAll();
+    }
+    return true;
+};
+
+DKTools.Sprite.Selectable.prototype.setSpacing = function(horizontalSpacing, verticalSpacing, blockRefreshAll) {
+    const block = true;
+    let changed = 0;
+    if (this.setHorizontalSpacing(horizontalSpacing, block)) {
+        changed++;
+    }
+    if (this.setVerticalSpacing(verticalSpacing, block)) {
+        changed++;
+    }
+    if (changed && !blockRefreshAll) {
+        this.refreshAll();
+    }
+    return changed;
+};
+
+DKTools.Sprite.Selectable.prototype.setTextPadding = function(textPadding, blockRefresh) {
+    if (this._textPadding === textPadding) {
+        return false;
+    }
+    const lastPadding = this._textPadding;
+    this.setupTextPadding(textPadding);
+    if (this._textPadding === lastPadding) {
+        return false;
+    }
+    if (!blockRefresh) {
+        this.refreshAll();
+    }
+    return true;
+};
+
+DKTools.Sprite.Selectable.prototype.setItems = function(items, blockRefresh) {
+    if (this._items == items) {
+        return false;
+    }
+    this.setupItems(items);
+    if (!blockRefresh) {
+        this.refreshAll();
+    }
+    return true;
+};
+
+DKTools.Sprite.Selectable.prototype.setDrawItemHandler = function(handler, blockRefresh) {
+    if (this._drawItemHandler === handler) {
+        return false;
+    }
+    const lastHandler = this._drawItemHandler;
+    this.setupDrawItemHandler(handler);
+    if (this._drawItemHandler === lastHandler) {
+        return false;
+    }
+    if (!blockRefresh) {
+        this.refreshAll();
+    }
+    return true;
+};
+
+DKTools.Sprite.Selectable.prototype.setItemWidth = function(itemWidth, blockRefresh) {
+    if (this._itemWidth === itemWidth) {
+        return false;
+    }
+    const lastWidth = this._itemWidth;
+    this.setupItemWidth(itemWidth);
+    if (this._itemWidth === lastWidth) {
+        return false;
+    }
+    if (!blockRefresh) {
+        this.refreshAll();
+    }
+    return true;
+};
+
+DKTools.Sprite.Selectable.prototype.setItemHeight = function(itemHeight, blockRefresh) {
+    if (this._itemHeight === itemHeight) {
+        return false;
+    }
+    const lastHeight = this._itemHeight;
+    this.setupItemHeight(itemHeight);
+    if (this._itemHeight === lastHeight) {
+        return false;
+    }
+    if (!blockRefresh) {
+        this.refreshAll();
+    }
+    return true;
+};
+
+DKTools.Sprite.Selectable.prototype.setItemFont = function(itemFont, blockRefresh) {
+    if (this._itemFont === itemFont) {
+        return false;
+    }
+    const lastFont = this._itemFont;
+    this.setupItemFont(itemFont);
+    if (this._itemFont === lastFont) {
+        return false;
+    }
+    if (!blockRefresh) {
+        this.refreshAll();
+    }
+    return true;
+};
+
+DKTools.Sprite.Selectable.prototype.setItemTextColor = function(itemTextColor, blockRefresh) {
+    if (this._itemTextColor === itemTextColor) {
+        return false;
+    }
+    const lastTextColor = this._itemTextColor;
+    this.setupItemTextColor(itemTextColor);
+    if (this._itemTextColor === lastTextColor) {
+        return false;
+    }
+    if (!blockRefresh) {
+        this.refreshAll();
+    }
+    return true;
+};
+
+DKTools.Sprite.Selectable.prototype.setItemPaintOpacity = function(itemPaintOpacity, blockRefresh) {
+    if (this._itemPaintOpacity === itemPaintOpacity) {
+        return false;
+    }
+    const lastPaintOpacity = this._itemPaintOpacity;
+    this.setupItemPaintOpacity(itemPaintOpacity);
+    if (this._itemPaintOpacity === lastPaintOpacity) {
+        return false;
+    }
+    if (!blockRefresh) {
+        this.refreshAll();
+    }
+    return true;
+};
+
+DKTools.Sprite.Selectable.prototype.setItemAlign = function(itemAlign, blockRefresh) {
+    if (this._itemAlign === itemAlign) {
+        return false;
+    }
+    const lastAlign = this._itemAlign;
+    this.setupItemAlign(itemAlign);
+    if (this._itemAlign === lastAlign) {
         return false;
     }
     if (!blockRefresh) {
@@ -12695,7 +13377,7 @@ DKTools.Sprite.Selectable.prototype.cursorDown = function(wrap) {
     const index = this._index;
     const maxItems = this.getMaxItems();
     const maxCols = this.getMaxCols();
-    if (index < maxItems - maxCols || (wrap && maxCols === 1)) {
+    if (index < maxItems - maxCols || (wrap && maxItems === this.getMaxRows() * maxCols)) {
         this.selectItemByIndex((index + maxCols) % maxItems);
     }
 };
@@ -12712,7 +13394,7 @@ DKTools.Sprite.Selectable.prototype.cursorUp = function(wrap) {
     const index = this._index;
     const maxItems = this.getMaxItems();
     const maxCols = this.getMaxCols();
-    if (index >= maxCols || (wrap && maxCols === 1)) {
+    if (index >= maxCols || (wrap && maxItems === this.getMaxRows() * maxCols)) {
         this.selectItemByIndex((index - maxCols + maxItems) % maxItems);
     }
 };
@@ -12730,7 +13412,7 @@ DKTools.Sprite.Selectable.prototype.cursorRight = function(wrap) {
     const index = this._index;
     const maxItems = this.getMaxItems();
     const maxCols = this.getMaxCols();
-    if (maxCols >= 2 && (index < maxItems - 1 || (wrap && this.isHorizontal()))) { // TODO оставить isHorizontal
+    if (maxCols >= 2 && (index < maxItems - 1 || wrap)) {
         this.selectItemByIndex((index + 1) % maxItems);
     }
 };
@@ -12748,7 +13430,7 @@ DKTools.Sprite.Selectable.prototype.cursorLeft = function(wrap) {
     const index = this._index;
     const maxItems = this.getMaxItems();
     const maxCols = this.getMaxCols();
-    if (maxCols >= 2 && (index > 0 || (wrap && this.isHorizontal()))) { // TODO оставить isHorizontal
+    if (maxCols >= 2 && (index > 0 || wrap)) {
         this.selectItemByIndex((index - 1 + maxItems) % maxItems);
     }
 };
@@ -12842,10 +13524,13 @@ DKTools.Sprite.Selectable.prototype.hitTest = function(x, y) {
         const maxPageItems = this.getMaxPageItems();
         const maxItems = this.getMaxItems();
         let index = this.getTopIndex();
-        for(var i = 0; i < maxPageItems && index < maxItems; i++, index++) {
+        for(let i = 0; i < maxPageItems && index < maxItems; i++, index++) {
             const rect = this.getItemRectByIndex(index);
-            rect.width *= this.scale.x;
-            rect.height *= this.scale.y;
+            const scale = this.scale;
+            rect.x *= scale.x;
+            rect.y *= scale.y;
+            rect.width *= scale.x;
+            rect.height *= scale.y;
             if (rect.contains(localX, localY)) {
                 return index;
             }
@@ -13045,7 +13730,7 @@ DKTools.Sprite.Selectable.prototype.selectItem = function(item) {
  * @param {String} symbol - Символ
  */
 DKTools.Sprite.Selectable.prototype.selectSymbol = function(symbol) {
-    let index = Math.max(0, this.findSymbol(symbol));
+    const index = Math.max(0, this.findSymbol(symbol));
     this.selectItemByIndex(index);
 };
 
@@ -13055,7 +13740,7 @@ DKTools.Sprite.Selectable.prototype.selectSymbol = function(symbol) {
  * @param {*} ext
  */
 DKTools.Sprite.Selectable.prototype.selectExt = function(ext) {
-    let index = Math.max(0, this.findExt(ext));
+    const index = Math.max(0, this.findExt(ext));
     this.selectItemByIndex(index);
 };
 
@@ -13085,7 +13770,7 @@ DKTools.Sprite.Selectable.prototype.selectNext = function(wrap) {
  * @param {Boolean} [wrap=false] - Циклический выбор
  */
 DKTools.Sprite.Selectable.prototype.selectPrev = function(wrap) {
-    let index = this.getPrevIndex(wrap);
+    const index = this.getPrevIndex(wrap);
     if (index >= 0) {
         this.selectItemByIndex(index);
     }
@@ -13253,10 +13938,8 @@ DKTools.Sprite.Selectable.prototype.findExt = function(ext) {
  * Сбрасывает прокручивание
  */
 DKTools.Sprite.Selectable.prototype.resetScroll = function() {
-    if (this.isHorizontal()) {
-        this.setTopCol(0);
-    } else {
-        this.setTopRow(0);
+    if (this._index !== 0) {
+        this.selectItemByIndex(0);
     }
 };
 
@@ -13265,7 +13948,7 @@ DKTools.Sprite.Selectable.prototype.resetScroll = function() {
  */
 DKTools.Sprite.Selectable.prototype.scrollDown = function() {
     if (this.getTopRow() + 1 < this.getMaxRows()) {
-        this.setTopRow(this.getTopRow() + 1);
+        this.cursorDown();
     }
 };
 
@@ -13274,7 +13957,7 @@ DKTools.Sprite.Selectable.prototype.scrollDown = function() {
  */
 DKTools.Sprite.Selectable.prototype.scrollUp = function() {
     if (this.getTopRow() > 0) {
-        this.setTopRow(this.getTopRow() - 1);
+        this.cursorUp();
     }
 };
 
@@ -13283,7 +13966,7 @@ DKTools.Sprite.Selectable.prototype.scrollUp = function() {
  */
 DKTools.Sprite.Selectable.prototype.scrollRight = function() {
     if (this.getTopCol() + 1 < this.getMaxItems()) {
-        this.setTopCol(this.getTopCol() + 1);
+        this.cursorRight();
     }
 };
 
@@ -13292,7 +13975,7 @@ DKTools.Sprite.Selectable.prototype.scrollRight = function() {
  */
 DKTools.Sprite.Selectable.prototype.scrollLeft = function() {
     if (this.getTopCol() > 0) {
-        this.setTopCol(this.getTopCol() - 1);
+        this.cursorLeft();
     }
 };
 
@@ -13465,229 +14148,6 @@ DKTools.Sprite.Selectable.prototype.updateCursor = function() {
 
 
 //===========================================================================
-// DKTools Sprite Tab
-//===========================================================================
-
-DKTools.Sprite.Tab.prototype = Object.create(DKTools.Sprite.prototype);
-DKTools.Sprite.Tab.prototype.constructor = DKTools.Sprite.Tab;
-
-// properties
-
-Object.defineProperties(DKTools.Sprite.Tab.prototype, {
-
-    /**
-     * @readonly
-     * @type {DKTools.Sprite.Selectable}
-     * @memberOf DKTools.Sprite.Tab
-     */
-    tabSprite: {
-        get: function() {
-            return this._tabSprite;
-        },
-        configurable: true
-    }
-
-});
-
-// _create methods
-
-DKTools.Sprite.Tab.prototype._createAll = function() {
-    DKTools.Sprite.prototype._createAll.call(this);
-    this._createTabSprite();
-};
-
-DKTools.Sprite.Tab.prototype._createTabSprite = function() {
-    this._tabSprite = new DKTools.Sprite.Selectable({
-        width: this._bitmapWidth,
-        height: '1'
-    });
-
-    this._tabSprite.addEvent({
-        type: 'select',
-        onUpdate: function(event) {
-            const index = event.target.index;
-            this.selectTab(index);
-        }.bind(this)
-    });
-};
-
-// _add methods
-
-DKTools.Sprite.Tab.prototype._addAllChildren = function() {
-    DKTools.Sprite.prototype._addAllChildren.call(this);
-    this._addTabSprite();
-};
-
-DKTools.Sprite.Tab.prototype._addTabSprite = function() {
-    this.addChild(this._tabSprite);
-};
-
-// standard methods
-
-DKTools.Sprite.Tab.prototype.standardPadding = function() {
-    return 18;
-};
-
-DKTools.Sprite.Tab.prototype.standardHorizontalSpacing = function() {
-    return 12;
-};
-
-DKTools.Sprite.Tab.prototype.standardVerticalSpacing = function() {
-    return 12;
-};
-
-// setup methods
-
-// DKTools.Sprite.Tab.prototype.setupAll = function(object) {
-//     object = object || {};
-//     DKTools.Sprite.prototype.setupAll.call(this, object);
-// };
-
-// set methods
-
-
-
-// other methods
-
-
-
-// get methods
-
-DKTools.Sprite.Tab.prototype.getTab = function(index) {
-    return this._tabSprite.getItem(index);
-};
-
-DKTools.Sprite.Tab.prototype.getTabContents = function(index) {
-    const tab = this.getTab(index);
-    return tab ? tab.contents : null;
-};
-
-DKTools.Sprite.Tab.prototype.getCurrentTab = function() {
-    return this.getTab(this._tabSprite.index);
-};
-
-DKTools.Sprite.Tab.prototype.getCurrentTabContents = function() {
-    return this.getTabContents(this._tabSprite.index);
-};
-
-DKTools.Sprite.Tab.prototype.getContentsWidth = function() {
-    if (this.isHorizontal()) {
-        if (this.isStarted()) {
-            return this.realWidth;
-        }
-        return this._bitmapWidth;
-    }
-    let width = this._bitmapWidth;
-    if (this.isStarted()) {
-        width = this.realWidth;
-    }
-    let tabSpriteWidth = this._tabSprite._bitmapWidth;
-    if (this._tabSprite.isStarted()) {
-        tabSpriteWidth = this._tabSprite.realWidth;
-    }
-    return width - tabSpriteWidth - this.standardPadding() * 2 - this.standardHorizontalSpacing();
-};
-
-DKTools.Sprite.Tab.prototype.getContentsHeight = function() {
-    if (this.isHorizontal()) {
-        var height = this._bitmapHeight;
-        if (this.isStarted()) {
-            height = this.realHeight;
-        }
-        let tabSpriteHeight = this._tabSprite._bitmapHeight;
-        if (this._tabSprite.isStarted()) {
-            tabSpriteHeight = this._tabSprite.realHeight;
-        }
-        return height - tabSpriteHeight - this.standardPadding() * 2 - this.standardVerticalSpacing();
-    }
-    if (this.isStarted()) {
-        return this.realHeight;
-    }
-    return this._bitmapHeight;
-};
-
-DKTools.Sprite.Tab.prototype.getContentsSize = function() {
-    return { width: this.getContentsWidth(), height: this.getContentsHeight() };
-};
-
-// start methods
-
-DKTools.Sprite.Tab.prototype.start = function(activate) {
-    DKTools.Sprite.prototype.start.call(this, activate);
-    this._tabSprite.start(activate);
-    this.selectTab(this._tabSprite.index);
-};
-
-// is methods
-
-DKTools.Sprite.Tab.prototype.isHorizontal = function() {
-    return this._tabSprite.isHorizontal();
-};
-
-DKTools.Sprite.Tab.prototype.isVertical = function() {
-    return this._tabSprite.isVertical();
-};
-
-// has methods
-
-DKTools.Sprite.Tab.prototype.hasContentsSprite = function() {
-    return !!this._contentsSprite;
-};
-
-// remove methods
-
-DKTools.Sprite.Tab.prototype.removeContentsSprite = function() {
-    if (this.hasContentsSprite()) {
-        this.removeChild(this._contentsSprite);
-        this._contentsSprite = null;
-    }
-};
-
-// event methods
-
-DKTools.Sprite.Tab.prototype.updateSelectTabEvents = function() {
-    this.updateEventsContainer('selectTab');
-};
-
-// select methods
-
-DKTools.Sprite.Tab.prototype.selectTab = function(index) {
-    this.removeContentsSprite();
-    const contents = this.getTabContents(index);
-    if (contents) {
-        if (!contents.isStarted()) {
-            contents.start();
-        }
-        this._contentsSprite = contents;
-        this.addChild(this._contentsSprite);
-        this.updateContentsSprite();
-    }
-    this.updateSelectTabEvents();
-};
-
-DKTools.Sprite.Tab.prototype.reselectTab = function() {
-    this._tabSprite.reselect();
-};
-
-DKTools.Sprite.Tab.prototype.deselectTab = function() {
-    this._tabSprite.deselect();
-};
-
-// update methods
-
-DKTools.Sprite.Tab.prototype.updateContentsSprite = function() {
-    if (this.isHorizontal()) {
-        this._contentsSprite.move(0, this._tabSprite.height + this.standardPadding() * 2 + this.standardVerticalSpacing());
-    } else {
-        this._contentsSprite.move(this._tabSprite.width + this.standardPadding() * 2 + this.standardHorizontalSpacing(), 0);
-    }
-};
-
-
-
-
-
-//===========================================================================
 // DKTools Viewport
 //===========================================================================
 
@@ -13703,7 +14163,7 @@ Object.defineProperties(DKTools.Viewport.prototype, {
      *
      * @readonly
      * @type {PIXI.Graphics}
-     * @memberOf DKTools.Viewport
+     * @memberOf DKTools.Viewport.prototype
      */
     maskShape: {
         get: function() {
@@ -13721,7 +14181,7 @@ Object.defineProperties(DKTools.Viewport.prototype, {
  *
  * @return {String} Стандартная форма маски
  */
-DKTools.Viewport.prototype.standardShape = function() {
+DKTools.Viewport.prototype.standardMaskShape = function() {
     return 'rect';
 };
 
@@ -13732,16 +14192,16 @@ DKTools.Viewport.prototype.standardShape = function() {
  *
  * @override
  *
- * @param {Object} [object] - Объект типа {}
+ * @param {Object} [object] - Параметры
  *
  * @param {String} [object.maskShape] - Форма маски
  *
- * @see свойства object: DKTools.Sprite.prototype.setupAll
+ * @see DKTools.Sprite.prototype.setupAll
  */
 DKTools.Viewport.prototype.setupAll = function(object) {
     object = object || {};
     DKTools.Sprite.prototype.setupAll.call(this, object);
-    this.setupShape(object.maskShape);
+    this.setupMaskShape(object.maskShape);
 };
 
 /**
@@ -13749,7 +14209,7 @@ DKTools.Viewport.prototype.setupAll = function(object) {
  *
  * @param {String} [shape] - Форма маски
  */
-DKTools.Viewport.prototype.setupShape = function(shape) {
+DKTools.Viewport.prototype.setupMaskShape = function(shape) {
     /**
      * @readonly
      * @private
@@ -13768,22 +14228,28 @@ DKTools.Viewport.prototype.setupShape = function(shape) {
  *
  * @param {Object} [object] - Объект типа {}
  * @param {Boolean} [blockStart] - Блокировка вызова функции start
+ * @param {Boolean} [activate] - Активировать спрайт
  *
  * @param {String} [object.maskShape] - Форма маски
  *
- * @see свойства object: DKTools.Sprite.prototype.setAll
+ * @see DKTools.Sprite.prototype.setAll
  *
  * @return {Number} Количество измененных параметров
  */
-DKTools.Viewport.prototype.setAll = function(object, blockStart) {
+DKTools.Viewport.prototype.setAll = function(object, blockStart, activate) {
     object = object || {};
-    let block = true;
+    const block = true;
     let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
-    if (this.setShape(object.maskShape, block)) {
+    if (this.setMaskShape(object.maskShape, block)) {
         changed++;
     }
-    if (changed && !blockStart) {
-        this.start();
+    if (changed) {
+        if (!blockStart) {
+            this.start();
+        }
+        if (activate) {
+            this.activate();
+        }
     }
     return changed;
 };
@@ -13797,11 +14263,11 @@ DKTools.Viewport.prototype.setAll = function(object, blockStart) {
  *
  * @return {Boolean} Изменение произошло
  */
-DKTools.Viewport.prototype.setShape = function(shape, blockStart) {
+DKTools.Viewport.prototype.setMaskShape = function(shape, blockStart) {
     if (this._maskShape === shape) {
         return false;
     }
-    let lastShape = this._maskShape;
+    const lastShape = this._maskShape;
     this.setupShape(shape);
     if (this._maskShape === lastShape) {
         return false;
@@ -13831,29 +14297,27 @@ DKTools.Viewport.prototype.createMask = function() {
     let mask;
     switch (this._maskShape) {
         case 'rect':
-            mask = this.rectMask();
+            mask = this.getRectMask();
             break;
         case 'circle':
-            mask = this.circleMask();
+            mask = this.getCircleMask();
             break;
         case 'ellipse':
-            mask = this.ellipseMask();
+            mask = this.getEllipseMask();
             break;
         default:
-            mask = this.customMask(this._maskShape);
+            mask = this.getCustomMask(this._maskShape);
             break;
     }
     this.mask = mask;
 };
 
-// mask methods
-
-// TODO: переименовать с get
+// get methods
 
 /**
  * @returns {PIXI.Graphics}
  */
-DKTools.Viewport.prototype.rectMask = function() {
+DKTools.Viewport.prototype.getRectMask = function() {
     let mask = new PIXI.Graphics();
     mask.beginFill();
     mask.drawRect(this.x, this.y, this.bitmap.width, this.bitmap.height);
@@ -13864,7 +14328,7 @@ DKTools.Viewport.prototype.rectMask = function() {
 /**
  * @returns {PIXI.Graphics}
  */
-DKTools.Viewport.prototype.circleMask = function() {
+DKTools.Viewport.prototype.getCircleMask = function() {
     let mask = new PIXI.Graphics();
 
     mask.beginFill();
@@ -13881,7 +14345,7 @@ DKTools.Viewport.prototype.circleMask = function() {
 /**
  * @returns {PIXI.Graphics}
  */
-DKTools.Viewport.prototype.ellipseMask = function() {
+DKTools.Viewport.prototype.getEllipseMask = function() {
     let mask = new PIXI.Graphics();
     mask.beginFill();
 
@@ -13898,7 +14362,7 @@ DKTools.Viewport.prototype.ellipseMask = function() {
 /**
  * @returns {PIXI.Graphics | null}
  */
-DKTools.Viewport.prototype.customMask = function(maskShape) {
+DKTools.Viewport.prototype.getCustomMask = function(maskShape) {
     // to be overriden by plugins
     return null;
 };
@@ -13918,13 +14382,13 @@ DKTools.Layout.prototype.constructor = DKTools.Layout;
 
 Object.defineProperties(DKTools.Layout.prototype, {
 
-    items: {
-        get: function() {
-            return this._items;
-        },
-        configurable: true
-    },
-
+    /**
+     * Количество столбцов
+     *
+     * @readonly
+     * @type {Number}
+     * @memberOf DKTools.Layout.prototype
+     */
     maxCols: {
         get: function () {
             return this._maxCols;
@@ -13932,6 +14396,23 @@ Object.defineProperties(DKTools.Layout.prototype, {
         configurable: true
     },
 
+    /**
+     * @readonly
+     * @type {DKTools.Sprite[]}
+     * @memberOf DKTools.Layout.prototype
+     */
+    items: {
+        get: function() {
+            return this._items;
+        },
+        configurable: true
+    },
+
+    /**
+     * @readonly
+     * @type {Function | Number}
+     * @memberOf DKTools.Layout.prototype
+     */
     rowHeight: {
         get: function () {
             return this._rowHeight;
@@ -13939,6 +14420,11 @@ Object.defineProperties(DKTools.Layout.prototype, {
         configurable: true
     },
 
+    /**
+     * @readonly
+     * @type {Function | Number}
+     * @memberOf DKTools.Layout.prototype
+     */
     colWidth: {
         get: function () {
             return this._colWidth;
@@ -13946,6 +14432,11 @@ Object.defineProperties(DKTools.Layout.prototype, {
         configurable: true
     },
 
+    /**
+     * @readonly
+     * @type {Number}
+     * @memberOf DKTools.Layout.prototype
+     */
     horizontalSpacing: {
         get: function () {
             return this._horizontalSpacing;
@@ -13953,6 +14444,11 @@ Object.defineProperties(DKTools.Layout.prototype, {
         configurable: true
     },
 
+    /**
+     * @readonly
+     * @type {Number}
+     * @memberOf DKTools.Layout.prototype
+     */
     verticalSpacing: {
         get: function () {
             return this._verticalSpacing;
@@ -13960,6 +14456,11 @@ Object.defineProperties(DKTools.Layout.prototype, {
         configurable: true
     },
 
+    /**
+     * @readonly
+     * @type {Boolean}
+     * @memberOf DKTools.Layout.prototype
+     */
     reversed: {
         get: function () {
             return this._reversed;
@@ -14016,10 +14517,15 @@ DKTools.Layout.prototype._clearItems = function() {
 
 /**
  * Очищает список элементов контейнера
+ *
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
  */
-DKTools.Layout.prototype.clearItems = function() {
-    this.removeItemsAsChildren();
+DKTools.Layout.prototype.clearItems = function(blockStart) {
+    this.removeAllItemsAsChildren();
     this._clearItems();
+    if (!blockStart) {
+        this.start();
+    }
 };
 
 // standard methods
@@ -14035,35 +14541,12 @@ DKTools.Layout.prototype.standardActive = function() {
 };
 
 /**
- * Возвращает стандартный список элементов контейнера
- *
- * @returns {Array} Стандартный список элементов контейнера
-*/
-DKTools.Layout.prototype.standardItems = function() {
-	return [];
-};
-
-/**
  * Возвращает стандартное количество столбцов
  *
  * @returns {Number} Стандартное количество столбцов
  */
 DKTools.Layout.prototype.standardMaxCols = function() {
     return 1;
-};
-
-DKTools.Layout.prototype.standardRowHeight = function() {
-    return function(row) {
-        let items = this.getItemsInRow(row);
-        return _.max(_.map(items, 'height'));
-    }.bind(this);
-};
-
-DKTools.Layout.prototype.standardColWidth = function() {
-    return function(col) {
-        let items = this.getItemsInCol(col);
-        return _.max(_.map(items, 'width'));
-    }.bind(this);
 };
 
 /**
@@ -14085,6 +14568,39 @@ DKTools.Layout.prototype.standardVerticalSpacing = function() {
 };
 
 /**
+ * Возвращает стандартный список элементов контейнера
+ *
+ * @returns {Array} Стандартный список элементов контейнера
+ */
+DKTools.Layout.prototype.standardItems = function() {
+    return [];
+};
+
+/**
+ * Возвращает стандартную высоту ряда
+ *
+ * @returns {Function}
+ */
+DKTools.Layout.prototype.standardRowHeight = function() {
+    return function(row) {
+        const items = this.getItemsInRow(row);
+        return _.max(_.map(items, 'height'));
+    }.bind(this);
+};
+
+/**
+ * Возвращает стандартную ширину столбца
+ *
+ * @returns {Function}
+ */
+DKTools.Layout.prototype.standardColWidth = function() {
+    return function(col) {
+        const items = this.getItemsInCol(col);
+        return _.max(_.map(items, 'width'));
+    }.bind(this);
+};
+
+/**
  * Возвращает стандартное обратное расположение элементов
  *
  * @returns {Boolean} Стандартное обратное расположение элементов
@@ -14100,37 +14616,27 @@ DKTools.Layout.prototype.standardReversed = function() {
  *
  * @override
  *
- * @param {Object} [object] - Объект типа {}
+ * @param {Object} [object] - Параметры
  *
- * @param {Array} [object.items] - Массив с элементами
  * @param {Number} [object.maxCols] - Количество столбцов
+ * @param {Array} [object.items] - Массив с элементами
+ * @param {Function | Number} [object.rowHeight] - Высота ряда
+ * @param {Function | Number} [object.colWidth] - Ширина столбца
  * @param {Number} [object.horizontalSpacing] - Отступ между элементами контейнера по оси X
  * @param {Number} [object.verticalSpacing] - Отступ между элементами контейнера по оси Y
  * @param {Boolean} [object.reversed] - Обратное расположение элементов
  *
- * @see object properties: DKTools.Sprite.prototype.setupAll
+ * @see DKTools.Sprite.prototype.setupAll
 */
 DKTools.Layout.prototype.setupAll = function(object) {
 	object = object || {};
 	DKTools.Sprite.prototype.setupAll.call(this, object);
-	this.setupItems(object.items);
     this.setupMaxCols(object.maxCols);
+    this.setupSpacing(object.horizontalSpacing, object.verticalSpacing);
+    this.setupItems(object.items);
     this.setupRowHeight(object.rowHeight);
     this.setupColWidth(object.colWidth);
-    this.setupSpacing(object.horizontalSpacing, object.verticalSpacing);
     this.setupReversed(object.reversed);
-};
-
-/**
- * Устанавливает элементы контейнера
- *
- * @param {Array} items - Массив с элементами контейнера
-*/
-DKTools.Layout.prototype.setupItems = function(items) {
-    items = items || this.standardItems();
-    _.forEach(items, function(item) {
-        this._items.push(item);
-    }.bind(this));
 };
 
 /**
@@ -14140,19 +14646,13 @@ DKTools.Layout.prototype.setupItems = function(items) {
  */
 DKTools.Layout.prototype.setupMaxCols = function(cols) {
     /**
+     * Количество столбцов
+     *
      * @private
      * @readonly
      * @type {Number}
      */
     this._maxCols = (cols == null ? this.standardMaxCols() : cols);
-};
-
-DKTools.Layout.prototype.setupRowHeight = function(rowHeight) {
-    this._rowHeight = rowHeight || this.standardRowHeight();
-};
-
-DKTools.Layout.prototype.setupColWidth = function(colWidth) {
-    this._colWidth = colWidth || this.standardColWidth();
 };
 
 /**
@@ -14195,6 +14695,50 @@ DKTools.Layout.prototype.setupSpacing = function(horizontalSpacing, verticalSpac
 };
 
 /**
+ * Устанавливает элементы контейнера
+ *
+ * @param {Array} items - Массив с элементами контейнера
+ */
+DKTools.Layout.prototype.setupItems = function(items) {
+    items = items || this.standardItems();
+    _.forEach(items, function(item) {
+        this._items.push(item);
+    }.bind(this));
+};
+
+/**
+ * Устанавливает высоту ряда
+ *
+ * @param {Function | Number} [rowHeight] - Высота ряда
+ */
+DKTools.Layout.prototype.setupRowHeight = function(rowHeight) {
+    /**
+     * Высота ряда
+     *
+     * @private
+     * @readonly
+     * @type {Function | Number}
+     */
+    this._rowHeight = rowHeight || this.standardRowHeight();
+};
+
+/**
+ * Устанавливает ширину столбца
+ *
+ * @param {Function | Number} [colWidth] - Ширина столбца
+ */
+DKTools.Layout.prototype.setupColWidth = function(colWidth) {
+    /**
+     * Высота столбца
+     *
+     * @private
+     * @readonly
+     * @type {Function | Number}
+     */
+    this._colWidth = colWidth || this.standardColWidth();
+};
+
+/**
  *
  *
  * @param {Boolean} [reversed] -
@@ -14216,30 +14760,38 @@ DKTools.Layout.prototype.setupReversed = function(reversed) {
  *
  * @override
  *
- * @param {Object} [object] - Объект типа {}
+ * @param {Object} [object] - Параметры
  * @param {Boolean} [blockStart] - Блокировка вызова функции start
  *
- * @param {Array} [object.items] - Массив с элементами
  * @param {Number} [object.maxCols] - Количество столбцов
- * @param {Number} [object.horizontalSpacing] - Отступ между элементами контейнера по оси X
- * @param {Number} [object.verticalSpacing] - Отступ между элементами контейнера по оси Y
+ * @param {Number} [object.horizontalSpacing] - Горизонтальный интервал между элементами
+ * @param {Number} [object.verticalSpacing] - Вертикальный интервал между элементами контейнера
+ * @param {Array} [object.items] - Элементы
+ * @param {Function | Number} [object.rowHeight] - Высота ряда
+ * @param {Function | Number} [object.colWidth] - Ширина столбца
  * @param {Boolean} [object.reversed] -
  *
- * @see object properties: DKTools.Sprite.prototype.setupAll
+ * @see DKTools.Sprite.prototype.setupAll
  *
  * @return {Number} Количество измененных параметров
 */
 DKTools.Layout.prototype.setAll = function(object, blockStart) {
 	object = object || {};
-	let block = true;
+	const block = true;
 	let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
-	if (this.setItems(object.items, block)) {
-        changed++;
-    }
     if (this.setMaxCols(object.maxCols, block)) {
         changed++;
     }
     changed += this.setSpacing(object.horizontalSpacing, object.verticalSpacing, block);
+    if (this.setItems(object.items, block)) {
+        changed++;
+    }
+    if (this.setRowHeight(object.rowHeight, block)) {
+        changed++;
+    }
+    if (this.setColWidth(object.colWidth, block)) {
+        changed++;
+    }
     if (this.setReversed(object.reversed, block)) {
         changed++;
     }
@@ -14247,27 +14799,6 @@ DKTools.Layout.prototype.setAll = function(object, blockStart) {
         this.start();
     }
 	return changed;
-};
-
-/**
- * Изменяет список элементов контейнера
- * Возвращает true, если изменение произошло
- *
- * @param {Array} [items] - Массив элементов контейнера
- * @param {Boolean} [blockStart] - Блокировка вызова функции start
- *
- * @return {Boolean} Изменение произошло
-*/
-DKTools.Layout.prototype.setItems = function(items, blockStart) {
-	if (this._items == items) {
-        return false;
-    }
-	this.removeItemsAsChildren();
-	this.setupItems(items);
-	if (!blockStart) {
-        this.start();
-    }
-	return true;
 };
 
 /**
@@ -14353,8 +14884,8 @@ DKTools.Layout.prototype.setVerticalSpacing = function(scacing, blockStart) {
  * @return {Number} Количество измененных параметров
  */
 DKTools.Layout.prototype.setSpacing = function(horizontalSpacing, verticalSpacing, blockStart) {
+    const block = true;
     let changed = 0;
-    let block = true;
     if (this.setHorizontalSpacing(horizontalSpacing, block)) {
         changed++;
     }
@@ -14365,6 +14896,57 @@ DKTools.Layout.prototype.setSpacing = function(horizontalSpacing, verticalSpacin
         this.start();
     }
     return changed;
+};
+
+/**
+ * Изменяет список элементов контейнера
+ * Возвращает true, если изменение произошло
+ *
+ * @param {Array} [items] - Массив элементов контейнера
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
+ *
+ * @return {Boolean} Изменение произошло
+ */
+DKTools.Layout.prototype.setItems = function(items, blockStart) {
+    if (this._items == items) {
+        return false;
+    }
+    this.removeItemsAsChildren();
+    this.setupItems(items);
+    if (!blockStart) {
+        this.start();
+    }
+    return true;
+};
+
+DKTools.Layout.prototype.setRowHeight = function(rowHeight, blockStart) {
+    if (this._rowHeight === rowHeight) {
+        return false;
+    }
+    const lastHeight = this._rowHeight;
+    this.setupRowHeight(rowHeight);
+    if (this._rowHeight === lastHeight) {
+        return false;
+    }
+    if (!blockStart) {
+        this.start();
+    }
+    return true;
+};
+
+DKTools.Layout.prototype.setColWidth = function(colWidth, blockStart) {
+    if (this._colWidth === colWidth) {
+        return false;
+    }
+    const lastWidth = this._colWidth;
+    this.setupColWidth(colWidth);
+    if (this._colWidth === lastWidth) {
+        return false;
+    }
+    if (!blockStart) {
+        this.start();
+    }
+    return true;
 };
 
 /**
@@ -14393,6 +14975,11 @@ DKTools.Layout.prototype.setReversed = function(reversed, blockStart) {
 
 // start methods
 
+/**
+ * Запускает работу объекта
+ *
+ * @override
+ */
 DKTools.Layout.prototype.start = function() {
     this._started = true;
     if (this.isReady()) {
@@ -14425,13 +15012,13 @@ DKTools.Layout.prototype.createBitmap = function() {
 
 DKTools.Layout.prototype.removeAllChildren = function() {
     DKTools.Sprite.prototype.removeAllChildren.call(this);
-    this.removeItemsAsChildren();
+    this.removeAllItemsAsChildren();
 };
 
 /**
  * Удаляет элементы контейнера из обработки
  */
-DKTools.Layout.prototype.removeItemsAsChildren = function() {
+DKTools.Layout.prototype.removeAllItemsAsChildren = function() {
     this.removeChild.apply(this, this._items);
 };
 
@@ -14462,20 +15049,20 @@ DKTools.Layout.prototype.removeItems = function(items, blockStart) {
 };
 
 DKTools.Layout.prototype.removeItemByIndex = function(index, blockStart) {
-    this.removeItem(this.getItemByIndex(index), blockStart);
+    this.removeItem(this.getItem(index), blockStart);
 };
 
 // add methods
 
 DKTools.Layout.prototype.addAllChildren = function() {
     DKTools.Sprite.prototype.addAllChildren.call(this);
-    this.addItemsAsChildren();
+    this.addAllItemsAsChildren();
 };
 
 /**
  * Добавляет элементы контейнера в обработку
  */
-DKTools.Layout.prototype.addItemsAsChildren = function() {
+DKTools.Layout.prototype.addAllItemsAsChildren = function() {
     this.addChild.apply(this, this._items);
 };
 
@@ -14511,7 +15098,7 @@ DKTools.Layout.prototype.addItems = function(items, blockStart) {
 };
 
 DKTools.Layout.prototype.addCol = function() {
-    this.setMaxCols(this._maxCols + 1);
+    this.setMaxCols(this.getMaxCols() + 1);
 };
 
 // get methods
@@ -14541,10 +15128,6 @@ DKTools.Layout.prototype.getLayoutHeight = function() {
     return height - this._verticalSpacing;
 };
 
-DKTools.Layout.prototype.getMaxItems = function() {
-    return this._items.length;
-};
-
 /**
  * Возвращает максимальное количество рядов
  *
@@ -14563,7 +15146,189 @@ DKTools.Layout.prototype.getMaxCols = function() {
     return this._maxCols;
 };
 
-// uncategorized methods
+/**
+ * Возвращает все элементы контейнера
+ *
+ * @return {Array} Все элементы контейнера
+ */
+DKTools.Layout.prototype.getItems = function() {
+    if (this.isReversed()) {
+        return _.reverse(_.clone(this._items));
+    }
+    return this._items;
+};
+
+DKTools.Layout.prototype.getMaxItems = function() {
+    return this._items.length;
+};
+
+/**
+ * Возвращает индекс элемента в контейнере
+ *
+ * @param {DKToolsSprite} item
+ * @return {Number} Индекс элемента в контейнере
+ */
+DKTools.Layout.prototype.getItemIndex = function(item) {
+    return _.indexOf(this.getItems(), item);
+};
+
+DKTools.Layout.prototype.getItem = function(index) {
+    return this.getItems()[index];
+};
+
+/**
+ * Возвращает массив с элементами ряда
+ *
+ * @param {Number} row - Номер ряда
+ * @return {Array} Массив с элементами ряда
+ */
+DKTools.Layout.prototype.getItemsInRow = function(row) {
+    const items = [];
+    const maxCols = this.getMaxCols();
+    if (row < 1 || row > this.getMaxRows()) {
+        return items;
+    }
+    const startIndex = maxCols * (row - 1);
+    for(let i = 0; i < maxCols; i++) {
+        const item = this.getItem(startIndex + i);
+        items.push(item);
+    }
+    return items;
+};
+
+/**
+ * Возвращает массив с элементами столбца
+ *
+ * @param {Number} col - Номер столбца
+ * @return {Array} Массив с элементами столбца
+ */
+DKTools.Layout.prototype.getItemsInCol = function(col) {
+    const items = [];
+    const maxRows = this.getMaxRows();
+    const maxCols = this.getMaxCols();
+    if (col < 1 || col > maxCols) {
+        return items;
+    }
+    const startIndex = col - 1;
+    for(let i = 0; i < maxRows; i++) {
+        const item = this.getItem(startIndex + maxCols * i);
+        items.push(item);
+    }
+    return items;
+};
+
+/**
+ *
+ * @param {Number} row - Ряд
+ * @returns {Number}
+ */
+DKTools.Layout.prototype.getRowHeight = function(row) {
+    if (_.isFunction(this._rowHeight)) {
+        return this._rowHeight(row);
+    }
+    return this._rowHeight;
+};
+
+/**
+ * @param {Number} col - Столбец
+ * @returns {Number}
+ */
+DKTools.Layout.prototype.getColWidth = function(col) {
+    if (_.isFunction(this._colWidth)) {
+        return this._colWidth(col);
+    }
+    return this._colWidth;
+};
+
+/**
+ * Возвращает координату Y начала ряда
+ *
+ * @param {Number} row - Ряд
+ * @return {Number} Координату Y начала ряда
+ */
+DKTools.Layout.prototype.getRowY = function(row) {
+    let y = 0;
+    for(let i = 1; i < row; i++) {
+        y += this.getRowHeight(i) + this._verticalSpacing;
+    }
+    return y;
+};
+
+/**
+ * Возвращает координату X начала столбца
+ *
+ * @param {Number} col - Номер столбца
+ * @return {Number} Координату X начала столбца
+ */
+DKTools.Layout.prototype.getColX = function(col) {
+    let x = 0;
+    for(let i = 1; i < col; i++) {
+        x += this.getColWidth(i) + this._horizontalSpacing;
+    }
+    return x;
+};
+
+/**
+ * Возвращает номер строки элемента контейнера
+ *
+ * @param {DKTools.Sprite} item - Элемент контейнера
+ * @return {Number} Номер строки элемента контейнера
+ */
+DKTools.Layout.prototype.getItemRow = function(item) {
+    const index = this.getItemIndex(item);
+    if (index >= 0) {
+        return Math.floor(index / this.getMaxCols()) + 1;
+    }
+    return -1;
+};
+
+/**
+ * Возвращает номер столбца элемента контейнера
+ *
+ * @param {DKTools.Sprite} item - Элемент контейнера
+ * @return {Number} Номер столбца элемента контейнера
+ */
+DKTools.Layout.prototype.getItemCol = function(item) {
+    const index = this.getItemIndex(item);
+    if (index >= 0) {
+        return (index % this.getMaxCols()) + 1;
+    }
+    return -1;
+};
+
+DKTools.Layout.prototype.getCell = function(row, col) {
+    const index = this.getMaxCols() * (row - 1) + (col - 1);
+    return {
+        item: this.getItem(index),
+        x: this.getColX(col),
+        y: this.getRowY(row),
+        width: this.getColWidth(col),
+        height: this.getRowHeight(row)
+    };
+};
+
+// move methods
+
+/**
+ * Перемещает элемент
+ *
+ * @param {Number} index
+ * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - Координата X или Позиция
+ * @param {Number} [y] - Координата Y
+ *
+ * @param {Number} [object.x] - Координата X
+ * @param {Number | String} [object.y] - Координата Y
+ *
+ * @see DKTools.Base.prototype.move
+ */
+DKTools.Layout.prototype.moveItem = function(index, object, y) {
+    const item = this.getItem(index);
+    if (item) {
+        item.move(object, y);
+    }
+};
+
+// reverse methods
 
 /**
  * Меняет порядок расположения элементов на обратный
@@ -14625,18 +15390,6 @@ DKTools.Layout.prototype.hasItem = function(item) {
 // items methods
 
 /**
- * Возвращает все элементы контейнера
- *
- * @return {Array} Все элементы контейнера
- */
-DKTools.Layout.prototype.getItems = function() {
-    if (this.isReversed()) {
-        return _.reverse(_.clone(this._items));
-    }
-    return this._items;
-};
-
-/**
  * Выполняет callback функцию для каждого элемента
  *
  * @param {Function} callback - Функция обработки для каждого элемента контейнера
@@ -14650,26 +15403,12 @@ DKTools.Layout.prototype.iterateItems = function(callback, start) {
 };
 
 /**
- * Возвращает индекс элемента в контейнере
- *
- * @param {DKToolsSprite} item
- * @return {Number} Индекс элемента в контейнере
- */
-DKTools.Layout.prototype.getItemIndex = function(item) {
-    return _.indexOf(this.getItems(), item);
-};
-
-DKTools.Layout.prototype.getItemByIndex = function(index) {
-    return this.getItems()[index];
-};
-
-/**
  * Вызывает функцию start у всех элементов контейнера
  *
  * @param {Boolean} [blockStart] - Блокировка вызова функции start контейнера
 */
 DKTools.Layout.prototype.startItems = function(activate, blockStart) {
-	let callback = function(item) {
+    const callback = function(item) {
         item.start(activate);
     };
 	this.iterateItems(callback, !blockStart);
@@ -14690,7 +15429,7 @@ DKTools.Layout.prototype.resizeItem = function(item, width, height, blockStart) 
 };
 
 DKTools.Layout.prototype.resizeItemByIndex = function(index, width, height, blockStart) {
-    this.resizeItem(this.getItemByIndex(index), width, height, blockStart);
+    this.resizeItem(this.getItem(index), width, height, blockStart);
 };
 
 /**
@@ -14701,7 +15440,7 @@ DKTools.Layout.prototype.resizeItemByIndex = function(index, width, height, bloc
  * @param {Boolean} [blockStart] - Блокировка вызова функции start контейнера
 */
 DKTools.Layout.prototype.resizeItems = function(width, height, blockStart) {
-	let callback = function(item) {
+    const callback = function(item) {
         this.resizeItem(item, width, height, true);
     }.bind(this);
 	this.iterateItems(callback, !blockStart);
@@ -14713,7 +15452,7 @@ DKTools.Layout.prototype.resizeItems = function(width, height, blockStart) {
  * @param {Boolean} [start] - Вызов функции start контейнера
 */
 DKTools.Layout.prototype.activateItems = function(start) {
-    let callback = function(item) {
+    const callback = function(item) {
         item.activate();
     };
     this.iterateItems(callback, start);
@@ -14725,7 +15464,7 @@ DKTools.Layout.prototype.activateItems = function(start) {
  * @param {Boolean} [start] - Вызов функции start контейнера
 */
 DKTools.Layout.prototype.deactivateItems = function(start) {
-    let callback = function(item) {
+    const callback = function(item) {
         item.deactivate();
     };
     this.iterateItems(callback, start);
@@ -14738,7 +15477,7 @@ DKTools.Layout.prototype.deactivateItems = function(start) {
  * @param {Boolean} [start] - Вызов функции start контейнера
  */
 DKTools.Layout.prototype.showItems = function(activate, start) {
-    let callback = function(item) {
+    const callback = function(item) {
         item.show(activate);
     };
     this.iterateItems(callback, start);
@@ -14751,142 +15490,10 @@ DKTools.Layout.prototype.showItems = function(activate, start) {
  * @param {Boolean} [start] - Вызов функции start контейнера
  */
 DKTools.Layout.prototype.hideItems = function(blockDeactivate, start) {
-    let callback = function(item) {
+    const callback = function(item) {
         item.hide(blockDeactivate);
     };
     this.iterateItems(callback, start);
-};
-
-/**
- * Возвращает массив с элементами ряда
- *
- * @param {Number} row - Номер ряда
- * @return {Array} Массив с элементами ряда
- */
-DKTools.Layout.prototype.getItemsInRow = function(row) {
-    let items = [];
-    let getMaxRows = this.getMaxRows();
-    let getMaxCols = this.getMaxCols();
-    if (row < 1 || row > getMaxRows) {
-        return items;
-    }
-    let startIndex = getMaxCols * (row - 1);
-    for(var i = 0; i < getMaxCols; i++) {
-        let item = this.getItemByIndex(startIndex + i);
-        items.push(item);
-    }
-    return items;
-};
-
-/**
- * Возвращает массив с элементами столбца
- *
- * @param {Number} col - Номер столбца
- * @return {Array} Массив с элементами столбца
- */
-DKTools.Layout.prototype.getItemsInCol = function(col) {
-    let items = [];
-    let getMaxRows = this.getMaxRows();
-    let getMaxCols = this.getMaxCols();
-    if (col < 1 || col > getMaxCols) {
-        return items;
-    }
-    let startIndex = col - 1;
-    for(var i = 0; i < getMaxRows; i++) {
-        let item = this.getItemByIndex(startIndex + getMaxCols * i);
-        items.push(item);
-    }
-    return items;
-};
-
-/**
- *
- * @param {Number} row - Ряд
- * @returns {Number}
- */
-DKTools.Layout.prototype.getRowHeight = function(row) {
-    if (_.isFunction(this._rowHeight)) {
-        return this._rowHeight(row);
-    }
-    return this._rowHeight;
-};
-
-/**
- * @param {Number} col - Столбец
- * @returns {Number}
- */
-DKTools.Layout.prototype.getColWidth = function(col) {
-    if (_.isFunction(this._colWidth)) {
-        return this._colWidth(col);
-    }
-    return this._colWidth;
-};
-
-/**
- * Возвращает координату Y начала ряда
- *
- * @param {Number} row - Ряд
- * @return {Number} Координату Y начала ряда
- */
-DKTools.Layout.prototype.getRowY = function(row) {
-    let y = 0;
-    for(var i = 1; i < row; i++) {
-        y += this.getRowHeight(i) + this._verticalSpacing;
-    }
-    return y;
-};
-
-/**
- * Возвращает координату X начала столбца
- *
- * @param {Number} col - Номер столбца
- * @return {Number} Координату X начала столбца
- */
-DKTools.Layout.prototype.getColX = function(col) {
-    let x = 0;
-    for(var i = 1; i < col; i++) {
-        x += this.getColWidth(i) + this._horizontalSpacing;
-    }
-    return x;
-};
-
-/**
- * Возвращает номер строки элемента контейнера
- *
- * @param {DKToolsSprite} item - Элемент контейнера
- * @return {Number} Номер строки элемента контейнера
- */
-DKTools.Layout.prototype.getItemRow = function(item) {
-    let index = this.getItemIndex(item);
-    if (index >= 0) {
-        return Math.floor(index / this.getMaxCols()) + 1;
-    }
-    return -1;
-};
-
-/**
- * Возвращает номер столбца элемента контейнера
- *
- * @param {DKToolsSprite} item - Элемент контейнера
- * @return {Number} Номер столбца элемента контейнера
- */
-DKTools.Layout.prototype.getItemCol = function(item) {
-    let index = this.getItemIndex(item);
-    if (index >= 0) {
-        return (index % this.getMaxCols()) + 1;
-    }
-    return -1;
-};
-
-DKTools.Layout.prototype.getCell = function(row, col) {
-    let index = this.getMaxCols() * (row - 1) + (col - 1);
-    return {
-        item: this.getItemByIndex(index),
-        x: this.getColX(col),
-        y: this.getRowY(row),
-        width: this.getColWidth(col),
-        height: this.getRowHeight(row)
-    };
 };
 
 // align methods
@@ -14898,12 +15505,12 @@ DKTools.Layout.prototype.getCell = function(row, col) {
  */
 DKTools.Layout.prototype.alignItem = function(item) {
     if (this.isReady()) {
-        let itemRow = this.getItemRow(item);
-        let itemCol = this.getItemCol(item);
-        let rowHeight = this.getRowHeight(itemRow);
-        let colWidth = this.getColWidth(itemCol);
-        let x = this.getColX(itemCol) + (colWidth - item.width) / 2;
-        let y = this.getRowY(itemRow) + (rowHeight - item.height) / 2;
+        const itemRow = this.getItemRow(item);
+        const itemCol = this.getItemCol(item);
+        const rowHeight = this.getRowHeight(itemRow);
+        const colWidth = this.getColWidth(itemCol);
+        const x = this.getColX(itemCol) + (colWidth - item.width) / 2;
+        const y = this.getRowY(itemRow) + (rowHeight - item.height) / 2;
         item.move(x, y);
     } else {
         this.addOneTimeEvent({
@@ -14919,7 +15526,7 @@ DKTools.Layout.prototype.alignItem = function(item) {
  * @param {Number} row - Номер строки
  */
 DKTools.Layout.prototype.alignRow = function(row) {
-    let items = this.getItemsInRow(row);
+    const items = this.getItemsInRow(row);
     _.forEach(items, this.alignItem.bind(this));
 };
 
@@ -14929,7 +15536,7 @@ DKTools.Layout.prototype.alignRow = function(row) {
  * @param {Number} col - Номер столбца
  */
 DKTools.Layout.prototype.alignCol = function(col) {
-    let items = this.getItemsInCol(col);
+    const items = this.getItemsInCol(col);
     _.forEach(items, this.alignItem.bind(this));
 };
 
@@ -14947,6 +15554,11 @@ DKTools.Layout.prototype.alignItems = function() {
 
 // update methods
 
+/**
+ * Обновляет все
+ *
+ * @override
+ */
 DKTools.Layout.prototype.updateAll = function() {
     DKTools.Sprite.prototype.updateAll.call(this);
     this.updateLayout();
@@ -14956,18 +15568,15 @@ DKTools.Layout.prototype.updateAll = function() {
  * Обновляет расположение элементов в контейнере
 */
 DKTools.Layout.prototype.updateLayout = function() {
-    let getMaxRows = this.getMaxRows();
-    let getMaxCols = this.getMaxCols();
+    const maxItems = this.getMaxItems();
+    const maxRows = this.getMaxRows();
+    const maxCols = this.getMaxCols();
     let index = 0;
-    for(var i = 1; i <= getMaxRows; i++) {
-        for(var j = 1; j <= getMaxCols; j++) {
-            let item = this.getItemByIndex(index++);
-            let x = this.getColX(j);
-            let y = this.getRowY(i);
-            item.move(x, y);
-            if (this._items.length === index) {
-                return;
-            }
+    for(let i = 1; i <= maxRows && index < maxItems; i++) {
+        for(let j = 1; j <= maxCols && index < maxItems; j++) {
+            const x = this.getColX(j);
+            const y = this.getRowY(i);
+            this.moveItem(index++, x, y);
         }
     }
 };
@@ -15003,38 +15612,11 @@ Object.defineProperties(DKTools.Window.prototype, {
      *
      * @readonly
      * @type {Number}
-     * @memberOf DKTools.Window
+     * @memberOf DKTools.Window.prototype
      */
     realWidth: {
         get: function() {
             return this._width;
-        },
-        configurable: true
-    },
-
-    /**
-     * Реальная высота окна (без учета масштабирования)
-     *
-     * @readonly
-     * @type {Number}
-     * @memberOf DKTools.Window
-     */
-    realHeight: {
-        get: function() {
-            return this._height;
-        },
-        configurable: true
-    },
-
-    /**
-     * Ширина окна (с учетом масштабирования)
-     *
-     * @type {Number}
-     * @memberOf DKTools.Window
-     */
-    width: {
-        get: function() {
-            return this.realWidth * this.scale.x;
         },
         set: function(value) {
             this._width = value;
@@ -15044,14 +15626,15 @@ Object.defineProperties(DKTools.Window.prototype, {
     },
 
     /**
-     * Высота окна (с учетом масштабирования)
+     * Реальная высота окна (без учета масштабирования)
      *
+     * @readonly
      * @type {Number}
-     * @memberOf DKTools.Window
+     * @memberOf DKTools.Window.prototype
      */
-    height: {
+    realHeight: {
         get: function() {
-            return this.realHeight * this.scale.y;
+            return this._height;
         },
         set: function(value) {
             this._height = value;
@@ -15061,9 +15644,43 @@ Object.defineProperties(DKTools.Window.prototype, {
     },
 
     /**
+     * Ширина окна (с учетом масштабирования)
+     *
+     * @type {Number}
+     * @memberOf DKTools.Window.prototype
+     */
+    width: {
+        get: function() {
+            return this.realWidth * this.scale.x;
+        },
+        set: function(value) {
+            this._width = Math.floor(value / this.scale.x);
+            this._refreshAllParts();
+        },
+        configurable: true
+    },
+
+    /**
+     * Высота окна (с учетом масштабирования)
+     *
+     * @type {Number}
+     * @memberOf DKTools.Window.prototype
+     */
+    height: {
+        get: function() {
+            return this.realHeight * this.scale.y;
+        },
+        set: function(value) {
+            this._height = Math.floor(value / this.scale.y);
+            this._refreshAllParts();
+        },
+        configurable: true
+    },
+
+    /**
      * @readonly
      * @type {Point}
-     * @memberOf DKTools.Window
+     * @memberOf DKTools.Window.prototype
      */
     origin: {
         get: function() {
@@ -15073,24 +15690,10 @@ Object.defineProperties(DKTools.Window.prototype, {
     },
 
     /**
-     * Прозрачность
-     *
-     * @readonly
-     * @type {Object}
-     * @memberOf DKTools.Window
-     */
-    opacity: {
-        get: function() {
-            return this._opacity;
-        },
-        configurable: true
-    },
-
-    /**
      * Прозрачность окна
      *
      * @type {Number}
-     * @memberOf DKTools.Window
+     * @memberOf DKTools.Window.prototype
      */
     windowOpacity: {
         get: function() {
@@ -15106,7 +15709,7 @@ Object.defineProperties(DKTools.Window.prototype, {
      * Прозрачность рамки окна
      *
      * @type {Number}
-     * @memberOf DKTools.Window
+     * @memberOf DKTools.Window.prototype
      */
     frameOpacity: {
         get: function() {
@@ -15119,11 +15722,25 @@ Object.defineProperties(DKTools.Window.prototype, {
     },
 
     /**
+     * Прозрачность окна
+     *
+     * @readonly
+     * @type {Object}
+     * @memberOf DKTools.Window.prototype
+     */
+    opacity: {
+        get: function() {
+            return this._opacity;
+        },
+        configurable: true
+    },
+
+    /**
      * Тон окна
      *
      * @readonly
      * @type {Number[]}
-     * @memberOf DKTools.Window
+     * @memberOf DKTools.Window.prototype
      */
     tone: {
         get: function() {
@@ -15137,7 +15754,7 @@ Object.defineProperties(DKTools.Window.prototype, {
      *
      * @readonly
      * @type {DKTools.Sprite}
-     * @memberOf DKTools.Window
+     * @memberOf DKTools.Window.prototype
      */
     contentsSprite: {
         get: function() {
@@ -15151,7 +15768,7 @@ Object.defineProperties(DKTools.Window.prototype, {
      *
      * @readonly
      * @type {Sprite}
-     * @memberOf DKTools.Window
+     * @memberOf DKTools.Window.prototype
      */
     frameSprite: {
         get: function() {
@@ -15165,7 +15782,7 @@ Object.defineProperties(DKTools.Window.prototype, {
      *
      * @readonly
      * @type {Sprite}
-     * @memberOf DKTools.Window
+     * @memberOf DKTools.Window.prototype
      */
     backSprite: {
         get: function() {
@@ -15179,7 +15796,7 @@ Object.defineProperties(DKTools.Window.prototype, {
      * Для поддержки функций из DKTools.Base
      *
      * @type {Bitmap}
-     * @memberOf DKTools.Window
+     * @memberOf DKTools.Window.prototype
      */
     bitmap: {
         get: function() {
@@ -15229,7 +15846,6 @@ DKTools.Window.prototype._clearAll = function() {
     this._clearMargin();
     this._clearColorTone();
     this._clearOrigin();
-
     this._clearArrows();
 };
 
@@ -15693,10 +16309,9 @@ DKTools.Window.prototype.setupAll = function(object) {
     object = object || {};
     DKTools.Base.prototype.setupAll.call(this, object);
 
-    // TODO: протестировать
     let contentsSprite = object.contentsSprite;
     if (object instanceof DKTools.Window && contentsSprite instanceof DKTools.Sprite) {
-        contentsSprite = contentsSprite.clone(true);
+        contentsSprite = contentsSprite.clone({ blockStart: true });
     }
     this.setupContentsWidth(object.contentsWidth);
     this.setupContentsHeight(object.contentsHeight);
@@ -15712,16 +16327,19 @@ DKTools.Window.prototype.setupAll = function(object) {
  * @param {Number} [width] - Ширина окна
  */
 DKTools.Window.prototype.setupWidth = function(width) {
-    this.width = this._checkWidth(width);
+    this.realWidth = this._checkWidth(width);
 };
 
 /**
  * Устанавливает высоту окна
  *
- * @param {Number} [height] - Высота окна
+ * @param {Number | String} [height] - Высота окна
  */
 DKTools.Window.prototype.setupHeight = function(height) {
-    this.height = this._checkHeight(height);
+    if (_.isString(height)) {
+        height = this.getLineHeight() * Number(height);
+    }
+    this.realHeight = this._checkHeight(height);
 };
 
 /**
@@ -15831,9 +16449,11 @@ DKTools.Window.prototype.setupTone = function(tone) {
  *
  * @override
  *
- * @param {Object} [object] - Объект типа {}
+ * @param {Object} [object] - Параметры
+ * @param {Boolean} [blockStart] - Блокировка вызова функции start
+ * @param {Boolean} [activate] - Активировать окно
  *
- * @param {Object} [object.opacity] - Прозрачность
+ * @param {Object} [object.opacity] - Прозрачность окна
  * @param {Number[]} [object.tone] - Тон окна
  *
  * @param {Number} [object.windowOpacity] - Прозрачность окна
@@ -15841,22 +16461,27 @@ DKTools.Window.prototype.setupTone = function(tone) {
  * @param {Number} [object.frameOpacity] - Прозрачность рамки окна
  * @param {Number} [object.backOpacity] - Прозрачность заднего фона окна
  *
- * @see свойства object: DKTools.Base.prototype.setAll
+ * @see DKTools.Base.prototype.setAll
  *
  * @return {Number} Количество измененных параметров
 */
 DKTools.Window.prototype.setAll = function(object, blockStart, activate) {
 	object = object || {};
-	let block = true;
-	let changed = DKTools.Base.prototype.setAll.call(this, object);
-	if (changed && !blockStart) {
-        this.start(activate);
-    }
+	const block = true;
+	let changed = DKTools.Base.prototype.setAll.call(this, object, block);
     if (this.setOpacity(object.opacity, block)) {
         changed++;
     }
     if (this.setTone(object.tone, block)) {
         changed++;
+    }
+    if (changed) {
+        if (!blockStart) {
+            this.start();
+        }
+        if (activate) {
+            this.activate();
+        }
     }
 	return changed;
 };
@@ -15892,7 +16517,10 @@ DKTools.Window.prototype.setContentsSprite = function(contentsSprite, blockStart
     this.setupContentsSprite(contentsSprite);
     this.addContentsSprite();
     if (!blockStart) {
-        this.start(activate);
+        this.start();
+    }
+    if (activate) {
+        this.activate();
     }
 };
 
@@ -16020,6 +16648,10 @@ DKTools.Window.prototype.getContentsSize = function() {
  */
 DKTools.Window.prototype.getArrow = function(id) {
     return _.find(this._arrows, { id: id });
+};
+
+DKTools.Window.prototype.getCurrentOpacity = function() {
+    return this.windowOpacity;
 };
 
 // needs create methods
@@ -16219,11 +16851,13 @@ DKTools.Window.prototype.checkSize = function() {
  *
  * @param {String} type
  * @param {*} id
+ * @param {Function} onUpdate
  * @param {PIXI.Point | Point | Object | Number} [object]
  * @param {Number} [y] - Координата Y
- * @return {DKTools.Sprite.Arrow}
+ *
+ * @returns {DKTools.Sprite.Arrow}
  */
-DKTools.Window.prototype.createArrow = function(type, id, object, y) {
+DKTools.Window.prototype.createArrow = function(type, id, onUpdate, object, y) {
     if (object instanceof Object) {
         return this.createArrow(type, id, object.x, object, y);
     }
@@ -16235,6 +16869,10 @@ DKTools.Window.prototype.createArrow = function(type, id, object, y) {
         arrowType: type
     });
     arrow.start();
+    arrow.addEvent({
+        type: 'update',
+        onUpdate: onUpdate
+    });
     this._arrows.push(arrow);
     this.addChild(arrow);
     return arrow;
@@ -16248,32 +16886,16 @@ DKTools.Window.prototype.createArrows = function() {
     const h = this._height;
     const q = 12;
     if (this.needsCreateUpArrowSprite()) {
-        const arrow = this.createArrow('up', 'up', w / 2, q);
-        arrow.addEvent({
-            type: 'update',
-            onUpdate: this.updateUpArrow.bind(this)
-        });
+        this.createArrow('up', 'up', this.updateUpArrow.bind(this), w / 2, q);
     }
     if (this.needsCreateDownArrowSprite()) {
-        const arrow = this.createArrow('down', 'down', w / 2, h - q);
-        arrow.addEvent({
-            type: 'update',
-            onUpdate: this.updateDownArrow.bind(this)
-        });
+        this.createArrow('down', 'down', this.updateDownArrow.bind(this), w / 2, h - q);
     }
     if (this.needsCreateLeftArrowSprite()) {
-        const arrow = this.createArrow('left', 'left', q, h / 2);
-        arrow.addEvent({
-            type: 'update',
-            onUpdate: this.updateLeftArrow.bind(this)
-        });
+        this.createArrow('left', 'left', this.updateLeftArrow.bind(this), q, h / 2);
     }
     if (this.needsCreateRightArrowSprite()) {
-        const arrow = this.createArrow('right', 'right', w - q, h / 2);
-        arrow.addEvent({
-            type: 'update',
-            onUpdate: this.updateRightArrow.bind(this)
-        });
+        this.createArrow('right', 'right', this.updateRightArrow.bind(this), w - q, h / 2);
     }
 };
 
@@ -16542,6 +17164,9 @@ DKTools.Window.prototype.deactivate = function() {
 DKTools.Window.prototype.resize = function(width, height, blockStart, activate) {
     width = (width == null ? this.getMinWidth() : width);
     height = (height == null ? this.getMinHeight() : height);
+    if (_.isString(height)) {
+        height = this.getLineHeight() * Number(height);
+    }
     if (this._width === width && this._height === height) {
         return false;
     }
@@ -16621,24 +17246,6 @@ DKTools.Window.prototype.reserveBitmap = function(object, filename, listener, hu
     return bitmap;
 };
 
-// reset methods
-
-/**
- * Сбрасывает шрифт текста
- *
- * @override
- */
-DKTools.Window.prototype.resetFontSettings = function() {
-};
-
-/**
- * Сбрасывает цвет текста
- *
- * @override
- */
-DKTools.Window.prototype.resetTextColor = function() {
-};
-
 // move methods
 
 /**
@@ -16702,7 +17309,6 @@ DKTools.Window.prototype._updatePauseSign = function() {
  */
 DKTools.Window.prototype.updateAll = function() {
     DKTools.Base.prototype.updateAll.call(this);
-    this.updateOpacity();
     this.updateTone();
     this.updateContents();
 };
@@ -16729,9 +17335,18 @@ DKTools.Window.prototype.updateTransform = function() {
 
 /**
  * Обновляет прозрачность окна
+ *
+ * @override
+ *
+ * @param {Object} [opacity] - Прозрачность окна
+ *
+ * @param {Number} [opacity.windowOpacity] - Прозрачность окна
+ * @param {Number} [opacity.contentsOpacity] - Прозрачность контента окна
+ * @param {Number} [opacity.frameOpacity] - Прозрачность рамки окна
+ * @param {Number} [opacity.backOpacity] - Прозрачность заднего фона окна
  */
-DKTools.Window.prototype.updateOpacity = function() {
-    var opacity = this.opacity;
+DKTools.Window.prototype.updateOpacity = function(opacity) {
+    opacity = opacity || this.opacity;
     if (this.hasSpriteContainer()) {
         this.windowOpacity = opacity.windowOpacity;
     }
@@ -16750,10 +17365,15 @@ DKTools.Window.prototype.updateOpacity = function() {
  * Обновляет тон окна
  *
  * @override
+ *
+ * @param {Number[]} [tone] - Тон окна
 */
-DKTools.Window.prototype.updateTone = function() {
+DKTools.Window.prototype.updateTone = function(tone) {
+    if (!tone) {
+        tone = this.tone;
+    }
     if (this.hasBackSprite()) {
-        Window.prototype.setTone.apply(this, this.tone);
+        Window.prototype.setTone.apply(this, tone);
     }
 };
 
@@ -16865,7 +17485,7 @@ DKTools.Window.Selectable.prototype.needsCreateArrowSprites = function() {
 DKTools.Window.Selectable.prototype.updateUpArrow = function(event) {
     if (this.hasContentsSprite()) {
         const contentsSprite = this._windowContentsSprite;
-        if (contentsSprite.isSelectable() && contentsSprite.isVertical()) {
+        if (this.isChild(contentsSprite) && contentsSprite.isVisible() && contentsSprite.isSelectable() && contentsSprite.isVertical()) {
             event.target.setVisible(contentsSprite.getTopRow() > 0);
         } else {
             event.target.setVisible(false);
@@ -16880,7 +17500,7 @@ DKTools.Window.Selectable.prototype.updateUpArrow = function(event) {
 DKTools.Window.Selectable.prototype.updateDownArrow = function(event) {
     if (this.hasContentsSprite()) {
         const contentsSprite = this._windowContentsSprite;
-        if (contentsSprite.isSelectable() && contentsSprite.isVertical()) {
+        if (this.isChild(contentsSprite) && contentsSprite.isVisible() && contentsSprite.isSelectable() && contentsSprite.isVertical()) {
             const topRow = contentsSprite.getTopRow();
             const maxTopRow = contentsSprite.getMaxTopRow();
             event.target.setVisible(maxTopRow > 0 && topRow < maxTopRow);
@@ -16897,7 +17517,7 @@ DKTools.Window.Selectable.prototype.updateDownArrow = function(event) {
 DKTools.Window.Selectable.prototype.updateLeftArrow = function(event) {
     if (this.hasContentsSprite()) {
         const contentsSprite = this._windowContentsSprite;
-        if (contentsSprite.isSelectable() && contentsSprite.isHorizontal()) {
+        if (this.isChild(contentsSprite) && contentsSprite.isVisible() && contentsSprite.isSelectable() && contentsSprite.isHorizontal()) {
             event.target.setVisible(contentsSprite.getTopCol() > 0);
         } else {
             event.target.setVisible(false);
@@ -16912,32 +17532,12 @@ DKTools.Window.Selectable.prototype.updateLeftArrow = function(event) {
 DKTools.Window.Selectable.prototype.updateRightArrow = function(event) {
     if (this.hasContentsSprite()) {
         const contentsSprite = this._windowContentsSprite;
-        if (contentsSprite.isSelectable() && contentsSprite.isHorizontal()) {
+        if (this.isChild(contentsSprite) && contentsSprite.isVisible() && contentsSprite.isSelectable() && contentsSprite.isHorizontal()) {
             const topCol = contentsSprite.getTopCol();
             const maxTopCol = contentsSprite.getMaxTopCol();
             event.target.setVisible(maxTopCol > 0 && topCol < maxTopCol);
         }
     }
-};
-
-
-
-
-
-//===========================================================================
-// DK Tools Window Tab
-//===========================================================================
-
-DKTools.Window.Tab.prototype = Object.create(DKTools.Window.prototype);
-DKTools.Window.Tab.prototype.constructor = DKTools.Window.Tab;
-
-// standard methods
-
-DKTools.Window.Tab.prototype.standardContentsSprite = function() {
-    return new DKTools.Sprite.Tab({
-        width: this.getContentsWidth(),
-        height: this.getContentsHeight()
-    });
 };
 
 
@@ -17152,292 +17752,4 @@ DKTools.Scene.prototype.updateChild = function(child) {
  */
 DKTools.Scene.prototype.iterateChildren = function(callback) {
     _.forEach(this.children, callback);
-};
-
-
-
-
-
-//===========================================================================
-// DKTools Updates
-//===========================================================================
-
-/**
- * @private
- * @readonly
- * @type {String}
- */
-DKTools.Updates._baseUrl = 'https://rmmv-plugins.herokuapp.com';
-
-DKTools.Updates._pages = {};
-
-DKTools.Updates.checkUpdates = function() {
-    this.loadStats(function() {
-        if (this.status === 200) {
-            SceneManager.push(DKTools.Updates.Scene);
-            SceneManager.prepareNextScene(JSON.parse(this.responseText));
-        }
-    });
-};
-
-DKTools.Updates.autoCheckUpdates = function() {
-    _.forEach(Imported, function(version, plugin) {
-        if (!_.isBoolean(version)) {
-            this.findPluginByNameFragment(plugin, function() {
-                if (this.status === 200) {
-                    const data = JSON.parse(this.responseText);
-
-                    DKTools.Updates.loadPluginVersion(data.ID, function() {
-                        if (this.status === 200) {
-                            const versionInfo = JSON.parse(this.responseText)[0];
-                            if (versionInfo.version.toString() < version.toString()) {
-                                // p(versionInfo.version);
-                            }
-                        }
-                    });
-                }
-            });
-        }
-
-    }.bind(this));
-};
-
-/**
- *
- * @param {Function} onload
- * @param {Number} [page=1] - Страница
- * @param {Function} [onerror]
- */
-DKTools.Updates.loadPage = function(onload, page, onerror) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', this._baseUrl + '/plugins?page=' + page || 1);
-    xhr.setRequestHeader('Cache-Control', 'no-cache');
-    xhr.overrideMimeType('application/json');
-    xhr.onload = onload.bind(xhr);
-    xhr.onerror = onerror || function() {
-        throw new Error('Failed to load page: ' + page);
-    }.bind(xhr);
-    xhr.send();
-};
-
-DKTools.Updates.loadStats = function(onload, pageSize, onerror) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://rmmv-plugins.herokuapp.com/plugins/stats');
-    xhr.setRequestHeader('Cache-Control', 'no-cache');
-    xhr.overrideMimeType('application/json');
-    xhr.onload = onload.bind(xhr);
-    xhr.onerror = onerror || function() {
-        throw new Error('Failed to load stats');
-    }.bind(xhr);
-    xhr.send('page_size=' + pageSize || DKToolsParam.get('Page Size'));
-};
-
-DKTools.Updates.loadPluginVersion = function(id, onload, onerror) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://rmmv-plugins.herokuapp.com/plugins/versions/' + id);
-    xhr.setRequestHeader('Cache-Control', 'no-cache');
-    xhr.overrideMimeType('application/json');
-    xhr.onload = onload.bind(xhr);
-    xhr.onerror = onerror || function() {
-        throw new Error('Failed to load plugin version with id: ' + id);
-    }.bind(xhr);
-    xhr.send();
-};
-
-/**
- *
- * @param {String} fragment
- * @param {Function} onload
- * @param {Function} [onerror]
- */
-DKTools.Updates.findPluginByNameFragment = function(fragment, onload, onerror) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://rmmv-plugins.herokuapp.com/plugins/findByNameFragment/' + fragment);
-    xhr.setRequestHeader('Cache-Control', 'no-cache');
-    xhr.overrideMimeType('application/json');
-    xhr.onload = onload.bind(xhr);
-    xhr.onerror = onerror || function() {
-        throw new Error('Failed to load plugin by name fragment:' + fragment);
-    }.bind(xhr);
-    xhr.send();
-};
-
-DKTools.Updates.findAllPluginsByNameFragment = function(fragment, onload, onerror) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', this._baseUrl + '/plugins');
-    xhr.setRequestHeader('Cache-Control', 'no-cache');
-    xhr.overrideMimeType('application/json');
-    xhr.onload = onload.bind(xhr);
-    xhr.onerror = onerror || function() {
-        throw new Error('Failed to load all plugins by name fragment:' + fragment);
-    }.bind(xhr);
-    xhr.send();
-};
-
-DKTools.Updates.loadTags = function(onload, onerror) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://rmmv-plugins.herokuapp.com/plugins/tags/');
-    xhr.setRequestHeader('Cache-Control', 'no-cache');
-    xhr.overrideMimeType('application/json');
-    xhr.onload = onload.bind(xhr);
-    xhr.onerror = onerror || function() {
-        throw new Error('Failed to load tags');
-    }.bind(xhr);
-    xhr.send();
-};
-
-
-
-
-
-//===========================================================================
-// DKTools Updates Scene
-//===========================================================================
-
-DKTools.Updates.Scene = function() {
-    this.initialize.apply(this, arguments);
-};
-
-DKTools.Updates.Scene.prototype = Object.create(DKTools.Scene.prototype);
-DKTools.Updates.Scene.prototype.constructor = DKTools.Updates.Scene;
-
-DKTools.Updates.Scene.prototype.prepare = function(stats) {
-    this._stats = stats;
-};
-
-// create methods
-
-DKTools.Updates.Scene.prototype.createAllWindows = function() {
-    this.createCommandWindow();
-};
-
-DKTools.Updates.Scene.prototype.createCommandWindow = function() {
-
-    const catalogContentsSprite = new DKTools.Sprite.Tab();
-    this._catalogContentsSprite = catalogContentsSprite;
-    const tabSprite = this._catalogContentsSprite.tabSprite;
-    tabSprite.setupFixedHorizontal(true);
-    tabSprite.setupMaxCols(10);
-    let items = [];
-    const _contents = new DKTools.Sprite.Selectable();
-    _contents.setupItemHeight(function() {
-        return this.getLineHeight() * 3;
-    }.bind(_contents));
-    _contents.setHandler('cancel', function() {
-        tabSprite.activate();
-    });
-    _.times(this._stats.pages, function(page) {
-        items.push({
-            name: page + 1,
-            symbol: 'ok',
-            handler: function() {
-                _contents.activate();
-            },
-            contents: _contents
-        });
-    });
-    tabSprite.setupItems(items);
-
-    this._commandWindow = new DKTools.Window.Tab(0, 0, Graphics.boxWidth, Graphics.boxHeight);
-    const contentsSprite = this._commandWindow.contentsSprite;
-
-    const categorySprite = contentsSprite.tabSprite;
-    categorySprite.setupFixedHorizontal(true);
-
-    catalogContentsSprite.addEvent({
-        type: 'selectTab',
-        onUpdate: function() {
-            const index = tabSprite.index + 1;
-            const items = DKTools.Updates._pages[index];
-            if (!items) {
-                DKTools.Updates.loadPage(function() {
-                    if (this.status === 200) {
-                        const data = JSON.parse(this.responseText);
-                        let items = [];
-                        _.forEach(data, function(plugin) {
-                            items.push({
-                                name: plugin.title
-                            });
-                        });
-                        const contents = catalogContentsSprite.getCurrentTabContents();
-                        if (contents) {
-                            contents.setItems(items);
-                        }
-                        DKTools.Updates._pages[index] = items;
-                    }
-                }, index);
-            } else {
-                const contents = catalogContentsSprite.getCurrentTabContents();
-                if (contents) {
-                    contents.setItems(items);
-                }
-            }
-
-        }.bind(this)
-    });
-
-    const width = contentsSprite.getContentsWidth();
-    const height = contentsSprite.getContentsHeight();
-
-    const catalogTab = this._catalogContentsSprite.tabSprite;
-    catalogTab.setupSize(width, '1');
-    catalogTab.setHandler('cancel', function() {
-        categorySprite.activate();
-    });
-    catalogTab.setupHorizontalSpacing(6);
-
-    _contents.setupSize(width, height);
-
-    categorySprite.setupItems([
-        {
-            name: 'Каталог',
-            symbol: 'catalog',
-            handler: function() {
-                catalogTab.activate();
-            }.bind(this),
-            contents: this._catalogContentsSprite
-        },
-        {
-            name: 'Поиск',
-            symbol: 'search',
-            contents: null
-        },
-        {
-            name: 'Теги',
-            symbol: 'tags',
-            contents: null
-        }
-    ]);
-    categorySprite.setupMaxCols(3);
-    categorySprite.setHandler('cancel', SceneManager.pop.bind(SceneManager));
-    this.addWindow(this._commandWindow);
-};
-
-// start methods
-
-DKTools.Updates.Scene.prototype.startAllWindows = function() {
-    this._commandWindow.start(true);
-};
-
-// page methods
-
-DKTools.Updates.Scene.prototype.setPage = function(page) {
-
-};
-
-DKTools.Updates.Scene.prototype.nextPage = function() {
-
-};
-
-DKTools.Updates.Scene.prototype.prevPage = function() {
-
-};
-
-// other methods
-
-DKTools.Updates.Scene.prototype.setPageData = function(data, page) {
-    this._page = {
-        index: page || 1,
-        data: data
-    };
 };
