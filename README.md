@@ -1,6 +1,6 @@
 **Author**: DK
 
-**Version**: Public 0.991 **Beta**
+**Version**: Public 0.992 **Beta**
  
 **Description**: Library for RPG Maker MV. Contains many tools for developing.
  
@@ -48,7 +48,15 @@ DKTools.Utils.Sequence
 
 DKTools.Utils.Sequence.Alphabet
 
-DKTools.FileManager
+DKTools.IO
+
+DKTools.IO.Entity
+
+DKTools.IO.File
+
+DKTools.IO.Directory
+
+DKTools.IO.WebStorage
 
 DKTools.Localization
 
@@ -73,6 +81,16 @@ DKTools.Sprite.Cursor
 DKTools.Sprite.Arrow
 
 DKTools.Sprite.Selectable
+
+DKTools.Sprite.ProgressBar
+
+DKTools.Sprite.ProgressBar.Rectangle
+
+DKTools.Sprite.ProgressBar.Circle
+
+DKTools.Sprite.ProgressBar.SemiCircle
+
+DKTools.Sprite.CheckBox
 
 DKTools.Viewport
 
