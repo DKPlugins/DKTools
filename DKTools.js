@@ -3443,14 +3443,15 @@ DKTools.IO.Directory.prototype.getAll = function(object) {
                 return name.match(object.template);
             });
         }
+        const path = this.getPath();
         const data = _.map(names, function(name) {
-            if (DKTools.IO.isFile(this._name, name)) {
-                return new DKTools.IO.File(this._name, name);
-            } else if (DKTools.IO.isDirectory(this._name, name)) {
-                return new DKTools.IO.Directory(this._name, name);
+            if (DKTools.IO.isFile(path, name)) {
+                return new DKTools.IO.File(path, name);
+            } else if (DKTools.IO.isDirectory(path, name)) {
+                return new DKTools.IO.Directory(path, name);
             }
             return null;
-        }.bind(this));
+        });
         return { data: data, status: DKTools.IO.OK };
     } else if (_.isFunction(object.callback)) {
         fs.readdir(fullPath, object.options, function(error, names) {
@@ -3462,14 +3463,15 @@ DKTools.IO.Directory.prototype.getAll = function(object) {
                     return name.match(object.template);
                 });
             }
+            const path = this.getPath();
             const data = _.map(names, function(name) {
-                if (DKTools.IO.isFile(this._name, name)) {
-                    return new DKTools.IO.File(this._name, name);
-                } else if (DKTools.IO.isDirectory(this._name, name)) {
-                    return new DKTools.IO.Directory(this._name, name);
+                if (DKTools.IO.isFile(path, name)) {
+                    return new DKTools.IO.File(path, name);
+                } else if (DKTools.IO.isDirectory(path, name)) {
+                    return new DKTools.IO.Directory(path, name);
                 }
                 return null;
-            }.bind(this));
+            });
             object.callback(data);
         }.bind(this));
         return { data: null, status: DKTools.IO.WAIT_FOR_ASYNC_OPERATION };
