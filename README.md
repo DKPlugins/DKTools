@@ -1,6 +1,6 @@
 **Author**: DK
 
-**Version**: Public 0.992 **Beta**
+**Version**: Public 1.0
  
 **Description**: Library for RPG Maker MV. Contains many tools for developing.
  
