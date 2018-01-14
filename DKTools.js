@@ -63,13 +63,14 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.Utils.Random
  DKTools.Utils.Sequence
  DKTools.Utils.Sequence.Alphabet
+ DKTools.ParameterManager
+ DKTools.PluginManager
  DKTools.IO
  DKTools.IO.Entity
  DKTools.IO.File
  DKTools.IO.Directory
  DKTools.IO.WebStorage
  DKTools.Localization
- DKTools.PluginManager
  DKTools.Audio
  DKTools.Event
  DKTools.Animation
@@ -215,13 +216,14 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.Utils.Random
  DKTools.Utils.Sequence
  DKTools.Utils.Sequence.Alphabet
+ DKTools.ParameterManager
+ DKTools.PluginManager
  DKTools.IO
  DKTools.IO.Entity
  DKTools.IO.File
  DKTools.IO.Directory
  DKTools.IO.WebStorage
  DKTools.Localization
- DKTools.PluginManager
  DKTools.Audio
  DKTools.Event
  DKTools.Animation
@@ -13171,7 +13173,7 @@ DKTools.Sprite.prototype.updateFill = function() {
  * @param {Number} [opacity=this.opacity] - Opacity of the sprite
  */
 DKTools.Sprite.prototype.updateOpacity = function(opacity) {
-    if (!_.isFinite(oapcity)) {
+    if (!_.isFinite(opacity)) {
         opacity = this.opacity;
     }
     this.alpha = opacity.clamp(0, 255) / 255;
