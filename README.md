@@ -48,6 +48,10 @@ DKTools.Utils.Sequence
 
 DKTools.Utils.Sequence.Alphabet
 
+DKTools.ParameterManager
+
+DKTools.PluginManager
+
 DKTools.IO
 
 DKTools.IO.Entity
@@ -59,8 +63,6 @@ DKTools.IO.Directory
 DKTools.IO.WebStorage
 
 DKTools.Localization
-
-DKTools.PluginManager
 
 DKTools.Audio
 
