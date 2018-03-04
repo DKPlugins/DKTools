@@ -3,12 +3,12 @@
 **Version**: Public 1.1.0
  
 **Description**: Library for RPG Maker MV. Contains many tools for developing.
- 
-**Dependencies**: RPG Maker MV 1.5+
 
 **Documentation**: https://dk-plugins.ru/documentation/DKTools/index.html
 
-**Installation**:
+**Dependencies**: RPG Maker MV 1.5+
+
+## **Installation**:
 1. Copy DKTools.js to the js/plugins/ of your project
 2. Enable DKTools in the plugin manager
 3. Add at least one game language in the parameters of the DKTools
