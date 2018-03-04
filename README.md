@@ -1,16 +1,17 @@
 **Author**: DK
 
-**Version**: Public 1.0
+**Version**: Public 1.1.0
  
 **Description**: Library for RPG Maker MV. Contains many tools for developing.
  
-**Dependencies**: RPG Maker MV 1.5+ and lodash.js
+**Dependencies**: RPG Maker MV 1.5+
+
+**Documentation**: https://dk-plugins.ru/documentation/DKTools/index.html
 
 **Installation**:
-1. Copy lodash.js to the js/libs/ of your project
-2. Copy DKTools.js to the js/plugins/ of your project
-3. Enable DKTools in the plugin manager
-4. Add at least one game language in the parameters of the DKTools
+1. Copy DKTools.js to the js/plugins/ of your project
+2. Enable DKTools in the plugin manager
+3. Add at least one game language in the parameters of the DKTools
  
 ## **4 steps to use DKTools**
 1. Create element
