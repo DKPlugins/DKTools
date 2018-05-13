@@ -3,8 +3,8 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 2.0.0
-Release: 12.05.2018
+Version: 2.0.1
+Release: 13.05.2018
 First release: 13.01.2016
 Supported languages: Russian, English
 */
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 2.0.0
-Релиз: 12.05.2018
+Версия: 2.0.1
+Релиз: 13.05.2018
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.2.0.0 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.2.0.1 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 2.0.0
- Release: 12.05.2018
+ Version: 2.0.1
+ Release: 13.05.2018
  First release: 13.01.2016
  Supported languages: Russian, English
  Thank you for your support: https://dk-plugins.ru/donate
@@ -186,7 +186,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.2.0.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.2.0.1 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -194,8 +194,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 2.0.0
- Релиз: 12.05.2018
+ Версия: 2.0.1
+ Релиз: 13.05.2018
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
  Спасибо за Вашу поддержку: https://dk-plugins.ru/donate
@@ -539,7 +539,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default None
 
  * @param Filename
- * @desc Название файла
+ * @desc File name
  * @default errors_log.txt
 
  * @param File Size
@@ -733,7 +733,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 var Imported = Imported || {};
-Imported.DKTools = '2.0.0';
+Imported.DKTools = '2.0.1';
 
 
 
@@ -2287,7 +2287,7 @@ DKTools.Utils.Bitmap = class {
     /**
      * Loads the bitmaps and call the callback function when loading all bitmaps
      *
-     * @version 2.0.0
+     * @version 2.0.1
      * @static
      *
      * @param {Bitmap[] | Object[]} bitmaps - Bitmaps to load
@@ -2494,6 +2494,7 @@ DKTools.Utils.Point = class {
     /**
      * Converts arguments to Point, if possible
      *
+     * @since 2.0.0
      * @static
      *
      * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} object - The X coordinate or Point or Object with parameters
@@ -2541,7 +2542,9 @@ DKTools.Utils.Point = class {
     /**
      * Converts the point into an array
      *
+     * @since 2.0.0
      * @static
+     *
      * @param {PIXI.Point | PIXI.ObservablePoint | Point} point - The point to convert
      *
      * @example
@@ -2589,7 +2592,9 @@ DKTools.Utils.Point = class {
      */
     static clone(point) {
         const newPoint = new Point();
+
         newPoint.copy(point);
+
         return newPoint;
     };
 
@@ -2622,6 +2627,7 @@ DKTools.Utils.Rectangle = class {
     /**
      * Converts arguments to Rectangle, if possible
      *
+     * @since 2.0.0
      * @static
      *
      * @param {Number | PIXI.Rectangle | Rectangle | Object} object - The X coordinate or Object
@@ -2677,7 +2683,9 @@ DKTools.Utils.Rectangle = class {
     /**
      * Converts the rect into an array
      *
+     * @since 2.0.0
      * @static
+     *
      * @param {PIXI.Rectangle | Rectangle} rect - The rectangle to convert
      *
      * @example
@@ -3375,7 +3383,7 @@ DKTools.PluginManager = class {
      * Registers a requirement of minimum version of plugin
      *
      * @example
-     * DKTools.PluginManager.requirePlugin('DKTools', 2.0.0);
+     * DKTools.PluginManager.requirePlugin('DKTools', '2.0.1');
      *
      * @static
      * @param {String} pluginName - Name of plugin
@@ -3409,7 +3417,7 @@ DKTools.PluginManager = class {
      * Returns a version of plugin
      *
      * @example
-     * DKTools.PluginManager.pluginVersion('DKTools'); // => 2.0.0
+     * DKTools.PluginManager.pluginVersion('DKTools'); // => '2.0.1'
      *
      * @static
      * @param {String | String} pluginName - Name of plugin
@@ -10564,6 +10572,10 @@ DKTools.Base = class {
 
     /**
      * Starts all
+     *
+     * @version 2.0.0
+     *
+     * @see DKTools.Base.prototype.updateStartAllEvents
      */
     startAll() {
         this.updateStartAllEvents();
@@ -10573,6 +10585,10 @@ DKTools.Base = class {
 
     /**
      * Removes children objects from processing
+     *
+     * @version 2.0.0
+     *
+     * @see DKTools.Base.prototype.updateRemoveAllChildrenEvents
      */
     removeAllChildren() {
         this.updateRemoveAllChildrenEvents();
@@ -10580,6 +10596,10 @@ DKTools.Base = class {
 
     /**
      * Removes all
+     *
+     * @version 2.0.0
+     *
+     * @see DKTools.Base.prototype.updateRemoveAllEvents
      */
     removeAll() {
         this.updateRemoveAllEvents();
@@ -10603,6 +10623,10 @@ DKTools.Base = class {
 
     /**
      * Terminates all
+     *
+     * @version 2.0.0
+     *
+     * @see DKTools.Base.prototype.updateTerminateAllEvents
      */
     terminateAll() {
         this.updateTerminateAllEvents();
@@ -10661,6 +10685,10 @@ DKTools.Base = class {
 
     /**
      * Creates all objects
+     *
+     * @version 2.0.0
+     *
+     * @see DKTools.Base.prototype.updateCreateAllEvents
      */
     createAll() {
         this.updateCreateAllEvents();
@@ -10670,6 +10698,10 @@ DKTools.Base = class {
 
     /**
      * Adds children objects to processing
+     *
+     * @version 2.0.0
+     *
+     * @see DKTools.Base.prototype.updateAddAllChildrenEvents
      */
     addAllChildren() {
         this.updateAddAllChildrenEvents();
@@ -10998,6 +11030,8 @@ DKTools.Base = class {
 
     /**
      * Clones the object
+     *
+     * @version 2.0.0
      *
      * @param {Object} [options] - Options for clone
      *
@@ -13512,25 +13546,31 @@ DKTools.Base = class {
     };
 
     /**
-     * Updates the events with type: removeAllChildren
+     * Updates the events with type: remove-all-children
+     *
+     * @version 2.0.0
      *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
     updateRemoveAllChildrenEvents() {
-        this.updateEventsContainer('removeAllChildren');
+        this.updateEventsContainer('remove-all-children');
     };
 
     /**
-     * Updates the events with type: terminateAllChildren
+     * Updates the events with type: terminate-all-children
+     *
+     * @version 2.0.0
      *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
     updateTerminateAllEvents() {
-        this.updateEventsContainer('terminateAllChildren');
+        this.updateEventsContainer('terminate-all-children');
     };
 
     /**
      * Updates the events with type: remove-all
+     *
+     * @version 2.0.0
      *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
@@ -13541,6 +13581,8 @@ DKTools.Base = class {
     /**
      * Updates the events with type: check-all
      *
+     * @version 2.0.0
+     *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
     updateCheckAllEvents() {
@@ -13549,6 +13591,8 @@ DKTools.Base = class {
 
     /**
      * Updates the events with type: create-all
+     *
+     * @version 2.0.0
      *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
@@ -13559,6 +13603,8 @@ DKTools.Base = class {
     /**
      * Updates the events with type: start-all
      *
+     * @version 2.0.0
+     *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
     updateStartAllEvents() {
@@ -13566,16 +13612,20 @@ DKTools.Base = class {
     };
 
     /**
-     * Updates the events with type: addAllChildren
+     * Updates the events with type: add-all-children
+     *
+     * @version 2.0.0
      *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
     updateAddAllChildrenEvents() {
-        this.updateEventsContainer('addAllChildren');
+        this.updateEventsContainer('add-all-children');
     };
 
     /**
      * Updates the events with type: refresh-all
+     *
+     * @version 2.0.0
      *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
@@ -13586,6 +13636,8 @@ DKTools.Base = class {
     /**
      * Updates the events with type: update-all
      *
+     * @version 2.0.0
+     *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
     updateUpdateAllEvents() {
@@ -13594,6 +13646,8 @@ DKTools.Base = class {
 
     /**
      * Updates the events with type: redraw-all
+     *
+     * @version 2.0.0
      *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
@@ -13682,6 +13736,8 @@ DKTools.Base = class {
     /**
      * Updates the events with type: mouse-enter
      *
+     * @version 2.0.0
+     *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
     updateMouseEnterEvents() {
@@ -13690,6 +13746,8 @@ DKTools.Base = class {
 
     /**
      * Updates the events with type: mouse-inside
+     *
+     * @since 2.0.0
      *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
@@ -13711,6 +13769,8 @@ DKTools.Base = class {
     /**
      * Updates the events with type: mouse-leave
      *
+     * @version 2.0.0
+     *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
     updateMouseLeaveEvents() {
@@ -13729,18 +13789,22 @@ DKTools.Base = class {
     };
 
     /**
-     * Updates the events with type: wheelX-inside or wheelX-outside
+     * Updates the events with type: wheel-X-inside or wheel-X-outside
      *
-     * @param {String} type Type of
+     * @version 2.0.0
+     *
+     * @param {String} type Type of the wheel event (inside or outside)
      *
      * @see DKTools.EventManager.prototype.updateEventsContainer
      */
     updateWheelXEvents(type) {
-        this.updateEventsContainer('wheelX-' + type);
+        this.updateEventsContainer('wheel-X-' + type);
     };
 
     /**
      * Updates the events with type: wheel-Y-inside or wheel-Y-outside
+     *
+     * @version 2.0.0
      *
      * @param {String} type - Type of the wheel event (inside or outside)
      *
@@ -13960,6 +14024,11 @@ DKTools.Base = class {
 
     /**
      * Processes all
+     *
+     * @version 2.0.0
+     *
+     * @see DKTools.Base.prototype.processMouse
+     * @see DKTools.Base.prototype.processWheel
      */
     processAll() {
         this.processMouse();
@@ -14182,7 +14251,7 @@ DKTools.Sprite._counter = 0;
 Object.defineProperties(DKTools.Sprite.prototype, {
 
     /**
-     * Обложка окна
+     * Window skin
      *
      * @readonly
      * @type {Bitmap | null}
@@ -14196,7 +14265,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Рамка спрайта
+     * Frame of the sprite
      *
      * @readonly
      * @type {Rectangle}
@@ -14210,9 +14279,8 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Реальная ширина спрайта (без учета масштабирования)
+     * Real width of the sprite (not including scaling)
      *
-     * @readonly
      * @type {Number}
      * @memberOf DKTools.Sprite.prototype
      */
@@ -14228,9 +14296,8 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Реальная высота спрайта (без учета масштабирования)
+     * Real height of the sprite (not including scaling)
      *
-     * @readonly
      * @type {Number}
      * @memberOf DKTools.Sprite.prototype
      */
@@ -14246,7 +14313,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Ширина спрайта (с учетом масштабирования)
+     * Width of the sprite (taking into account the scaling)
      *
      * @type {Number}
      * @memberOf DKTools.Sprite.prototype
@@ -14262,7 +14329,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Высота спрайта (с учетом масштабирования)
+     * Height of the sprite (taking into account the scaling)
      *
      * @type {Number}
      * @memberOf DKTools.Sprite.prototype
@@ -14278,7 +14345,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Шрифт текста
+     * Text font
      *
      * @readonly
      * @type {Object}
@@ -14292,7 +14359,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Цвет текста
+     * Text color
      *
      * @readonly
      * @type {String}
@@ -14306,7 +14373,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Прозрачность рисования
+     * Paint opacity
      *
      * @readonly
      * @type {Number}
@@ -14320,7 +14387,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Цвет заливки
+     * Fill color
      *
      * @readonly
      * @type {String | null}
@@ -14334,7 +14401,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Выравнивание текста
+     * Text align
      *
      * @readonly
      * @type {String}
@@ -14348,7 +14415,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Отображаемые тексты
+     * Texts
      *
      * @readonly
      * @type {Object[]}
@@ -14362,7 +14429,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Путь к файлу графики
+     * Graphic folder
      *
      * @readonly
      * @type {String}
@@ -14376,7 +14443,7 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Название файла графики
+     * Graphic name
      *
      * @readonly
      * @type {String}
@@ -14594,7 +14661,6 @@ DKTools.Sprite.prototype.standardAnchor = function() {
 /**
  * Sets all parameters
  *
- * @version 2.0.0
  * @override
  *
  * @param {Object} [object] - Parameters
@@ -14719,6 +14785,8 @@ DKTools.Sprite.prototype.setupSize = function(object, height) {
 /**
  * Sets the bitmap
  *
+ * @version 2.0.1
+ *
  * @param {Bitmap | Object} [object] - Bitmap or object with parameters
  *
  * @param {String} object.folder - Path to file
@@ -14736,6 +14804,8 @@ DKTools.Sprite.prototype.setupBitmap = function(object) {
         object.hasFixedBitmap() &&
         object.canCloneFixedBitmap()) {
             bitmap = DKTools.Utils.Bitmap.clone(object.bitmap);
+    } else {
+        bitmap = DKTools.Utils.Bitmap.load(object);
     }
 
     if (bitmap) {
@@ -14968,7 +15038,6 @@ DKTools.Sprite.prototype.setupGraphicLoadListener = function(listener) {
  * Changes all parameters
  * Returns the number of changed parameters
  *
- * @version 2.0.0
  * @override
  *
  * @param {Object} [object={}] - Parameters
@@ -14997,7 +15066,6 @@ DKTools.Sprite.prototype.setupGraphicLoadListener = function(listener) {
  * @see DKTools.Sprite.prototype.setOpacity
  * @see DKTools.Sprite.prototype.setGraphicFolder
  * @see DKTools.Sprite.prototype.setGraphicName
- * @see DKTools.Sprite.prototype.setMaskShape
  * @see DKTools.Sprite.prototype.start
  * @see DKTools.Sprite.prototype.activate
  *
@@ -15532,7 +15600,13 @@ DKTools.Sprite.prototype.checkSize = function() {
 /**
  * Creates all objects
  *
+ * @version 2.0.0
+ *
  * @override
+ *
+ * @see DKTools.Base.prototype.createAll
+ * @see DKTools.Sprite.prototype.createBitmap
+ * @see DKTools.Sprite.prototype.createMask
  */
 DKTools.Sprite.prototype.createAll = function() {
     DKTools.Base.prototype.createAll.call(this);
@@ -15952,16 +16026,6 @@ DKTools.Sprite.prototype.resetPaintOpacity = function() {
  */
 DKTools.Sprite.prototype.hasFixedBitmap = function() {
     return this._fixedBitmap;
-};
-
-/**
- * Returns true if the sprite has fixed mask (setted using setupMask or setMask)
- * 
- * @since 2.0.0
- * @returns {Boolean} Sprite has fixed mask (seeted using setupMask or setMask)
- */
-DKTools.Sprite.prototype.hasFixedMask = function() {
-    return this._fixedMask;
 };
 
 /**
@@ -16481,6 +16545,7 @@ Object.defineProperties(DKTools.Sprite.Button.prototype, {
 /**
  * Clears all data
  *
+ * @version 2.0.0
  * @private
  * @override
  * 
@@ -16495,6 +16560,7 @@ DKTools.Sprite.Button.prototype._clearAll = function() {
 /**
  * Clears pressed time
  *
+ * @since 2.0.0
  * @private
  */
 DKTools.Sprite.Button.prototype._clearMousePressTime = function() {
@@ -16511,11 +16577,12 @@ DKTools.Sprite.Button.prototype._clearMousePressTime = function() {
 /**
  * Sets the events
  *
+ * @version 2.0.0
  * @private
  * @override
  *
  * @see DKTools.Sprite.prototype._setupEvents
- * @see DKTools.Sprite.Button.prototype._setupUpdateEvent
+ * @see DKTools.Sprite.Button.prototype._setupUpdateButtonStateEvent
  */
 DKTools.Sprite.Button.prototype._setupEvents = function() {
     DKTools.Sprite.prototype._setupEvents.call(this);
@@ -16525,10 +16592,12 @@ DKTools.Sprite.Button.prototype._setupEvents = function() {
 /**
  * Sets the options
  *
+ * @version 2.0.0
  * @private
  * @override
  *
  * @see DKTools.Sprite.prototype._setupOptions
+ * @see DKTools.Sprite.Button.prototype._setupProcessMouseOption
  */
 DKTools.Sprite.Button.prototype._setupOptions = function() {
     DKTools.Sprite.prototype._setupOptions.call(this);
@@ -16538,6 +16607,7 @@ DKTools.Sprite.Button.prototype._setupOptions = function() {
 /**
  * Sets the update event
  *
+ * @since 2.0.0
  * @private
  *
  * @see DKTools.Sprite.Button.prototype.addEvent
@@ -16642,6 +16712,7 @@ DKTools.Sprite.Button.prototype.setupLongPressInterval = function(interval) {
 DKTools.Sprite.Button.prototype.setAll = function(object, blockStart, activate) {
     object = object || {};
     const block = true;
+
     let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
 
     if (this.setLongPressInterval(object.longPressInterval)) {
@@ -18103,6 +18174,7 @@ DKTools.Sprite.Selectable.prototype.standardDrawItemHandler = function() {
         const paintOpacity = this.getItemPaintOpacityByIndex(index);
         const align = this.getItemAlignByIndex(index);
         const rect = this.getItemRectForTextByIndex(index);
+
         this.drawText(name, {
             font: font,
             textColor: textColor,
@@ -27920,7 +27992,12 @@ DKTools.Scene.prototype._createEventManager = function() {
 /**
  * Sets all data
  *
+ * @version 2.0.0
  * @private
+ *
+ * @see DKTools.Scene.prototype._setupOptions
+ * @see DKTools.Scene.prototype._setupEvents
+ * @see DKTools.Scene.prototype._setupAnimations
  */
 DKTools.Scene.prototype._setupAll = function() {
     this._setupOptions();
