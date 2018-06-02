@@ -1,6 +1,6 @@
 **Author**: DK
 
-**Version**: Public 2.0.1
+**Version**: Public 3.0.0
  
 **Description**: Library for RPG Maker MV. Contains many tools for developing.
 
@@ -49,9 +49,7 @@ DKTools.Utils.Sequence
 
 DKTools.Utils.Sequence.Alphabet
 
-DKTools.ParameterManager
-
-DKTools.PluginManager
+DKTools.Utils.Event
 
 DKTools.IO
 
@@ -63,7 +61,13 @@ DKTools.IO.Directory
 
 DKTools.IO.WebStorage
 
-DKTools.Localization
+DKTools.ParameterManager
+
+DKTools.PluginManager
+
+DKTools.PluginCommandManager
+
+DKTools.PreloadManager
 
 DKTools.Audio
 
