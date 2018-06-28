@@ -1,17 +1,12 @@
 **Author**: DK
 
-**Version**: Public 3.0.0
+**Version**: Public 3.1.0
  
 **Description**: Library for RPG Maker MV. Contains many tools for developing.
 
 **Documentation**: https://dk-plugins.ru/documentation/DKTools/index.html
 
 **Dependencies**: RPG Maker MV 1.5+
-
-## **Installation**:
-1. Copy DKTools.js to the js/plugins/ of your project
-2. Enable DKTools in the plugin manager
-3. Add at least one game language in the parameters of the DKTools
  
 ## **4 steps to use DKTools**
 1. Create element
@@ -120,8 +115,3 @@ DKTools.Window
 DKTools.Window.Selectable
 
 DKTools.Scene
- 
-## **3 main reasons for use DKTools:**
-1. Not need to waste time for creating a special sprites or windows
-2. Large number of element parameters and all parameters have default values
-3. Many different functions in each element

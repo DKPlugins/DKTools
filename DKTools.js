@@ -3,7 +3,7 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 3.0.0
+Version: 3.1.0
 Release: 02.06.2018
 First release: 13.01.2016
 Supported languages: Russian, English
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 3.0.0
+Версия: 3.1.0
 Релиз: 02.06.2018
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.3.0.0 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.3.1.0 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,7 +29,7 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 3.0.0
+ Version: 3.1.0
  Release: 02.06.2018
  First release: 13.01.2016
  Supported languages: Russian, English
@@ -56,6 +56,13 @@ E-mail: kuznetsovdenis96@gmail.com
  %hours - Hours
  %minutes - Minutes
  %seconds - Seconds
+
+ ### Plugin commands ###
+ 1. Checks for plugins updates from DKPlugins
+ DKPluginsCheckUpdates
+
+ 2. Open the debug console
+ OpenDebugConsole
 
  ### Elements ###
  DKTools.Utils
@@ -104,7 +111,9 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.Window.Selectable
  DKTools.Scene
 
- ### License and terms of use ###
+ ### Licenses and terms of use ###
+
+ DKTools uses a third-party library "lodash": https://lodash.com/license
 
  Recent information about the terms of use: https://dk-plugins.ru/terms-of-use
 
@@ -119,16 +128,9 @@ E-mail: kuznetsovdenis96@gmail.com
  * @param Debugging
  * @default ---------------------------------
 
- * @param Open Console
- * @parent Debug
- * @text Debug console
- * @desc Open the debug console when the game test starts ?
- * @type boolean
- * @default false
-
  * @param Show FPS
  * @parent Debug
- * @desc Show the FPS counter when the game starts ?
+ * @desc Show the FPS counter when the game test starts ?
  * @type boolean
  * @default false
 
@@ -139,13 +141,19 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Check updates
  * @type struct<CheckUpdates>
- * @default {"Enabled":"false"}
+ * @default {"Enabled":"false","Show New Plugins":"false"}
+
+ * @param Debug Console
+ * @parent Functions
+ * @desc Debug console
+ * @type struct<DebugConsole>
+ * @default {"Enabled":"None","Open On Error":"false"}
 
  * @param Screen Resolution
  * @parent Functions
- * @desc Screen settings
+ * @desc Screen resolution
  * @type struct<ScreenResolution>
- * @default {"Enabled":"false","Screen Width":"816","Screen Height":"624"}
+ * @default {"Enabled":"false","Width":"816","Height":"624"}
 
  * @param Quick Start
  * @parent Functions
@@ -169,17 +177,24 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Screenshots
  * @type struct<Screenshots>
- * @default {"Enabled":"false","Key Code":"44","Screenshot Path":"screenshots/","Screenshot Filename":"%year_%month_%day_%hours_%minutes_%seconds.png"}
+ * @default {"Enabled":"false","Key Code":"44","Path":"screenshots/","Filename":"%year_%month_%day_%hours_%minutes_%seconds.png","Type":"png","Quality":"0.9"}
 
  * @param Errors Log
  * @parent Functions
+ * @desc Errors logging
  * @type struct<ErrorsLog>
  * @default {"Enabled":"None","Filename":"errors_log.txt","File Size":"10"}
+
+ * @param Tile Size
+ * @parent Functions
+ * @desc Tile size
+ * @type struct<TileSize>
+ * @default {"Enabled":"false","Size":"48"}
 
 */
 
 /*:ru
-* @plugindesc v.3.0.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.3.1.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -187,7 +202,7 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 3.0.0
+ Версия: 3.1.0
  Релиз: 02.06.2018
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
@@ -214,6 +229,13 @@ E-mail: kuznetsovdenis96@gmail.com
  %hours - Часы
  %minutes - Минуты
  %seconds - Секунды
+
+ ### Команды плагина ###
+ 1. Проверить обновления плагинов от DKPlugins
+ DKPluginsCheckUpdates
+
+ 2. Открыть отладочную консоль
+ OpenDebugConsole
 
  ### Элементы ###
  DKTools.Utils
@@ -262,7 +284,9 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.Window.Selectable
  DKTools.Scene
 
- ### Лицензия и правила использования плагина ###
+ ### Лицензии и правила использования плагина ###
+
+ DKTools использует стороннюю библиотеку "lodash": https://lodash.com/license
 
  Актуальная информация о правилах использования: https://dk-plugins.ru/terms-of-use
 
@@ -277,13 +301,6 @@ E-mail: kuznetsovdenis96@gmail.com
  * @param Debugging
  * @text Отладка
  * @default ---------------------------------
-
- * @param Open Console
- * @text Отладочная консоль
- * @parent Debugging
- * @desc Открыть отладочную консоль при запуске теста игры ?
- * @type boolean
- * @default false
 
  * @param Show FPS
  * @text Отобразить FPS
@@ -301,14 +318,21 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Проверка обновлений
  * @type struct<CheckUpdates>
- * @default {"Enabled":"false"}
+ * @default {"Enabled":"false","Show New Plugins":"false"}
+
+ * @param Debug Console
+ * @text Отладочная консоль
+ * @parent Functions
+ * @desc Отладочная консоль
+ * @type struct<DebugConsole>
+ * @default {"Enabled":"None","Open On Error":"false"}
 
  * @param Screen Resolution
  * @text Разрешение экрана
  * @parent Functions
  * @desc Настройки разрешения экрана
  * @type struct<ScreenResolution>
- * @default {"Enabled":"false","Screen Width":"816","Screen Height":"624"}
+ * @default {"Enabled":"false","Width":"816","Height":"624"}
 
  * @param Quick Start
  * @text Быстрый старт
@@ -336,7 +360,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Скриншоты
  * @type struct<Screenshots>
- * @default {"Enabled":"false","Key Code":"44","Screenshot Path":"screenshots/","Screenshot Filename":"%year_%month_%day_%hours_%minutes_%seconds.png"}
+ * @default {"Enabled":"false","Key Code":"44","Path":"screenshots/","Filename":"%year_%month_%day_%hours_%minutes_%seconds.png","Type":"png","Quality":"0.9"}
 
  * @param Errors Log
  * @text Логирование ошибок
@@ -345,12 +369,25 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<ErrorsLog>
  * @default {"Enabled":"None","Filename":"errors_log.txt","File Size":"10"}
 
+ * @param Tile Size
+ * @text Размер тайла
+ * @parent Functions
+ * @desc Размер тайла
+ * @type struct<TileSize>
+ * @default {"Enabled":"false","Size":"48"}
+
 */
 
 /*~struct~CheckUpdates:
 
  * @param Enabled
  * @desc Enable automatic update checking ? Information is displayed in the console during the game test
+ * @type boolean
+ * @default false
+
+ * @param Show New Plugins
+ * @text Show new plugins
+ * @desc Show new plugins ? Information is displayed in the console during the game test
  * @type boolean
  * @default false
 
@@ -364,6 +401,55 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type boolean
  * @default false
 
+ * @param Show New Plugins
+ * @text Показать новые плагины
+ * @desc Показывать новые плагины ? Информация выводится в консоль при тесте игры
+ * @type boolean
+ * @default false
+
+ */
+
+/*~struct~DebugConsole:
+
+ * @param Enabled
+ * @desc Open the debug console when the game starts ?
+ * @type select
+ * @option None
+ * @option Only Test
+ * @option Only Game
+ * @option Always
+ * @default None
+
+ * @param Open On Error
+ * @text Open on error
+ * @desc Enable the debugging console when an error is received ?
+ * @type boolean
+ * @default false
+
+ */
+
+/*~struct~DebugConsole:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Открыть отладочную консоль при запуске игры ?
+ * @type select
+ * @option Никогда
+ * @value None
+ * @option Только тест
+ * @value Only Test
+ * @option Только игра
+ * @value Only Game
+ * @option Всегда
+ * @value Always
+ * @default None
+
+ * @param Open On Error
+ * @text Открытие при ошибке
+ * @desc Включить отладочную консоль при получении ошибки ?
+ * @type boolean
+ * @default false
+
  */
 
 /*~struct~ScreenResolution:
@@ -373,14 +459,14 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type boolean
  * @default false
 
- * @param Screen Width
- * @desc Screen Width
+ * @param Width
+ * @desc Screen width
  * @type number
  * @min 0
  * @default 816
 
- * @param Screen Height
- * @desc Screen Height
+ * @param Height
+ * @desc Screen height
  * @type number
  * @min 0
  * @default 624
@@ -395,14 +481,14 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type boolean
  * @default false
 
- * @param Screen Width
+ * @param Width
  * @text Ширина экрана
  * @desc Ширина экрана
  * @type number
  * @min 0
  * @default 816
 
- * @param Screen Height
+ * @param Height
  * @text Высота экрана
  * @desc Высота экрана
  * @type number
@@ -575,24 +661,50 @@ E-mail: kuznetsovdenis96@gmail.com
 /*~struct~Screenshots:
 
  * @param Enabled
- * @desc Enable the Take Screenshot function ?
+ * @desc Enable the Screenshots function ?
  * @type boolean
  * @default false
 
  * @param Key Code
- * @text Key Code
- * @desc The key code that is responsible for saving the screenshot. 44 - PrintScreen
+ * @text Key code
+ * @desc The key code that is responsible for saving the screenshot. 122 - F11
  * @type number
- * @default 44
+ * @default 122
 
- * @param Screenshot Path
+ * @param Path
  * @text Path for saving screenshots
  * @desc Local path for saving screenshots
  * @default screenshots/
 
- * @param Screenshot Filename
+ * @param Filename
  * @desc The entire list of templates is given in the help (1)
  * @default %year_%month_%day_%hours_%minutes_%seconds.png
+
+ * @param Type
+ * @text Screenshot type
+ * @desc Screenshot type
+ * @type select
+ * @option png
+ * @option jpeg
+ * @option webp
+ * @default png
+
+ * @param Quality
+ * @text Screenshot quality
+ * @desc Screenshot quality
+ * @type select
+ * @option 0%
+ * @option 10%
+ * @option 20%
+ * @option 30%
+ * @option 40%
+ * @option 50%
+ * @option 60%
+ * @option 70%
+ * @option 80%
+ * @option 90%
+ * @option 100%
+ * @default 90%
 
  */
 
@@ -606,19 +718,56 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Key Code
  * @text Код клавиши
- * @desc Код клавиши, которая отвечает за сохранение скриншота. 44 - PrintScreen
+ * @desc Код клавиши, которая отвечает за сохранение скриншота. 122 - F11
  * @type number
- * @default 44
+ * @default 122
 
- * @param Screenshot Path
+ * @param Path
  * @text Путь для сохранения скриншотов
  * @desc Локальный путь для сохранения скриншотов
  * @default screenshots/
 
- * @param Screenshot Filename
+ * @param Filename
  * @text Название файла скриншота
  * @desc Весь список шаблонов приведен в справке (1)
  * @default %year_%month_%day_%hours_%minutes_%seconds.png
+
+ * @param Type
+ * @text Тип скриншота
+ * @desc Тип скриншота
+ * @type select
+ * @option png
+ * @option jpeg
+ * @option webp
+ * @default png
+
+ * @param Quality
+ * @text Качество скриншота
+ * @desc Качество скриншота
+ * @type select
+ * @option 0%
+ * @value 0
+ * @option 10%
+ * @value 0.1
+ * @option 20%
+ * @value 0.2
+ * @option 30%
+ * @value 0.3
+ * @option 40%
+ * @value 0.4
+ * @option 50%
+ * @value 0.5
+ * @option 60%
+ * @value 0.6
+ * @option 70%
+ * @value 0.7
+ * @option 80%
+ * @value 0.8
+ * @option 90%
+ * @value 0.9
+ * @option 100%
+ * @value 1
+ * @default 90%
 
  */
 
@@ -668,6 +817,38 @@ E-mail: kuznetsovdenis96@gmail.com
  * @text Размер файла
  * @desc Максимальный размер файла в мегабайтах. При превышении этого значения старые логи будут удалены.
  * @default 10
+
+ */
+
+/*~struct~TileSize:
+
+ * @param Enabled
+ * @desc Enable the function of resizing tiles ?
+ * @type boolean
+ * @default false
+
+ * @param Size
+ * @desc Tile size
+ * @type number
+ * @min 1
+ * @default 48
+
+ */
+
+/*~struct~TileSize:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию изменения размера тайла ?
+ * @type boolean
+ * @default false
+
+ * @param Size
+ * @text Размер тайла
+ * @desc Размер тайла
+ * @type number
+ * @min 1
+ * @default 48
 
  */
 
@@ -828,7 +1009,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 var Imported = Imported || {};
-Imported.DKTools = '3.0.0';
+Imported.DKTools = '3.1.0';
 
 
 
@@ -1131,7 +1312,9 @@ DKTools.Utils = class {
 
     constructor() {
         return DKTools.Utils;
-    };
+    }
+
+    // initialize methods
 
     /**
      * Initializes the utils
@@ -1160,6 +1343,13 @@ DKTools.Utils = class {
          * @readonly
          * @type {Boolean}
          */
+        this._isTest = Utils.isOptionValid('test');
+
+        /**
+         * @private
+         * @readonly
+         * @type {Boolean}
+         */
         this._isMobileDevice = Utils.isMobileDevice();
 
         /**
@@ -1177,15 +1367,14 @@ DKTools.Utils = class {
         this._isAndroidChrome = Utils.isAndroidChrome();
 
         this._sayHello();
-
-        if (DKToolsParam.get('Open Console')) {
-            this.openConsole();
-        }
+        this.openConsole();
 
         if (DKToolsParam.get('Check Updates', 'Enabled')) {
             this._checkUpdates();
         }
-    };
+    }
+
+    // private methods
 
     /**
      * Displays information about the plugin in the debug console
@@ -1213,7 +1402,7 @@ DKTools.Utils = class {
         }
 
         this._saidHello = true;
-    };
+    }
 
     /**
      * Checks the updates
@@ -1223,33 +1412,179 @@ DKTools.Utils = class {
      * @static
      */
     static _checkUpdates() {
-        if (!this.isNwjs() || !Utils.isOptionValid('test')) {
+        if (!this.isNwjs() || !DKTools.Utils.isTest()) {
             return;
         }
 
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'https://api.github.com/repos/DKPlugins/DKTools/releases');
+        xhr.open('GET', 'https://dk-plugins.ru/plugins.php');
         xhr.overrideMimeType('application/json');
         xhr.onload = function() {
             if (xhr.status < 400) {
                 const response = JSON.parse(xhr.responseText);
 
-                if (response) {
-                    const data = response[0];
-                    const newestVersion = data['tag_name'];
+                if (!Array.isArray(response)) {
+                    return;
+                }
 
-                    if (newestVersion > DKTools.version) {
-                        const args = [`Available a new version of DKTools: ${newestVersion} \n`,
-                            `Changelog: ${data['html_url']} \n`,
-                            'Download: http://dk-plugins.ru/download/DKTools.js'];
+                _.forEach(response, function(plugin) {
+                    const newVersion = plugin.version;
+
+                    if (DKTools.PluginManager.isRegistered(plugin.name)) {
+                        const currentVersion = DKTools.PluginManager.getVersion(plugin.name);
+
+                        if (newVersion > currentVersion) {
+                            const args = [`Available a new version of ${plugin.name}: ${newVersion} \n`,
+                                `Visit site: ${plugin.url} \n`,
+                                `Download: http://dk-plugins.ru/download/${plugin.name}.js`];
+
+                            console.log.apply(console, args);
+                        }
+                    } else if (DKToolsParam.get('Check Updates', 'Show New Plugins')) {
+                        const args = [
+                            `Try the new plugin: ${plugin.name} \n`,
+                            `Description: ${plugin.description} \n`,
+                            `Visit site: ${plugin.url} \n`,
+                            `Download: http://dk-plugins.ru/download/${plugin.name}.js`];
 
                         console.log.apply(console, args);
                     }
-                }
+                });
             }
         };
         xhr.send();
-    };
+    }
+
+    /**
+     * Opens the debug console
+     * 
+     * @since 3.1.0
+     * @private
+     * @static
+     */
+    static _openConsole() {
+        if (!this.isNwjs()) {
+            return;
+        }
+
+        try {
+            const window = require('nw.gui').Window.get();
+
+            window.showDevTools(null, function () {
+                window.focus();
+            });
+        } catch (e) {
+            this.logError(e);
+            console.error('DKTools can not open the console');
+        }
+    }
+
+    // is methods
+
+    /**
+     * Checks whether the platform is NW.js
+     *
+     * @static
+     * @returns {Boolean} The platform is NW.js
+     */
+    static isNwjs() {
+        return this._isNwjs;
+    }
+
+    /**
+     * Returns true if the game test is running
+     * 
+     * @since 3.1.0
+     * @static
+     * @returns {Boolean} Game test is running
+     */
+    static isTest() {
+        return this._isTest;
+    }
+
+    /**
+     * Checks whether the platform is a mobile device.
+     *
+     * @static
+     * @returns {Boolean} The platform is a mobile device
+     */
+    static isMobileDevice() {
+        return this._isMobileDevice;
+    }
+
+    /**
+     * Checks whether the browser is Mobile Safari
+     *
+     * @static
+     * @returns {Boolean} The browser is Mobile Safari
+     */
+    static isMobileSafari() {
+        return this._isMobileSafari;
+    }
+
+    /**
+     * Checks whether the browser is Android Chrome
+     *
+     * @static
+     * @returns {Boolean} The browser is Android Chrome
+     */
+    static isAndroidChrome() {
+        return this._isAndroidChrome;
+    }
+
+    /**
+     * Returns true if the value is array or object Arguments
+     *
+     * @since 1.1.0
+     * @static
+     * @param {*} value - Value
+     * @returns {Boolean} Value is array or object Arguments
+     */
+    static isArrayLike(value) {
+        if (Array.isArray(value)) {
+            return true;
+        }
+
+        return String(value) === '[object Arguments]';
+    }
+
+    /**
+     * Returns true if the value is string
+     *
+     * @since 1.1.0
+     * @static
+     * @param {*} value - Value
+     * @returns {Boolean} Value is string
+     */
+    static isString(value) {
+        return !!value && typeof value === 'string';
+    }
+
+    /**
+     * Returns true if the value is boolean
+     *
+     * @since 1.1.0
+     * @static
+     * @param {*} value - Value
+     * @returns {Boolean} Value is boolean
+     */
+    static isBoolean(value) {
+        return typeof value === 'boolean';
+    }
+
+    /**
+     * Returns true if the value is function
+     *
+     * @since 1.1.0
+     * @static
+     * @param {*} value - Value
+     * @returns {Boolean} Value is function
+     */
+    static isFunction(value) {
+        return typeof value === 'function';
+    }
+
+    // other methods
 
     /**
      * Copies properties of one object to another.
@@ -1268,46 +1603,49 @@ DKTools.Utils = class {
 
             Object.defineProperty(target, property, descriptor);
         });
-    };
+    }
 
     /**
-     * Opens the console
+     * Opens the debug console
      *
+     * @version 3.1.0
      * @static
      */
     static openConsole() {
-        if (!this.isNwjs() || !Utils.isOptionValid('test')) {
+        const param = DKToolsParam.get('Debug Console');
+        const isTest = DKTools.Utils.isTest();
+        const enabled = param.Enabled;
+
+        if (enabled === 'None' ||
+            enabled === 'Only Game' && isTest ||
+            enabled === 'Only Test' && !isTest) {
             return;
         }
 
-        try {
-            const window = require('nw.gui').Window.get();
-
-            window.showDevTools(null, function() {
-                window.focus();
-            });
-        } catch(e) {
-            console.error('DKTools can not open the console');
-        }
-    };
+        this._openConsole();
+    }
 
     /**
      * Makes a screenshot
      *
+     * @version 3.1.0
      * @static
      */
     static makeScreenshot() {
-        if (!DKTools.Utils.isNwjs()) {
+        if (!this.isNwjs()) {
             return;
         }
 
-        const date = new Date();
+        const path = DKToolsParam.get('Screenshots', 'Path');
+        const type = DKToolsParam.get('Screenshots', 'Type');
+        const quality = DKToolsParam.get('Screenshots', 'Quality');
         const snap = SceneManager.snap();
-        const urlData = snap._canvas.toDataURL();
-        const data = urlData.replace(/^data:image\/png;base64,/, '');
-        const path = DKToolsParam.get('Screenshots', 'Screenshot Path');
+        const urlData = snap._canvas.toDataURL('image/' + type, quality);
+        const regex = new RegExp(`^data:image\/${type};base64,`);
+        const data = urlData.replace(regex, '');
+        const date = new Date();
 
-        let filename = DKToolsParam.get('Screenshots', 'Screenshot Filename');
+        let filename = DKToolsParam.get('Screenshots', 'Filename');
         filename = filename.replace(/%year/gi, date.getFullYear());
         filename = filename.replace(/%month/gi, date.getMonth() + 1);
         filename = filename.replace(/%day/gi, date.getDate());
@@ -1315,7 +1653,8 @@ DKTools.Utils = class {
         filename = filename.replace(/%minutes/gi, date.getMinutes());
         filename = filename.replace(/%seconds/gi, date.getSeconds());
 
-        const fullPath = DKTools.IO.normalizePath(path + '/' + filename);
+        const fullName = filename + '.' + type;
+        const fullPath = DKTools.IO.normalizePath(path + '/' + fullName);
 
         const file = new DKTools.IO.File(fullPath);
 
@@ -1323,102 +1662,81 @@ DKTools.Utils = class {
             createDirectory: true,
             options: 'base64',
             callback: function() {
-                console.log('The screenshot is saved with the name: ' + filename);
+                console.log('The screenshot is saved with the name: ' + fullName);
             }
         });
-    };
+    }
 
     /**
-     * Checks whether the platform is NW.js
+     * Logs the error to file
      *
+     * @since 3.1.0
+     * @param {Object | String} e - Error
      * @static
-     * @returns {Boolean} The platform is NW.js
      */
-    static isNwjs() {
-        return this._isNwjs;
-    };
-
-    /**
-     * Checks whether the platform is a mobile device.
-     *
-     * @static
-     * @returns {Boolean} The platform is a mobile device
-     */
-    static isMobileDevice() {
-        return this._isMobileDevice;
-    };
-
-    /**
-     * Checks whether the browser is Mobile Safari
-     *
-     * @static
-     * @returns {Boolean} The browser is Mobile Safari
-     */
-    static isMobileSafari() {
-        return this._isMobileSafari;
-    };
-
-    /**
-     * Checks whether the browser is Android Chrome
-     *
-     * @static
-     * @returns {Boolean} The browser is Android Chrome
-     */
-    static isAndroidChrome() {
-        return this._isAndroidChrome;
-    };
-
-    /**
-     * Returns true if the value is array or object Arguments
-     *
-     * @since 1.1.0
-     * @static
-     * @param {*} value - Value
-     * @returns {Boolean} Value is array or object Arguments
-     */
-    static isArrayLike(value) {
-        if (Array.isArray(value)) {
-            return true;
+    static logError(e) {
+        if (!e || !this.isNwjs()) {
+            return;
         }
 
-        return String(value) === '[object Arguments]';
-    };
+        const param = DKToolsParam.get('Errors Log');
+        const isTest = DKTools.Utils.isTest();
+        const enabled = param['Enabled'];
 
-    /**
-     * Returns true if the value is string
-     *
-     * @since 1.1.0
-     * @static
-     * @param {*} value - Value
-     * @returns {Boolean} Value is string
-     */
-    static isString(value) {
-        return !!value && typeof value === 'string';
-    };
+        if (enabled === 'None' ||
+            enabled === 'Only Game' && isTest ||
+            enabled === 'Only Test' && !isTest) {
+            return;
+        }
 
-    /**
-     * Returns true if the value is boolean
-     *
-     * @since 1.1.0
-     * @static
-     * @param {*} value - Value
-     * @returns {Boolean} Value is boolean
-     */
-    static isBoolean(value) {
-        return typeof value === 'boolean';
-    };
+        const fs = DKTools.IO.fs;
+        const os = require('os');
 
-    /**
-     * Returns true if the value is function
-     *
-     * @since 1.1.0
-     * @static
-     * @param {*} value - Value
-     * @returns {Boolean} Value is function
-     */
-    static isFunction(value) {
-        return typeof value === 'function';
-    };
+        if (!fs || !os) {
+            return;
+        }
+
+        const fileSize = param['File Size'] * 1024 * 1024;
+        const filename = param['Filename'];
+        const file = new DKTools.IO.File(filename);
+        const stats = file.getStats({ sync: true }).data;
+        let fileDescription = fs.openSync(filename, 'a');
+
+        if (stats && stats.size > fileSize) {
+            fs.closeSync(fileDescription);
+            file.remove({ sync: true });
+            fileDescription = fs.openSync(filename, 'a');
+        }
+
+        if (e instanceof Object) {
+            let data = `Date: ${new Date().toString()}` + os.EOL +
+                `Name: ${e.name}` + os.EOL +
+                `Message: ${e.message}` + os.EOL;
+
+            if (e.filename !== undefined) {
+                data += `Filename: ${e.filename}` + os.EOL;
+            }
+
+            if (e.lineNumber !== undefined) {
+                data += `Line: ${e.lineNumber}` + os.EOL;
+            }
+
+            if (e.columnNumber !== undefined) {
+                data += `Column: ${e.columnNumber}` + os.EOL;
+            }
+
+            data += `Stack: ${e.stack}` + os.EOL + os.EOL;
+
+            fs.writeSync(fileDescription, data);
+        } else {
+            const data = `Date: ${new Date().toString()}` + os.EOL +
+                `Error: ${e}` + os.EOL + os.EOL;
+
+            fs.writeSync(fileDescription, data);
+        }
+
+        fs.closeSync(fileDescription);
+    }
 
 };
 
@@ -1440,7 +1758,7 @@ DKTools.Utils.String = class {
 
     constructor() {
         return DKTools.Utils.String;
-    };
+    }
 
     /**
      * Splits a string by commas into an array of string
@@ -1459,7 +1777,7 @@ DKTools.Utils.String = class {
      */
     static toStringArray(string) {
         return string.replace(/\s*\,\s*/g, ',').split(',');
-    };
+    }
 
     /**
      * Splits a string by commas into an array of numbers
@@ -1475,11 +1793,12 @@ DKTools.Utils.String = class {
      * => [1, 2, 3]
      *
      * @see DKTools.Utils.String.toStringArray
+     * 
      * @returns {Number[]} Array of numbers
      */
     static toNumberArray(string) {
         return _.map(this.toStringArray(string), Number);
-    };
+    }
 
     /**
      * Splits a string by commas into an array of booleans
@@ -1495,11 +1814,12 @@ DKTools.Utils.String = class {
      * => [true, true, false]
      *
      * @see DKTools.Utils.String.toStringArray
+     * 
      * @returns {Boolean[]} Array of booleans
      */
     static toBooleanArray(string) {
         return _.map(this.toStringArray(string), Boolean);
-    };
+    }
 
 };
 
@@ -1521,7 +1841,7 @@ DKTools.Utils.Array = class {
 
     constructor() {
         return DKTools.Utils.Array;
-    };
+    }
 
     /**
      * Checks whether the array contains a given item
@@ -1544,7 +1864,7 @@ DKTools.Utils.Array = class {
      */
     static contains(array, item) {
         return _.includes(array, item);
-    };
+    }
 
     /**
      * Returns the number of item in the array
@@ -1568,7 +1888,7 @@ DKTools.Utils.Array = class {
      */
     static count(array, item) {
         return _.size(array) - _.size(_.without(array, item));
-    };
+    }
 
     /**
      * Returns the sum of the number of items in the array
@@ -1588,7 +1908,7 @@ DKTools.Utils.Array = class {
      */
     static counts(array, items) {
         return _.size(array) - _.size(_.difference(array, items));
-    };
+    }
 
     /**
      * Removes '', null, undefined and NaN from the array.
@@ -1606,7 +1926,7 @@ DKTools.Utils.Array = class {
      */
     static compact(array) {
         return _.pull(array, '', null, undefined, Number.NaN);
-    };
+    }
 
     /**
      * Removes item from the array.
@@ -1626,7 +1946,7 @@ DKTools.Utils.Array = class {
      */
     static remove(array, item) {
         return _.pull(array, item);
-    };
+    }
 
     /**
      * Inserts the item into the array.
@@ -1645,7 +1965,7 @@ DKTools.Utils.Array = class {
      */
     static insert(array, item, index) {
         array.splice(index || 0, 0, item);
-    };
+    }
 
     /**
      * Checks whether the array is empty
@@ -1657,7 +1977,7 @@ DKTools.Utils.Array = class {
      */
     static isEmpty(array) {
         return _.isEmpty(array);
-    };
+    }
 
     /**
      * Checks whether all elements of the array are of type Number
@@ -1678,7 +1998,7 @@ DKTools.Utils.Array = class {
      */
     static isNumberArray(array) {
         return _.every(array, Number.isFinite);
-    };
+    }
 
     /**
      * Checks whether all elements of the array are of type Boolean
@@ -1699,7 +2019,7 @@ DKTools.Utils.Array = class {
      */
     static isBooleanArray(array) {
         return _.every(array, DKTools.Utils.isBoolean);
-    };
+    }
 
     /**
      * Checks whether all elements of the array are of type String
@@ -1721,7 +2041,7 @@ DKTools.Utils.Array = class {
      */
     static isStringArray(array) {
         return _.every(array, DKTools.Utils.isString);
-    };
+    }
 
     /**
      * Checks whether all elements of the array are of type Bitmap
@@ -1744,7 +2064,7 @@ DKTools.Utils.Array = class {
         return _.every(array, function(item) {
             return item instanceof Bitmap;
         });
-    };
+    }
 
     /**
      * Checks whether all elements of the array are of type Sprite
@@ -1767,7 +2087,7 @@ DKTools.Utils.Array = class {
         return _.every(array, function(item) {
             return item instanceof Sprite;
         });
-    };
+    }
 
     /**
      * Checks whether all elements of the array are of type Window
@@ -1790,7 +2110,7 @@ DKTools.Utils.Array = class {
         return _.every(array, function(item) {
             return item instanceof Window;
         });
-    };
+    }
 
     /**
      * Performs a logical operation of the disjunction
@@ -1811,7 +2131,7 @@ DKTools.Utils.Array = class {
      */
     static disjunction(array) {
         return _.some(array, _.isEqual.bind(this, true));
-    };
+    }
 
     /**
      * Performs a logical operation of the conjunction
@@ -1832,7 +2152,7 @@ DKTools.Utils.Array = class {
      */
     static conjunction(array) {
         return _.every(array, _.isEqual.bind(this, true));
-    };
+    }
 
 };
 
@@ -1854,7 +2174,7 @@ DKTools.Utils.Bitmap = class {
 
     constructor() {
         return DKTools.Utils.Bitmap;
-    };
+    }
 
     // load methods
 
@@ -1902,7 +2222,7 @@ DKTools.Utils.Bitmap = class {
         }
 
         return bitmap;
-    };
+    }
 
     /**
      * Loads the bitmaps and call the callback function when all bitmaps are ready
@@ -1922,7 +2242,7 @@ DKTools.Utils.Bitmap = class {
      *  filename: 'IconSet'
      * };
      *
-     * DKTools.Utils.Bitmap.loadBitmaps(bitmaps, function(loadedBitmap, loadedBitmaps, allBitmaps) {
+     * DKTools.Utils.Bitmap.loadBitmaps(bitmaps, function(allBitmaps) {
      *     // all loaded bitmaps
      * });
      *
@@ -1963,7 +2283,7 @@ DKTools.Utils.Bitmap = class {
                 loadListener(index, bitmap);
             }
         }.bind(this));
-    };
+    }
 
     // reserve methods
 
@@ -2011,7 +2331,7 @@ DKTools.Utils.Bitmap = class {
         }
 
         return bitmap;
-    };
+    }
 
     /**
      * Loads and reserves the bitmaps and call the callback function when all bitmaps are ready
@@ -2031,8 +2351,8 @@ DKTools.Utils.Bitmap = class {
      *  filename: 'IconSet'
      * };
      *
-     * DKTools.Utils.Bitmap.reserveBitmaps(bitmaps, function(loadedBitmap, loadedBitmaps, allBitmaps) {
-     *     // your code here
+     * DKTools.Utils.Bitmap.reserveBitmaps(bitmaps, function(allBitmaps) {
+     *     // all loaded bitmaps
      * });
      *
      * @see DKTools.Utils.Bitmap.reserve
@@ -2072,7 +2392,7 @@ DKTools.Utils.Bitmap = class {
                 loadListener(index, bitmap);
             }
         }.bind(this));
-    };
+    }
 
     // draw methods
 
@@ -2093,6 +2413,7 @@ DKTools.Utils.Bitmap = class {
      */
     static drawLine(bitmap, x1, y1, x2, y2, color, lineWidth) {
         const context = bitmap._context;
+
         context.save();
         context.strokeStyle = color || 'white';
         context.lineWidth = lineWidth || 1;
@@ -2101,8 +2422,9 @@ DKTools.Utils.Bitmap = class {
         context.lineTo(x2, y2);
         context.stroke();
         context.restore();
+
         bitmap._setDirty();
-    };
+    }
 
     /**
      * Draws a rectangle without fill
@@ -2121,13 +2443,15 @@ DKTools.Utils.Bitmap = class {
      */
     static strokeRect(bitmap, x, y, width, height, color, lineWidth) {
         const context = bitmap._context;
+
         context.save();
         context.strokeStyle = color || 'white';
         context.lineWidth = lineWidth || 1;
         context.strokeRect(x, y, width, height);
         context.restore();
+
         bitmap._setDirty();
-    };
+    }
 
     /**
      * Draws an arc and fills it with color
@@ -2147,14 +2471,16 @@ DKTools.Utils.Bitmap = class {
      */
     static fillArc(bitmap, x, y, radius, startAngle, endAngle, color, anticlockwise) {
         const context = bitmap._context;
+
         context.save();
         context.fillStyle = color || 'white';
         context.beginPath();
         context.arc(x, y, radius, startAngle, endAngle, anticlockwise);
         context.fill();
         context.restore();
+
         bitmap._setDirty();
-    };
+    }
 
     /**
      * Draws an arc without fill
@@ -2175,6 +2501,7 @@ DKTools.Utils.Bitmap = class {
      */
     static strokeArc(bitmap, x, y, radius, startAngle, endAngle, color, lineWidth, anticlockwise) {
         const context = bitmap._context;
+
         context.save();
         context.strokeStyle = color || 'white';
         context.lineWidth = lineWidth || 1;
@@ -2182,8 +2509,9 @@ DKTools.Utils.Bitmap = class {
         context.arc(x, y, radius, startAngle, endAngle, anticlockwise);
         context.stroke();
         context.restore();
+        
         bitmap._setDirty();
-    };
+    }
 
     // other methods
 
@@ -2206,7 +2534,7 @@ DKTools.Utils.Bitmap = class {
         newContext.drawImage(canvas, 0, 0);
         
         return newBitmap;
-    };
+    }
 
 };
 
@@ -2228,7 +2556,7 @@ DKTools.Utils.Point = class {
 
     constructor() {
         return DKTools.Utils.Point;
-    };
+    }
 
     /**
      * Converts arguments to Point, if possible
@@ -2276,7 +2604,7 @@ DKTools.Utils.Point = class {
         }
 
         return null;
-    };
+    }
 
     /**
      * Converts the point into an array
@@ -2295,7 +2623,7 @@ DKTools.Utils.Point = class {
      */
     static toArray(point) {
         return [point.x, point.y];
-    };
+    }
 
     /**
      * Compares the coordinates of the points
@@ -2320,7 +2648,7 @@ DKTools.Utils.Point = class {
      */
     static equals(point1, point2) {
         return point1.x === point2.x && point1.y === point2.y;
-    };
+    }
 
     /**
      * Clones the point
@@ -2335,7 +2663,7 @@ DKTools.Utils.Point = class {
         newPoint.copy(point);
 
         return newPoint;
-    };
+    }
 
 };
 
@@ -2357,7 +2685,7 @@ DKTools.Utils.Rectangle = class {
 
     constructor() {
         return DKTools.Utils.Rectangle;
-    };
+    }
 
     /**
      * Converts arguments to Rectangle, if possible
@@ -2413,7 +2741,7 @@ DKTools.Utils.Rectangle = class {
         }
 
         return null;
-    };
+    }
 
     /**
      * Converts the rect into an array
@@ -2432,7 +2760,7 @@ DKTools.Utils.Rectangle = class {
      */
     static toArray(rect) {
         return [rect.x, rect.y, rect.width, rect.height];
-    };
+    }
 
     /**
      * Compares the coordinates, width and height of the rectangles
@@ -2458,7 +2786,7 @@ DKTools.Utils.Rectangle = class {
     static equals(rect1, rect2) {
         return rect1.x === rect2.x && rect1.y === rect2.y &&
             rect1.width === rect2.width && rect1.height === rect2.height;
-    };
+    }
 
     /**
      * Checks whether the rect is empty (0, 0, 0, 0)
@@ -2481,7 +2809,7 @@ DKTools.Utils.Rectangle = class {
      */
     static isEmpty(rect) {
         return this.equals(rect, Rectangle.emptyRectangle);
-    };
+    }
 
     /**
      * Clones the rect
@@ -2496,7 +2824,7 @@ DKTools.Utils.Rectangle = class {
         newRect.copy(rect);
 
         return newRect;
-    };
+    }
 
 };
 
@@ -2518,7 +2846,7 @@ DKTools.Utils.Random = class {
 
     constructor() {
         return DKTools.Utils.Random;
-    };
+    }
 
     /**
      * Returns a random integer not exceeding max
@@ -2529,7 +2857,7 @@ DKTools.Utils.Random = class {
      */
     static getInt(max) {
         return _.random(0, max || 1);
-    };
+    }
 
     /**
      * Returns a random float number not exceeding max
@@ -2540,7 +2868,7 @@ DKTools.Utils.Random = class {
      */
     static getFloat(max) {
         return _.random(0, max || 1, true);
-    };
+    }
 
     /**
      * Returns a random boolean
@@ -2550,7 +2878,7 @@ DKTools.Utils.Random = class {
      */
     static getBoolean() {
         return this.getInt(1) % 2 === 0;
-    };
+    }
 
     /**
      * Returns a random color in rgba format
@@ -2570,7 +2898,7 @@ DKTools.Utils.Random = class {
         }
         
         return 'rgba(%1, %2, %3, %4)'.format(r, g, b, a);
-    };
+    }
 
     /**
      * Returns a random color in hex format
@@ -2580,7 +2908,7 @@ DKTools.Utils.Random = class {
      */
     static getHexColor() {
         return '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
-    };
+    }
 
 };
 
@@ -2602,7 +2930,7 @@ DKTools.Utils.Sequence = class {
 
     constructor() {
         return DKTools.Utils.Sequence;
-    };
+    }
 
     /**
      * Generator. Generates a sequence of integers. The number of values is limited by max.
@@ -2617,12 +2945,12 @@ DKTools.Utils.Sequence = class {
         while (count <= max) {
             yield count++;
         }
-    };
+    }
 
     /**
      * Generator. Generates a sequence of booleans.
      *
-     * @param [Boolean} [start=false] - The initial value of the sequence
+     * @param {Boolean} [start=false] - The initial value of the sequence
      * @returns {Boolean} The next value of the sequence
      */
     static *Boolean(start) {
@@ -2632,7 +2960,7 @@ DKTools.Utils.Sequence = class {
             value = !value;
             yield value;
         }
-    };
+    }
 
 };
 
@@ -2654,7 +2982,7 @@ DKTools.Utils.Sequence.Alphabet = class {
 
     constructor() {
         return DKTools.Utils.Sequence.Alphabet;
-    };
+    }
 
     /**
      * Generator. Generates a sequence of characters of the Russian alphabet
@@ -2670,7 +2998,7 @@ DKTools.Utils.Sequence.Alphabet = class {
         }
 
         yield* alphabet;
-    };
+    }
 
     /**
      * Generator. Generates a sequence of characters of the English alphabet
@@ -2686,7 +3014,7 @@ DKTools.Utils.Sequence.Alphabet = class {
         }
 
         yield* alphabet;
-    };
+    }
 
 };
 
@@ -2710,7 +3038,8 @@ DKTools.Utils.Event = class {
 
     /**
      * Returns the comments of the current page
-     * 
+     *
+     * @version 3.1.0
      * @static
      *
      * @param {Number | Game_Event} event - Event ID or Game_Event
@@ -2722,7 +3051,7 @@ DKTools.Utils.Event = class {
             event = $gameMap.events()[event];
         }
 
-        if (!event) {
+        if (!event || !event.page()) {
             return [];
         }
 
@@ -2733,7 +3062,7 @@ DKTools.Utils.Event = class {
 
             return comments;
         }, []);
-    };
+    }
 
     /**
      * Returns the comments of the all pages
@@ -2768,7 +3097,7 @@ DKTools.Utils.Event = class {
 
             return acc;
         }, {});
-    };
+    }
 
 };
 
@@ -2886,6 +3215,22 @@ DKTools.IO = class {
         return false;
     };
 
+    // get methods
+
+    /**
+     * Returns the absolute path to file or directory
+     *
+     * @since 3.0.0
+     * @static
+     *
+     * @param {String} [path] - Path
+     *
+     * @returns {String} Absolute path to file or directory
+     */
+    static getAbsolutePath(path) {
+        return this.normalizePath(this._path.join(this._projectPath, (path || '')));
+    };
+
     // other methods
 
     /**
@@ -2901,20 +3246,6 @@ DKTools.IO = class {
      */
     static normalizePath(path) {
         return this._path.normalize(path);
-    };
-
-    /**
-     * Returns the absolute path to file or directory
-     *
-     * @since 3.0.0
-     * @static
-     *
-     * @param {String} [path] - Path
-     *
-     * @returns {String} Absolute path to file or directory
-     */
-    static getAbsolutePath(path) {
-        return this.normalizePath(this._path.join(this._projectPath, (path || '')));
     };
 
     /**
@@ -3090,6 +3421,16 @@ Object.defineProperties(DKTools.IO, {
      * @memberof DKTools.IO
      */
     ERROR_KEY_IS_NOT_AVAILABLE: { value: 8 },
+
+    /**
+     * The options is not available for an operation
+     * 
+     * @readonly
+     * @constant
+     * @type {Number}
+     * @memberof DKTools.IO
+     */
+    ERROR_OPTIONS_IS_NOT_AVAILABLE: { value: 9 }
 
 });
 
@@ -3270,8 +3611,9 @@ DKTools.IO.Entity = class {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
-     * @version 3.0.0
+     * @version 3.1.0
      * @since 2.0.0
      *
      * @param {Object} [object] - Options of an operation
@@ -3285,6 +3627,10 @@ DKTools.IO.Entity = class {
      * @returns {Object} Loaded stats
      */
     getStats(object) {
+        if (!object) {
+            return { data: null, status: DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE };
+        }
+
         if (!DKTools.IO.isLocalMode()) {
             return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
@@ -3329,7 +3675,7 @@ DKTools.IO.Entity = class {
     };
 
     /**
-     * Renames the file
+     * Renames the file or directory
      *
      * Possible results:
      * DKTools.IO.OK
@@ -3337,12 +3683,13 @@ DKTools.IO.Entity = class {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_NEW_NAME_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
-     * @version 3.0.0
+     * @version 3.1.0
      *
      * @param {Object} object - Options of an operation
      *
-     * @param {String} object.newName - New name of file
+     * @param {String} object.newName - New name of entity without the extension
      * @param {Boolean} [object.sync] - Use synchronous version of rename
      * @param {String | Object} [object.options] - Options for rename or renameSync
      * @param {Function} [object.callback] - Callback function upon completion of an operation (only for object.sync == false)
@@ -3353,6 +3700,10 @@ DKTools.IO.Entity = class {
      * @returns {Number} Code of the result of an operation
      */
     rename(object) {
+        if (!object) {
+            return DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE;
+        }
+
         if (!DKTools.IO.isLocalMode()) {
             return DKTools.IO.ERROR_NOT_LOCAL_MODE;
         }
@@ -3368,7 +3719,8 @@ DKTools.IO.Entity = class {
         const fs = DKTools.IO.fs;
         const newName = object.newName;
         const oldAbsolutePath = this.getAbsolutePath();
-        const newAbsolutePath = DKTools.IO.getAbsolutePath(this._basePath, newName);
+        const newPath = DKTools.IO.normalizePath(this._path + '/' + newName + '.' + this._extension);
+        const newAbsolutePath = DKTools.IO.getAbsolutePath(newPath);
 
         if (!DKTools.IO.absolutePathExists(newAbsolutePath)) {
             if (object.sync) {
@@ -3552,6 +3904,9 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
+     *
+     * @version 3.1.0
      *
      * @param {Object} object - Options of an operation
      *
@@ -3559,14 +3914,20 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {String | Object} [object.options] - Options for readFile or readFileSync
      * @param {Function} [object.callback] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Boolean} [object.decompress] - Use LZString.decompressFromBase64 for a data
-     * @param {Boolean} [object.parse] - Use JSON.parse for a data
+     * @param {Boolean | Object} [object.parse] - Use JSON.parse for a data
      *
+     * @param {Function} [object.parse.reviver] - A function that transforms the results
+     * 
      * @see FileSystem.readFile
      * @see FileSystem.readFileSync
      *
      * @returns {Object} Loaded data
      */
     load(object) {
+        if (!object) {
+            return { data: null, status: DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE };
+        }
+
         if (!DKTools.IO.isLocalMode()) {
             return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
@@ -3584,7 +3945,9 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
                     data = LZString.decompressFromBase64(data);
                 }
 
-                if (object.parse) {
+                if (object.parse instanceof Object) {
+                    data = JSON.parse(data, object.parse.reviver);
+                } else if (object.parse) {
                     data = JSON.parse(data);
                 }
             }
@@ -3628,11 +3991,17 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     /**
      * Loads the JSON file
      * 
+     * @version 3.1.0
      * @since 3.0.0
+     * 
+     * @param {Function} reviver - A function that transforms the results
+     * 
+     * @see DKTools.IO.File.prototype.load
+     * 
      * @returns {Object | null} Object or null
      */
-    loadJson() {
-        return this.load({ sync: true, parse: true }).data;
+    loadJson(reviver) {
+        return this.load({ sync: true, parse: { reviver } }).data;
     };
 
     /**
@@ -3718,7 +4087,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      *
-     * @version 3.0.0
+     * @version 3.1.0
      *
      * @param {*} data - Data to save
      * @param {Object} object - Options of an operation
@@ -3730,8 +4099,12 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {String | Object} [object.options] - Options for writeFile or writeFileSync
      * @param {Function} [object.callback] - Callback function upon completion of an operation (only for object.sync == false)
      *
+     * @param {Function | Array} [object.stringify.replacer] - A function that transforms the results
+     * @param {Number | String} [object.stringify.space] - Insert white space into the output JSON string for readability purposes
+     * 
      * @see FileSystem.writeFile
      * @see FileSystem.writeFileSync
+     * @see JSON.stringify
      *
      * @returns {Number} Code of the result of an operation
      */
@@ -3746,20 +4119,22 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
         object = object || {};
 
-        if (object.stringify) {
-            data = JSON.stringify(data);
-        }
-
-        if (object.compress) {
-            data = LZString.compressToBase64(data);
-        }
-
         if (object.createDirectory && !directory.exists()) {
             directory.create();
         }
 
         if (!directory.exists()) {
             return DKTools.IO.ERROR_PATH_DOES_NOT_EXIST;
+        }
+
+        if (object.stringify instanceof Object) {
+            data = JSON.stringify(data, object.stringify.replacer, object.stringify.space);
+        } else if (object.stringify) {
+            data = JSON.stringify(data);
+        }
+
+        if (object.compress) {
+            data = LZString.compressToBase64(data);
         }
 
         if (object.sync) {
@@ -3904,12 +4279,15 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
+     * @version 3.1.0
+     * 
      * @param {Object} object - Options of an operation
      *
      * @param {Boolean} [object.sync] - Use synchronous version of readdir
      * @param {String | Object} [object.options] - Options for readdir or readdirSync
-     * @param {RegExp} [object.template] - Template for filtering
+     * @param {RegExp | String} [object.template] - Template for filtering
      * @param {Function} [object.callback] - Callback function upon completion of an operation (only for object.sync == false)
      *
      * @see FileSystem.readdir
@@ -3918,6 +4296,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @returns {Object} All files and directories
      */
     getAll(object) {
+        if (!object) {
+            return { data: null, status: DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE };
+        }
+
         if (!DKTools.IO.isLocalMode()) {
             return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
@@ -3933,6 +4315,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             if (object.template instanceof RegExp) {
                 names = _.filter(names, function(name) {
                     return object.template.test(name);
+                });
+            } else if (DKTools.Utils.isString(object.template)) {
+                names = _.filter(names, function(name) {
+                    return name === object.template;
                 });
             }
 
@@ -3953,7 +4339,6 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             const names = fs.readdirSync(absolutePath, object.options);
 
             return { data: processData(names) , status: DKTools.IO.OK };
-
         } else if (DKTools.Utils.isFunction(object.callback)) {
             fs.readdir(absolutePath, object.options, function(error, names) {
                 if (error) {
@@ -3983,6 +4368,9 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
+     *
+     * @version 3.1.0
      *
      * @param {Object} object - Options of an operation
      *
@@ -4039,6 +4427,9 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
+     *
+     * @version 3.1.0
      *
      * @param {Object} object - Options of an operation
      *
@@ -4095,7 +4486,9 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * 
+     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
+     *
+     * @version 3.1.0
      * @since 3.0.0
      *
      * @param {Object} object - Options of an operation
@@ -4131,7 +4524,9 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * 
+     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
+     *
+     * @version 3.1.0
      * @since 3.0.0
      *
      * @param {Object} object - Options of an operation
@@ -4167,7 +4562,9 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
+     * @version 3.1.0
      * @since 3.0.0
      *
      * @param {Object} object - Options of an operation
@@ -4203,7 +4600,9 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * 
+     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
+     *
+     * @version 3.1.0
      * @since 3.0.0
      *
      * @param {Object} object - Options of an operation
@@ -4223,6 +4622,221 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             template: /(.webm|.mp4)/,
             callback: object.callback
         });
+    };
+
+    // find methods
+
+    /**
+     * Finds the files
+     *
+     * Returns an object with 2 properties:
+     * status - Result of an operation
+     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * if the status is not equal to DKTools.IO.OK then data will be null
+     *
+     * Possible results:
+     * DKTools.IO.OK
+     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.ERROR_NOT_LOCAL_MODE
+     * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
+     * 
+     * @since 3.1.0
+     * 
+     * @param {Object} object - Options of an operation
+     * 
+     * @param {Boolean} [object.sync] - Use synchronous version of readdir
+     * @param {String | Object} [object.options] - Options for readdir or readdirSync
+     * @param {RegExp | String} [object.template] - Template for filtering
+     * @param {Function} [object.callback] - Callback function upon completion of an operation (only for object.sync == false)
+     * @param {Boolean} [object.cyclical] - Search in subdirectories
+     *
+     * @example
+     * var directory = new DKTools.IO.Directory('img/');
+     * var directories = directory.findFiles({ sync: true, cyclical: true, template: 'Window.png' });
+     * 
+     * @see DKTools.IO.Directory.prototype.getAll
+     * 
+     * @returns {Object} All files
+     */
+    findFiles(object) {
+        if (!object) {
+            return { data: null, status: DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE };
+        }
+
+        if (!DKTools.IO.isLocalMode()) {
+            return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
+        }
+
+        if (!this.exists()) {
+            return { data: null, status: DKTools.IO.ERROR_PATH_DOES_NOT_EXIST };
+        }
+
+        if (!object.sync && !DKTools.Utils.isFunction(object.callback)) {
+            return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
+        }
+
+        const files = [];
+        let total = 1, processed = 0;
+
+        const processData = function(data) {
+            _.forEach(data, function(entity) {
+                if (entity.isFile()) {
+                    const fullName = entity.getFullName();
+
+                    if (object.template instanceof RegExp && object.template.test(fullName)) {
+                        files.push(entity);
+                    } else if (!object.template || fullName === object.template) {
+                        files.push(entity);
+                    }
+                } else if (entity.isDirectory()) {
+                    total++;
+
+                    if (object.cyclical) {
+                        processDirectory(entity);
+                    }
+                }
+            });
+        };
+
+        const processDirectory = function(directory) {
+            if (object.sync) {
+                const data = directory.getAll({
+                    sync: true,
+                    options: object.options
+                }).data;
+
+                processData(data);
+            } else {
+                directory.getAll({
+                    options: object.options,
+                    callback: function(data) {
+                        processed++;
+
+                        processData(data);
+
+                        if (total === processed) {
+                            object.callback(files);
+                        }
+                    }
+                });
+            }
+        };
+
+        processDirectory(this);
+
+        if (object.sync) {
+            return { data: files, status: DKTools.IO.OK };
+        } else {
+            return { data: null, status: DKTools.IO.WAIT_FOR_ASYNC_OPERATION };
+        }
+    };
+
+    /**
+     * Finds the directories
+     *
+     * Returns an object with 2 properties:
+     * status - Result of an operation
+     * data - Array with directories (only if the status is equal to DKTools.IO.OK)
+     * if the status is not equal to DKTools.IO.OK then data will be null
+     *
+     * Possible results:
+     * DKTools.IO.OK
+     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.ERROR_NOT_LOCAL_MODE
+     * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
+     * 
+     * @since 3.1.0
+     * 
+     * @param {Object} object - Options of an operation
+     *
+     * @param {Boolean} [object.sync] - Use synchronous version of readdir
+     * @param {String | Object} [object.options] - Options for readdir or readdirSync
+     * @param {RegExp | String} [object.template] - Template for filtering
+     * @param {Function} [object.callback] - Callback function upon completion of an operation (only for object.sync == false)
+     * @param {Boolean} [object.cyclical] - Search in subdirectories
+     *
+     * @example
+     * var directory = new DKTools.IO.Directory('img/');
+     * var directories = directory.findDirectories({ sync: true, template: 'system' });
+     * 
+     * @see DKTools.IO.Directory.prototype.getDirectories
+     * 
+     * @returns {Object} All directories
+     */
+    findDirectories(object) {
+        if (!object) {
+            return { data: null, status: DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE };
+        }
+
+        if (!DKTools.IO.isLocalMode()) {
+            return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
+        }
+
+        if (!this.exists()) {
+            return { data: null, status: DKTools.IO.ERROR_PATH_DOES_NOT_EXIST };
+        }
+
+        if (!object.sync && !DKTools.Utils.isFunction(object.callback)) {
+            return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
+        }
+
+        const directories = [];
+        let total = 1, processed = 0;
+
+        const processData = function(data) {
+            _.forEach(data, function(directory) {
+                const fullName = directory.getFullName();
+
+                if (object.template instanceof RegExp && object.template.test(fullName)) {
+                    directories.push(directory);
+                } else if (!object.template || fullName === object.template) {
+                    directories.push(directory);
+                }
+
+                total++;
+
+                if (object.cyclical) {
+                    processDirectory(directory);
+                }
+            });
+        };
+
+        const processDirectory = function(directory) {
+            if (object.sync) {
+                const data = directory.getDirectories({
+                    sync: true,
+                    options: object.options
+                }).data;
+
+                processData(data);
+            } else {
+                directory.getDirectories({
+                    options: object.options,
+                    template: object.template,
+                    callback: function(data) {
+                        processed++;
+
+                        processData(data);
+
+                        if (total === processed) {
+                            object.callback(directories);
+                        }
+                    }
+                });
+            }
+        };
+
+        processDirectory(this);
+
+        if (object.sync) {
+            return { data: directories, status: DKTools.IO.OK };
+        } else {
+            return { data: null, status: DKTools.IO.WAIT_FOR_ASYNC_OPERATION };
+        }
     };
 
     // audio methods
@@ -4556,8 +5170,8 @@ DKTools.IO.WebStorage = class {
      * DKTools.IO.ERROR_NEW_NAME_IS_NOT_AVAILABLE
      *
      * @static
-     * @param {String} oldkey - Old key
-     * @param {String} newkey - New key
+     * @param {String} oldKey - Old key
+     * @param {String} newKey - New key
      * @returns {Number} Code of the result of an operation
      */
     static rename(oldKey, newKey) {
@@ -4816,7 +5430,7 @@ DKTools.PluginManager = class {
     static _checkRequirements() {
         _.forEach(this._requirements, function(pluginInfo, pluginName) {
             const maxVersion = _.max(pluginInfo);
-            const pluginVersion = this.pluginVersion(pluginName);
+            const pluginVersion = this.getVersion(pluginName);
 
             if (pluginVersion === undefined) {
                 const error = 'Required to install the plugin "%1". Minimal version: %2'.format(pluginName, maxVersion);
@@ -4926,14 +5540,17 @@ DKTools.PluginManager = class {
     /**
      * Returns a version of plugin
      *
-     * @example
-     * DKTools.PluginManager.pluginVersion('DKTools'); // => '3.0.0'
-     *
+     * @since 3.1.0
      * @static
-     * @param {String | String} pluginName - Name of plugin
+     *
+     * @param {String} pluginName - Name of plugin
+     *
+     * @example
+     * DKTools.PluginManager.getVersion('DKTools'); // => '3.1.0'
+     *
      * @returns {Number | String | undefined} Version of plugin
      */
-    static pluginVersion(pluginName) {
+    static getVersion(pluginName) {
         return this._plugins[pluginName];
     };
 
@@ -5134,7 +5751,7 @@ DKTools.PreloadManager = class {
     static _log(message) {
         if (!DKToolsParam.get('Preload Manager', 'Enabled') ||
             !DKToolsParam.get('Preload Manager', 'Debugging') ||
-            !Utils.isOptionValid('test') || !message) {
+            !DKTools.Utils.isTest() || !message) {
                 return;
         }
 
@@ -5274,6 +5891,7 @@ DKTools.PreloadManager = class {
      * @static
      *
      * @param {String} path - Path of the cached bitmap
+     * @param {Number} [hue] - Hue
      * 
      * @see DKTools.PreloadManager.releaseByKey
      */
@@ -5301,7 +5919,7 @@ DKTools.PreloadManager = class {
      * 
      * @static
      * 
-     * @param {Object} - Object with parameters
+     * @param {Object} object - Object with parameters
      * 
      * @param {String} object.path - Path to file or directory
      * @param {Number} [object.hue] - Hue
@@ -6613,11 +7231,12 @@ DKTools.Event = class {
     /**
      * Updates the pause
      *
+     * @version 3.1.0
      * @private
      */
     _updatePause() {
-        this._updateRemainingPauseTime();
         this._callOnPauseHandler();
+        this._updateRemainingPauseTime();
     };
 
     /**
@@ -7183,6 +7802,7 @@ DKTools.Animation.Action = class extends DKTools.Event {
 
             const rotation = (this._data - target.rotation) / remainingTime;
             const newRotation = target.rotation + rotation;
+
             target.setRotation(newRotation);
         }.bind(action));
 
@@ -7211,6 +7831,7 @@ DKTools.Animation.Action = class extends DKTools.Event {
 
             const opacity = (this._data - target.opacity) / remainingTime;
             const newOpacity = target.opacity + opacity;
+
             target.setOpacity(newOpacity);
         }.bind(action));
 
@@ -7241,12 +7862,14 @@ DKTools.Animation.Action = class extends DKTools.Event {
             const contentsOpacity = (this._data.contentsOpacity - target.contentsOpacity) / remainingTime;
             const frameOpacity = (this._data.frameOpacity - target.frameOpacity) / remainingTime;
             const backOpacity = (this._data.backOpacity - target.backOpacity) / remainingTime;
+
             const newOpacity = {
                 windowOpacity: target.windowOpacity + windowOpacity,
                 contentsOpacity: target.contentsOpacity + contentsOpacity,
                 frameOpacity: target.frameOpacity + frameOpacity,
                 backOpacity: target.backOpacity + backOpacity
             };
+
             target.setOpacity(newOpacity);
         }.bind(action));
 
@@ -7274,6 +7897,7 @@ DKTools.Animation.Action = class extends DKTools.Event {
 
             const tint = (this._data - target.tint) / remainingTime;
             const newTint = target.tint + tint;
+
             target.setTint(newTint);
         }.bind(action));
 
@@ -7297,6 +7921,7 @@ DKTools.Animation.Action = class extends DKTools.Event {
 
         action.setOnUpdateHandler(function() {
             const audio = this._data;
+
             if (!audio.isPlaying()) {
                 audio.play();
             }
@@ -7328,6 +7953,7 @@ DKTools.Animation.Action = class extends DKTools.Event {
             const y = (this._data.y - target.y) / remainingTime;
             const newX = target.x + x;
             const newY = target.y + y;
+
             target.move(newX, newY);
         }.bind(action));
 
@@ -7360,6 +7986,7 @@ DKTools.Animation.Action = class extends DKTools.Event {
             const y = (data.y - scale.y) / remainingTime;
             const newX = scale.x + x;
             const newY = scale.y + y;
+
             target.setScale(newX, newY);
         }.bind(action));
 
@@ -7391,6 +8018,7 @@ DKTools.Animation.Action = class extends DKTools.Event {
             const y = (data.y - pivot.y) / remainingTime;
             const newX = pivot.x + x;
             const newY = pivot.y + y;
+
             target.setPivot(newX, newY);
         }.bind(action));
 
@@ -7422,6 +8050,7 @@ DKTools.Animation.Action = class extends DKTools.Event {
             const y = (data.y - skew.y) / remainingTime;
             const newX = skew.x + x;
             const newY = skew.y + y;
+
             target.setSkew(newX, newY);
         }.bind(action));
 
@@ -7455,6 +8084,7 @@ DKTools.Animation.Action = class extends DKTools.Event {
             const width = (data.width - frame.width) / remainingTime;
             const height = (data.height - frame.height) / remainingTime;
             const newFrame = new Rectangle(frame.x + x, frame.y + y, frame.width + width, frame.height + height);
+
             target.setFrame(newFrame);
         }.bind(action));
 
@@ -7487,6 +8117,7 @@ DKTools.Animation.Action = class extends DKTools.Event {
             const y = (data.y - anchor.y) / remainingTime;
             const newX = anchor.x + x;
             const newY = anchor.y + y;
+
             target.setAnchor(newX, newY);
         }.bind(action));
 
@@ -7521,6 +8152,7 @@ DKTools.Animation.Action = class extends DKTools.Event {
             const newR = tone[0] + toneR;
             const newG = tone[1] + toneG;
             const newB = tone[2] + toneB;
+
             target.setTone([newR, newG, newB]);
         }.bind(action));
 
@@ -7546,10 +8178,9 @@ DKTools.Animation.Action = class extends DKTools.Event {
         action.setOnUpdateHandler(function() {
             const remainingTime = this.getRemainingTime();
             const target = this._target;
-
             const openness = (255 - target.openness) / remainingTime;
-            const newOpennes = target.openness + openness;
-            target.openness = newOpennes;
+
+            target.openness = target.openness + openness;
         }.bind(action));
 
         return action;
@@ -7577,6 +8208,7 @@ DKTools.Animation.Action = class extends DKTools.Event {
 
             const openness = -target.openness / remainingTime;
             const newOpennes = target.openness + openness;
+
             target.openness = newOpennes;
         }.bind(action));
 
@@ -10117,7 +10749,7 @@ DKTools.Base = class {
      * @param {Boolean} [object.visible] - Visibility of the object
      * @param {Boolean} [object.active] - Activity of the object
      * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.scale] - Scale of the object
-     * @param {PPIXI.Point | PIXI.ObservablePoint | Point | Object} [object.pivot] - Pivot of the object
+     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.pivot] - Pivot of the object
      * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.skew] - Skew of the object
      * @param {Number} [object.rotation] - Rotation of the object
      * @param {Number} [object.tint] - Tint of the object
@@ -10291,7 +10923,7 @@ DKTools.Base = class {
      * @param {Boolean} [object.visible] - Visibility of the object
      * @param {Boolean} [object.active] - Activity of the object
      * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.scale] - Scale of the object
-     * @param {PPIXI.Point | PIXI.ObservablePoint | Point | Object} [object.pivot] - Pivot of the object
+     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.pivot] - Pivot of the object
      * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.skew] - Skew of the object
      * @param {Number} [object.rotation] - Rotation of the object
      * @param {Number} [object.tint] - Tint of the object
@@ -11468,7 +12100,7 @@ DKTools.Base = class {
      *
      * @since 2.0.0
      * @param {Sprite | Window} object - Object
-     * @returns {Bboolean} Object (parameter) is parent of this object
+     * @returns {Boolean} Object (parameter) is parent of this object
      */
     isParent(object) {
         return object && this.parent === object;
@@ -11491,7 +12123,7 @@ DKTools.Base = class {
      * @param {Object} [options={}] - Options for drawing
      *
      * @param {Object} [options.wrap] - Options for text wrap
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.pos] - Position of the text
+     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position of the text
      * @param {Number} [options.x=0] - The X coordinate (if object.pos is undefined or null)
      * @param {Number | String} [options.y=0] - The Y coordinate or line number (String) (if object.pos is undefined or null)
      *
@@ -11499,8 +12131,8 @@ DKTools.Base = class {
      * @param {Number} [options.wrap.maxLines] - Max lines
      * @param {Boolean} [options.wrap.breakWords] - Breaks a words for the wrapping
      *
-     * @param {Number} [object.pos.x=0] - The X coordinate
-     * @param {Number | String} [object.pos.y=0] - The Y coordinate or line number (String)
+     * @param {Number} [options.pos.x=0] - The X coordinate
+     * @param {Number | String} [options.pos.y=0] - The Y coordinate or line number (String)
      *
      * @see DKTools.Base.prototype.hasBitmap
      * @see DKTools.Base.prototype.textWrap
@@ -12171,8 +12803,10 @@ DKTools.Base = class {
      * Fills the bitmap with gradient
      * Returns true if bitmap exists
      *
-     * @param {String} [object.color1='black'] - First color
-     * @param {String} [object.color2='white'] - Second color
+     * @version 3.1.0
+     *
+     * @param {String} [color1='black'] - First color
+     * @param {String} [color2='white'] - Second color
      * @param {Boolean} [vertical=false] - Vertical gradient
      *
      * @see DKTools.Base.prototype.gradientFillRect
@@ -12180,7 +12814,7 @@ DKTools.Base = class {
      * @returns {Boolean} Bitmap exists
      */
     gradientFillAll(color1, color2, vertical) {
-        return this.gradientFillAll({ color1, color2, vartical });
+        return this.gradientFillRect({ color1, color2, vartical });
     };
 
     // draw text ex methods
@@ -12483,883 +13117,6 @@ DKTools.Base = class {
      */
     obtainEscapeParam(textState) {
         return Window_Base.prototype.obtainEscapeParam.call(this, textState);
-    };
-
-    // load methods
-
-    /**
-     * Loads a bitmap from img/animations/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadAnimation(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/animations/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/animations/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a bitmap from img/battlebacks1/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadBattleback1(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/battlebacks1/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/battlebacks1/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a bitmap from img/battlebacks2/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadBattleback2(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/battlebacks2/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/battlebacks2/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a bitmap from img/enemies/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadEnemy(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/enemies/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/enemies/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a bitmap from img/characters/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadCharacter(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/characters/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/characters/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a bitmap from img/faces/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadFace(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/faces/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/faces/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a bitmap from img/parallaxes/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadParallax(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/parallaxes/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/parallaxes/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a bitmap from img/pictures/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadPicture(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/pictures/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/pictures/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a bitmap from img/sv_actors/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadSvActor(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/sv_actors/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/sv_actors/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a bitmap from img/sv_enemies/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadSvEnemy(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/sv_enemies/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/sv_enemies/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a bitmap from img/system/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadSystem(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/system/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/system/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a bitmap from img/tilesets/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadTileset(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/tilesets/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/tilesets/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a bitmap from img/titles1/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadTitle1(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/titles1/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/titles1/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a bitmap from img/titles2/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadTitle2(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadBitmap('img/titles2/', object.filename, object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadBitmap('img/titles2/', object, listener, hue, smooth);
-    };
-
-    /**
-     * Loads a windowskin from img/system/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    loadWindowskin(object, listener, hue, smooth) {
-        if (object instanceof Object) {
-            return this.loadSystem(object.filename || this.standardWindowskin(), object.listener, object.hue, object.smooth);
-        }
-
-        // object - String
-        return this.loadSystem(object || this.standardWindowskin(), listener, hue, smooth);
-    };
-
-    // reserve methods
-
-    /**
-     * Loads and reserves a bitmap from img/animations/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     * 
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveAnimation(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/animations/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/animations/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a bitmap from img/battlebacks1/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveBattleback1(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/battlebacks1/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/battlebacks1/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a bitmap from img/battlebacks2/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     * 
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveBattleback2(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/battlebacks2/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/battlebacks2/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a bitmap from img/enemies/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     * 
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveEnemy(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/enemies/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/enemies/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a bitmap from img/characters/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveCharacter(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/characters/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/characters/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a bitmap from img/faces/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveFace(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/faces/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/faces/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a bitmap from img/parallaxes/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveParallax(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/parallaxes/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/parallaxes/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a bitmap from img/pictures/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reservePicture(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/pictures/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/pictures/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a bitmap from img/sv_actors/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveSvActor(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/sv_actors/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/sv_actors/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a bitmap from img/sv_enemies/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveSvEnemy(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/sv_enemies/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/sv_enemies/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a bitmap from img/system/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveSystem(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/system/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/system/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a bitmap from img/tilesets/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveTileset(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/tilesets/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/tilesets/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a bitmap from img/titles1/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveTitle1(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/titles1/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/titles1/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a bitmap from img/titles2/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     *
-     * @see DKTools.Base.prototype.reserveBitmap
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveTitle2(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveBitmap('img/titles2/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveBitmap('img/titles2/', object, listener, hue, smooth, reservationId);
-    };
-
-    /**
-     * Loads and reserves a windowskin from img/system/
-     * Returns true if the bitmap of the object has been changed
-     *
-     * @version 3.0.0
-     *
-     * @param {String | Object} object - Name of file or object with parameters
-     * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
-     * @param {Number} [hue] - Hue of bitmap (if object is String)
-     * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
-     * @param {Number} [reservationId] - Reservation ID (if object is String)
-     *
-     * @param {String} object.filename - Name of file
-     * @param {Function} [object.listener] - Function of processing after loading a bitmap
-     * @param {Number} [object.hue] - Hue of bitmap
-     * @param {Boolean} [object.smooth] - Smooth of bitmap
-     * @param {Number} [object.reservationId] - Reservation ID
-     *
-     * @see DKTools.Base.prototype.standardWindowskin
-     * @see DKTools.Base.prototype.reserveSystem
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Boolean} Bitmap of the object has been changed
-     */
-    reserveWindowskin(object, listener, hue, smooth, reservationId) {
-        if (object instanceof Object) {
-            return this.reserveSystem(object.filename || this.standardWindowskin(), object.listener, object.hue, object.smooth, object.reservationId);
-        }
-
-        // object - String
-        return this.reserveSystem(object || this.standardWindowskin(), listener, hue, smooth, reservationId);
     };
 
     // options methods
@@ -14440,16 +14197,6 @@ DKTools.Sprite.prototype = Object.create(Sprite.prototype);
 DKTools.Utils.mixin(DKTools.Sprite.prototype, DKTools.Base.prototype);
 DKTools.Sprite.prototype.constructor = DKTools.Sprite;
 
-/**
- * Counter of created sprites
- *
- * @private
- * @readonly
- * @type {Number}
- * @memberof DKTools.Sprite
- */
-DKTools.Sprite._counter = 0;
-
 // properties
 
 Object.defineProperties(DKTools.Sprite.prototype, {
@@ -14706,7 +14453,6 @@ DKTools.Sprite.prototype.initialize = function(object, y, width, height) {
     }
 
     this.updateBitmap();
-    DKTools.Sprite._counter++;
 };
 
 // _clear methods
@@ -14851,10 +14597,11 @@ DKTools.Sprite.prototype.standardOpacity = function() {
 /**
  * Returns the standard frame
  *
+ * @version 3.1.0
  * @returns {Rectangle} Standard frame
  */
 DKTools.Sprite.prototype.standardFrame = function() {
-    return new Rectangle(0, 0, this.width, this.height);
+    return new Rectangle(0, 0, this.realWidth, this.realHeight);
 };
 
 /**
@@ -14876,6 +14623,8 @@ DKTools.Sprite.prototype.standardAnchor = function() {
  * @param {Object} [object] - Parameters
  *
  * @param {Bitmap | Object} [object.bitmap] - Bitmap or object with parameters
+ * @param {PIXI.Rectangle | Rectangle | Object} [object.frame] - Rectangle or object with parameters
+ * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.anchor] - Anchor of the sprite
  * @param {Object} [object.font] - Text font
  * @param {String} [object.textColor] - Text color
  * @param {Number} [object.paintOpacity] - Paint opacity
@@ -14884,8 +14633,6 @@ DKTools.Sprite.prototype.standardAnchor = function() {
  * @param {Number} [object.opacity] - Opacity
  * @param {String} [object.graphicFolder] - Graphic folder
  * @param {String} [object.graphicName] - Graphic name
- * @param {PIXI.Rectangle | Rectangle | Object} [object.frame] - Rectangle or object with parameters
- * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.anchor] - Anchor of the sprite
  *
  * @param {String} object.folder - Path to file
  * @param {String} object.filename - Name of file
@@ -14907,6 +14654,8 @@ DKTools.Sprite.prototype.standardAnchor = function() {
  *
  * @see DKTools.Base.prototype.setupAll
  * @see DKTools.Sprite.prototype.setupBitmap
+ * @see DKTools.Sprite.prototype.setupFrame
+ * @see DKTools.Sprite.prototype.setupAnchor
  * @see DKTools.Sprite.prototype.setupFont
  * @see DKTools.Sprite.prototype.setupTextColor
  * @see DKTools.Sprite.prototype.setupPaintOpacity
@@ -14915,13 +14664,13 @@ DKTools.Sprite.prototype.standardAnchor = function() {
  * @see DKTools.Sprite.prototype.setupOpacity
  * @see DKTools.Sprite.prototype.setupGraphicFolder
  * @see DKTools.Sprite.prototype.setupGraphicName
- * @see DKTools.Sprite.prototype.setupFrame
- * @see DKTools.Sprite.prototype.setupAnchor
  */
 DKTools.Sprite.prototype.setupAll = function(object) {
 	object = object || {};
     DKTools.Base.prototype.setupAll.call(this, object);
     this.setupBitmap(object);
+    this.setupFrame(object.frame);
+    this.setupAnchor(object.anchor);
     this.setupFont(object.font);
     this.setupTextColor(object.textColor);
     this.setupPaintOpacity(object.paintOpacity);
@@ -14930,8 +14679,6 @@ DKTools.Sprite.prototype.setupAll = function(object) {
     this.setupOpacity(object.opacity);
     this.setupGraphicFolder(object.graphicFolder);
     this.setupGraphicName(object.graphicName);
-    this.setupFrame(object.frame);
-    this.setupAnchor(object.anchor);
 };
 
 /**
@@ -14995,7 +14742,7 @@ DKTools.Sprite.prototype.setupSize = function(object, height) {
 /**
  * Sets the bitmap
  *
- * @version 2.0.1
+ * @version 3.1.0
  *
  * @param {Bitmap | Object} [object] - Bitmap or object with parameters
  *
@@ -15014,8 +14761,8 @@ DKTools.Sprite.prototype.setupBitmap = function(object) {
         object.hasFixedBitmap() &&
         object.canCloneFixedBitmap()) {
             bitmap = DKTools.Utils.Bitmap.clone(object.bitmap);
-    } else {
-        bitmap = DKTools.Utils.Bitmap.load(object);
+    } else if (object instanceof Object) {
+        bitmap = DKTools.Utils.Bitmap.load(object.bitmap || object);
     }
 
     if (bitmap) {
@@ -15034,13 +14781,62 @@ DKTools.Sprite.prototype.setupBitmap = function(object) {
 };
 
 /**
+ * Sets the frame of the sprite
+ *
+ * @version 3.1.0
+ *
+ * @param {Number | Rectangle | Object} [object] - The X coordinate or Rectangle or object with parameters
+ * @param {Number} [y] - The Y coordinate (if object is Number)
+ * @param {Number} [width] - Width of the frame (if object is Number)
+ * @param {Number} [height] - Height of the frame (if object is Number)
+ *
+ * @param {Number} [object.x] - The X coordinate
+ * @param {Number} [object.y] - The Y coordinate
+ * @param {Number} [object.width] - Width of the frame
+ * @param {Number} [object.height] - Height of the frame
+ *
+ * @see DKTools.Utils.Rectangle.toRectangle
+ * @see DKTools.Sprite.prototype.standardFrame
+ * @see Sprite.prototype.setFrame
+ * @see DKTools.Sprite.prototype.hasFixedBitmap
+ */
+DKTools.Sprite.prototype.setupFrame = function(object, y, width, height) {
+    const frame = DKTools.Utils.Rectangle.toRectangle(object, y, width, height);
+    const newFrame = Object.assign(this.standardFrame(), frame);
+
+    Sprite.prototype.setFrame.call(this, newFrame.x, newFrame.y, newFrame.width, newFrame.height);
+};
+
+/**
+ * Sets the anchor of the sprite
+ *
+ * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object=this.standardAnchor()] - The X coordinate or Point or object with parameters
+ * @param {Number} [y] - The Y coordinate (is object is Number)
+ *
+ * @param {Number} [object.x] - The X coordinate
+ * @param {Number} [object.y] - The Y coordinate
+ *
+ * @see DKTools.Utils.Point.toPoint
+ * @see DKTools.Sprite.prototype.standardAnchor
+ */
+DKTools.Sprite.prototype.setupAnchor = function(object, y) {
+    const anchor = DKTools.Utils.Point.toPoint(object, y);
+    const newAnchor = Object.assign(this.standardAnchor(), anchor);
+
+    /**
+     * @type {PIXI.ObservablePoint}
+     */
+    this.anchor.copy(newAnchor);
+};
+
+/**
  * Sets the font of the bitmap
  *
  * @param {Object} [font=this.standardFont()] - Text font
  *
- * @param {String} [object.font.fontFace] - Font face
- * @param {Number} [object.font.fontSize] - Font size
- * @param {Boolean} [object.font.fontItalic] - Font italic
+ * @param {String} [font.fontFace] - Font face
+ * @param {Number} [font.fontSize] - Font size
+ * @param {Boolean} [font.fontItalic] - Font italic
  *
  * @see DKTools.Sprite.prototype.standardFont
  */
@@ -15166,59 +14962,6 @@ DKTools.Sprite.prototype.setupGraphicName = function(graphicName) {
 };
 
 /**
- * Sets the frame of the sprite
- *
- * @version 1.1.0
- *
- * @param {Number | Rectangle | Object} [object] - The X coordinate or Rectangle or object with parameters
- * @param {Number} [y] - The Y coordinate (if object is Number)
- * @param {Number} [width] - Width of the frame (if object is Number)
- * @param {Number} [height] - Height of the frame (if object is Number)
- *
- * @param {Number} [object.x] - The X coordinate
- * @param {Number} [object.y] - The Y coordinate
- * @param {Number} [object.width] - Width of the frame
- * @param {Number} [object.height] - Height of the frame
- *
- * @see DKTools.Utils.Rectangle.toRectangle
- * @see DKTools.Sprite.prototype.standardFrame
- * @see Sprite.prototype.setFrame
- * @see DKTools.Sprite.prototype.hasFixedBitmap
- */
-DKTools.Sprite.prototype.setupFrame = function(object, y, width, height) {
-    const frame = DKTools.Utils.Rectangle.toRectangle(object, y, width, height);
-    const newFrame = Object.assign(this.standardFrame(), frame);
-    
-    Sprite.prototype.setFrame.call(this, newFrame.x, newFrame.y, newFrame.width, newFrame.height);
-
-    if (this.hasFixedBitmap() && !this.bitmap.isReady()) {
-        this._refreshFrame = true;
-    }
-};
-
-/**
- * Sets the anchor of the sprite
- *
- * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object=this.standardAnchor()] - The X coordinate or Point or object with parameters
- * @param {Number} [y=undefined] - The Y coordinate (is object is Number)
- *
- * @param {Number} [object.x] - The X coordinate
- * @param {Number} [object.y] - The Y coordinate
- *
- * @see DKTools.Utils.Point.toPoint
- * @see DKTools.Sprite.prototype.standardAnchor
- */
-DKTools.Sprite.prototype.setupAnchor = function(object, y) {
-    const anchor = DKTools.Utils.Point.toPoint(object, y);
-    const newAnchor = Object.assign(this.standardAnchor(), anchor);
-
-    /**
-     * @type {PIXI.ObservablePoint}
-     */
-    this.anchor.copy(newAnchor);
-};
-
-/**
  * Sets the mask
  * 
  * @since 2.0.0
@@ -15263,9 +15006,9 @@ DKTools.Sprite.prototype.setupGraphicLoadListener = function(listener) {
  * @param {String} [object.graphicFolder] - Graphic folder
  * @param {String} [object.graphicName] - Graphic name
  *
- * @param {String} [object.font.fontFace] - Название шрифта
- * @param {Number} [object.font.fontSize] - Размер шрифта
- * @param {Boolean} [object.font.fontItalic] - Курсив шрифта
+ * @param {String} [object.font.fontFace] - Font face
+ * @param {Number} [object.font.fontSize] - Font size
+ * @param {Boolean} [object.font.fontItalic] - Font italic
  *
  * @see DKTools.Base.prototype.setAll
  * @see DKTools.Sprite.prototype.setFont
@@ -15335,30 +15078,36 @@ DKTools.Sprite.prototype.setAll = function(object, blockStart, activate) {
  * Changes the width of the bitmap
  * Returns true if the change occurred
  *
+ * @version 3.1.0
+ * 
  * @param {Number} [width] - Width of the bitmap
  * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
  *
+ * @see DKTools.Sprite.prototype._getBitmapHeight
  * @see DKTools.Sprite.prototype.resize
  *
  * @returns {Boolean} Change occurred
  */
 DKTools.Sprite.prototype.setWidth = function(width, blockStart) {
-    return this.resize(width, this._bitmapHeight, blockStart);
+    return this.resize(width, this._getBitmapHeight(), blockStart);
 };
 
 /**
- * hanges the width of the bitmap
+ * Changes the height of the bitmap
  * Returns true if the change occurred
  *
+ * @version 3.1.0
+ * 
  * @param {Number} [height] - Height of the bitmap
  * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
  *
+ * @see DKTools.Sprite.prototype._getBitmapWidth
  * @see DKTools.Sprite.prototype.resize
  *
  * @returns {Boolean} Change occurred
  */
 DKTools.Sprite.prototype.setHeight = function(height, blockStart) {
-    return this.resize(this._bitmapWidth, height, blockStart);
+    return this.resize(this._getBitmapWidth(), height, blockStart);
 };
 
 /**
@@ -15394,9 +15143,9 @@ DKTools.Sprite.prototype.setBitmap = function(object) {
  * @param {Object} [font] - Text font
  * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
  *
- * @param {String} [object.font.fontFace] - Font face
- * @param {Number} [object.font.fontSize] - Font size
- * @param {Boolean} [object.font.fontItalic] - Font italic
+ * @param {String} [font.fontFace] - Font face
+ * @param {Number} [font.fontSize] - Font size
+ * @param {Boolean} [font.fontItalic] - Font italic
  *
  * @see DKTools.Sprite.prototype.standardFont
  * @see DKTools.Sprite.prototype.setupFont
@@ -15577,7 +15326,7 @@ DKTools.Sprite.prototype.setOpacity = function(opacity, blockUpdateOpacity) {
  * Changes the graphic folder
  * Returns true if the change occurred
  *
- * @param {String} [graphicName] - Graphic folder
+ * @param {String} [folder] - Graphic folder
  * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
  *
  * @see DKTools.Sprite.prototype.setupGraphicFolder
@@ -15682,7 +15431,7 @@ DKTools.Sprite.prototype.setFrame = function(object, y, width, height) {
  * Returns true if the change occurred
  *
  * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - The X coordinate or Point or object with parameters
- * @param {Number} [y=undefined] - The Y coordinate (is object is Number)
+ * @param {Number} [y] - The Y coordinate (is object is Number)
  *
  * @param {Number} [object.x] - The X coordinate
  * @param {Number} [object.y] - The Y coordinate
@@ -15718,6 +15467,8 @@ DKTools.Sprite.prototype.setAnchor = function(object, y) {
  * 
  * @since 2.0.0
  * @param {PIXI.Graphics} [mask] - Mask
+ * 
+ * @see DKTools.Sprite.prototype.setupMask
  * 
  * @returns {Boolean} Change occurred
  */
@@ -16184,9 +15935,9 @@ DKTools.Sprite.prototype.blur = function() {
  *
  * @param {Object} font - Text font
  *
- * @param {String} [object.font.fontFace] - Font face
- * @param {Number} [object.font.fontSize] - Font size
- * @param {Boolean} [object.font.fontItalic] - Font italic
+ * @param {String} [font.fontFace] - Font face
+ * @param {Number} [font.fontSize] - Font size
+ * @param {Boolean} [font.fontItalic] - Font italic
  *
  * @see DKTools.Sprite.prototype.hasBitmap
  * @see DKTools.Sprite.prototype.updateFont
@@ -16506,16 +16257,423 @@ DKTools.Sprite.prototype.drawText = function(text, options) {
 // load methods
 
 /**
+ * Loads a bitmap from img/animations/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadAnimation = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/animations/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/animations/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a bitmap from img/battlebacks1/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadBattleback1 = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/battlebacks1/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/battlebacks1/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a bitmap from img/battlebacks2/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadBattleback2 = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/battlebacks2/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/battlebacks2/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a bitmap from img/characters/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadCharacter = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/characters/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/characters/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a bitmap from img/enemies/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadEnemy = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/enemies/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/enemies/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a bitmap from img/faces/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadFace = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/faces/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/faces/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a bitmap from img/parallaxes/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadParallax = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/parallaxes/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/parallaxes/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a bitmap from img/pictures/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadPicture = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/pictures/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/pictures/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a bitmap from img/sv_actors/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadSvActor = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/sv_actors/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/sv_actors/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a bitmap from img/sv_enemies/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadSvEnemy = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/sv_enemies/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/sv_enemies/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a bitmap from img/system/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadSystem = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/system/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/system/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a bitmap from img/tilesets/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadTileset = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/tilesets/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/tilesets/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a bitmap from img/titles1/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadTitle1 = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/titles1/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/titles1/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a bitmap from img/titles2/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadTitle2 = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadBitmap('img/titles2/', object.filename, object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadBitmap('img/titles2/', object, listener, hue, smooth);
+};
+
+/**
+ * Loads a windowskin from img/system/
+ * Returns true if the bitmap has been changed
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ *
+ * @see DKTools.Sprite.prototype.standardWindowskin
+ * @see DKTools.Sprite.prototype.loadSystem
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.loadWindowskin = function(object, listener, hue, smooth) {
+    if (object instanceof Object) {
+        return this.loadSystem(object.filename || this.standardWindowskin(), object.listener, object.hue, object.smooth);
+    }
+
+    // object - String
+    return this.loadSystem(object || this.standardWindowskin(), listener, hue, smooth);
+};
+
+/**
  * Loads a bitmap
- * Returns true if the bitmap of the sprite has been changed
+ * Returns true if the bitmap has been changed
  *
  * @version 3.0.0
  *
  * @param {String | Object} object - Path to file or object with parameters
- * @param {String} filename - Name of file
- * @param {Function} [listener] - Function of processing after loading a bitmap
- * @param {Number} [hue] - Hue of bitmap
- * @param {Boolean} [smooth] - Smooth of bitmap
+ * @param {String} filename - Name of file (if object is String)
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
  *
  * @param {String} object.folder - Path to file
  * @param {String} object.filename - Name of file
@@ -16526,7 +16684,7 @@ DKTools.Sprite.prototype.drawText = function(text, options) {
  * @see DKTools.Sprite.prototype.setBitmap
  * @see DKTools.Utils.Bitmap.load
  *
- * @returns {Boolean} Bitmap of the sprite has been changed
+ * @returns {Boolean} Bitmap has been changed
  */
 DKTools.Sprite.prototype.loadBitmap = function(object, filename, listener, hue, smooth) {
     if (object instanceof Object) {
@@ -16537,11 +16695,11 @@ DKTools.Sprite.prototype.loadBitmap = function(object, filename, listener, hue, 
     const bitmap = DKTools.Utils.Bitmap.load(object, filename, hue, smooth);
 
     if (this.setBitmap(bitmap)) {
-		if (listener) {
+        if (DKTools.Utils.isFunction(listener)) {
             this.bitmap.addLoadListener(listener);
         }
 
-		return true;
+        return true;
     }
 
     return false;
@@ -16550,17 +16708,485 @@ DKTools.Sprite.prototype.loadBitmap = function(object, filename, listener, hue, 
 // reserve methods
 
 /**
+ * Loads and reserves a bitmap from img/animations/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ * 
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveAnimation = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/animations/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/animations/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a bitmap from img/battlebacks1/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveBattleback1 = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/battlebacks1/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/battlebacks1/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a bitmap from img/battlebacks2/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ * 
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveBattleback2 = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/battlebacks2/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/battlebacks2/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a bitmap from img/characters/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveCharacter = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/characters/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/characters/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a bitmap from img/enemies/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ * 
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveEnemy = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/enemies/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/enemies/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a bitmap from img/faces/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveFace = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/faces/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/faces/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a bitmap from img/parallaxes/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveParallax = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/parallaxes/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/parallaxes/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a bitmap from img/pictures/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reservePicture = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/pictures/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/pictures/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a bitmap from img/sv_actors/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveSvActor = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/sv_actors/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/sv_actors/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a bitmap from img/sv_enemies/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveSvEnemy = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/sv_enemies/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/sv_enemies/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a bitmap from img/system/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveSystem = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/system/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/system/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a bitmap from img/tilesets/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveTileset = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/tilesets/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/tilesets/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a bitmap from img/titles1/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ *
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveTitle1 = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/titles1/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/titles1/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a bitmap from img/titles2/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ *
+ * @see DKTools.Base.prototype.reserveBitmap
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveTitle2 = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveBitmap('img/titles2/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveBitmap('img/titles2/', object, listener, hue, smooth, reservationId);
+};
+
+/**
+ * Loads and reserves a windowskin from img/system/
+ * Returns true if the bitmap has been changed
+ *
+ * @version 3.0.0
+ *
+ * @param {String | Object} object - Name of file or object with parameters
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
+ *
+ * @param {String} object.filename - Name of file
+ * @param {Function} [object.listener] - Function of processing after loading a bitmap
+ * @param {Number} [object.hue] - Hue of bitmap
+ * @param {Boolean} [object.smooth] - Smooth of bitmap
+ * @param {Number} [object.reservationId] - Reservation ID
+ *
+ * @see DKTools.Sprite.prototype.standardWindowskin
+ * @see DKTools.Sprite.prototype.reserveSystem
+ * @see Bitmap.prototype.addLoadListener
+ *
+ * @returns {Boolean} Bitmap has been changed
+ */
+DKTools.Sprite.prototype.reserveWindowskin = function(object, listener, hue, smooth, reservationId) {
+    if (object instanceof Object) {
+        return this.reserveSystem(object.filename || this.standardWindowskin(), object.listener, object.hue, object.smooth, object.reservationId);
+    }
+
+    // object - String
+    return this.reserveSystem(object || this.standardWindowskin(), listener, hue, smooth, reservationId);
+};
+
+/**
  * Loads and reserves a bitmap
- * Returns true if the bitmap of the sprite has been changed
+ * Returns true if the bitmap has been changed
  *
  * @version 3.0.0
  *
  * @param {String | Object} object - Path to file or object with parameters
- * @param {String} filename - Name of file
- * @param {Function} [listener] - Function of processing after loading a bitmap
- * @param {Number} [hue] - Hue of bitmap
- * @param {Boolean} [smooth] - Smooth of bitmap
- * @param {Number} [reservationId] - Reservation ID
+ * @param {String} filename - Name of file (if object is String)
+ * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
+ * @param {Number} [hue] - Hue of bitmap (if object is String)
+ * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
+ * @param {Number} [reservationId] - Reservation ID (if object is String)
  *
  * @param {String} object.folder - Path to file
  * @param {String} object.filename - Name of file
@@ -16572,7 +17198,7 @@ DKTools.Sprite.prototype.loadBitmap = function(object, filename, listener, hue, 
  * @see DKTools.Sprite.prototype.setBitmap
  * @see DKTools.Utils.Bitmap.reserve
  *
- * @returns {Boolean} Bitmap of the sprite has been changed
+ * @returns {Boolean} Bitmap has been changed
  */
 DKTools.Sprite.prototype.reserveBitmap = function(object, filename, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
@@ -16580,10 +17206,10 @@ DKTools.Sprite.prototype.reserveBitmap = function(object, filename, listener, hu
     }
 
     // object - String
-    const bitmap = DKTools.Utils.Bitmap.reserve(object, filename, listener, hue, smooth, reservationId)
+    const bitmap = DKTools.Utils.Bitmap.reserve(object, filename, listener, hue, smooth, reservationId);
 
     if (this.setBitmap(bitmap)) {
-        if (listener) {
+        if (DKTools.Utils.isFunction(listener)) {
             this.bitmap.addLoadListener(listener);
         }
 
@@ -16608,13 +17234,13 @@ DKTools.Sprite.prototype.reserveBitmap = function(object, filename, listener, hu
  */
 DKTools.Sprite.prototype._loadGraphic = function() {
     if (this.hasGraphicFolder() && this.hasGraphicName()) {
-        const folder = this.graphicFolder;
-        const filename = this.graphicName;
+        const folder = this._graphicFolder;
+        const filename = this._graphicName;
         const listener = this._graphicLoadListener;
 
         this.loadBitmap(folder, filename);
 
-        if (listener && this.hasBitmap()) {
+        if (DKTools.Utils.isFunction(listener) && this.hasBitmap()) {
             this.bitmap.addLoadListener(listener);
         }
 
@@ -24583,7 +25209,7 @@ DKTools.Layout.prototype.setItems = function(items, blockStart) {
  * Changes the height of the row
  * Returns true if the change occurred
  *
- * @param @param {Function | Number} [rowHeight] - Height of the row
+ * @param {Function | Number} [rowHeight] - Height of the row
  * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
  *
  * @see DKTools.Layout.prototype.setupRowHeight
@@ -25595,16 +26221,6 @@ DKTools.Window.prototype = Object.create(Window_Base.prototype);
 DKTools.Utils.mixin(DKTools.Window.prototype, DKTools.Base.prototype);
 DKTools.Window.prototype.constructor = DKTools.Window;
 
-/**
- * Counter of created windows
- *
- * @private
- * @readonly
- * @type {Number}
- * @memberof DKTools.Window
- */
-DKTools.Window._counter = 0;
-
 // properties
 
 Object.defineProperties(DKTools.Window.prototype, {
@@ -25832,7 +26448,6 @@ Object.defineProperties(DKTools.Window.prototype, {
 DKTools.Window.prototype.initialize = function(object, y, width, height) {
     PIXI.Container.call(this);
     DKTools.Base.prototype.initialize.call(this, object, y, width, height);
-    DKTools.Window._counter++;
 };
 
 // _clear methods
@@ -25992,6 +26607,7 @@ DKTools.Window.prototype._createAll = function() {
 /**
  * Creates all parts of the window
  *
+ * @version 3.1.0
  * @private
  * @override
  *
@@ -26005,6 +26621,7 @@ DKTools.Window.prototype._createAllParts = function() {
     this._createBackSprite();
     this._createFrameSprite();
     this._createPauseSignSprite();
+    this._createArrows();
 };
 
 /**
@@ -26084,6 +26701,74 @@ DKTools.Window.prototype._createPauseSignSprite = function() {
 };
 
 /**
+ * Creates the arrows
+ *
+ * @since 3.1.0
+ * @static
+ *
+ * @see DKTools.Window.prototype.needsCreateDownArrowSprite
+ * @see DKTools.Window.prototype.needsCreateUpArrowSprite
+ * @see DKTools.Window.prototype.needsCreateRightArrowSprite
+ * @see DKTools.Window.prototype.needsCreateLeftArrowSprite
+ * @see DKTools.Window.prototype.createArrow
+ * @see DKTools.Window.prototype.onDownArrowUpdate
+ * @see DKTools.Window.prototype.onDownArrowMouseClick
+ * @see DKTools.Window.prototype.onDownArrowMouseLongPress
+ * @see DKTools.Window.prototype.onUpArrowUpdate
+ * @see DKTools.Window.prototype.onUpArrowMouseClick
+ * @see DKTools.Window.prototype.onUpArrowMouseLongPress
+ * @see DKTools.Window.prototype.onRightArrowUpdate
+ * @see DKTools.Window.prototype.onRightArrowMouseClick
+ * @see DKTools.Window.prototype.onRightArrowMouseLongPress
+ * @see DKTools.Window.prototype.onLeftArrowUpdate
+ * @see DKTools.Window.prototype.onLeftArrowMouseClick
+ * @see DKTools.Window.prototype.onLeftArrowMouseLongPress
+ * @see DKTools.Window.prototype.standardArrowStateNormal
+ * @see DKTools.Window.prototype.standardArrowStatePressed
+ */
+DKTools.Window.prototype._createArrows = function() {
+    if (this.needsCreateUpArrowSprite()) {
+        this.createArrow('up', 'up', {
+            onUpdate: this.onUpArrowUpdate.bind(this),
+            onMouseClick: this.onUpArrowMouseClick.bind(this),
+            onMouseLongPress: this.onUpArrowMouseLongPress.bind(this),
+            onStateNormal: this.standardArrowStateNormal(),
+            onStatePressed: this.standardArrowStatePressed()
+        });
+    }
+
+    if (this.needsCreateDownArrowSprite()) {
+        this.createArrow('down', 'down', {
+            onUpdate: this.onDownArrowUpdate.bind(this),
+            onMouseClick: this.onDownArrowMouseClick.bind(this),
+            onMouseLongPress: this.onDownArrowMouseLongPress.bind(this),
+            onStateNormal: this.standardArrowStateNormal(),
+            onStatePressed: this.standardArrowStatePressed()
+        });
+    }
+
+    if (this.needsCreateLeftArrowSprite()) {
+        this.createArrow('left', 'left', {
+            onUpdate: this.onLeftArrowUpdate.bind(this),
+            onMouseClick: this.onLeftArrowMouseClick.bind(this),
+            onMouseLongPress: this.onLeftArrowMouseLongPress.bind(this),
+            onStateNormal: this.standardArrowStateNormal(),
+            onStatePressed: this.standardArrowStatePressed()
+        });
+    }
+
+    if (this.needsCreateRightArrowSprite()) {
+        this.createArrow('right', 'right', {
+            onUpdate: this.onRightArrowUpdate.bind(this),
+            onMouseClick: this.onRightArrowMouseClick.bind(this),
+            onMouseLongPress: this.onRightArrowMouseLongPress.bind(this),
+            onStateNormal: this.standardArrowStateNormal(),
+            onStatePressed: this.standardArrowStatePressed()
+        });
+    }
+};
+
+/**
  * Creates the window skin
  *
  * @private
@@ -26092,40 +26777,6 @@ DKTools.Window.prototype._createPauseSignSprite = function() {
  */
 DKTools.Window.prototype._createWindowskin = function() {
     this.windowskin = this.loadWindowskin();
-};
-
-// _setup methods
-
-/**
- * Sets the events
- *
- * @private
- * @override
- *
- * @see DKTools.Base.prototype._setupEvents
- * @see DKTools.Base.prototype.needsCreateArrowsSprites
- * @see DKTools.Base.prototype._setupCreateArrowsEvent
- */
-DKTools.Window.prototype._setupEvents = function() {
-    DKTools.Base.prototype._setupEvents.call(this);
-
-    if (this.needsCreateArrowsSprites()) {
-        this._setupCreateArrowsEvent();
-    }
-};
-
-/**
- * Sets the create arrows event
- * 
- * @private
- * 
- * @see DKTools.Window.prototype.addOneTimeEvent
- */
-DKTools.Window.prototype._setupCreateArrowsEvent = function() {
-     this.addOneTimeEvent({
-         type: 'create-all',
-         onSuccess: this.createArrows.bind(this)
-     });
 };
 
 // _add methods
@@ -26147,6 +26798,7 @@ DKTools.Window.prototype._addAllChildren = function() {
 /**
  * Adds all parts of the window to processing
  *
+ * @version 3.1.0
  * @private
  *
  * @see DKTools.Window.prototype._addSpriteContainer
@@ -26155,6 +26807,7 @@ DKTools.Window.prototype._addAllChildren = function() {
 DKTools.Window.prototype._addAllParts = function() {
     this._addSpriteContainer();
     this._addPauseSignSprite();
+    this._addArrows();
 };
 
 /**
@@ -26206,6 +26859,22 @@ DKTools.Window.prototype._addPauseSignSprite = function() {
     }
 };
 
+/**
+ * Adds the arrows to processing
+ *
+ * @since 3.1.0
+ * @private
+ */
+DKTools.Window.prototype._addArrows = function() {
+    _.forEach(['up', 'down', 'left', 'right'], function(arrowType) {
+        const arrow = this.getArrow(arrowType);
+
+        if (arrow) {
+            this.addChild(arrow);
+        }
+    }.bind(this));
+};
+
 // standard methods
 
 /**
@@ -26242,6 +26911,46 @@ DKTools.Window.prototype.standardMargin = function() {
  */
 DKTools.Window.prototype.standardOrigin = function() {
     return new Point(0, 0);
+};
+
+/**
+ * Returns the standard position of the arrow of up
+ *
+ * @since 3.1.0
+ * @returns {Point} Standard position of the arrow of up
+ */
+DKTools.Window.prototype.standardUpArrowPosition = function() {
+    return new Point(this._width / 2, 12);
+};
+
+/**
+ * Returns the standard position of the arrow of down
+ *
+ * @since 3.1.0
+ * @returns {Point} Standard position of the arrow of down
+ */
+DKTools.Window.prototype.standardDownArrowPosition = function() {
+    return new Point(this._width / 2, this._height - 12);
+};
+
+/**
+ * Returns the standard position of the arrow of left
+ *
+ * @since 3.1.0
+ * @returns {Point} Standard position of the arrow of left
+ */
+DKTools.Window.prototype.standardLeftArrowPosition = function() {
+    return new Point(12, this._height / 2);
+};
+
+/**
+ * Returns the standard position of the arrow of right
+ *
+ * @since 3.1.0
+ * @returns {Point} Standard position of the arrow of right
+ */
+DKTools.Window.prototype.standardRightArrowPosition = function() {
+    return new Point(this._width - 12, this._height / 2);
 };
 
 /**
@@ -26429,10 +27138,10 @@ DKTools.Window.prototype.standardTone = function() {
  * @param {Object} [object.opacity] - Opacity of the window
  * @param {Number[]} [object.tone] - Tone of the window
  *
- * @param {Number} [opacity.windowOpacity] - Opacity of the window
- * @param {Number} [opacity.contentsOpacity] - Opacity of the contents
- * @param {Number} [opacity.frameOpacity] - Opacity of the frame
- * @param {Number} [opacity.backOpacity] - Opacity of the background
+ * @param {Number} [object.opacity.windowOpacity] - Opacity of the window
+ * @param {Number} [object.opacity.contentsOpacity] - Opacity of the contents
+ * @param {Number} [object.opacity.frameOpacity] - Opacity of the frame
+ * @param {Number} [object.opacity.backOpacity] - Opacity of the background
  *
  * @see DKTools.Base.prototype.setupAll
  * @see DKTools.Window.prototype.setupContentsWidth
@@ -26444,7 +27153,9 @@ DKTools.Window.prototype.standardTone = function() {
  */
 DKTools.Window.prototype.setupAll = function(object) {
     object = object || {};
+
     DKTools.Base.prototype.setupAll.call(this, object);
+
     let contentsSprite = object.contentsSprite;
 
     if (object instanceof DKTools.Window && contentsSprite instanceof DKTools.Sprite) {
@@ -26557,7 +27268,7 @@ DKTools.Window.prototype.setupContentsSprite = function(contentsSprite) {
  * Sets the position of the contents
  *
  * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object=this.standardContentsPosition()] - The X coordinate or Point or object with parameters
- * @param {Number} [y=undefined] - The Y coordinate (if object is Number)
+ * @param {Number} [y] - The Y coordinate (if object is Number)
  *
  * @param {Number} [object.x] - The X coordinate
  * @param {Number} [object.y] - The Y coordinate
@@ -26741,7 +27452,7 @@ DKTools.Window.prototype.setContentsSprite = function(contentsSprite, blockStart
  * Returns true if the change occurred
  *
  * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - The X coordinate or Point or object with parameters
- * @param {Number} [y=undefined] - The Y coordinate (if object is Number)
+ * @param {Number} [y] - The Y coordinate (if object is Number)
  *
  * @param {Number} [object.x] - The X coordinate
  * @param {Number} [object.y] - The Y coordinate
@@ -26782,7 +27493,7 @@ DKTools.Window.prototype.setContentsPosition = function(object, y) {
  * Returns true if the change occurred
  *
  * @param {Object} [opacity] - Opacity of the window
- * {Boolean} [blockUpdateOpacity=false] - Blocking the call of the "updateOpacity" function
+ * @param {Boolean} [blockUpdateOpacity=false] - Blocking the call of the "updateOpacity" function
  *
  * @param {Number} [opacity.windowOpacity] - Opacity of the window
  * @param {Number} [opacity.contentsOpacity] - Opacity of the contents
@@ -26875,7 +27586,7 @@ DKTools.Window.prototype.getMinHeight = function() {
  */
 DKTools.Window.prototype.getContentsWidth = function() {
     if (DKTools.Utils.isFunction(this._contentsWidth)) {
-        return this._contentsWidth();
+        return this._contentsWidth(this);
     }
 
     return this._contentsWidth;
@@ -26888,7 +27599,7 @@ DKTools.Window.prototype.getContentsWidth = function() {
  */
 DKTools.Window.prototype.getContentsHeight = function() {
     if (DKTools.Utils.isFunction(this._contentsHeight)) {
-        return this._contentsHeight();
+        return this._contentsHeight(this);
     }
 
     return this._contentsHeight;
@@ -27004,6 +27715,7 @@ DKTools.Window.prototype.needsCreatePauseSignSprite = function() {
 /**
  * Updates all parts of the window
  *
+ * @version 3.1.0
  * @private
  * @override
  *
@@ -27011,12 +27723,14 @@ DKTools.Window.prototype.needsCreatePauseSignSprite = function() {
  * @see DKTools.Window.prototype._refreshFrame
  * @see DKTools.Window.prototype._refreshContents
  * @see DKTools.Window.prototype._refreshPauseSign
+ * @see DKTools.Window.prototype._refreshArrows
  */
 DKTools.Window.prototype._refreshAllParts = function() {
     this._refreshBack();
     this._refreshFrame();
     this._refreshContents();
     this._refreshPauseSign();
+    this._refreshArrows();
 };
 
 /**
@@ -27071,6 +27785,30 @@ DKTools.Window.prototype._refreshPauseSign = function() {
     if (this.hasPauseSignSprite()) {
         Window.prototype._refreshPauseSign.call(this);
     }
+};
+
+/**
+ * Updates the arrows
+ *
+ * @since 3.1.0
+ * @private
+ * @override
+ */
+DKTools.Window.prototype._refreshArrows = function() {
+    const arrows = {
+        up: this.standardUpArrowPosition(),
+        down: this.standardDownArrowPosition(),
+        left: this.standardLeftArrowPosition(),
+        right: this.standardRightArrowPosition()
+    };
+
+    _.forEach(arrows, function(position, arrowType) {
+        const arrow = this.getArrow(arrowType);
+
+        if (arrow) {
+            arrow.move(position);
+        }
+    }.bind(this));
 };
 
 // start methods
@@ -27275,85 +28013,6 @@ DKTools.Window.prototype.createArrow = function(arrowType, id, options) {
     this.addChild(arrow);
 
     return arrow;
-};
-
-/**
- * Creates the arrows
- *
- * @version 3.0.0
- *
- * @see DKTools.Window.prototype.needsCreateDownArrowSprite
- * @see DKTools.Window.prototype.needsCreateUpArrowSprite
- * @see DKTools.Window.prototype.needsCreateRightArrowSprite
- * @see DKTools.Window.prototype.needsCreateLeftArrowSprite
- * @see DKTools.Window.prototype.createArrow
- * @see DKTools.Window.prototype.onDownArrowUpdate
- * @see DKTools.Window.prototype.onDownArrowMouseClick
- * @see DKTools.Window.prototype.onDownArrowMouseLongPress
- * @see DKTools.Window.prototype.onUpArrowUpdate
- * @see DKTools.Window.prototype.onUpArrowMouseClick
- * @see DKTools.Window.prototype.onUpArrowMouseLongPress
- * @see DKTools.Window.prototype.onRightArrowUpdate
- * @see DKTools.Window.prototype.onRightArrowMouseClick
- * @see DKTools.Window.prototype.onRightArrowMouseLongPress
- * @see DKTools.Window.prototype.onLeftArrowUpdate
- * @see DKTools.Window.prototype.onLeftArrowMouseClick
- * @see DKTools.Window.prototype.onLeftArrowMouseLongPress
- * @see DKTools.Window.prototype.standardArrowStateNormal
- * @see DKTools.Window.prototype.standardArrowStatePressed
- */
-DKTools.Window.prototype.createArrows = function() {
-    const w = this._width;
-    const h = this._height;
-    const q = 12;
-
-    if (this.needsCreateDownArrowSprite()) {
-        this.createArrow('down', 'down', {
-            x: w / 2,
-            y: h - q,
-            onUpdate: this.onDownArrowUpdate.bind(this),
-            onMouseClick: this.onDownArrowMouseClick.bind(this),
-            onMouseLongPress: this.onDownArrowMouseLongPress.bind(this),
-            onStateNormal: this.standardArrowStateNormal(),
-            onStatePressed: this.standardArrowStatePressed()
-        });
-    }
-
-    if (this.needsCreateUpArrowSprite()) {
-        this.createArrow('up', 'up', {
-            x: w / 2,
-            y: q,
-            onUpdate: this.onUpArrowUpdate.bind(this),
-            onMouseClick: this.onUpArrowMouseClick.bind(this),
-            onMouseLongPress: this.onUpArrowMouseLongPress.bind(this),
-            onStateNormal: this.standardArrowStateNormal(),
-            onStatePressed: this.standardArrowStatePressed()
-        });
-    }
-
-    if (this.needsCreateRightArrowSprite()) {
-        this.createArrow('right', 'right', {
-            x: w - q,
-            y: h / 2,
-            onUpdate: this.onRightArrowUpdate.bind(this),
-            onMouseClick: this.onRightArrowMouseClick.bind(this),
-            onMouseLongPress: this.onRightArrowMouseLongPress.bind(this),
-            onStateNormal: this.standardArrowStateNormal(),
-            onStatePressed: this.standardArrowStatePressed()
-        });
-    }
-
-    if (this.needsCreateLeftArrowSprite()) {
-        this.createArrow('left', 'left', {
-            x: q,
-            y: h / 2,
-            onUpdate: this.onLeftArrowUpdate.bind(this),
-            onMouseClick: this.onLeftArrowMouseClick.bind(this),
-            onMouseLongPress: this.onLeftArrowMouseLongPress.bind(this),
-            onStateNormal: this.standardArrowStateNormal(),
-            onStatePressed: this.standardArrowStatePressed()
-        });
-    }
 };
 
 // add methods
@@ -27738,688 +28397,6 @@ DKTools.Window.prototype.resize = function(width, height, blockStart, activate) 
     return true;
 };
 
-// load methods
-
-/**
- * Loads and returns a bitmap from img/animations/
- *
- * @method DKTools.Window.prototype.loadAnimation
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/battleback1/
- *
- * @method DKTools.Window.prototype.loadBattleback1
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/battleback2/
- *
- * @method DKTools.Window.prototype.loadBattleback2
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/enemies/
- *
- * @method DKTools.Window.prototype.loadEnemy
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/characters/
- *
- * @method DKTools.Window.prototype.loadCharacter
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/faces/
- *
- * @method DKTools.Window.prototype.loadFace
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/parallaxes/
- *
- * @method DKTools.Window.prototype.loadParallax
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/pictures/
- *
- * @method DKTools.Window.prototype.loadPicture
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/sv_actors/
- *
- * @method DKTools.Window.prototype.loadSvActor
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/sv_enemies/
- *
- * @method DKTools.Window.prototype.loadSvEnemy
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/system/
- *
- * @method DKTools.Window.prototype.loadSystem
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/tilesets/
- *
- * @method DKTools.Window.prototype.loadTileset
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/titles1/
- *
- * @method DKTools.Window.prototype.loadTitle1
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/titles2/
- *
- * @method DKTools.Window.prototype.loadTitle2
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap from img/system/
- *
- * @method DKTools.Window.prototype.loadWindowskin
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Window.prototype.loadSystem
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads and returns a bitmap
- *
- * @param {String | Object} object - Path to file or object with parameters
- * @param {String} filename - Name of file (if object is String)
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- *
- * @param {String} object.folder - Path to file
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- *
- * @see DKTools.Utils.Bitmap.load
- *
- * @returns {Bitmap} Loaded bitmap
- */
-DKTools.Window.prototype.loadBitmap = function(object, filename, listener, hue, smooth) {
-    return DKTools.Utils.Bitmap.load(object, filename, listener, hue, smooth);
-};
-
-// reserve methods
-
-/**
- * Loads, reserves and returns a bitmap from img/animations/
- *
- * @method DKTools.Window.prototype.reserveAnimation
- * 
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/battleback1/
- *
- * @method DKTools.Window.prototype.reserveBattleback1
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/battleback2/
- *
- * @method DKTools.Window.prototype.reserveBattleback2
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/enemies/
- *
- * @method DKTools.Window.prototype.reserveEnemy
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/characters/
- *
- * @method DKTools.Window.prototype.reserveCharacter
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/faces/
- *
- * @method DKTools.Window.prototype.reserveFace
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/parallaxes/
- *
- * @method DKTools.Window.prototype.reserveParallax
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/pictures/
- *
- * @method DKTools.Window.prototype.reservePicture
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/sv_actors/
- *
- * @method DKTools.Window.prototype.reserveSvActor
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/sv_enemies/
- *
- * @method DKTools.Window.prototype.reserveSvEnemy
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/system/
- *
- * @method DKTools.Window.prototype.reserveSystem
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/tilesets/
- *
- * @method DKTools.Window.prototype.reserveTileset
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/titles1/
- *
- * @method DKTools.Window.prototype.loadTitle1
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/titles2/
- *
- * @method DKTools.Window.prototype.loadTitle2
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveBitmap
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap from img/system/
- *
- * @method DKTools.Window.prototype.reserveWindowskin
- *
- * @param {String | Object} object - Name of file or object with parameters
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Window.prototype.reserveSystem
- *
- * @returns {Bitmap} Loaded bitmap
- */
-
-/**
- * Loads, reserves and returns a bitmap
- * 
- * @param {String | Object} object - Path to file or object with parameters
- * @param {String} filename - Name of file (if object is String)
- * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
- * @param {Number} [hue] - Hue of bitmap (if object is String)
- * @param {Boolean} [smooth] - Smooth of bitmap (if object is String)
- * @param {Number} [reservationId] - Reservation ID (if object is String)
- *
- * @param {String} object.folder - Path to file
- * @param {String} object.filename - Name of file
- * @param {Function} [object.listener] - Function of processing after loading a bitmap
- * @param {Number} [object.hue] - Hue of bitmap
- * @param {Boolean} [object.smooth] - Smooth of bitmap
- * @param {Number} [object.reservationId] - Reservation ID
- *
- * @see DKTools.Utils.Bitmap.reserve
- * 
- * @returns {Bitmap} Loaded bitmap
- */
-DKTools.Window.prototype.reserveBitmap = function(object, filename, listener, hue, smooth, reservationId) {
-    return DKTools.Utils.Bitmap.reserve(object, filename, listener, hue, smooth, reservationId);
-};
-
 // events methods
 
 /**
@@ -28439,7 +28416,7 @@ DKTools.Window.prototype.updateCloseEvents = function() {
 // arrow methods
 
 /**
- * Callback function that will be processing update of the up arrow
+ * Callback function that will be processing update of the arrow of up
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28450,7 +28427,7 @@ DKTools.Window.prototype.onUpArrowUpdate = function(event) {
 };
 
 /**
- * Callback function that will be processing update of the down arrow
+ * Callback function that will be processing update of the arrow of down
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28461,7 +28438,7 @@ DKTools.Window.prototype.onDownArrowUpdate = function(event) {
 };
 
 /**
- * Callback function that will be processing update of the left arrow
+ * Callback function that will be processing update of the arrow of left
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28472,7 +28449,7 @@ DKTools.Window.prototype.onLeftArrowUpdate = function(event) {
 };
 
 /**
- * Callback function that will be processing update of the right arrow
+ * Callback function that will be processing update of the arrow of right
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28483,7 +28460,7 @@ DKTools.Window.prototype.onRightArrowUpdate = function(event) {
 };
 
 /**
- * Callback function that will be processing click of the up arrow
+ * Callback function that will be processing click of the arrow of up
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28494,7 +28471,7 @@ DKTools.Window.prototype.onUpArrowMouseClick = function(event) {
 };
 
 /**
- * Callback function that will be processing click of the down arrow
+ * Callback function that will be processing click of the arrow of down
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28505,7 +28482,7 @@ DKTools.Window.prototype.onDownArrowMouseClick = function(event) {
 };
 
 /**
- * Callback function that will be processing click of the left arrow
+ * Callback function that will be processing click of the arrow of left
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28516,7 +28493,7 @@ DKTools.Window.prototype.onLeftArrowMouseClick = function(event) {
 };
 
 /**
- * Callback function that will be processing click of the right arrow
+ * Callback function that will be processing click of the arrow of right
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28527,7 +28504,7 @@ DKTools.Window.prototype.onRightArrowMouseClick = function(event) {
 };
 
 /**
- * Callback function that will be processing long press of the up arrow
+ * Callback function that will be processing long press of the arrow of up
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28538,7 +28515,7 @@ DKTools.Window.prototype.onUpArrowMouseLongPress = function(event) {
 };
 
 /**
- * Callback function that will be processing long press of the down arrow
+ * Callback function that will be processing long press of the arrow of down
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28549,7 +28526,7 @@ DKTools.Window.prototype.onDownArrowMouseLongPress = function(event) {
 };
 
 /**
- * Callback function that will be processing long press of the left arrow
+ * Callback function that will be processing long press of the arrow of left
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28560,7 +28537,7 @@ DKTools.Window.prototype.onLeftArrowMouseLongPress = function(event) {
 };
 
 /**
- * Callback function that will be processing long press of the right arrow
+ * Callback function that will be processing long press of the arrow of right
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28775,7 +28752,7 @@ DKTools.Window.Selectable.prototype.needsCreateArrowsSprites = function() {
 // arrow methods
 
 /**
- * Callback function that will be processing update of the up arrow
+ * Callback function that will be processing update of the arrow of up
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28800,7 +28777,7 @@ DKTools.Window.Selectable.prototype.onUpArrowUpdate = function(event) {
 };
 
 /**
- * Callback function that will be processing update of the down arrow
+ * Callback function that will be processing update of the arrow of down
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28828,7 +28805,7 @@ DKTools.Window.Selectable.prototype.onDownArrowUpdate = function(event) {
 };
 
 /**
- * Callback function that will be processing update of the left arrow
+ * Callback function that will be processing update of the arrow of left
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28853,7 +28830,7 @@ DKTools.Window.Selectable.prototype.onLeftArrowUpdate = function(event) {
 };
 
 /**
- * Callback function that will be processing update of the right arrow
+ * Callback function that will be processing update of the arrow of right
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28881,7 +28858,7 @@ DKTools.Window.Selectable.prototype.onRightArrowUpdate = function(event) {
 };
 
 /**
- * Callback function that will be processing click of the up arrow
+ * Callback function that will be processing click of the arrow of up
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28896,7 +28873,7 @@ DKTools.Window.Selectable.prototype.onUpArrowMouseClick = function(event) {
 };
 
 /**
- * Callback function that will be processing click of the down arrow
+ * Callback function that will be processing click of the arrow of down
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28911,7 +28888,7 @@ DKTools.Window.Selectable.prototype.onDownArrowMouseClick = function(event) {
 };
 
 /**
- * Callback function that will be processing click of the left arrow
+ * Callback function that will be processing click of the arrow of left
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28926,7 +28903,7 @@ DKTools.Window.Selectable.prototype.onLeftArrowMouseClick = function(event) {
 };
 
 /**
- * Callback function that will be processing click of the right arrow
+ * Callback function that will be processing click of the arrow of right
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28941,7 +28918,7 @@ DKTools.Window.Selectable.prototype.onRightArrowMouseClick = function(event) {
 };
 
 /**
- * Callback function that will be processing long press of the up arrow
+ * Callback function that will be processing long press of the arrow of up
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28952,7 +28929,7 @@ DKTools.Window.Selectable.prototype.onUpArrowMouseLongPress = function(event) {
 };
 
 /**
- * Callback function that will be processing long press of the down arrow
+ * Callback function that will be processing long press of the arrow of down
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28963,7 +28940,7 @@ DKTools.Window.Selectable.prototype.onDownArrowMouseLongPress = function(event) 
 };
 
 /**
- * Callback function that will be processing long press of the left arrow
+ * Callback function that will be processing long press of the arrow of left
  *
  * @param {DKTools.Event} event - Event
  *
@@ -28974,7 +28951,7 @@ DKTools.Window.Selectable.prototype.onLeftArrowMouseLongPress = function(event) 
 };
 
 /**
- * Callback function that will be processing long press of the right arrow
+ * Callback function that will be processing long press of the arrow of right
  *
  * @param {DKTools.Event} event - Event
  *
@@ -29973,15 +29950,6 @@ DKTools.Scene.prototype.updateChildren = function() {
     this.iterateChildren(this.updateChild);
 };
 
-/**
- * Updates the events
- * 
- * @since 2.0.0
- */
-DKTools.Scene.prototype.updateEvents = function() {
-    this._eventManager.update();
-};
-
 
 
 
@@ -29996,6 +29964,23 @@ DKTools.Scene.prototype.updateEvents = function() {
  * @type {DKTools.ParameterManager}
  */
 const DKToolsParam = new DKTools.ParameterManager('DKTools');
+
+
+
+
+
+//===========================================================================
+// initialize plugin commands
+//===========================================================================
+
+DKTools.PluginCommandManager.set('DKPluginsCheckUpdates', function() {
+    DKTools.Utils._checkUpdates();
+    DKTools.Utils._openConsole();
+});
+
+DKTools.PluginCommandManager.set('OpenDebugConsole', function() {
+    DKTools.Utils._openConsole();
+});
 
 
 
@@ -30039,7 +30024,7 @@ const DKTools_Graphics_initialize = Graphics.initialize;
 Graphics.initialize = function(width, height, type) {
     DKTools_Graphics_initialize.call(this, width, height, type);
 
-    if (Utils.isOptionValid('test') && DKToolsParam.get('Show FPS')) {
+    if (DKTools.Utils.isTest() && DKToolsParam.get('Show FPS')) {
         this.showFps();
     }
 };
@@ -30047,7 +30032,7 @@ Graphics.initialize = function(width, height, type) {
 const DKTools_Graphics_printLoadingError = Graphics.printLoadingError;
 Graphics.printLoadingError = function(url) {
     DKTools_Graphics_printLoadingError.call(this, url);
-    SceneManager._logError(`Failed to load: ${url}`);
+    DKTools.Utils.logError(`Failed to load: ${url}`);
 };
 
 
@@ -30362,16 +30347,36 @@ Object.defineProperties(TouchInput, {
 
 
 //===========================================================================
+// Tilemap
+//===========================================================================
+
+const DKTools__Tilemap_initialize = Tilemap.prototype.initialize;
+Tilemap.prototype.initialize = function() {
+    DKTools__Tilemap_initialize.call(this);
+
+    const param = DKToolsParam.get('Tile Size');
+
+    if (param.Enabled) {
+        this._tileWidth = param.Size;
+        this._tileHeight = param.Size;
+    }
+};
+
+
+
+
+
+//===========================================================================
 // SceneManager
 //===========================================================================
 
 const DKTools_SceneManager_initGraphics = SceneManager.initGraphics;
 SceneManager.initGraphics = function() {
     const param = DKToolsParam.get('Screen Resolution');
-    const width = param['Screen Width'];
-    const height = param['Screen Height'];
+    const width = param.Width;
+    const height = param.Height;
 
-    if (param['Enabled']) {
+    if (param.Enabled) {
         this._boxWidth = width;
         this._screenWidth = width;
         this._boxHeight = height;
@@ -30397,69 +30402,6 @@ SceneManager.updateResolution = function() {
     }
 };
 
-SceneManager._logError = function(e) {
-    if (!e || !DKTools.IO.isLocalMode()) {
-        return;
-    }
-
-    const param = DKToolsParam.get('Errors Log');
-    const enabled = param['Enabled'];
-
-    if (enabled === 'None' ||
-        enabled === 'Only Game' && Utils.isOptionValid('test') ||
-        enabled === 'Only Test' && !Utils.isOptionValid('test')) {
-        return;
-    }
-
-    const fs = DKTools.IO.fs;
-    const os = require('os');
-
-    if (!fs || !os) {
-        return;
-    }
-
-    const fileSize = param['File Size'] * 1024 * 1024;
-    const filename = param['Filename'];
-    const file = new DKTools.IO.File(filename);
-    const stats = file.getStats({ sync: true }).data;
-    let fileDescription = fs.openSync(filename, 'a');
-
-    if (stats && stats.size > fileSize) {
-        fs.closeSync(fileDescription);
-        file.remove({ sync: true });
-        fileDescription = fs.openSync(filename, 'a');
-    }
-
-    if (e instanceof Object) {
-        let data = `Date: ${new Date().toString()}` + os.EOL +
-            `Name: ${e.name}` + os.EOL +
-            `Message: ${e.message}` + os.EOL;
-
-        if (e.filename != undefined) {
-            data += `Filename: ${e.filename}` + os.EOL;
-        }
-
-        if (e.lineNumber !== undefined) {
-            data += `Line: ${e.lineNumber}` + os.EOL;
-        }
-
-        if (e.columnNumber !== undefined) {
-            data += `Column: ${e.columnNumber}` + os.EOL;
-        }
-
-        data += `Stack: ${e.stack}` + os.EOL + os.EOL;
-
-        fs.writeSync(fileDescription, data);
-    } else {
-        const data = `Date: ${new Date().toString()}` + os.EOL +
-            `Error: ${e}` + os.EOL + os.EOL;
-
-        fs.writeSync(fileDescription, data);
-    }
-
-    fs.closeSync(fileDescription);
-};
-
 const DKTools_SceneManager_onKeyDown = SceneManager.onKeyDown;
 SceneManager.onKeyDown = function(event) {
     DKTools_SceneManager_onKeyDown.call(this, event);
@@ -30473,7 +30415,7 @@ SceneManager.onKeyDown = function(event) {
     const keyCode = event.keyCode;
 
     if (keyCode === quickLoadKeyCode &&
-        Utils.isOptionValid('test') &&
+        DKTools.Utils.isTest() &&
         DKToolsParam.get('Quick Load', 'Enabled')) {
         const savefileId = DKToolsParam.get('Quick Load', 'Savefile ID');
         const scene = SceneManager._scene;
@@ -30504,13 +30446,21 @@ SceneManager.onKeyDown = function(event) {
 const DKTools_SceneManager_catchException = SceneManager.catchException;
 SceneManager.catchException = function(e) {
     DKTools_SceneManager_catchException.call(this, e);
-    this._logError(e);
+    DKTools.Utils.logError(e);
+
+    if (DKTools.Utils.isTest() && DKToolsParam.get('Debug Console', 'Open On Error')) {
+        DKTools.Utils._openConsole();
+    }
 };
 
 const DKTools_SceneManager_onError = SceneManager.onError;
 SceneManager.onError = function(e) {
     DKTools_SceneManager_onError.call(this, e);
-    this._logError(e);
+    DKTools.Utils.logError(e);
+
+    if (DKTools.Utils.isTest() && DKToolsParam.get('Debug Console', 'Open On Error')) {
+        DKTools.Utils._openConsole();
+    }
 };
 
 
@@ -30525,7 +30475,7 @@ const DKTools_Scene_Boot_start = Scene_Boot.prototype.start;
 Scene_Boot.prototype.start = function() {
     const quickStart = DKToolsParam.get('Quick Start');
 
-    if (quickStart['Enabled']) {
+    if (quickStart.Enabled) {
         DKTools_Scene_Boot_start.call(this);
 
         if (!DataManager.isBattleTest() && !DataManager.isEventTest() &&
@@ -30540,6 +30490,36 @@ Scene_Boot.prototype.start = function() {
     } else {
         DKTools_Scene_Boot_start.call(this);
     }
+};
+
+
+
+
+
+//===========================================================================
+// Game_Map
+//===========================================================================
+
+const DKTools_Game_Map_tileWidth = Game_Map.prototype.tileWidth;
+Game_Map.prototype.tileWidth = function() {
+    const param = DKToolsParam.get('Tile Size');
+
+    if (param.Enabled) {
+        return param.Size;
+    }
+
+    return DKTools_Game_Map_tileWidth.call(this);
+};
+
+const DKTools_Game_Map_tileHeight = Game_Map.prototype.tileHeight;
+Game_Map.prototype.tileHeight = function() {
+    const param = DKToolsParam.get('Tile Size');
+
+    if (param.Enabled) {
+        return param.Size;
+    }
+
+    return DKTools_Game_Map_tileHeight.call(this);
 };
 
 
