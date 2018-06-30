@@ -3,8 +3,8 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 3.1.0
-Release: 02.06.2018
+Version: 3.1.1
+Release: 30.06.2018
 First release: 13.01.2016
 Supported languages: Russian, English
 */
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 3.1.0
-Релиз: 02.06.2018
+Версия: 3.1.1
+Релиз: 30.06.2018
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.3.1.0 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.3.1.1 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 3.1.0
- Release: 02.06.2018
+ Version: 3.1.1
+ Release: 30.06.2018
  First release: 13.01.2016
  Supported languages: Russian, English
  Thank you for your support: https://dk-plugins.ru/donate
@@ -194,7 +194,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.3.1.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.3.1.1 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -202,8 +202,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 3.1.0
- Релиз: 02.06.2018
+ Версия: 3.1.1
+ Релиз: 30.06.2018
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
  Спасибо за Вашу поддержку: https://dk-plugins.ru/donate
@@ -1009,7 +1009,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 var Imported = Imported || {};
-Imported.DKTools = '3.1.0';
+Imported.DKTools = '3.1.1';
 
 
 
@@ -5546,7 +5546,7 @@ DKTools.PluginManager = class {
      * @param {String} pluginName - Name of plugin
      *
      * @example
-     * DKTools.PluginManager.getVersion('DKTools'); // => '3.1.0'
+     * DKTools.PluginManager.getVersion('DKTools'); // => '3.1.1'
      *
      * @returns {Number | String | undefined} Version of plugin
      */
@@ -26771,12 +26771,16 @@ DKTools.Window.prototype._createArrows = function() {
 /**
  * Creates the window skin
  *
+ * @version 3.1.1
  * @private
  *
  * @see DKTools.Window.prototype.loadWindowskin
  */
 DKTools.Window.prototype._createWindowskin = function() {
-    this.windowskin = this.loadWindowskin();
+    this.windowskin = DKTools.Utils.Bitmap.load({
+        folder: 'img/system',
+        filename: this.standardWindowskin()
+    });
 };
 
 // _add methods
