@@ -1,12 +1,12 @@
 **Author**: DK
 
-**Version**: Public 3.1.1
+**Version**: Public 4.0.0
  
 **Description**: Library for RPG Maker MV. Contains many tools for developing.
 
 **Documentation**: https://dk-plugins.ru/documentation/DKTools/index.html
 
-**Dependencies**: RPG Maker MV 1.5+
+**Dependencies**: RPG Maker MV 1.6+
  
 ## **4 steps to use DKTools**
 1. Create element
@@ -28,23 +28,27 @@ Use "addChild" function for add element to your scene.
 ## **List of elements:**
 DKTools.Utils
 
+DKTools.Utils.Wrapper
+
+DKTools.Utils.Number
+
 DKTools.Utils.String
 
 DKTools.Utils.Array
 
-DKTools.Utils.Bitmap
-
 DKTools.Utils.Point
 
 DKTools.Utils.Rectangle
+
+DKTools.Utils.Bitmap
+
+DKTools.Utils.Event
 
 DKTools.Utils.Random
 
 DKTools.Utils.Sequence
 
 DKTools.Utils.Sequence.Alphabet
-
-DKTools.Utils.Event
 
 DKTools.IO
 
@@ -55,6 +59,8 @@ DKTools.IO.File
 DKTools.IO.Directory
 
 DKTools.IO.WebStorage
+
+DKTools.Network
 
 DKTools.ParameterManager
 
