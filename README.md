@@ -1,6 +1,6 @@
 **Author**: DK
 
-**Version**: Public 4.0.0
+**Version**: Public 5.0.0
  
 **Description**: Library for RPG Maker MV. Contains many tools for developing.
 
@@ -39,6 +39,8 @@ DKTools.Utils.Array
 DKTools.Utils.Point
 
 DKTools.Utils.Rectangle
+
+DKTools.Utils.WebAudio
 
 DKTools.Utils.Bitmap
 
