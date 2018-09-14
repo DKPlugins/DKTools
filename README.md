@@ -1,6 +1,6 @@
 **Author**: DK
 
-**Version**: Public 5.0.0
+**Version**: Public 6.0.0
  
 **Description**: Library for RPG Maker MV. Contains many tools for developing.
 
@@ -28,7 +28,7 @@ Use "addChild" function for add element to your scene.
 ## **List of elements:**
 DKTools.Utils
 
-DKTools.Utils.Wrapper
+DKTools.Utils.Object
 
 DKTools.Utils.Number
 
@@ -47,10 +47,6 @@ DKTools.Utils.Bitmap
 DKTools.Utils.Event
 
 DKTools.Utils.Random
-
-DKTools.Utils.Sequence
-
-DKTools.Utils.Sequence.Alphabet
 
 DKTools.IO
 
