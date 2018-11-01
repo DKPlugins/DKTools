@@ -1,6 +1,6 @@
 **Author**: DK
 
-**Version**: Public 6.0.0
+**Version**: Public 6.1.0
  
 **Description**: Library for RPG Maker MV. Contains many tools for developing.
 
@@ -119,3 +119,5 @@ DKTools.Window
 DKTools.Window.Selectable
 
 DKTools.Scene
+
+DKTools.Scene.Preloader
