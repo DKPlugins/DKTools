@@ -77,6 +77,8 @@ DKTools.Utils = class {
 
         this.__tileSize();
 
+        this.__imageCacheLimit();
+
         if (DKToolsParam.get('Debugging Console', 'Enabled')) {
             this.openConsole();
         }
@@ -172,6 +174,19 @@ DKTools.Utils = class {
     }
 
     // I methods
+
+    /**
+     * @since 6.2.0
+     * @private
+     * @static
+     */
+    static __imageCacheLimit() {
+        const param = DKToolsParam.get('Image Cache Limit');
+
+        if (param.Enabled) {
+            ImageCache.limit = param.Limit;
+        }
+    }
 
     /**
      * Checks whether the browser is Android Chrome

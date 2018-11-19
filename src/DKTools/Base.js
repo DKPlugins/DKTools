@@ -210,6 +210,25 @@ DKTools.Base = class {
         this._optionManager.addOptionChangeListener(option, listener);
     }
 
+    /**
+     * Adds the filter
+     *
+     * @since 6.2.0
+     *
+     * @param {*} filter - Filter
+     */
+    addFilter(filter) {
+        if (!filter) {
+            return;
+        }
+
+        if (this.filters && this.filters.length > 0) {
+            this.filters.push(filter);
+        } else {
+            this.filters = [filter];
+        }
+    }
+
     // С methods
 
     /**
@@ -509,6 +528,15 @@ DKTools.Base = class {
      */
     clearEvents(object) {
         this._eventManager.clearEvents(object);
+    }
+
+    /**
+     * Clears the filters
+     *
+     * @since 6.2.0
+     */
+    clearFilters() {
+        this.filters = null;
     }
 
     /**
@@ -1614,7 +1642,7 @@ DKTools.Base = class {
         x = x || 0;
         y = y || 0;
         startAngle = startAngle || 0;
-        endAngle = _.defaulTo(endAngle, Math.PI * 2);
+        endAngle = _.defaultTo(endAngle, Math.PI * 2);
 
         DKTools.Utils.Bitmap.fillArc(this.bitmap, x, y, radius, startAngle, endAngle, color, anticlockwise);
 
@@ -3049,6 +3077,25 @@ DKTools.Base = class {
     }
 
     /**
+     * Removes the filter
+     *
+     * @since 6.2.0
+     *
+     * @param {*} filter - Filter
+     */
+    removeFilter(filter) {
+        if (!this.filters || !filter) {
+            return;
+        }
+
+        DKTools.Utils.Array.remove(this.filters, filter);
+
+        if (this.filters.length === 0) {
+            this.filters = null;
+        }
+    }
+
+    /**
      * Removes the object from the parent object, if possible
      * Returns true if the deletion was successful
      *
@@ -3805,7 +3852,7 @@ DKTools.Base = class {
         x = x || 0;
         y = y || 0;
         startAngle = startAngle || 0;
-        endAngle = _.defaulTo(endAngle, Math.PI * 2);
+        endAngle = _.defaultTo(endAngle, Math.PI * 2);
 
         DKTools.Utils.Bitmap.strokeArc(this.bitmap, x, y, radius, startAngle, endAngle, color, lineWidth, anticlockwise);
 

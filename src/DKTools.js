@@ -3,7 +3,7 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 6.1.0
+Version: 6.2.0
 Release: 01.11.2018
 First release: 13.01.2016
 Supported languages: Russian, English
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 6.1.0
+Версия: 6.2.0
 Релиз: 01.11.2018
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.6.1.0 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.6.2.0 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,7 +29,7 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 6.1.0
+ Version: 6.2.0
  Release: 01.11.2018
  First release: 13.01.2016
  Supported languages: Russian, English
@@ -202,10 +202,22 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<Grid>
  * @default {"Enabled":"false","Key Code":"118","Grid Color":"white","Grid Width":"1","Ruler Color":"","Ruler Width":"3"}
 
+ * @param Image Cache Limit
+ * @parent Functions
+ * @desc Image cache limit
+ * @type struct<ImageCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
+
+ * @param Cursor Graphic
+ * @parent Functions
+ * @desc Cursor graphic
+ * @type struct<CursorGraphic>
+ * @default {"Enabled":"false","Graphic": ""}
+
 */
 
 /*:ru
-* @plugindesc v.6.1.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.6.2.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -213,7 +225,7 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 6.1.0
+ Версия: 6.2.0
  Релиз: 01.11.2018
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
@@ -398,6 +410,20 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<Grid>
  * @default {"Enabled":"false","Key Code":"118","Grid Color":"white","Grid Width":"1","Ruler Color":"","Ruler Width":"3"}
 
+ * @param Image Cache Limit
+ * @text Лимит кэша изображений
+ * @parent Functions
+ * @desc Лимит кэша изображений
+ * @type struct<ImageCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
+
+ * @param Cursor Graphic
+ * @text Графика курсора
+ * @parent Functions
+ * @desc Графика курсора
+ * @type struct<CursorGraphic>
+ * @default {"Enabled":"false","Graphic": ""}
+
 */
 
 /*~struct~CheckUpdates:
@@ -470,14 +496,14 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default false
 
  * @param Mode
- * @desc
+ * @desc Mode
  * @type select
  * @option FPS
  * @option Duration
  * @default FPS
 
  * @param Theme
- * @desc
+ * @desc Theme
  * @type select
  * @option transparent
  * @option dark
@@ -485,7 +511,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default transparent
 
  * @param History
- * @desc
+ * @desc Number of entries in history
  * @type number
  * @min 5
  * @max 100
@@ -520,7 +546,7 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param History
  * @text История
- * @desc
+ * @desc Количество записей в истории
  * @type number
  * @min 5
  * @max 100
@@ -655,7 +681,7 @@ E-mail: kuznetsovdenis96@gmail.com
 /*~struct~PreloadManager:
 
  * @param Enabled
- * @desc Enable the images preloading function ?
+ * @desc Enable resources preloading function ?
  * @type boolean
  * @default false
 
@@ -680,7 +706,7 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Enabled
  * @text Включено
- * @desc Включить функцию предзагрузки изображений ?
+ * @desc Включить функцию предзагрузки ресурсов ?
  * @type boolean
  * @default false
 
@@ -967,8 +993,8 @@ E-mail: kuznetsovdenis96@gmail.com
 /*~struct~Grid:
 
  * @param Enabled
- * @type boolean
  * @desc Enable the function of displaying the grid ?
+ * @type boolean
  * @default false
 
  * @param Key Code
@@ -1037,3 +1063,65 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default 3
 
  */
+
+/*~struct~ImageCacheLimit:
+
+ * @param Enabled
+ * @desc Enable the image cache limit function ?
+ * @type boolean
+ * @default false
+
+ * @param Limit
+ * @desc Image cache limit
+ * @type number
+ * @min 0
+ * @default 10000000
+
+*/
+
+/*~struct~ImageCacheLimit:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию изменения лимита кэша изображений ?
+ * @type boolean
+ * @default false
+
+ * @param Limit
+ * @text Лимит
+ * @desc Лимит кэша изображений
+ * @type number
+ * @min 0
+ * @default 10000000
+
+*/
+
+/*~struct~CursorGraphic:
+
+ * @param Enabled
+ * @desc Enable the function to change the cursor graphics ?
+ * @type boolean
+ * @default false
+
+ * @param Graphic
+ * @desc Cursor graphic
+ * @type file
+ * @dir img/system
+
+*/
+
+/*~struct~CursorGraphic:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию изменения графики курсора ?
+ * @type boolean
+ * @default false
+
+ * @param Graphic
+ * @text Графика
+ * @desc Графика курсора
+ * @type file
+ * @dir img/system
+
+*/

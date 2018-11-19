@@ -3,7 +3,7 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 6.1.0
+Version: 6.2.0
 Release: 01.11.2018
 First release: 13.01.2016
 Supported languages: Russian, English
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 6.1.0
+Версия: 6.2.0
 Релиз: 01.11.2018
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.6.1.0 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.6.2.0 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,7 +29,7 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 6.1.0
+ Version: 6.2.0
  Release: 01.11.2018
  First release: 13.01.2016
  Supported languages: Russian, English
@@ -202,10 +202,22 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<Grid>
  * @default {"Enabled":"false","Key Code":"118","Grid Color":"white","Grid Width":"1","Ruler Color":"","Ruler Width":"3"}
 
+ * @param Image Cache Limit
+ * @parent Functions
+ * @desc Image cache limit
+ * @type struct<ImageCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
+
+ * @param Cursor Graphic
+ * @parent Functions
+ * @desc Cursor graphic
+ * @type struct<CursorGraphic>
+ * @default {"Enabled":"false","Graphic": ""}
+
 */
 
 /*:ru
-* @plugindesc v.6.1.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.6.2.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -213,7 +225,7 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 6.1.0
+ Версия: 6.2.0
  Релиз: 01.11.2018
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
@@ -398,6 +410,20 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<Grid>
  * @default {"Enabled":"false","Key Code":"118","Grid Color":"white","Grid Width":"1","Ruler Color":"","Ruler Width":"3"}
 
+ * @param Image Cache Limit
+ * @text Лимит кэша изображений
+ * @parent Functions
+ * @desc Лимит кэша изображений
+ * @type struct<ImageCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
+
+ * @param Cursor Graphic
+ * @text Графика курсора
+ * @parent Functions
+ * @desc Графика курсора
+ * @type struct<CursorGraphic>
+ * @default {"Enabled":"false","Graphic": ""}
+
 */
 
 /*~struct~CheckUpdates:
@@ -470,14 +496,14 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default false
 
  * @param Mode
- * @desc
+ * @desc Mode
  * @type select
  * @option FPS
  * @option Duration
  * @default FPS
 
  * @param Theme
- * @desc
+ * @desc Theme
  * @type select
  * @option transparent
  * @option dark
@@ -485,7 +511,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default transparent
 
  * @param History
- * @desc
+ * @desc Number of entries in history
  * @type number
  * @min 5
  * @max 100
@@ -520,7 +546,7 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param History
  * @text История
- * @desc
+ * @desc Количество записей в истории
  * @type number
  * @min 5
  * @max 100
@@ -655,7 +681,7 @@ E-mail: kuznetsovdenis96@gmail.com
 /*~struct~PreloadManager:
 
  * @param Enabled
- * @desc Enable the images preloading function ?
+ * @desc Enable resources preloading function ?
  * @type boolean
  * @default false
 
@@ -680,7 +706,7 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Enabled
  * @text Включено
- * @desc Включить функцию предзагрузки изображений ?
+ * @desc Включить функцию предзагрузки ресурсов ?
  * @type boolean
  * @default false
 
@@ -967,8 +993,8 @@ E-mail: kuznetsovdenis96@gmail.com
 /*~struct~Grid:
 
  * @param Enabled
- * @type boolean
  * @desc Enable the function of displaying the grid ?
+ * @type boolean
  * @default false
 
  * @param Key Code
@@ -1038,6 +1064,68 @@ E-mail: kuznetsovdenis96@gmail.com
 
  */
 
+/*~struct~ImageCacheLimit:
+
+ * @param Enabled
+ * @desc Enable the image cache limit function ?
+ * @type boolean
+ * @default false
+
+ * @param Limit
+ * @desc Image cache limit
+ * @type number
+ * @min 0
+ * @default 10000000
+
+*/
+
+/*~struct~ImageCacheLimit:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию изменения лимита кэша изображений ?
+ * @type boolean
+ * @default false
+
+ * @param Limit
+ * @text Лимит
+ * @desc Лимит кэша изображений
+ * @type number
+ * @min 0
+ * @default 10000000
+
+*/
+
+/*~struct~CursorGraphic:
+
+ * @param Enabled
+ * @desc Enable the function to change the cursor graphics ?
+ * @type boolean
+ * @default false
+
+ * @param Graphic
+ * @desc Cursor graphic
+ * @type file
+ * @dir img/system
+
+*/
+
+/*~struct~CursorGraphic:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию изменения графики курсора ?
+ * @type boolean
+ * @default false
+
+ * @param Graphic
+ * @text Графика
+ * @desc Графика курсора
+ * @type file
+ * @dir img/system
+
+*/
+
 'use strict';
 
 //===========================================================================
@@ -1049,7 +1137,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 window.Imported = window.Imported || {};
-window.Imported.DKTools = '6.1.0';
+window.Imported.DKTools = '6.2.0';
 
 
 
@@ -1261,193 +1349,6 @@ DKTools.Sprite = function(object, y, width, height) {
 };
 
 /**
- * Button class
- *
- * @class DKTools.Sprite.Button
- * @extends DKTools.Sprite
- *
- * @override
- * @constructor
- *
- * @memberof DKTools.Sprite
- *
- * @see DKTools.Sprite.Button.prototype.initialize
- */
-DKTools.Sprite.Button = function(object, y, width, height) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
- * Cursor class
- *
- * @class DKTools.Sprite.Cursor
- * @extends DKTools.Sprite
- *
- * @override
- * @constructor
- *
- * @memberof DKTools.Sprite
- *
- * @see DKTools.Sprite.Cursor.prototype.initialize
- */
-DKTools.Sprite.Cursor = function(object, y, width, height) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
- * Arrow class
- *
- * @class DKTools.Sprite.Arrow
- * @extends DKTools.Sprite.Button
- *
- * @override
- * @constructor
- *
- * @memberof DKTools.Sprite
- *
- * @see DKTools.Sprite.Arrow.prototype.initialize
- */
-DKTools.Sprite.Arrow = function(object, y) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
- * Selectable class
- *
- * @class DKTools.Sprite.Selectable
- * @extends DKTools.Sprite.Button
- *
- * @override
- * @constructor
- *
- * @memberof DKTools.Sprite
- *
- * @see DKTools.Sprite.Selectable.prototype.initialize
- */
-DKTools.Sprite.Selectable = function(object, y, width, height) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
- * Progress bar class
- *
- * @class DKTools.Sprite.ProgressBar
- * @extends DKTools.Sprite
- *
- * @override
- * @constructor
- *
- * @memberof DKTools.Sprite
- *
- * @see DKTools.Sprite.ProgressBar.prototype.initialize
- */
-DKTools.Sprite.ProgressBar = function(object, y, width, height) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
- * Progress bar class
- *
- * @class DKTools.Sprite.ProgressBar.Rectangle
- * @extends DKTools.Sprite.ProgressBar
- *
- * @override
- * @constructor
- *
- * @memberof DKTools.Sprite.ProgressBar
- *
- * @see DKTools.Sprite.ProgressBar.Rectangle.prototype.initialize
- */
-DKTools.Sprite.ProgressBar.Rectangle = function(object, y, width, height) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
- * Progress bar class
- *
- * @class DKTools.Sprite.ProgressBar.Circle
- * @extends DKTools.Sprite.ProgressBar
- *
- * @override
- * @constructor
- *
- * @memberof DKTools.Sprite.ProgressBar
- *
- * @see DKTools.Sprite.ProgressBar.Circle.prototype.initialize
- */
-DKTools.Sprite.ProgressBar.Circle = function(object, y, width, height) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
- * Progress bar class
- *
- * @class DKTools.Sprite.ProgressBar.SemiCircle
- * @extends DKTools.Sprite.ProgressBar.Circle
- *
- * @override
- * @constructor
- *
- * @memberof DKTools.Sprite.ProgressBar
- *
- * @see DKTools.Sprite.ProgressBar.SemiCircle.prototype.initialize
- */
-DKTools.Sprite.ProgressBar.SemiCircle = function(object, y, width, height) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
- * Checkbox class
- *
- * @class DKTools.Sprite.CheckBox
- * @extends DKTools.Sprite.Button
- *
- * @override
- * @constructor
- *
- * @memberof DKTools.Sprite
- *
- * @see DKTools.Sprite.CheckBox.prototype.initialize
- */
-DKTools.Sprite.CheckBox = function(object, y) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
- * Viewport class
- *
- * @class DKTools.Viewport
- * @extends DKTools.Sprite
- *
- * @override
- * @constructor
- *
- * @memberof DKTools
- *
- * @see DKTools.Viewport.prototype.initialize
- */
-DKTools.Viewport = function(object, y, width, height) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
- * Layout class
- *
- * @class DKTools.Layout
- * @extends DKTools.Sprite
- *
- * @override
- * @constructor
- *
- * @memberof DKTools
- *
- * @see DKTools.Layout.prototype.initialize
- */
-DKTools.Layout = function(object, y) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
  * Window class
  *
  * @class DKTools.Window
@@ -1461,23 +1362,6 @@ DKTools.Layout = function(object, y) {
  * @see DKTools.Window.prototype.initialize
  */
 DKTools.Window = function(object, y, width, height) {
-    this.initialize.apply(this, arguments);
-};
-
-/**
- * Window selectable class
- *
- * @class DKTools.Window.Selectable
- * @extends DKTools.Window
- *
- * @override
- * @constructor
- *
- * @memberof DKTools.Window
- *
- * @see DKTools.Window.Selectable.prototype.initialize
- */
-DKTools.Window.Selectable = function(object, y, width, height) {
     this.initialize.apply(this, arguments);
 };
 
@@ -1578,6 +1462,8 @@ DKTools.Utils = class {
 
         this.__tileSize();
 
+        this.__imageCacheLimit();
+
         if (DKToolsParam.get('Debugging Console', 'Enabled')) {
             this.openConsole();
         }
@@ -1673,6 +1559,19 @@ DKTools.Utils = class {
     }
 
     // I methods
+
+    /**
+     * @since 6.2.0
+     * @private
+     * @static
+     */
+    static __imageCacheLimit() {
+        const param = DKToolsParam.get('Image Cache Limit');
+
+        if (param.Enabled) {
+            ImageCache.limit = param.Limit;
+        }
+    }
 
     /**
      * Checks whether the browser is Android Chrome
@@ -2306,32 +2205,6 @@ DKTools.Utils.Number = class {
      */
     static inRange(value, start, end) {
         return _.inRange(value, start, end);
-    }
-
-    /**
-     * Returns true if the value is finite
-     *
-     * @static
-     *
-     * @param {Number} value - Value
-     *
-     * @returns {Boolean} Value is finite
-     */
-    static isFinite(value) {
-        return Number.isFinite(value);
-    }
-
-    /**
-     * Returns true if the value is NaN
-     *
-     * @static
-     *
-     * @param {Number} value - Value
-     *
-     * @returns {Boolean} Value is NaN
-     */
-    static isNaN(value) {
-        return Number.isNaN(value);
     }
 
 };
@@ -13762,6 +13635,25 @@ DKTools.Base = class {
         this._optionManager.addOptionChangeListener(option, listener);
     }
 
+    /**
+     * Adds the filter
+     *
+     * @since 6.2.0
+     *
+     * @param {*} filter - Filter
+     */
+    addFilter(filter) {
+        if (!filter) {
+            return;
+        }
+
+        if (this.filters && this.filters.length > 0) {
+            this.filters.push(filter);
+        } else {
+            this.filters = [filter];
+        }
+    }
+
     // С methods
 
     /**
@@ -14061,6 +13953,15 @@ DKTools.Base = class {
      */
     clearEvents(object) {
         this._eventManager.clearEvents(object);
+    }
+
+    /**
+     * Clears the filters
+     *
+     * @since 6.2.0
+     */
+    clearFilters() {
+        this.filters = null;
     }
 
     /**
@@ -15166,7 +15067,7 @@ DKTools.Base = class {
         x = x || 0;
         y = y || 0;
         startAngle = startAngle || 0;
-        endAngle = _.defaulTo(endAngle, Math.PI * 2);
+        endAngle = _.defaultTo(endAngle, Math.PI * 2);
 
         DKTools.Utils.Bitmap.fillArc(this.bitmap, x, y, radius, startAngle, endAngle, color, anticlockwise);
 
@@ -16601,6 +16502,25 @@ DKTools.Base = class {
     }
 
     /**
+     * Removes the filter
+     *
+     * @since 6.2.0
+     *
+     * @param {*} filter - Filter
+     */
+    removeFilter(filter) {
+        if (!this.filters || !filter) {
+            return;
+        }
+
+        DKTools.Utils.Array.remove(this.filters, filter);
+
+        if (this.filters.length === 0) {
+            this.filters = null;
+        }
+    }
+
+    /**
      * Removes the object from the parent object, if possible
      * Returns true if the deletion was successful
      *
@@ -17357,7 +17277,7 @@ DKTools.Base = class {
         x = x || 0;
         y = y || 0;
         startAngle = startAngle || 0;
-        endAngle = _.defaulTo(endAngle, Math.PI * 2);
+        endAngle = _.defaultTo(endAngle, Math.PI * 2);
 
         DKTools.Utils.Bitmap.strokeArc(this.bitmap, x, y, radius, startAngle, endAngle, color, lineWidth, anticlockwise);
 
@@ -21269,8 +21189,459 @@ DKTools.Sprite.prototype.updateOpacity = function(opacity) {
 // DKTools.Sprite.Button
 //===========================================================================
 
-DKTools.Sprite.Button.prototype = Object.create(DKTools.Sprite.prototype);
-DKTools.Sprite.Button.prototype.constructor = DKTools.Sprite.Button;
+/**
+ * Button class
+ *
+ * @class DKTools.Sprite.Button
+ * @extends DKTools.Sprite
+ *
+ * @memberof DKTools.Sprite
+ *
+ * @see DKTools.Sprite.Button.prototype.initialize
+ */
+DKTools.Sprite.Button = class extends DKTools.Sprite {
+
+    // C methods
+
+    /**
+     * Clears all data
+     *
+     * @version 2.0.0
+     * @private
+     * @override
+     *
+     * @see DKTools.Sprite.prototype._clearAll
+     * @see DKTools.Sprite.Button.prototype._clearMousePressTime
+     */
+    _clearAll() {
+        DKTools.Sprite.prototype._clearAll.call(this);
+        this._clearMousePressTime();
+    }
+
+    /**
+     * Clears pressed time
+     *
+     * @since 2.0.0
+     * @private
+     */
+    _clearMousePressTime() {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._mousePressTime = 0;
+    }
+
+    // I methods
+
+    /**
+     * Returns true if the button is pressed
+     *
+     * @see DKTools.Sprite.Button.prototype.isLongPressed
+     *
+     * @returns {Boolean} Button is pressed
+     */
+    isPressed() {
+        return this._mousePressTime > 0 && !this.isLongPressed();
+    }
+
+    /**
+     * Returns true if the button is pressed longer than the long press interval
+     *
+     * @returns {Boolean} Button is pressed longer than the long press interval
+     */
+    isLongPressed() {
+        return this._mousePressTime >= this._longPressInterval;
+    }
+
+    // S methods
+
+    /**
+     * Sets the events
+     *
+     * @version 2.0.0
+     * @private
+     * @override
+     *
+     * @see DKTools.Sprite.prototype._setupEvents
+     * @see DKTools.Sprite.Button.prototype._setupUpdateButtonStateEvent
+     */
+    _setupEvents() {
+        DKTools.Sprite.prototype._setupEvents.call(this);
+        this._setupUpdateButtonStateEvent();
+    }
+
+    /**
+     * Sets the options
+     *
+     * @version 2.0.0
+     * @private
+     * @override
+     *
+     * @see DKTools.Sprite.prototype._setupOptions
+     * @see DKTools.Sprite.Button.prototype._setupProcessMouseOption
+     */
+    _setupOptions() {
+        DKTools.Sprite.prototype._setupOptions.call(this);
+        this._setupProcessMouseOption();
+    }
+
+    /**
+     * Sets the update event
+     *
+     * @since 2.0.0
+     * @private
+     *
+     * @see DKTools.Sprite.Button.prototype.addEvent
+     * @see DKTools.Sprite.Button.prototype.updateButtonState
+     */
+    _setupUpdateButtonStateEvent() {
+        this.addEvent({
+            type: 'update',
+            onUpdate: this.updateButtonState.bind(this)
+        });
+    }
+
+    /**
+     * Sets the option process-mouse
+     *
+     * @since 2.0.0
+     * @private
+     *
+     * @see DKTools.Sprite.Button.prototype.enableOption
+     */
+    _setupProcessMouseOption() {
+        this.enableOption('process-mouse');
+    }
+
+    /**
+     * Returns the standard activity of the button
+     *
+     * @override
+     * @returns {Boolean} Standard activity of the button
+     */
+    standardActive() {
+        return false;
+    }
+
+    /**
+     * Returns the standard interval of long pressing
+     *
+     * @returns {Number} Standard interval of long pressing
+     */
+    standardLongPressInterval() {
+        return 18;
+    }
+
+    /**
+     * Sets all parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     *
+     * @param {Number} [object.longPressInterval] - Interval of long pressing
+     *
+     * @see DKTools.Sprite.prototype.setupAll
+     * @see DKTools.Sprite.Button.prototype.setupLongPressInterval
+     */
+    setupAll(object = {}) {
+        object = object || {};
+
+        DKTools.Sprite.prototype.setupAll.call(this, object);
+
+        this.setupLongPressInterval(object.longPressInterval);
+    }
+
+    /**
+     * Sets the interval of long pressing
+     *
+     * @param {Number} [interval=this.standardLongPressInterval()] - Interval of long pressing
+     *
+     * @see DKTools.Sprite.Button.prototype.standardLongPressInterval
+     */
+    setupLongPressInterval(interval) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._longPressInterval = interval || this.standardLongPressInterval();
+    }
+
+    /**
+     * Changes all parameters
+     * Returns the number of changed parameters
+     *
+     * @version 2.0.0
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     * @param {Boolean} [activate=false] - Activates the button
+     *
+     * @param {Number} [object.longPressInterval] - Interval of long pressing
+     *
+     * @see DKTools.Sprite.prototype.setAll
+     * @see DKTools.Sprite.Button.prototype.setLongPressInterval
+     *
+     * @returns {Number} Number of changed parameters
+     */
+    setAll(object = {}, blockStart = false, activate = false) {
+        object = object || {};
+
+        const block = true;
+        let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
+
+        if (this.setLongPressInterval(object.longPressInterval)) {
+            changed++;
+        }
+
+        if (changed > 0) {
+            if (!blockStart) {
+                this.start();
+            }
+
+            if (activate) {
+                this.activate();
+            }
+        }
+
+        return changed;
+    }
+
+    /**
+     * Changes the interval of long pressing
+     * Returns true if the change occurred
+     *
+     * @param {Number} [interval] - Interval of long pressing
+     *
+     * @see DKTools.Sprite.Button.prototype.setupLongPressInterval
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setLongPressInterval(interval) {
+        if (this._longPressInterval === interval) {
+            return false;
+        }
+
+        const lastInterval = this._longPressInterval;
+
+        this.setupLongPressInterval(interval);
+
+        return this._longPressInterval !== lastInterval;
+    }
+
+    // P methods
+
+    /**
+     * Processes all
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.prototype.processAll
+     * @see DKTools.Sprite.Button.prototype.isOptionDisabled
+     * @see DKTools.Sprite.Button.prototype.processMousePress
+     */
+    processAll() {
+        DKTools.Sprite.prototype.processAll.call(this);
+        this.processMousePress();
+    }
+
+    /**
+     * Processes a mouse press
+     *
+     * @version 2.0.0
+     *
+     * @see DKTools.Sprite.Button.prototype.isVisibleAndActive
+     * @see TouchInput.isMousePressed
+     * @see DKTools.Sprite.Button.prototype.isMouseInside
+     * @see DKTools.Sprite.Button.prototype.isLongPressed
+     * @see TouchInput.isLeftButtonPressed
+     * @see TouchInput.isMiddleButtonPressed
+     * @see TouchInput.isRightButtonPressed
+     * @see DKTools.Sprite.Button.prototype.updateMouseLongPressEvents
+     * @see DKTools.Sprite.Button.prototype.isPressed
+     * @see DKTools.Sprite.Button.prototype.updateMouseClickEvents
+     * @see DKTools.Sprite.Button.prototype._clearMousePressTime
+     */
+    processMousePress() {
+        if (this.isVisible() && this.isMouseInside() &&
+            (this.isActive() || this.isOptionEnabled('process-mouse-press-ignore-active'))) {
+            if (TouchInput.isMousePressed()) {
+                this._mousePressTime++;
+
+                let button;
+
+                if (TouchInput.isLeftButtonPressed()) {
+                    button = 'left';
+                } else if (TouchInput.isMiddleButtonPressed()) {
+                    button = 'middle';
+                } else if (TouchInput.isRightButtonPressed()) {
+                    button = 'right';
+                }
+
+                if (button) {
+                    this.updateMouseDownEvents(button);
+
+                    if (this.isLongPressed()) {
+                        if (this._mousePressTime === this._longPressInterval) {
+                            this.updateMouseLongPressStartedEvents(button);
+                        }
+
+                        this.updateMouseLongPressEvents(button);
+                    }
+                }
+            } else {
+                let button;
+
+                if (TouchInput.isLeftButtonReleased()) {
+                    button = 'left';
+                } else if (TouchInput.isMiddleButtonReleased()) {
+                    button = 'middle';
+                } else if (TouchInput.isRightButtonReleased()) {
+                    button = 'right';
+                }
+
+                if (button) {
+                    if (this.isLongPressed()) {
+                        this.updateMouseLongPressFinishedEvents(button);
+                    } else if (this.isPressed()) {
+                        this.updateMouseClickEvents(button);
+                    }
+
+                    if (this._mousePressTime > 0) {
+                        this.updateMouseUpEvents(button);
+                    }
+                }
+
+                this._clearMousePressTime();
+            }
+        } else {
+            this._clearMousePressTime();
+        }
+    }
+
+    // U methods
+
+    /**
+     * Updates the events with type: mouse-down-button
+     *
+     * @since 2.0.0
+     *
+     * @param {String} button - Mouse button (left, middle or right)
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
+     */
+    updateMouseDownEvents(button) {
+        this.updateEventsContainer('mouse-down-' + button);
+    }
+
+    /**
+     * Updates the events with type: mouse-up-button
+     *
+     * @since 2.0.0
+     *
+     * @param {String} button - Mouse button (left, middle or right)
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
+     */
+    updateMouseUpEvents(button) {
+        this.updateEventsContainer('mouse-up-' + button);
+    }
+
+    /**
+     * Updates the events with type: mouse-click-button
+     *
+     * @since 2.0.0
+     *
+     * @param {String} button - Mouse button (left, middle or right)
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
+     */
+    updateMouseClickEvents(button) {
+        this.updateEventsContainer('mouse-click-' + button);
+    }
+
+    /**
+     * Updates the events with type: mouse-long-press-button
+     *
+     * @since 2.0.0
+     *
+     * @param {String} button - Mouse button (left, middle or right)
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
+     */
+    updateMouseLongPressEvents(button) {
+        this.updateEventsContainer('mouse-long-press-' + button);
+    }
+
+    /**
+     * Updates the events with type: mouse-long-press-button-started
+     *
+     * @since 2.0.0
+     *
+     * @param {String} button - Mouse button (left, middle or right)
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
+     */
+    updateMouseLongPressStartedEvents(button) {
+        this.updateEventsContainer(`mouse-long-press-${button}-started`);
+    }
+
+    /**
+     * Updates the events with type: mouse-long-press-button-finished
+     *
+     * @since 2.0.0
+     *
+     * @param {String} button - Mouse button (left, middle or right)
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
+     */
+    updateMouseLongPressFinishedEvents(button) {
+        this.updateEventsContainer(`mouse-long-press-${button}-finished`);
+    }
+
+    /**
+     * Updates the events with type: state-normal
+     *
+     * @since 2.0.0
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
+     */
+    updateStateNormalEvents() {
+        this.updateEventsContainer('state-normal');
+    }
+
+    /**
+     * Updates the events with type: state-pressed
+     *
+     * @since 2.0.0
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
+     */
+    updateStatePressedEvents() {
+        this.updateEventsContainer('state-pressed');
+    }
+
+    /**
+     * Updates the button state
+     *
+     * @see DKTools.Sprite.Button.prototype.isPressed
+     * @see DKTools.Sprite.Button.prototype.isLongPressed
+     * @see DKTools.Sprite.Button.prototype.updateStatePressedEvents
+     * @see DKTools.Sprite.Button.prototype.updateStateNormalEvents
+     */
+    updateButtonState() {
+        if (this._mousePressTime > 0) {
+            this.updateStatePressedEvents();
+        } else {
+            this.updateStateNormalEvents();
+        }
+    }
+
+};
 
 // properties
 
@@ -21334,446 +21705,6 @@ Object.defineProperties(DKTools.Sprite.Button.prototype, {
 
 });
 
-// C methods
-
-/**
- * Clears all data
- *
- * @version 2.0.0
- * @private
- * @override
- *
- * @see DKTools.Sprite.prototype._clearAll
- * @see DKTools.Sprite.Button.prototype._clearMousePressTime
- */
-DKTools.Sprite.Button.prototype._clearAll = function() {
-    DKTools.Sprite.prototype._clearAll.call(this);
-    this._clearMousePressTime();
-};
-
-/**
- * Clears pressed time
- *
- * @since 2.0.0
- * @private
- */
-DKTools.Sprite.Button.prototype._clearMousePressTime = function() {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._mousePressTime = 0;
-};
-
-// I methods
-
-/**
- * Returns true if the button is pressed
- *
- * @see DKTools.Sprite.Button.prototype.isLongPressed
- *
- * @returns {Boolean} Button is pressed
- */
-DKTools.Sprite.Button.prototype.isPressed = function() {
-    return this._mousePressTime > 0 && !this.isLongPressed();
-};
-
-/**
- * Returns true if the button is pressed longer than the long press interval
- *
- * @returns {Boolean} Button is pressed longer than the long press interval
- */
-DKTools.Sprite.Button.prototype.isLongPressed = function() {
-    return this._mousePressTime >= this._longPressInterval;
-};
-
-// S methods
-
-/**
- * Sets the events
- *
- * @version 2.0.0
- * @private
- * @override
- *
- * @see DKTools.Sprite.prototype._setupEvents
- * @see DKTools.Sprite.Button.prototype._setupUpdateButtonStateEvent
- */
-DKTools.Sprite.Button.prototype._setupEvents = function() {
-    DKTools.Sprite.prototype._setupEvents.call(this);
-    this._setupUpdateButtonStateEvent();
-};
-
-/**
- * Sets the options
- *
- * @version 2.0.0
- * @private
- * @override
- *
- * @see DKTools.Sprite.prototype._setupOptions
- * @see DKTools.Sprite.Button.prototype._setupProcessMouseOption
- */
-DKTools.Sprite.Button.prototype._setupOptions = function() {
-    DKTools.Sprite.prototype._setupOptions.call(this);
-    this._setupProcessMouseOption();
-};
-
-/**
- * Sets the update event
- *
- * @since 2.0.0
- * @private
- *
- * @see DKTools.Sprite.Button.prototype.addEvent
- * @see DKTools.Sprite.Button.prototype.updateButtonState
- */
-DKTools.Sprite.Button.prototype._setupUpdateButtonStateEvent = function() {
-    this.addEvent({
-        type: 'update',
-        onUpdate: this.updateButtonState.bind(this)
-    });
-};
-
-/**
- * Sets the option process-mouse
- *
- * @since 2.0.0
- * @private
- *
- * @see DKTools.Sprite.Button.prototype.enableOption
- */
-DKTools.Sprite.Button.prototype._setupProcessMouseOption = function() {
-    this.enableOption('process-mouse');
-};
-
-/**
- * Returns the standard activity of the button
- *
- * @override
- * @returns {Boolean} Standard activity of the button
- */
-DKTools.Sprite.Button.prototype.standardActive = function() {
-    return false;
-};
-
-/**
- * Returns the standard interval of long pressing
- *
- * @returns {Number} Standard interval of long pressing
- */
-DKTools.Sprite.Button.prototype.standardLongPressInterval = function() {
-    return 18;
-};
-
-/**
- * Sets all parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- *
- * @param {Number} [object.longPressInterval] - Interval of long pressing
- *
- * @see DKTools.Sprite.prototype.setupAll
- * @see DKTools.Sprite.Button.prototype.setupLongPressInterval
- */
-DKTools.Sprite.Button.prototype.setupAll = function(object = {}) {
-    object = object || {};
-
-    DKTools.Sprite.prototype.setupAll.call(this, object);
-
-    this.setupLongPressInterval(object.longPressInterval);
-};
-
-/**
- * Sets the interval of long pressing
- *
- * @param {Number} [interval=this.standardLongPressInterval()] - Interval of long pressing
- *
- * @see DKTools.Sprite.Button.prototype.standardLongPressInterval
- */
-DKTools.Sprite.Button.prototype.setupLongPressInterval = function(interval) {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._longPressInterval = interval || this.standardLongPressInterval();
-};
-
-/**
- * Changes all parameters
- * Returns the number of changed parameters
- *
- * @version 2.0.0
- * @override
- *
- * @param {Object} [object={}] - Parameters
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- * @param {Boolean} [activate=false] - Activates the button
- *
- * @param {Number} [object.longPressInterval] - Interval of long pressing
- *
- * @see DKTools.Sprite.prototype.setAll
- * @see DKTools.Sprite.Button.prototype.setLongPressInterval
- *
- * @returns {Number} Number of changed parameters
- */
-DKTools.Sprite.Button.prototype.setAll = function(object = {}, blockStart = false, activate = false) {
-    object = object || {};
-
-    const block = true;
-    let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
-
-    if (this.setLongPressInterval(object.longPressInterval)) {
-        changed++;
-    }
-
-    if (changed > 0) {
-        if (!blockStart) {
-            this.start();
-        }
-
-        if (activate) {
-            this.activate();
-        }
-    }
-
-    return changed;
-};
-
-/**
- * Changes the interval of long pressing
- * Returns true if the change occurred
- *
- * @param {Number} [interval] - Interval of long pressing
- *
- * @see DKTools.Sprite.Button.prototype.setupLongPressInterval
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Button.prototype.setLongPressInterval = function(interval) {
-    if (this._longPressInterval === interval) {
-        return false;
-    }
-
-    const lastInterval = this._longPressInterval;
-
-    this.setupLongPressInterval(interval);
-
-    return this._longPressInterval !== lastInterval;
-};
-
-// P methods
-
-/**
- * Processes all
- *
- * @override
- *
- * @see DKTools.Sprite.prototype.processAll
- * @see DKTools.Sprite.Button.prototype.isOptionDisabled
- * @see DKTools.Sprite.Button.prototype.processMousePress
- */
-DKTools.Sprite.Button.prototype.processAll = function() {
-    DKTools.Sprite.prototype.processAll.call(this);
-    this.processMousePress();
-};
-
-/**
- * Processes a mouse press
- *
- * @version 2.0.0
- *
- * @see DKTools.Sprite.Button.prototype.isVisibleAndActive
- * @see TouchInput.isMousePressed
- * @see DKTools.Sprite.Button.prototype.isMouseInside
- * @see DKTools.Sprite.Button.prototype.isLongPressed
- * @see TouchInput.isLeftButtonPressed
- * @see TouchInput.isMiddleButtonPressed
- * @see TouchInput.isRightButtonPressed
- * @see DKTools.Sprite.Button.prototype.updateMouseLongPressEvents
- * @see DKTools.Sprite.Button.prototype.isPressed
- * @see DKTools.Sprite.Button.prototype.updateMouseClickEvents
- * @see DKTools.Sprite.Button.prototype._clearMousePressTime
- */
-DKTools.Sprite.Button.prototype.processMousePress = function() {
-    if (this.isVisible() && this.isMouseInside() &&
-        (this.isActive() || this.isOptionEnabled('process-mouse-press-ignore-active'))) {
-            if (TouchInput.isMousePressed()) {
-                this._mousePressTime++;
-
-                let button;
-
-                if (TouchInput.isLeftButtonPressed()) {
-                    button = 'left';
-                } else if (TouchInput.isMiddleButtonPressed()) {
-                    button = 'middle';
-                } else if (TouchInput.isRightButtonPressed()) {
-                    button = 'right';
-                }
-
-                if (button) {
-                    this.updateMouseDownEvents(button);
-
-                    if (this.isLongPressed()) {
-                        if (this._mousePressTime === this._longPressInterval) {
-                            this.updateMouseLongPressStartedEvents(button);
-                        }
-
-                        this.updateMouseLongPressEvents(button);
-                    }
-                }
-            } else {
-                let button;
-
-                if (TouchInput.isLeftButtonReleased()) {
-                    button = 'left';
-                } else if (TouchInput.isMiddleButtonReleased()) {
-                    button = 'middle';
-                } else if (TouchInput.isRightButtonReleased()) {
-                    button = 'right';
-                }
-
-                if (button) {
-                    if (this.isLongPressed()) {
-                        this.updateMouseLongPressFinishedEvents(button);
-                    } else if (this.isPressed()) {
-                        this.updateMouseClickEvents(button);
-                    }
-
-                    if (this._mousePressTime > 0) {
-                        this.updateMouseUpEvents(button);
-                    }
-                }
-
-                this._clearMousePressTime();
-            }
-    } else {
-        this._clearMousePressTime();
-    }
-};
-
-// U methods
-
-/**
- * Updates the events with type: mouse-down-button
- *
- * @since 2.0.0
- *
- * @param {String} button - Mouse button (left, middle or right)
- *
- * @see DKTools.Sprite.Button.prototype.updateEventsContainer
- */
-DKTools.Sprite.Button.prototype.updateMouseDownEvents = function(button) {
-    this.updateEventsContainer('mouse-down-' + button);
-};
-
-/**
- * Updates the events with type: mouse-up-button
- *
- * @since 2.0.0
- *
- * @param {String} button - Mouse button (left, middle or right)
- *
- * @see DKTools.Sprite.Button.prototype.updateEventsContainer
- */
-DKTools.Sprite.Button.prototype.updateMouseUpEvents = function(button) {
-    this.updateEventsContainer('mouse-up-' + button);
-};
-
-/**
- * Updates the events with type: mouse-click-button
- *
- * @since 2.0.0
- *
- * @param {String} button - Mouse button (left, middle or right)
- *
- * @see DKTools.Sprite.Button.prototype.updateEventsContainer
- */
-DKTools.Sprite.Button.prototype.updateMouseClickEvents = function(button) {
-    this.updateEventsContainer('mouse-click-' + button);
-};
-
-/**
- * Updates the events with type: mouse-long-press-button
- *
- * @since 2.0.0
- *
- * @param {String} button - Mouse button (left, middle or right)
- *
- * @see DKTools.Sprite.Button.prototype.updateEventsContainer
- */
-DKTools.Sprite.Button.prototype.updateMouseLongPressEvents = function(button) {
-    this.updateEventsContainer('mouse-long-press-' + button);
-};
-
-/**
- * Updates the events with type: mouse-long-press-button-started
- *
- * @since 2.0.0
- *
- * @param {String} button - Mouse button (left, middle or right)
- *
- * @see DKTools.Sprite.Button.prototype.updateEventsContainer
- */
-DKTools.Sprite.Button.prototype.updateMouseLongPressStartedEvents = function(button) {
-    this.updateEventsContainer(`mouse-long-press-${button}-started`);
-};
-
-/**
- * Updates the events with type: mouse-long-press-button-finished
- *
- * @since 2.0.0
- *
- * @param {String} button - Mouse button (left, middle or right)
- *
- * @see DKTools.Sprite.Button.prototype.updateEventsContainer
- */
-DKTools.Sprite.Button.prototype.updateMouseLongPressFinishedEvents = function(button) {
-    this.updateEventsContainer(`mouse-long-press-${button}-finished`);
-};
-
-/**
- * Updates the events with type: state-normal
- *
- * @since 2.0.0
- *
- * @see DKTools.Sprite.Button.prototype.updateEventsContainer
- */
-DKTools.Sprite.Button.prototype.updateStateNormalEvents = function() {
-    this.updateEventsContainer('state-normal');
-};
-
-/**
- * Updates the events with type: state-pressed
- *
- * @since 2.0.0
- *
- * @see DKTools.Sprite.Button.prototype.updateEventsContainer
- */
-DKTools.Sprite.Button.prototype.updateStatePressedEvents = function() {
-    this.updateEventsContainer('state-pressed');
-};
-
-/**
- * Updates the button state
- *
- * @see DKTools.Sprite.Button.prototype.isPressed
- * @see DKTools.Sprite.Button.prototype.isLongPressed
- * @see DKTools.Sprite.Button.prototype.updateStatePressedEvents
- * @see DKTools.Sprite.Button.prototype.updateStateNormalEvents
- */
-DKTools.Sprite.Button.prototype.updateButtonState = function() {
-    if (this._mousePressTime > 0) {
-        this.updateStatePressedEvents();
-    } else {
-        this.updateStateNormalEvents();
-    }
-};
-
 
 
 
@@ -21782,8 +21713,375 @@ DKTools.Sprite.Button.prototype.updateButtonState = function() {
 // DKTools.Sprite.Cursor
 //===========================================================================
 
-DKTools.Sprite.Cursor.prototype = Object.create(DKTools.Sprite.prototype);
-DKTools.Sprite.Cursor.prototype.constructor = DKTools.Sprite.Cursor;
+/**
+ * Cursor class
+ *
+ * @class DKTools.Sprite.Cursor
+ * @extends DKTools.Sprite
+ *
+ * @memberof DKTools.Sprite
+ *
+ * @see DKTools.Sprite.Cursor.prototype.initialize
+ */
+DKTools.Sprite.Cursor = class extends DKTools.Sprite {
+
+    // C methods
+
+    /**
+     * Clears all data
+     *
+     * @private
+     * @override
+     *
+     * @see DKTools.Sprite.prototype._clearAll
+     * @see DKTools.Sprite.Cursor.prototype._clearAnimationCount
+     */
+    _clearAll() {
+        DKTools.Sprite.prototype._clearAll.call(this);
+        this._clearAnimationCount();
+    }
+
+    /**
+     * Clears the animation count
+     *
+     * @private
+     */
+    _clearAnimationCount() {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._animationCount = 0;
+    }
+
+    /**
+     * Creates all
+     *
+     * @private
+     * @override
+     *
+     * @see DKTools.Sprite.prototype._createAll
+     * @see DKTools.Sprite.Cursor.prototype._createWindowskin
+     */
+    _createAll() {
+        DKTools.Sprite.prototype._createAll.call(this);
+        this._createWindowskin();
+    }
+
+    /**
+     * Creates the window skin
+     *
+     * @private
+     *
+     * @see DKTools.Sprite.Cursor.prototype.standardWindowskin
+     */
+    _createWindowskin() {
+        this._windowskin = ImageManager.loadSystem(this.standardWindowskin());
+    }
+
+    // R methods
+
+    /**
+     * Updates and redraws all
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.prototype.refreshAll
+     * @see DKTools.Sprite.Cursor.prototype.refreshCursor
+     */
+    refreshAll() {
+        DKTools.Sprite.prototype.refreshAll.call(this);
+        this.refreshCursor();
+    }
+
+    /**
+     * Updates the cursor
+     *
+     * @see DKTools.Sprite.Cursor.prototype.move
+     * @see DKTools.Sprite.Cursor.prototype.setupBitmap
+     */
+    refreshCursor() {
+        const x = this._cursorRect.x;
+        const y = this._cursorRect.y;
+        const w = this._cursorRect.width;
+        const h = this._cursorRect.height;
+        const parent = this.parent;
+        const m = 4;
+        const ox = 0;
+        const oy = 0;
+        const w2 = Math.min(w, parent.realWidth - x);
+        const h2 = Math.min(h, parent.realHeight - y);
+
+        this.move(x, y);
+
+        if (w > 0 && h > 0) {
+            const skin = this._windowskin;
+            const bitmap = new Bitmap(w2, h2);
+            const p = 96;
+            const q = 48;
+
+            bitmap.blt(skin, p + m, p + m, q - m * 2, q - m * 2, ox + m, oy + m, w - m * 2, h - m * 2);
+            bitmap.blt(skin, p + m, p, q - m * 2, m, ox + m, oy, w - m * 2, m);
+            bitmap.blt(skin, p + m, p + q - m, q - m * 2, m, ox + m, oy + h - m, w - m * 2, m);
+            bitmap.blt(skin, p, p + m, m, q - m * 2, ox, oy + m, m, h - m * 2);
+            bitmap.blt(skin, p + q - m, p + m, m, q - m * 2, ox + w - m, oy + m, m, h - m * 2);
+            bitmap.blt(skin, p, p, m, m, ox, oy, m, m);
+            bitmap.blt(skin, p + q - m, p, m, m, ox + w - m, oy, m, m);
+            bitmap.blt(skin, p, p + q - m, m, m, ox, oy + h - m, m, m);
+            bitmap.blt(skin, p + q - m, p + q - m, m, m, ox + w - m, oy + h - m, m, m);
+
+            this.setupBitmap(bitmap);
+        }
+    }
+
+    // S methods
+
+    /**
+     * Returns the standard blink speed
+     *
+     * @returns {Number} Standard blink speed
+     */
+    standardBlinkSpeed() {
+        return 8;
+    }
+
+    /**
+     * Returns the standard rectangle of the cursor
+     *
+     * @returns {Rectangle} Standard rectangle of the cursor
+     */
+    standardCursorRect() {
+        return new Rectangle(0, 0, 0, 0);
+    }
+
+    /**
+     * Sets all parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     *
+     * @param {Number} [object.blinkSpeed] - Blink speed
+     * @param {PIXI.Rectangle | Rectangle | Object} [object.cursorRect] - Rectangle of the cursor
+     *
+     * @param {Number} [object.cursorRect.x] - The X coordinate
+     * @param {Number} [object.cursorRect.y] - The Y coordinate
+     * @param {Number} [object.cursorRect.width] - Width of the rectangle
+     * @param {Number} [object.cursorRect.height] - Height of the rectangle
+     *
+     * @see DKTools.Sprite.prototype.setupAll
+     * @see DKTools.Sprite.Cursor.prototype.setupBlinkSpeed
+     * @see DKTools.Sprite.Cursor.prototype.setupCursorRect
+     */
+    setupAll(object = {}) {
+        object = object || {};
+
+        DKTools.Sprite.prototype.setupAll.call(this, object);
+
+        this.setupBlinkSpeed(object.blinkSpeed);
+        this.setupCursorRect(object.cursorRect);
+    }
+
+    /**
+     * Sets the blink speed
+     *
+     * @param {Number} [blinkSpeed=this.standardBlinkSpeed()] - Blink speed
+     *
+     * @see DKTools.Sprite.Cursor.prototype.standardBlinkSpeed
+     */
+    setupBlinkSpeed(blinkSpeed) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._blinkSpeed = _.defaultTo(blinkSpeed, this.standardBlinkSpeed());
+    }
+
+    /**
+     * Sets the rectangle of the cursor
+     *
+     * @param {Number | PIXI.Rectangle | Rectangle | Object} [object=this.standardCursorRect()] - The X coordinate or Rectangle or object with parameters
+     * @param {Number} [y] - The Y coordinate (if object is Number)
+     * @param {Number} [width] - Width of the rectangle (if object is Number)
+     * @param {Number} [height] - Height of the rectangle (if object is Number)
+     *
+     * @param {Number} [object.x] - The X coordinate
+     * @param {Number} [object.y] - The Y coordinate
+     * @param {Number} [object.width] - Width of the rectangle
+     * @param {Number} [object.height] - Height of the rectangle
+     *
+     * @see DKTools.Utils.Rectangle.toRectangle
+     * @see DKTools.Sprite.Cursor.prototype.standardCursorRect
+     */
+    setupCursorRect(object, y, width, height) {
+        const rect = DKTools.Utils.Rectangle.tryToRectangle(object, y, width, height);
+
+        /**
+         * @private
+         * @readonly
+         * @type {Rectangle}
+         */
+        this._cursorRect = Object.assign(this.standardCursorRect(), rect);
+    }
+
+    /**
+     * Changes all parameters
+     * Returns the number of changed parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     * @param {Boolean} [activate=false] - Activates the cursor
+     *
+     * @param {Number} [object.blinkSpeed] - Blink speed
+     * @param {PIXI.Rectangle | Rectangle | Object} [object.cursorRect] - Rectangle of the cursor
+     *
+     * @param {Number} [object.cursorRect.x] - The X coordinate
+     * @param {Number} [object.cursorRect.y] - The Y coordinate
+     * @param {Number} [object.cursorRect.width] - Width of the rectangle
+     * @param {Number} [object.cursorRect.height] - Height of the rectangle
+     *
+     * @see DKTools.Sprite.prototype.setAll
+     * @see DKTools.Sprite.Cursor.prototype.setBlinkSpeed
+     * @see DKTools.Sprite.Cursor.prototype.setCursorRect
+     * @see DKTools.Sprite.Cursor.prototype.start
+     * @see DKTools.Sprite.Cursor.prototype.activate
+     *
+     * @returns {Number} Number of changed parameters
+     */
+    setAll(object = {}, blockStart = false, activate = false) {
+        object = object || {};
+
+        const block = true;
+        let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
+
+        if (this.setBlinkSpeed(object.blinkSpeed)) {
+            changed++;
+        }
+
+        if (this.setCursorRect(object.cursorRect)) {
+            changed++;
+        }
+
+        if (changed > 0) {
+            if (!blockStart) {
+                this.start();
+            }
+
+            if (activate) {
+                this.activate();
+            }
+        }
+
+        return changed;
+    }
+
+    /**
+     * Changes the blink speed
+     * Returns true if the change occurred
+     *
+     * @param {Number} [blinkSpeed] - Blink speed
+     *
+     * @see DKTools.Sprite.Cursor.prototype.setupBlinkSpeed
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setBlinkSpeed(blinkSpeed) {
+        if (this._blinkSpeed === blinkSpeed) {
+            return false;
+        }
+
+        const lastSpeed = this._blinkSpeed;
+
+        this.setupBlinkSpeed(blinkSpeed);
+
+        return this._blinkSpeed !== lastSpeed;
+    }
+
+    /**
+     * Changes the rectangle of the cursor
+     * Returns true if the change occurred
+     *
+     * @param {Number | PIXI.Rectangle | Rectangle | Object} [object] - The X coordinate or Rectangle or object with parameters
+     * @param {Number} [y] - The Y coordinate (if object is Number)
+     * @param {Number} [width] - Width of the rectangle (if object is Number)
+     * @param {Number} [height] - Height of the rectangle (if object is Number)
+     *
+     * @param {Number} [object.x] - The X coordinate
+     * @param {Number} [object.y] - The Y coordinate
+     * @param {Number} [object.width] - Width of the rectangle
+     * @param {Number} [object.height] - Height of the rectangle
+     *
+     * @see DKTools.Utils.Rectangle.toRectangle
+     * @see DKTools.Utils.Rectangle.equals
+     * @see DKTools.Sprite.Cursor.prototype.setupCursorRect
+     * @see DKTools.Sprite.Cursor.prototype.refreshCursor
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setCursorRect(object, y, width, height) {
+        const newRect = DKTools.Utils.Rectangle.toRectangle(object, y, width, height);
+
+        if (DKTools.Utils.Rectangle.equals(this._cursorRect, newRect)) {
+            return false;
+        }
+
+        const lastRect = DKTools.Utils.Rectangle.clone(this._cursorRect);
+
+        this.setupCursorRect(newRect);
+
+        if (!DKTools.Utils.Rectangle.equals(this._cursorRect, lastRect)) {
+            this.refreshCursor();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    // P methods
+
+    /**
+     * Processes all
+     *
+     * @version 6.1.0
+     * @override
+     *
+     * @see DKTools.Sprite.prototype.processAll
+     */
+    processAll() {
+        DKTools.Sprite.prototype.processAll.call(this);
+        this.processCursorAnimation();
+    }
+
+    /**
+     * Processes the cursor animation
+     *
+     * @since 6.1.0
+     *
+     * @see DKTools.Sprite.Cursor.prototype.setOpacity
+     */
+    processCursorAnimation() {
+        const blinkCount = this._animationCount % 40;
+        let parentOpacity = this.parent.getCurrentOpacity();
+
+        if (this.parent.isVisibleAndActive()) {
+            this._animationCount++;
+
+            if (blinkCount < 20) {
+                parentOpacity -= blinkCount * this._blinkSpeed;
+            } else {
+                parentOpacity -= (40 - blinkCount) * this._blinkSpeed;
+            }
+        }
+
+        this.setOpacity(parentOpacity);
+    }
+
+};
 
 // properties
 
@@ -21819,362 +22117,6 @@ Object.defineProperties(DKTools.Sprite.Cursor.prototype, {
 
 });
 
-// C methods
-
-/**
- * Clears all data
- *
- * @private
- * @override
- *
- * @see DKTools.Sprite.prototype._clearAll
- * @see DKTools.Sprite.Cursor.prototype._clearAnimationCount
- */
-DKTools.Sprite.Cursor.prototype._clearAll = function() {
-    DKTools.Sprite.prototype._clearAll.call(this);
-    this._clearAnimationCount();
-};
-
-/**
- * Clears the animation count
- *
- * @private
- */
-DKTools.Sprite.Cursor.prototype._clearAnimationCount = function() {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._animationCount = 0;
-};
-
-/**
- * Creates all
- *
- * @private
- * @override
- *
- * @see DKTools.Sprite.prototype._createAll
- * @see DKTools.Sprite.Cursor.prototype._createWindowskin
- */
-DKTools.Sprite.Cursor.prototype._createAll = function() {
-    DKTools.Sprite.prototype._createAll.call(this);
-    this._createWindowskin();
-};
-
-/**
- * Creates the window skin
- *
- * @private
- *
- * @see DKTools.Sprite.Cursor.prototype.standardWindowskin
- */
-DKTools.Sprite.Cursor.prototype._createWindowskin = function() {
-    this._windowskin = ImageManager.loadSystem(this.standardWindowskin());
-};
-
-// R methods
-
-/**
- * Updates and redraws all
- *
- * @override
- *
- * @see DKTools.Sprite.prototype.refreshAll
- * @see DKTools.Sprite.Cursor.prototype.refreshCursor
- */
-DKTools.Sprite.Cursor.prototype.refreshAll = function() {
-    DKTools.Sprite.prototype.refreshAll.call(this);
-    this.refreshCursor();
-};
-
-/**
- * Updates the cursor
- *
- * @see DKTools.Sprite.Cursor.prototype.move
- * @see DKTools.Sprite.Cursor.prototype.setupBitmap
- */
-DKTools.Sprite.Cursor.prototype.refreshCursor = function() {
-    const x = this._cursorRect.x;
-    const y = this._cursorRect.y;
-    const w = this._cursorRect.width;
-    const h = this._cursorRect.height;
-    const parent = this.parent;
-    const m = 4;
-    const ox = 0;
-    const oy = 0;
-    const w2 = Math.min(w, parent.realWidth - x);
-    const h2 = Math.min(h, parent.realHeight - y);
-
-    this.move(x, y);
-
-    if (w > 0 && h > 0) {
-        const skin = this._windowskin;
-        const bitmap = new Bitmap(w2, h2);
-        const p = 96;
-        const q = 48;
-
-        bitmap.blt(skin, p + m, p + m, q - m * 2, q - m * 2, ox + m, oy + m, w - m * 2, h - m * 2);
-        bitmap.blt(skin, p + m, p, q - m * 2, m, ox + m, oy, w - m * 2, m);
-        bitmap.blt(skin, p + m, p + q - m, q - m * 2, m, ox + m, oy + h - m, w - m * 2, m);
-        bitmap.blt(skin, p, p + m, m, q - m * 2, ox, oy + m, m, h - m * 2);
-        bitmap.blt(skin, p + q - m, p + m, m, q - m * 2, ox + w - m, oy + m, m, h - m * 2);
-        bitmap.blt(skin, p, p, m, m, ox, oy, m, m);
-        bitmap.blt(skin, p + q - m, p, m, m, ox + w - m, oy, m, m);
-        bitmap.blt(skin, p, p + q - m, m, m, ox, oy + h - m, m, m);
-        bitmap.blt(skin, p + q - m, p + q - m, m, m, ox + w - m, oy + h - m, m, m);
-
-        this.setupBitmap(bitmap);
-    }
-};
-
-// S methods
-
-/**
- * Returns the standard blink speed
- *
- * @returns {Number} Standard blink speed
- */
-DKTools.Sprite.Cursor.prototype.standardBlinkSpeed = function() {
-    return 8;
-};
-
-/**
- * Returns the standard rectangle of the cursor
- *
- * @returns {Rectangle} Standard rectangle of the cursor
- */
-DKTools.Sprite.Cursor.prototype.standardCursorRect = function() {
-    return new Rectangle(0, 0, 0, 0);
-};
-
-/**
- * Sets all parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- *
- * @param {Number} [object.blinkSpeed] - Blink speed
- * @param {PIXI.Rectangle | Rectangle | Object} [object.cursorRect] - Rectangle of the cursor
- *
- * @param {Number} [object.cursorRect.x] - The X coordinate
- * @param {Number} [object.cursorRect.y] - The Y coordinate
- * @param {Number} [object.cursorRect.width] - Width of the rectangle
- * @param {Number} [object.cursorRect.height] - Height of the rectangle
- *
- * @see DKTools.Sprite.prototype.setupAll
- * @see DKTools.Sprite.Cursor.prototype.setupBlinkSpeed
- * @see DKTools.Sprite.Cursor.prototype.setupCursorRect
- */
-DKTools.Sprite.Cursor.prototype.setupAll = function(object = {}) {
-    object = object || {};
-
-    DKTools.Sprite.prototype.setupAll.call(this, object);
-
-    this.setupBlinkSpeed(object.blinkSpeed);
-    this.setupCursorRect(object.cursorRect);
-};
-
-/**
- * Sets the blink speed
- *
- * @param {Number} [blinkSpeed=this.standardBlinkSpeed()] - Blink speed
- *
- * @see DKTools.Sprite.Cursor.prototype.standardBlinkSpeed
- */
-DKTools.Sprite.Cursor.prototype.setupBlinkSpeed = function(blinkSpeed) {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._blinkSpeed = _.defaultTo(blinkSpeed, this.standardBlinkSpeed());
-};
-
-/**
- * Sets the rectangle of the cursor
- *
- * @param {Number | PIXI.Rectangle | Rectangle | Object} [object=this.standardCursorRect()] - The X coordinate or Rectangle or object with parameters
- * @param {Number} [y] - The Y coordinate (if object is Number)
- * @param {Number} [width] - Width of the rectangle (if object is Number)
- * @param {Number} [height] - Height of the rectangle (if object is Number)
- *
- * @param {Number} [object.x] - The X coordinate
- * @param {Number} [object.y] - The Y coordinate
- * @param {Number} [object.width] - Width of the rectangle
- * @param {Number} [object.height] - Height of the rectangle
- *
- * @see DKTools.Utils.Rectangle.toRectangle
- * @see DKTools.Sprite.Cursor.prototype.standardCursorRect
- */
-DKTools.Sprite.Cursor.prototype.setupCursorRect = function(object, y, width, height) {
-    const rect = DKTools.Utils.Rectangle.tryToRectangle(object, y, width, height);
-
-    /**
-     * @private
-     * @readonly
-     * @type {Rectangle}
-     */
-    this._cursorRect = Object.assign(this.standardCursorRect(), rect);
-};
-
-/**
- * Changes all parameters
- * Returns the number of changed parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- * @param {Boolean} [activate=false] - Activates the cursor
- *
- * @param {Number} [object.blinkSpeed] - Blink speed
- * @param {PIXI.Rectangle | Rectangle | Object} [object.cursorRect] - Rectangle of the cursor
- *
- * @param {Number} [object.cursorRect.x] - The X coordinate
- * @param {Number} [object.cursorRect.y] - The Y coordinate
- * @param {Number} [object.cursorRect.width] - Width of the rectangle
- * @param {Number} [object.cursorRect.height] - Height of the rectangle
- *
- * @see DKTools.Sprite.prototype.setAll
- * @see DKTools.Sprite.Cursor.prototype.setBlinkSpeed
- * @see DKTools.Sprite.Cursor.prototype.setCursorRect
- * @see DKTools.Sprite.Cursor.prototype.start
- * @see DKTools.Sprite.Cursor.prototype.activate
- *
- * @returns {Number} Number of changed parameters
- */
-DKTools.Sprite.Cursor.prototype.setAll = function(object = {}, blockStart = false, activate = false) {
-    object = object || {};
-
-    const block = true;
-    let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
-
-    if (this.setBlinkSpeed(object.blinkSpeed)) {
-        changed++;
-    }
-
-    if (this.setCursorRect(object.cursorRect)) {
-        changed++;
-    }
-
-    if (changed > 0) {
-        if (!blockStart) {
-            this.start();
-        }
-
-        if (activate) {
-            this.activate();
-        }
-    }
-
-    return changed;
-};
-
-/**
- * Changes the blink speed
- * Returns true if the change occurred
- *
- * @param {Number} [blinkSpeed] - Blink speed
- *
- * @see DKTools.Sprite.Cursor.prototype.setupBlinkSpeed
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Cursor.prototype.setBlinkSpeed = function(blinkSpeed) {
-    if (this._blinkSpeed === blinkSpeed) {
-        return false;
-    }
-
-    const lastSpeed = this._blinkSpeed;
-
-    this.setupBlinkSpeed(blinkSpeed);
-
-    return this._blinkSpeed !== lastSpeed;
-};
-
-/**
- * Changes the rectangle of the cursor
- * Returns true if the change occurred
- *
- * @param {Number | PIXI.Rectangle | Rectangle | Object} [object] - The X coordinate or Rectangle or object with parameters
- * @param {Number} [y] - The Y coordinate (if object is Number)
- * @param {Number} [width] - Width of the rectangle (if object is Number)
- * @param {Number} [height] - Height of the rectangle (if object is Number)
- *
- * @param {Number} [object.x] - The X coordinate
- * @param {Number} [object.y] - The Y coordinate
- * @param {Number} [object.width] - Width of the rectangle
- * @param {Number} [object.height] - Height of the rectangle
- *
- * @see DKTools.Utils.Rectangle.toRectangle
- * @see DKTools.Utils.Rectangle.equals
- * @see DKTools.Sprite.Cursor.prototype.setupCursorRect
- * @see DKTools.Sprite.Cursor.prototype.refreshCursor
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Cursor.prototype.setCursorRect = function(object, y, width, height) {
-    const newRect = DKTools.Utils.Rectangle.toRectangle(object, y, width, height);
-
-    if (DKTools.Utils.Rectangle.equals(this._cursorRect, newRect)) {
-        return false;
-    }
-
-    const lastRect = DKTools.Utils.Rectangle.clone(this._cursorRect);
-
-    this.setupCursorRect(newRect);
-
-    if (!DKTools.Utils.Rectangle.equals(this._cursorRect, lastRect)) {
-        this.refreshCursor();
-
-        return true;
-    }
-
-    return false;
-};
-
-// P methods
-
-/**
- * Processes all
- *
- * @version 6.1.0
- * @override
- *
- * @see DKTools.Sprite.prototype.processAll
- */
-DKTools.Sprite.Cursor.prototype.processAll = function() {
-    DKTools.Sprite.prototype.processAll.call(this);
-    this.processCursorAnimation();
-};
-
-/**
- * Processes the cursor animation
- *
- * @since 6.1.0
- *
- * @see DKTools.Sprite.Cursor.prototype.setOpacity
- */
-DKTools.Sprite.Cursor.prototype.processCursorAnimation = function() {
-    const blinkCount = this._animationCount % 40;
-    let parentOpacity = this.parent.getCurrentOpacity();
-
-    if (this.parent.isVisibleAndActive()) {
-        this._animationCount++;
-
-        if (blinkCount < 20) {
-            parentOpacity -= blinkCount * this._blinkSpeed;
-        } else {
-            parentOpacity -= (40 - blinkCount) * this._blinkSpeed;
-        }
-    }
-
-    this.setOpacity(parentOpacity);
-};
-
 
 
 
@@ -22183,8 +22125,248 @@ DKTools.Sprite.Cursor.prototype.processCursorAnimation = function() {
 // DKTools.Sprite.Arrow
 //===========================================================================
 
-DKTools.Sprite.Arrow.prototype = Object.create(DKTools.Sprite.Button.prototype);
-DKTools.Sprite.Arrow.prototype.constructor = DKTools.Sprite.Arrow;
+/**
+ * Arrow class
+ *
+ * @class DKTools.Sprite.Arrow
+ * @extends DKTools.Sprite.Button
+ *
+ * @memberof DKTools.Sprite
+ *
+ * @see DKTools.Sprite.Arrow.prototype.initialize
+ */
+DKTools.Sprite.Arrow = class extends DKTools.Sprite.Button {
+
+    // G methods
+
+    /**
+     * Returns the rectangle of the arrow or null
+     *
+     * @since 6.0.0
+     * @static
+     *
+     * @param {String} arrowType - Type of the arrow
+     *
+     * @returns {Rectangle | null} Rectangle of the arrow or null
+     */
+    static getRect(arrowType) {
+        const p = 24;
+        const q = p / 2;
+        const sx = 96 + p;
+        const sy = p;
+        let x, y, width, height;
+
+        switch (arrowType) {
+            case 'up':
+                x = sx + q;
+                y = sy;
+                width = p;
+                height = q;
+
+                break;
+            case 'down':
+                x = sx + q;
+                y = sy + q + p;
+                width = p;
+                height = q;
+
+                break;
+            case 'left':
+                x = sx;
+                y = sy + q;
+                width = q;
+                height = p;
+
+                break;
+            case 'right':
+                x = sx + q + p;
+                y = sy + q;
+                width = q;
+                height = p;
+
+                break;
+        }
+
+        return DKTools.Utils.Rectangle.tryToRectangle(x, y, width, height);
+    }
+
+    // R methods
+
+    /**
+     * Updates and redraws all
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.Button.prototype.refreshAll
+     * @see DKTools.Sprite.Arrow.prototype.refreshArrow
+     */
+    refreshAll() {
+        DKTools.Sprite.Button.prototype.refreshAll.call(this);
+        this.refreshArrow();
+    }
+
+    /**
+     *  Updates and redraws the arrow
+     *
+     * @see DKTools.Sprite.Arrow.prototype.setFrame
+     */
+    refreshArrow() {
+        this.setFrame(DKTools.Sprite.Arrow.getRect(this._arrowType));
+    }
+
+    // S methods
+
+    /**
+     * Returns the standard visibility of the arrow
+     *
+     * @override
+     * @returns {Boolean} Standard visibility of the arrow
+     */
+    standardVisible() {
+        return false;
+    }
+
+    /**
+     * Returns the standard graphic name
+     *
+     * @override
+     *
+     * @see DKTools.Base.prototype.standardWindowskin
+     *
+     * @returns {String} Standard graphic name
+     */
+    standardGraphicName() {
+        return this.standardWindowskin();
+    }
+
+    /**
+     * Returns the standard anchor
+     *
+     * @override
+     * @returns {Point} Standard anchor
+     */
+    standardAnchor() {
+        return new Point(0.5, 0.5);
+    }
+
+    /**
+     * Returns the standard type of the arrow
+     *
+     * @returns {null} Standard type of the arrow
+     */
+    standardArrowType() {
+        return null;
+    }
+
+    /**
+     * Sets all parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     *
+     * @param {String} [object.arrowType] - Type of the arrow
+     *
+     * @see DKTools.Sprite.Button.prototype.setupAll
+     * @see DKTools.Sprite.Arrow.prototype.setupArrowType
+     */
+    setupAll(object = {}) {
+        object = object || {};
+        DKTools.Sprite.Button.prototype.setupAll.call(this, object);
+        this.setupArrowType(object.arrowType);
+    }
+
+    /**
+     * Sets the type of the arrow
+     *
+     * @param {String} [type] - Type of the arrow
+     *
+     * @see DKTools.Sprite.Arrow.prototype.standardArrowType
+     */
+    setupArrowType(type) {
+        /**
+         * @private
+         * @readonly
+         * @type {String}
+         */
+        this._arrowType = type || this.standardArrowType();
+    }
+
+    /**
+     * Changes all parameters
+     * Returns the number of changed parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     * @param {Boolean} [activate=false] - Activates the arrow
+     *
+     * @param {String} [object.arrowType] - Type of the arrow
+     *
+     * @see DKTools.Sprite.Button.prototype.setAll
+     * @see DKTools.Sprite.Arrow.prototype.setArrowType
+     * @see DKTools.Sprite.Arrow.prototype.start
+     * @see DKTools.Sprite.Arrow.prototype.activate
+     *
+     * @returns {Number} Number of changed parameters
+     */
+    setAll(object = {}, blockStart = false, activate = false) {
+        object = object || {};
+
+        const block = true;
+        let changed = DKTools.Sprite.Button.prototype.setAll.call(this, object, block);
+
+        if (this.setArrowType(object.arrowType, block)) {
+            changed++;
+        }
+
+        if (changed > 0) {
+            if (!blockStart) {
+                this.start();
+            }
+
+            if (activate) {
+                this.activate();
+            }
+        }
+
+        return changed;
+    }
+
+    /**
+     * Changes the type of the arrow
+     * Returns true if the change occurred
+     *
+     * @param {String} [type] - Type of the arrow
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Arrow.prototype.setupArrowType
+     * @see DKTools.Sprite.Arrow.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setArrowType(type, blockRefreshAll = false) {
+        if (this._arrowType === type) {
+            return false;
+        }
+
+        const lastType = this._arrowType;
+
+        this.setupArrowType(type);
+
+        if (this._arrowType === lastType) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+};
 
 // properties
 
@@ -22206,235 +22388,6 @@ Object.defineProperties(DKTools.Sprite.Arrow.prototype, {
 
 });
 
-// static methods
-
-/**
- * Returns the rectangle of the arrow or null
- *
- * @since 6.0.0
- * @static
- *
- * @param {String} arrowType - Type of the arrow
- *
- * @returns {Rectangle | null} Rectangle of the arrow or null
- */
-DKTools.Sprite.Arrow.getRect = function(arrowType) {
-    const p = 24;
-    const q = p / 2;
-    const sx = 96 + p;
-    const sy = p;
-    let x, y, width, height;
-
-    switch (arrowType) {
-        case 'up':
-            x = sx + q;
-            y = sy;
-            width = p;
-            height = q;
-
-            break;
-        case 'down':
-            x = sx + q;
-            y = sy + q + p;
-            width = p;
-            height = q;
-
-            break;
-        case 'left':
-            x = sx;
-            y = sy + q;
-            width = q;
-            height = p;
-
-            break;
-        case 'right':
-            x = sx + q + p;
-            y = sy + q;
-            width = q;
-            height = p;
-
-            break;
-    }
-
-    return DKTools.Utils.Rectangle.tryToRectangle(x, y, width, height);
-};
-
-// R methods
-
-/**
- * Updates and redraws all
- *
- * @override
- *
- * @see DKTools.Sprite.Button.prototype.refreshAll
- * @see DKTools.Sprite.Arrow.prototype.refreshArrow
- */
-DKTools.Sprite.Arrow.prototype.refreshAll = function() {
-    DKTools.Sprite.Button.prototype.refreshAll.call(this);
-    this.refreshArrow();
-};
-
-/**
- *  Updates and redraws the arrow
- *
- * @see DKTools.Sprite.Arrow.prototype.setFrame
- */
-DKTools.Sprite.Arrow.prototype.refreshArrow = function() {
-    this.setFrame(DKTools.Sprite.Arrow.getRect(this._arrowType));
-};
-
-// S methods
-
-/**
- * Returns the standard visibility of the arrow
- *
- * @override
- * @returns {Boolean} Standard visibility of the arrow
- */
-DKTools.Sprite.Arrow.prototype.standardVisible = function() {
-    return false;
-};
-
-/**
- * Returns the standard graphic name
- *
- * @override
- *
- * @see DKTools.Base.prototype.standardWindowskin
- *
- * @returns {String} Standard graphic name
- */
-DKTools.Sprite.Arrow.prototype.standardGraphicName = function() {
-    return this.standardWindowskin();
-};
-
-/**
- * Returns the standard anchor
- *
- * @override
- * @returns {Point} Standard anchor
- */
-DKTools.Sprite.Arrow.prototype.standardAnchor = function() {
-    return new Point(0.5, 0.5);
-};
-
-/**
- * Returns the standard type of the arrow
- *
- * @returns {null} Standard type of the arrow
- */
-DKTools.Sprite.Arrow.prototype.standardArrowType = function() {
-    return null;
-};
-
-/**
- * Sets all parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- *
- * @param {String} [object.arrowType] - Type of the arrow
- *
- * @see DKTools.Sprite.Button.prototype.setupAll
- * @see DKTools.Sprite.Arrow.prototype.setupArrowType
- */
-DKTools.Sprite.Arrow.prototype.setupAll = function(object = {}) {
-    object = object || {};
-    DKTools.Sprite.Button.prototype.setupAll.call(this, object);
-    this.setupArrowType(object.arrowType);
-};
-
-/**
- * Sets the type of the arrow
- *
- * @param {String} [type] - Type of the arrow
- *
- * @see DKTools.Sprite.Arrow.prototype.standardArrowType
- */
-DKTools.Sprite.Arrow.prototype.setupArrowType = function(type) {
-    /**
-     * @private
-     * @readonly
-     * @type {String}
-     */
-    this._arrowType = type || this.standardArrowType();
-};
-
-/**
- * Changes all parameters
- * Returns the number of changed parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- * @param {Boolean} [activate=false] - Activates the arrow
- *
- * @param {String} [object.arrowType] - Type of the arrow
- *
- * @see DKTools.Sprite.Button.prototype.setAll
- * @see DKTools.Sprite.Arrow.prototype.setArrowType
- * @see DKTools.Sprite.Arrow.prototype.start
- * @see DKTools.Sprite.Arrow.prototype.activate
- *
- * @returns {Number} Number of changed parameters
- */
-DKTools.Sprite.Arrow.prototype.setAll = function(object = {}, blockStart = false, activate = false) {
-    object = object || {};
-
-    const block = true;
-    let changed = DKTools.Sprite.Button.prototype.setAll.call(this, object, block);
-
-    if (this.setArrowType(object.arrowType, block)) {
-        changed++;
-    }
-
-    if (changed > 0) {
-        if (!blockStart) {
-            this.start();
-        }
-
-        if (activate) {
-            this.activate();
-        }
-    }
-
-    return changed;
-};
-
-/**
- * Changes the type of the arrow
- * Returns true if the change occurred
- *
- * @param {String} [type] - Type of the arrow
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Arrow.prototype.setupArrowType
- * @see DKTools.Sprite.Arrow.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Arrow.prototype.setArrowType = function(type, blockRefreshAll = false) {
-    if (this._arrowType === type) {
-        return false;
-    }
-
-    const lastType = this._arrowType;
-
-    this.setupArrowType(type);
-
-    if (this._arrowType === lastType) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
 
 
 
@@ -22443,8 +22396,4323 @@ DKTools.Sprite.Arrow.prototype.setArrowType = function(type, blockRefreshAll = f
 // DKTools.Sprite.Selectable
 //===========================================================================
 
-DKTools.Sprite.Selectable.prototype = Object.create(DKTools.Sprite.Button.prototype);
-DKTools.Sprite.Selectable.prototype.constructor = DKTools.Sprite.Selectable;
+/**
+ * Selectable class
+ *
+ * @class DKTools.Sprite.Selectable
+ * @extends DKTools.Sprite.Button
+ *
+ * @memberof DKTools.Sprite
+ *
+ * @see DKTools.Sprite.Selectable.prototype.initialize
+ */
+DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
+
+    // A methods
+
+    /**
+     * Adds children objects to processing
+     *
+     * @private
+     * @override
+     *
+     * @see DKTools.Sprite.Button.prototype._addAllChildren
+     * @see DKTools.Sprite.Selectable.prototype._addCursorSprite
+     */
+    _addAllChildren() {
+        DKTools.Sprite.Button.prototype._addAllChildren.call(this);
+        this._addCursorSprite();
+    }
+
+    /**
+     * Adds sprite of the cursor to processing
+     *
+     * @private
+     */
+    _addCursorSprite() {
+        this.addChild(this._cursorSprite);
+    }
+
+    /**
+     * Activates the object
+     *
+     * @override
+     */
+    activate() {
+        DKTools.Sprite.Button.prototype.activate.call(this);
+        this.reselect();
+    }
+
+    /**
+     * Adds the item
+     * Returns added item or null
+     *
+     * @version 5.0.0
+     *
+     * @param {Object} item - Item
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxItems
+     * @see DKTools.Sprite.Selectable.prototype.insertItem
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Object | null} Added item or null
+     */
+    addItem(item, blockRefreshAll = false) {
+        const addedItem = this.insertItem(item, this.getMaxItems() - 1, true);
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return addedItem;
+    }
+
+    /**
+     * Adds the items
+     * Returns added items
+     *
+     * @version 5.0.0
+     *
+     * @param {Object[]} items - Items
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.addItem
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Object[]} Added items
+     */
+    addItems(items, blockRefreshAll = false) {
+        const addedItems = _.map(items, item => this.addItem(item, true));
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return addedItems;
+    }
+
+    // C methods
+
+    /**
+     * Clears all data
+     *
+     * @private
+     * @override
+     *
+     * @see DKTools.Sprite.Button.prototype._clearAll
+     * @see DKTools.Sprite.Selectable.prototype._clearItems
+     * @see DKTools.Sprite.Selectable.prototype._clearHandlers
+     * @see DKTools.Sprite.Selectable.prototype._clearTopRow
+     * @see DKTools.Sprite.Selectable.prototype._clearTopCol
+     */
+    _clearAll() {
+        DKTools.Sprite.Button.prototype._clearAll.call(this);
+        this._clearItems();
+        this._clearHandlers();
+        this._clearTopRow();
+        this._clearTopCol();
+    }
+
+    /**
+     * Clears items
+     *
+     * @private
+     */
+    _clearItems() {
+        /**
+         * @private
+         * @readonly
+         * @type {Object[]}
+         */
+        this._items = [];
+    }
+
+    /**
+     * Clears the selection handlers
+     *
+     * @private
+     */
+    _clearHandlers() {
+        /**
+         * @readonly
+         * @private
+         * @type {Object}
+         */
+        this._handlers = {};
+    }
+
+    /**
+     * Clears the top row
+     *
+     * @private
+     */
+    _clearTopRow() {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._topRow = 0;
+    }
+
+    /**
+     * Clears the top col
+     *
+     * @private
+     */
+    _clearTopCol() {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._topCol = 0;
+    }
+
+    /**
+     * Creates all
+     *
+     * @private
+     * @override
+     *
+     * @see DKTools.Sprite.Button.prototype._createAll
+     * @see DKTools.Sprite.Selectable.prototype._createCursorSprite
+     */
+    _createAll() {
+        DKTools.Sprite.Button.prototype._createAll.call(this);
+        this._createCursorSprite();
+    }
+
+    /**
+     * Creates sprite of the cursor
+     *
+     * @private
+     *
+     * @see DKTools.Sprite.Cursor
+     */
+    _createCursorSprite() {
+        /**
+         * @private
+         * @readonly
+         * @type {DKTools.Sprite.Cursor}
+         */
+        this._cursorSprite = new DKTools.Sprite.Cursor();
+    }
+
+    /**
+     * Checks the item
+     * Returns the checked item
+     *
+     * @private
+     *
+     * @param {Object} item - Item
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setHandler
+     *
+     * @returns {Object} Checked item
+     */
+    _checkItem(item) {
+        if (item.enabled === undefined) {
+            item.enabled = true;
+        }
+
+        if (item.ext === undefined) {
+            item.ext = null;
+        }
+
+        if (item.symbol && DKTools.Utils.isFunction(item.handler)) {
+            this.setHandler(item.symbol, item.handler);
+        }
+
+        return item;
+    }
+
+    /**
+     * Calls the handler of the symbol
+     *
+     * @param {String} symbol - Symbol
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isHandled
+     */
+    callHandler(symbol) {
+        if (this.isHandled(symbol)) {
+            this._handlers[symbol](this._index, this);
+        }
+    }
+
+    /**
+     * Calls the handler of the Ok
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getCurrentItemSymbol
+     * @see DKTools.Sprite.Selectable.prototype.isHandled
+     * @see DKTools.Sprite.Selectable.prototype.callHandler
+     * @see DKTools.Sprite.Selectable.prototype.activate
+     */
+    callOkHandler() {
+        const symbol = this.getCurrentItemSymbol();
+
+        if (this.isHandled(symbol)) {
+            this.callHandler(symbol);
+        } else if (this.isHandled('ok')) {
+            this.callHandler('ok');
+        } else {
+            this.activate();
+        }
+    }
+
+    /**
+     * Calls the handler of the cancel
+     *
+     * @see DKTools.Sprite.Selectable.prototype.callHandler
+     */
+    callCancelHandler() {
+        this.callHandler('cancel');
+    }
+
+    /**
+     * Clears the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemRect
+     * @see DKTools.Sprite.Selectable.prototype.clearRect
+     */
+    clearItem(index) {
+        this.clearRect(this.getItemRect(index));
+    }
+
+    /**
+     * Moves the cursor to down
+     *
+     * @version 6.1.0
+     *
+     * @param {Boolean} [wrap=false] - Cyclic selection
+     *
+     * @see DKTools.Sprite.Selectable.prototype.hasCursorDownHandler
+     */
+    cursorDown(wrap = false) {
+        if (this.hasCursorDownHandler()) {
+            this._cursorDownHandler(wrap, this);
+        }
+    }
+
+    /**
+     * Moves the cursor to up
+     *
+     * @version 6.1.0
+     *
+     * @param {Boolean} [wrap=false] - Cyclic selection
+     *
+     * @see DKTools.Sprite.Selectable.prototype.hasCursorUpHandler
+     */
+    cursorUp(wrap = false) {
+        if (this.hasCursorUpHandler()) {
+            this._cursorUpHandler(wrap, this);
+        }
+    }
+
+    /**
+     * Moves the cursor to right
+     *
+     * @version 6.1.0
+     *
+     * @param {Boolean} [wrap=false] - Cyclic selection
+     *
+     * @see DKTools.Sprite.Selectable.prototype.hasCursorRightHandler
+     */
+    cursorRight(wrap = false) {
+        if (this.hasCursorRightHandler()) {
+            this._cursorRightHandler(wrap, this);
+        }
+    }
+
+    /**
+     * Moves the cursor to left
+     *
+     * @version 6.1.0
+     *
+     * @param {Boolean} [wrap=false] - Cyclic selection
+     *
+     * @see DKTools.Sprite.Selectable.prototype.hasCursorRightHandler
+     */
+    cursorLeft(wrap = false) {
+        if (this.hasCursorLeftHandler()) {
+            this._cursorLeftHandler(wrap, this);
+        }
+    }
+
+    /**
+     * Moves the cursor to lower page
+     *
+     * @since 6.1.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.hasCursorPageDownHandler
+     */
+    cursorPageDown() {
+        if (this.hasCursorPageDownHandler()) {
+            this._cursorPageDownHandler(this);
+        }
+    }
+
+    /**
+     * Moves the cursor to upper page
+     *
+     * @since 6.1.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.hasCursorPageUpHandler
+     */
+    cursorPageUp() {
+        if (this.hasCursorPageUpHandler()) {
+            this._cursorPageUpHandler(this);
+        }
+    }
+
+    // D methods
+
+    /**
+     * Deactivates the object
+     *
+     * @override
+     *
+     * @param {Boolean} [deselect=false] - Deselects the current item (selected item)
+     *
+     * @see DKTools.Sprite.Selectable.prototype.deselect
+     */
+    deactivate(deselect = false) {
+        DKTools.Sprite.Button.prototype.deactivate.call(this);
+
+        if (deselect) {
+            this.deselect();
+        }
+    }
+
+    /**
+     * Deselects the current item (selected item)
+     *
+     * @see DKTools.Sprite.Selectable.prototype.selectItem
+     */
+    deselect() {
+        this.selectItem(-1);
+    }
+
+    /**
+     * Disables the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     */
+    disableItem(index, blockRefreshAll = false) {
+        const item = this.getItem(index) || {};
+
+        item.enabled = false;
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+    }
+
+    /**
+     * Draws all
+     *
+     * @override
+     */
+    drawAll() {
+        DKTools.Sprite.Button.prototype.drawAll.call(this);
+        this.drawAllItems();
+    }
+
+    /**
+     * Draws all items
+     *
+     * @version 5.0.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxPageItems
+     * @see DKTools.Sprite.Selectable.prototype.getMaxItems
+     * @see DKTools.Sprite.Selectable.prototype.getTopIndex
+     * @see DKTools.Sprite.Selectable.prototype.drawItem
+     */
+    drawAllItems() {
+        const maxPageItems = this.getMaxPageItems();
+        const maxItems = this.getMaxItems();
+        let index = this.getTopIndex();
+
+        for (let i = 0; i < maxPageItems && index < maxItems; i++, index++) {
+            this.drawItem(index);
+        }
+    }
+
+    /**
+     * Draws the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     * @see DKTools.Sprite.Selectable.prototype.hasDrawItemHandler
+     */
+    drawItem(index) {
+        const item = this.getItem(index) || {};
+
+        if (DKTools.Utils.isFunction(item.drawHandler)) {
+            item.drawHandler(index, this);
+        } else if (this.hasDrawItemHandler()) {
+            this._itemDrawHandler(index, this);
+        }
+    }
+
+    // E methods
+
+    /**
+     * Enables the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     */
+    enableItem(index, blockRefreshAll = false) {
+        const item = this.getItem(index) || {};
+
+        item.enabled = true;
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+    }
+
+    // F methods
+
+    /**
+     * Returns the index of the item by symbol
+     *
+     * @param {Symbol} symbol - Symbol
+     * @returns {Number} Index of the item by symbol
+     */
+    findSymbol(symbol) {
+        return _.findIndex(this._items, { symbol });
+    }
+
+    /**
+     * Returns the index of the item by ext
+     *
+     * @param {*} ext - Ext of the item
+     * @returns {Number} Index of the item by ext
+     */
+    findExt(ext) {
+        return _.findIndex(this._items, { ext });
+    }
+
+    // G methods
+
+    /**
+     * Returns the name of the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @returns {String | undefined} Name of the item
+     */
+    getItemName(index) {
+        const item = this.getItem(index) || {};
+
+        if (DKTools.Utils.isFunction(item.name)) {
+            return item.name(index, this);
+        }
+
+        return item.name;
+    }
+
+    /**
+     * Returns the name of the current item (selected item)
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemName
+     *
+     * @returns {String | undefined} Name of the current item (selected item) or undefined
+     */
+    getCurrentItemName() {
+        return this.getItemName(this._index);
+    }
+
+    /**
+     * Returns the rectangle of the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {Rectangle} Rectangle of the item
+     */
+    getItemRect(index) {
+        const item = this.getItem(index) || {};
+        const itemRect = item.rect || this._itemRect;
+
+        if (DKTools.Utils.isFunction(itemRect)) {
+            return itemRect(index, this);
+        }
+
+        return itemRect;
+    }
+
+    /**
+     * Returns the rectangle of the current item (selected item)
+     *
+     * @version 5.0.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemRect
+     *
+     * @returns {Rectangle} Rectangle of the current item (selected item)
+     */
+    getCurrentItemRect() {
+        return this.getItemRect(this._index);
+    }
+
+    /**
+     * Returns the rectangle of text of the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemRect
+     *
+     * @returns {Rectangle} Rectangle of text of the item
+     */
+    getItemRectForText(index) {
+        const rect = this.getItemRect(index);
+
+        rect.x += this._textPadding;
+        rect.width -= this._textPadding * 2;
+
+        return rect;
+    }
+
+    /**
+     * Returns the width of the item
+     *
+     * @returns {Number} Width of the item
+     */
+    getItemWidth() {
+        if (DKTools.Utils.isFunction(this._itemWidth)) {
+            return this._itemWidth(this);
+        }
+
+        return this._itemWidth;
+    }
+
+    /**
+     * Returns the height of the item
+     *
+     * @returns {Number} Height of the item
+     */
+    getItemHeight() {
+        if (DKTools.Utils.isFunction(this._itemHeight)) {
+            return this._itemHeight(this);
+        } else if (DKTools.Utils.isString(this._itemHeight)) { // number of lines
+            return this.getLineHeight() * parseFloat(this._itemHeight);
+        }
+
+        return this._itemHeight;
+    }
+
+    /**
+     * Returns the item by index
+     *
+     * @param {Number} index - Index
+     * @returns {Object | null} Item or null
+     */
+    getItem(index) {
+        return this._items[index] || null;
+    }
+
+    /**
+     * Returns the index of the item
+     *
+     * @param {Object} item - item
+     * @returns {Number} Index of the item
+     */
+    getItemIndex(item) {
+        return _.indexOf(this._items, item);
+    }
+
+    /**
+     * Returns the font of the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {Object} Font of the item
+     */
+    getItemFont(index) {
+        const item = this.getItem(index) || {};
+        const itemFont = item.font || this._itemFont;
+
+        if (DKTools.Utils.isFunction(itemFont)) {
+            return itemFont(index, this);
+        }
+
+        return itemFont;
+    }
+
+    /**
+     * Returns the text color of the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {String} Text color of the item
+     */
+    getItemTextColor(index) {
+        const item = this.getItem(index) || {};
+        const itemTextColor = item.textColor || this._itemTextColor;
+
+        if (DKTools.Utils.isFunction(itemTextColor)) {
+            return itemTextColor(index, this);
+        }
+
+        return itemTextColor;
+    }
+
+    /**
+     * Returns the paint opacity of the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {Number} Paint opacity of the item
+     */
+    getItemPaintOpacity(index) {
+        const item = this.getItem(index) || {};
+
+        if (DKTools.Utils.isFunction(item.paintOpacity)) {
+            return item.paintOpacity(index, this);
+        } else if (DKTools.Utils.isNumber(item.paintOpacity)) {
+            return item.paintOpacity;
+        } else if (DKTools.Utils.isFunction(this._itemPaintOpacity)) {
+            return this._itemPaintOpacity(index, this);
+        }
+
+        return this._itemPaintOpacity;
+    }
+
+    /**
+     * Returns the align of the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {String} Align of the item
+     */
+    getItemAlign(index) {
+        const item = this.getItem(index) || {};
+        const itemAlign = item.align || this._itemAlign;
+
+        if (DKTools.Utils.isFunction(itemAlign)) {
+            return itemAlign(index, this);
+        }
+
+        return itemAlign;
+    }
+
+    /**
+     * Returns the full info of the item
+     *
+     * @since 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @returns {{ index: Number, item: Object, name: String, enabled: Boolean, rect: Rectangle, rectForText: Rectangle, font: Object, textColor: String, paintOpacity: Number, align: String }} Full info of the item
+     */
+    getItemFullInfo(index) {
+        const item = this.getItem(index);
+
+        return {
+            ...item,
+            index,
+            item,
+            name: this.getItemName(index),
+            enabled: this.isItemEnabled(index),
+            handled: this.isItemHandled(index),
+            rect: this.getItemRect(index),
+            rectForText: this.getItemRectForText(index),
+            font: this.getItemFont(index),
+            textColor: this.getItemTextColor(index),
+            paintOpacity: this.getItemPaintOpacity(index),
+            align: this.getItemAlign(index)
+        };
+    }
+
+    /**
+     * Returns the previous index
+     *
+     * @param {Boolean} [wrap=false] - Cyclic selection
+     * @returns {Number} Previous index
+     */
+    getPrevIndex(wrap = false) {
+        if (this._index > 0) {
+            return this._index - 1;
+        } else if (wrap) {
+            return this.getMaxItems() - 1;
+        }
+
+        return -1;
+    }
+
+    /**
+     * Returns the next index
+     *
+     * @param {Boolean} [wrap=false] - Cyclic selection
+     * @returns {Number} Next index
+     */
+    getNextIndex(wrap = false) {
+        if (this._index < this.getMaxItems() - 1) {
+            return this._index + 1;
+        } else if (wrap) {
+            return 0;
+        }
+
+        return -1;
+    }
+
+    /**
+     * Returns the previous item
+     *
+     * @param {Boolean} [wrap=false] - Cyclic selection
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getPrevIndex
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {Object | null} Previous item or null
+     */
+    getPrevItem(wrap = false) {
+        return this.getItem(this.getPrevIndex(wrap));
+    }
+
+    /**
+     * Returns the next item
+     *
+     * @param {Boolean} [wrap=false] - Cyclic selection
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getNextIndex
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {Object | null} Next item or null
+     */
+    getNextItem(wrap = false) {
+        return this.getItem(this.getNextIndex(wrap));
+    }
+
+    /**
+     * Returns the current item (selected item)
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {Object | null} Current item (selected item) or null
+     */
+    getCurrentItem() {
+        return this.getItem(this._index);
+    }
+
+    /**
+     * Returns the visible items
+     *
+     * @returns {Object[]} Visible items
+     */
+    getVisibleItems() {
+        const maxPageItems = this.getMaxPageItems();
+        const maxItems = this.getMaxItems();
+        const items = [];
+        let index = this.getTopIndex();
+
+        for (let i = 0; i < maxPageItems && index < maxItems; i++, index++) {
+            items.push(this.getItem(index));
+        }
+
+        return items;
+    }
+
+    /**
+     * Returns the symbol of the item by index
+     *
+     * @param {Number} index - Index
+     * @returns {String | null} Symbol of the item by index or null
+     */
+    getItemSymbol(index) {
+        const item = this.getItem(index);
+
+        return item ? item.symbol : null;
+    }
+
+    /**
+     * Returns the ext of the item by index
+     *
+     * @param {Number} index - Index
+     * @returns {* | null} Ext of the item by index or null
+     */
+    getItemExt(index) {
+        var item = this.getItem(index);
+
+        return item ? item.ext : null;
+    }
+
+    /**
+     * Returns the symbol of the current item (selected item)
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemSymbol
+     *
+     * @returns {String | null} Symbol of the current item (selected item) or null
+     */
+    getCurrentItemSymbol() {
+        return this.getItemSymbol(this._index);
+    }
+
+    /**
+     * Returns the ext of the current item (selected item)
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemExt
+     *
+     * @returns {* | null} Ext of the current item (selected item) or null
+     */
+    getCurrentItemExt() {
+        return this.getItemExt(this._index);
+    }
+
+    /**
+     * Returns the number of the items
+     *
+     * @returns {Number} Number of the items
+     */
+    getMaxItems() {
+        return this._items.length;
+    }
+
+    /**
+     * Returns the maximum number of the rows
+     *
+     * @returns {Number} Maximum number of the rows
+     */
+    getMaxRows() {
+        if (this.isFixedHorizontal()) {
+            return 1;
+        }
+
+        return Math.max(1, Math.ceil(this.getMaxItems() / this.getMaxCols()));
+    }
+
+    /**
+     * Returns the maximum number of the columns
+     *
+     * @returns {Number} Maximum number of the columns
+     */
+    getMaxCols() {
+        return this._maxCols;
+    }
+
+    /**
+     * Returns the maximum top row
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxRows
+     * @see DKTools.Sprite.Selectable.prototype.getMaxPageRows
+     *
+     * @returns {Number} Maximum top row
+     */
+    getMaxTopRow() {
+        return Math.max(0, this.getMaxRows() - this.getMaxPageRows());
+    }
+
+    /**
+     * Returns the maximum top column
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxItems
+     * @see DKTools.Sprite.Selectable.prototype.getMaxPageCols
+     *
+     * @returns {Number} Maximum top column
+     */
+    getMaxTopCol() {
+        return Math.max(0, this.getMaxItems() - this.getMaxPageCols());
+    }
+
+    /**
+     * Returns the maximum page rows
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemHeight
+     * @see DKTools.Sprite.Selectable.prototype.getMaxRows
+     *
+     * @returns {Number} Maximum page rows
+     */
+    getMaxPageRows() {
+        const spacing = this._verticalSpacing;
+        const realHeight = this.realHeight;
+        const itemHeight = this.getItemHeight();
+        const maxRows = this.getMaxRows();
+        let rows = 0, height = 0;
+
+        for (; rows < maxRows; rows++) {
+            if (rows === maxRows - 1) {
+                if (height + itemHeight > realHeight) {
+                    break;
+                }
+            } else if (height + itemHeight + spacing > realHeight) {
+                break;
+            }
+
+            height += itemHeight + spacing;
+        }
+
+        return rows;
+    }
+
+    /**
+     * Returns the maximum page columns
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxCols
+     *
+     * @returns {Number} Maximum page columns
+     */
+    getMaxPageCols() {
+        return this.getMaxCols();
+    }
+
+    /**
+     * Returns the maximum page items
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isHorizontal
+     * @see DKTools.Sprite.Selectable.prototype.getMaxPageCols
+     * @see DKTools.Sprite.Selectable.prototype.getMaxPageRows
+     *
+     * @returns {Number} Maximum page items
+     */
+    getMaxPageItems() {
+        if (this.isHorizontal()) {
+            return this.getMaxPageCols();
+        }
+
+        return this.getMaxPageRows() * this.getMaxPageCols();
+    }
+
+    /**
+     * Returns the row
+     *
+     * @since 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxCols
+     *
+     * @returns {Number} Row
+     */
+    getRow(index) {
+        return Math.floor(index / this.getMaxCols());
+    }
+
+    /**
+     * Returns the current row
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getRow
+     *
+     * @returns {Number} Current row
+     */
+    getCurrentRow() {
+        return this.getRow(this._index);
+    }
+
+    /**
+     * Returns the row of the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.hasItem
+     * @see DKTools.Sprite.Selectable.prototype.getRow
+     *
+     * @returns {Number} Row of the item or -1
+     */
+    getItemRow(index) {
+        if (!this.hasItem(index)) {
+            return -1;
+        }
+
+        return this.getRow(index);
+    }
+
+    /**
+     * Returns the list of the items by row
+     *
+     * @param {Number} row - Row
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxRows
+     * @see DKTools.Sprite.Selectable.prototype.getMaxPageItems
+     * @see DKTools.Sprite.Selectable.prototype.getMaxItems
+     * @see DKTools.Sprite.Selectable.prototype.getMaxCols
+     * @see DKTools.Sprite.Selectable.prototype.getRow
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {Object[]} List of the items by row
+     */
+    getRowItems(row) {
+        const items = [];
+
+        if (DKTools.Utils.Number.inRange(row, 0, this.getMaxRows())) {
+            const maxPageItems = this.getMaxPageItems();
+            const maxItems = this.getMaxItems();
+            let index = row * this.getMaxCols();
+
+            for (let i = 0; i < maxPageItems && index < maxItems && this.getRow(index) === row; i++, index++) {
+                items.push(this.getItem(index));
+            }
+        }
+
+        return items;
+    }
+
+    /**
+     * Returns the column
+     *
+     * @since 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxCols
+     *
+     * @returns {Number} Column
+     */
+    getCol(index) {
+        return Math.floor(index % this.getMaxCols());
+    }
+
+    /**
+     * Returns the current column
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isHorizontal
+     * @see DKTools.Sprite.Selectable.prototype.getCol
+     *
+     * @returns {Number} Current column
+     */
+    getCurrentCol() {
+        if (this.isHorizontal()) {
+            return this._index;
+        }
+
+        return this.getCol(this._index);
+    }
+
+    /**
+     * Returns the column of the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index or Item
+     *
+     * @see DKTools.Sprite.Selectable.prototype.hasItem
+     * @see DKTools.Sprite.Selectable.prototype.getCol
+     *
+     * @returns {Number} Column of the item or -1
+     */
+    getItemCol(index) {
+        if (!this.hasItem(index)) {
+            return -1;
+        }
+
+        return this.getCol(index);
+    }
+
+    /**
+     * Returns the list of the items by column
+     *
+     * @param {Number} col - Column
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxCols
+     * @see DKTools.Sprite.Selectable.prototype.getMaxItems
+     * @see DKTools.Sprite.Selectable.prototype.getCol
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {Object[]} List of the items by column
+     */
+    getColItems(col) {
+        const items = [];
+
+        if (DKTools.Utils.Number.inRange(col, 0, this.getMaxCols())) {
+            const maxItems = this.getMaxItems();
+
+            for (let index = 0; index < maxItems; index++) {
+                if (this.getCol(index) === col) {
+                    items.push(this.getItem(index));
+                }
+            }
+        }
+
+        return items;
+    }
+
+    /**
+     * Returns the top index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isHorizontal
+     * @see DKTools.Sprite.Selectable.prototype.getTopCol
+     * @see DKTools.Sprite.Selectable.prototype.getTopRow
+     * @see DKTools.Sprite.Selectable.prototype.getMaxCols
+     *
+     * @returns {Number} Top index
+     */
+    getTopIndex() {
+        if (this.isHorizontal()) {
+            return this.getTopCol();
+        }
+
+        return this.getTopRow() * this.getMaxCols();
+    }
+
+    /**
+     * Returns the top row
+     *
+     * @returns {Number} Top row
+     */
+    getTopRow() {
+        return this._topRow;
+    }
+
+    /**
+     * Returns the top column
+     *
+     * @returns {Number} Top column
+     */
+    getTopCol() {
+        return this._topCol;
+    }
+
+    /**
+     * Returns the bottom row
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getTopRow
+     * @see DKTools.Sprite.Selectable.prototype.getMaxPageRows
+     *
+     * @returns {Number} Bottom row
+     */
+    getBottomRow() {
+        return Math.max(0, this.getTopRow() + this.getMaxPageRows() - 1);
+    }
+
+    /**
+     * Returns the bottom column
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getTopCol
+     * @see DKTools.Sprite.Selectable.prototype.getMaxPageCols
+     *
+     * @returns {Number} Bottom column
+     */
+    getBottomCol() {
+        return Math.max(0, this.getTopCol() + this.getMaxPageCols() - 1);
+    }
+
+    /**
+     * Returns the bottom index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getTopIndex
+     * @see DKTools.Sprite.Selectable.prototype.getMaxPageItems
+     * @see DKTools.Sprite.Selectable.prototype.getMaxItems
+     *
+     * @returns {Number} Bottom index
+     */
+    getBottomIndex() {
+        return Math.min(this.getTopIndex() + this.getMaxPageItems(), this.getMaxItems()) - 1;
+    }
+
+    // H methods
+
+    /**
+     * Returns true if the item exists
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {Boolean} Item exists
+     */
+    hasItem(index) {
+        return !!this.getItem(index);
+    }
+
+    /**
+     * Returns true if the items exists
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxItems
+     *
+     * @returns {Boolean} Items exists
+     */
+    hasItems() {
+        return this.getMaxItems() > 0;
+    }
+
+    /**
+     * Returns true if the item with symbol exists
+     *
+     * @since 6.1.0
+     * @param {String} symbol - Symbol
+     *
+     * @returns {Boolean} Item with symbol exists
+     */
+    hasSymbol(symbol) {
+        return _.includes(this._items, { symbol });
+    }
+
+    /**
+     * Returns true if the item with ext exists
+     *
+     * @since 6.1.0
+     * @param {*} ext - Ext
+     *
+     * @returns {Boolean} Item with ext exists
+     */
+    hasExt(ext) {
+        return _.includes(this._items, { ext });
+    }
+
+    /**
+     * Returns true if the handler of cursor down exists
+     *
+     * @since 6.1.0
+     * @returns {Boolean} Handler of cursor down exists
+     */
+    hasCursorDownHandler() {
+        return !!this._cursorDownHandler;
+    }
+
+    /**
+     * Returns true if the handler of cursor up exists
+     *
+     * @since 6.1.0
+     * @returns {Boolean} Handler of cursor up exists
+     */
+    hasCursorUpHandler() {
+        return !!this._cursorUpHandler;
+    }
+
+    /**
+     * Returns true if the handler of cursor right exists
+     *
+     * @since 6.1.0
+     * @returns {Boolean} Handler of cursor right exists
+     */
+    hasCursorRightHandler() {
+        return !!this._cursorRightHandler;
+    }
+
+    /**
+     * Returns true if the handler of cursor left exists
+     *
+     * @since 6.1.0
+     * @returns {Boolean} Handler of cursor left exists
+     */
+    hasCursorLeftHandler() {
+        return !!this._cursorLeftHandler;
+    }
+
+    /**
+     * Returns true if the handler of cursor page down exists
+     *
+     * @since 6.1.0
+     * @returns {Boolean} Handler of cursor page down exists
+     */
+    hasCursorPageDownHandler() {
+        return !!this._cursorPageDownHandler;
+    }
+
+    /**
+     * Returns true if the handler of cursor page up exists
+     *
+     * @since 6.1.0
+     * @returns {Boolean} Handler of cursor page up exists
+     */
+    hasCursorPageUpHandler() {
+        return !!this._cursorPageUpHandler;
+    }
+
+    /**
+     * Returns true if the handler of draw of the item exists
+     *
+     * @returns {Boolean} Handler of draw of the item exists
+     */
+    hasDrawItemHandler() {
+        return !!this._itemDrawHandler;
+    }
+
+    /**
+     * Hides the cursor
+     */
+    hideCursor() {
+        this._cursorSprite.hide();
+    }
+
+    /**
+     * @param {Number} x - The X coordinate
+     * @param {Number} y - The Y coordinate
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isOutside
+     * @see DKTools.Sprite.Selectable.prototype.canvasToLocalX
+     * @see DKTools.Sprite.Selectable.prototype.canvasToLocalY
+     * @see DKTools.Sprite.Selectable.prototype.getMaxPageItems
+     * @see DKTools.Sprite.Selectable.prototype.getMaxItems
+     * @see DKTools.Sprite.Selectable.prototype.getTopIndex
+     * @see DKTools.Sprite.Selectable.prototype.getItemRect
+     *
+     * @returns {Number}
+     */
+    hitTest(x, y) {
+        if (this.isOutside(x, y)) {
+            return -1;
+        }
+
+        const scale = this.scale;
+        const localX = this.canvasToLocalX(x);
+        const localY = this.canvasToLocalY(y);
+        const maxPageItems = this.getMaxPageItems();
+        const maxItems = this.getMaxItems();
+        let index = this.getTopIndex();
+
+        for (let i = 0; i < maxPageItems && index < maxItems; i++, index++) {
+            const rect = this.getItemRect(index);
+
+            rect.x *= scale.x;
+            rect.y *= scale.y;
+            rect.width *= scale.x;
+            rect.height *= scale.y;
+
+            if (rect.contains(localX, localY)) {
+                return index;
+            }
+        }
+
+        return -1;
+    }
+
+    // I methods
+
+    /**
+     * Inserts the item
+     * Returns inserted item or null
+     *
+     * @version 5.0.0
+     *
+     * @param {Object} item - Item
+     * @param {Number} [index=0] - Index to insert
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype._checkItem
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Object | null} Inserted item or null
+     */
+    insertItem(item, index, blockRefreshAll = false) {
+        const checkedItem = this._checkItem(item);
+
+        DKTools.Utils.Array.insert(this._items, checkedItem, index);
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return checkedItem;
+    }
+
+    /**
+     * Inserts the items
+     * Returns inserted items
+     *
+     * @version 5.0.0
+     *
+     * @param {Object[]} items - Items
+     * @param {Number} [index=0] - Index to insert
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.insertItem
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Object[]} Inserted items
+     */
+    insertItems(items, index, blockRefreshAll = false) {
+        index = index || 0;
+
+        const insertedItems = _.map(items, (item, i) => this.insertItem(item, index + i, true));
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return insertedItems;
+    }
+
+    /**
+     * Returns true if the cursor is fixed
+     *
+     * @returns {Boolean} Cursor is fixed
+     */
+    isCursorFixed() {
+        return this._cursorFixed;
+    }
+
+    /**
+     * Returns true if the cursor all
+     *
+     * @returns {Boolean} Cursor all
+     */
+    isCursorAll() {
+        return this._cursorAll;
+    }
+
+    /**
+     * Returns true if the fixed horizontal position of the items
+     *
+     * @returns {Boolean} Fixed horizontal position of the items
+     */
+    isFixedHorizontal() {
+        return this._fixedHorizontal;
+    }
+
+    /**
+     * Returns true if the position of the items is horizontal
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isFixedHorizontal
+     * @see DKTools.Sprite.Selectable.prototype.getMaxPageRows
+     *
+     * @returns {Boolean} Position of the items is horizontal
+     */
+    isHorizontal() {
+        return this.isFixedHorizontal() || this.getMaxPageRows() === 1;
+    }
+
+    /**
+     * Returns true if the position of the items is vertical
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isHorizontal
+     *
+     * @returns {Boolean} Position of the items is vertical
+     */
+    isVertical() {
+        return !this.isHorizontal();
+    }
+
+    /**
+     * Returns true if the cursor can move
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isVisibleAndActive
+     * @see DKTools.Sprite.Selectable.prototype.isCursorFixed
+     * @see DKTools.Sprite.Selectable.prototype.isCursorAll
+     * @see DKTools.Sprite.Selectable.prototype.hasItems
+     *
+     * @returns {Boolean} Cursor can move
+     */
+    isCursorMovable() {
+        return this.isVisibleAndActive() && !this.isCursorFixed() && !this.isCursorAll() && this.hasItems();
+    }
+
+    /**
+     * Returns true if the Ok is enabled
+     *
+     * @returns {Boolean} Ok is enabled
+     */
+    isOkEnabled() {
+        return true;
+    }
+
+    /**
+     * Returns true if the cancel is enabled
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isHandled
+     *
+     * @returns {Boolean} Cancel is enabled
+     */
+    isCancelEnabled() {
+        return this.isHandled('cancel');
+    }
+
+    /**
+     * Returns true if the Ok is triggered
+     *
+     * @returns {Boolean} Ok is triggered
+     */
+    isOkTriggered() {
+        return Input.isRepeated('ok');
+    }
+
+    /**
+     * Returns true if the cancel is triggered
+     *
+     * @returns {Boolean} Cancel is triggered
+     */
+    isCancelTriggered() {
+        return Input.isRepeated('cancel') || TouchInput.isCancelled();
+    }
+
+    /**
+     * Returns true if the cursor is visible
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isHorizontal
+     * @see DKTools.Sprite.Selectable.prototype.getTopCol
+     * @see DKTools.Sprite.Selectable.prototype.getBottomCol
+     * @see DKTools.Sprite.Selectable.prototype.getCurrentRow
+     * @see DKTools.Sprite.Selectable.prototype.getTopRow
+     * @see DKTools.Sprite.Selectable.prototype.getBottomRow
+     *
+     * @returns {Boolean} Cursor is visible
+     */
+    isCursorVisible() {
+        if (!this._cursorSprite.isVisible()) {
+            return false;
+        }
+
+        if (this.isHorizontal()) {
+            const col = this.getCurrentCol();
+
+            return col >= this.getTopCol() && col <= this.getBottomCol();
+        }
+
+        const row = this.getCurrentRow();
+
+        return row >= this.getTopRow() && row <= this.getBottomRow();
+    }
+
+    /**
+     * Returns true if the item is enabled
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {Boolean} Item is enabled
+     */
+    isItemEnabled(index) {
+        const item = this.getItem(index) || {};
+        const itemEnabled = item.enabled;
+
+        if (DKTools.Utils.isFunction(itemEnabled)) {
+            return itemEnabled(index, this);
+        }
+
+        return itemEnabled;
+    }
+
+    /**
+     * Returns true if the current item (selected item) is enabled
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isItemEnabled
+     *
+     * @returns {Boolean} Current item (selected item) is enabled
+     */
+    isCurrentItemEnabled() {
+        return this.isItemEnabled(this._index);
+    }
+
+    /**
+     * Returns true if the item is visible
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getTopIndex
+     * @see DKTools.Sprite.Selectable.prototype.getBottomIndex
+     *
+     * @returns {Boolean} Item is visible
+     */
+    isItemVisible(index) {
+        return DKTools.Utils.Number.inRange(index, this.getTopIndex(), this.getBottomIndex() + 1);
+    }
+
+    /**
+     * Returns true if the item is selected
+     *
+     * @since 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @returns {Boolean} Item is selected
+     */
+    isItemSelected(index) {
+        return this._index === index;
+    }
+
+    /**
+     * Returns true if the symbol is handling
+     *
+     * @param {String} symbol - Symbol
+     * @returns {Boolean} Symbol is handling
+     */
+    isHandled(symbol) {
+        return !!this._handlers[symbol];
+    }
+
+    /**
+     * Returns true if the item is handling
+     *
+     * @since 6.1.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     * @see DKTools.Sprite.Selectable.prototype.isHandled
+     *
+     * @returns {Boolean} Item is handling
+     */
+    isItemHandled(index) {
+        const item = this.getItem(index) || {};
+
+        return this.isHandled(item.symbol) || DKTools.Utils.isFunction(item.okHandler);
+    }
+
+    /**
+     * Returns true if the current item (selected item) is handling
+     *
+     * @since 6.1.0
+     *
+     * DKTools.Sprite.Selectable.prototype.isItemHandled
+     *
+     * @returns {Boolean} Current item (selected item) is handling
+     */
+    isCurrentItemHandled() {
+        return this.isItemHandled(this._index);
+    }
+
+    // O methods
+
+    /**
+     * @private
+     * @param {Boolean} [triggered=false]
+     *
+     * @see DKTools.Sprite.Selectable.prototype.hitTest
+     * @see DKTools.Sprite.Selectable.prototype.isOkEnabled
+     * @see DKTools.Sprite.Selectable.prototype.isCursorMovable
+     * @see DKTools.Sprite.Selectable.prototype.processOk
+     * @see DKTools.Sprite.Selectable.prototype.selectItem
+     * @see DKTools.Sprite.Selectable.prototype.playCursorSound
+     */
+    _onTouch(triggered = false) {
+        const lastIndex = this._index;
+        const x = TouchInput.x;
+        const y = TouchInput.y;
+        const hitIndex = this.hitTest(x, y);
+
+        if (hitIndex >= 0) {
+            if (this._index === hitIndex) {
+                if (triggered && this.isOkEnabled()) {
+                    this.processOk();
+                }
+            } else if (this.isCursorMovable()) {
+                this.selectItem(hitIndex);
+            }
+        }
+
+        if (this._index !== lastIndex) {
+            this.playCursorSound();
+        }
+    }
+
+    // P methods
+
+    /**
+     * Plays "ok" sound
+     *
+     * @see SoundManager.playOk
+     */
+    playOkSound() {
+        SoundManager.playOk();
+    }
+
+    /**
+     * Plays "cancel" sound
+     *
+     * @see SoundManager.playCancel
+     */
+    playCancelSound() {
+        SoundManager.playCancel();
+    }
+
+    /**
+     * Plays "cursor" sound
+     *
+     * @see SoundManager.playCursor
+     */
+    playCursorSound() {
+        SoundManager.playCursor();
+    }
+
+    /**
+     * Plays "buzzer" sound
+     *
+     * @see SoundManager.playBuzzer
+     */
+    playBuzzerSound() {
+        SoundManager.playBuzzer();
+    }
+
+    /**
+     * Processes all
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.Selectable.prototype.processCursorMove
+     * @see DKTools.Sprite.Selectable.prototype.processHandling
+     */
+    processAll() {
+        DKTools.Sprite.Button.prototype.processAll.call(this);
+
+        this.processCursorMove();
+        this.processHandling();
+    }
+
+    /**
+     * Processes the move of the cursor
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isCursorMovable
+     * @see DKTools.Sprite.Selectable.prototype.isHandled
+     * @see DKTools.Sprite.Selectable.prototype.cursorDown
+     * @see DKTools.Sprite.Selectable.prototype.cursorUp
+     * @see DKTools.Sprite.Selectable.prototype.cursorRight
+     * @see DKTools.Sprite.Selectable.prototype.cursorLeft
+     * @see DKTools.Sprite.Selectable.prototype.cursorPageDown
+     * @see DKTools.Sprite.Selectable.prototype.cursorPageUp
+     * @see DKTools.Sprite.Selectable.prototype.playCursorSound
+     */
+    processCursorMove() {
+        if (!this.isCursorMovable()) {
+            return;
+        }
+
+        const lastIndex = this._index;
+
+        if (Input.isRepeated('down')) {
+            this.cursorDown(Input.isTriggered('down'));
+        }
+
+        if (Input.isRepeated('up')) {
+            this.cursorUp(Input.isTriggered('up'));
+        }
+
+        if (Input.isRepeated('right')) {
+            this.cursorRight(Input.isTriggered('right'));
+        }
+
+        if (Input.isRepeated('left')) {
+            this.cursorLeft(Input.isTriggered('left'));
+        }
+
+        if (Input.isTriggered('pagedown')) {
+            this.cursorPageDown();
+        }
+
+        if (Input.isTriggered('pageup')) {
+            this.cursorPageUp();
+        }
+
+        if (this._index !== lastIndex) {
+            this.playCursorSound();
+        }
+    }
+
+    /**
+     * Processes the handling
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isVisibleAndActive
+     * @see DKTools.Sprite.Selectable.prototype.isOkEnabled
+     * @see DKTools.Sprite.Selectable.prototype.isOkTriggered
+     * @see DKTools.Sprite.Selectable.prototype.isCancelEnabled
+     * @see DKTools.Sprite.Selectable.prototype.isCancelTriggered
+     * @see DKTools.Sprite.Selectable.prototype.isHandled
+     * @see DKTools.Sprite.Selectable.prototype.processOk
+     * @see DKTools.Sprite.Selectable.prototype.processCancel
+     * @see DKTools.Sprite.Selectable.prototype.processPageDown
+     * @see DKTools.Sprite.Selectable.prototype.processPageUp
+     */
+    processHandling() {
+        if (!this.isVisibleAndActive()) {
+            return;
+        }
+
+        if (this.isOkEnabled() && this.isOkTriggered()) {
+            this.processOk();
+        } else if (this.isCancelEnabled() && this.isCancelTriggered()) {
+            this.processCancel();
+        }
+    }
+
+    /**
+     * Processes the hover of the mouse
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isOptionEnabled
+     * @see DKTools.Sprite.Selectable.prototype.isCursorMovable
+     * @see DKTools.Sprite.Selectable.prototype.hitTest
+     * @see DKTools.Sprite.Selectable.prototype.selectItem
+     * @see DKTools.Sprite.Selectable.prototype.playCursorSound
+     */
+    processMouseHover() {
+        if (this.isOptionEnabled('process-mouse-hover') && this.isCursorMovable()) {
+            const lastIndex = this._index;
+            const x = TouchInput.mouseX;
+            const y = TouchInput.mouseY;
+            const hitIndex = this.hitTest(x, y);
+
+            if (hitIndex >= 0 && hitIndex !== lastIndex) {
+                this.selectItem(hitIndex, true);
+            }
+        }
+    }
+
+    /**
+     * Processes the scroll of the mouse wheel
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isOptionEnabled
+     * @see DKTools.Sprite.Selectable.prototype.isVisibleAndActive
+     * @see DKTools.Sprite.Selectable.prototype.isHorizontal
+     * @see DKTools.Sprite.Selectable.prototype.scrollRight
+     * @see DKTools.Sprite.Selectable.prototype.scrollDown
+     * @see DKTools.Sprite.Selectable.prototype.scrollLeft
+     * @see DKTools.Sprite.Selectable.prototype.scrollUp
+     */
+    processWheelScroll() {
+        if (this.isOptionEnabled('process-wheel-scroll') && this.isVisibleAndActive()) {
+            const wheelY = this._wheelY;
+
+            if (wheelY > 0) {
+                if (this.isHorizontal()) {
+                    this.scrollRight();
+                } else {
+                    this.scrollDown();
+                }
+            } else {
+                if (this.isHorizontal()) {
+                    this.scrollLeft();
+                } else {
+                    this.scrollUp();
+                }
+            }
+        }
+    }
+
+    /**
+     * Processes ok
+     *
+     * @version 6.0.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isCurrentItemEnabled
+     * @see DKTools.Sprite.Selectable.prototype.updateInputData
+     * @see DKTools.Sprite.Selectable.prototype.deactivate
+     * @see DKTools.Sprite.Selectable.prototype.callOkHandler
+     * @see DKTools.Sprite.Selectable.prototype.playOkSound
+     * @see DKTools.Sprite.Selectable.prototype.playBuzzerSound
+     */
+    processOk() {
+        if (this.isCurrentItemEnabled()) {
+            this.playOkSound();
+            this.updateInputData();
+            this.deactivate();
+
+            const item = this.getCurrentItem() || {};
+
+            if (DKTools.Utils.isFunction(item.okHandler)) {
+                item.okHandler(this._index, this);
+            } else {
+                this.callOkHandler();
+            }
+        } else {
+            this.playBuzzerSound();
+        }
+    }
+
+    /**
+     * Processes cancel
+     *
+     * @version 6.0.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.playCancelSound
+     * @see DKTools.Sprite.Selectable.prototype.updateInputData
+     * @see DKTools.Sprite.Selectable.prototype.deactivate
+     * @see DKTools.Sprite.Selectable.prototype.callCancelHandler
+     */
+    processCancel() {
+        this.playCancelSound();
+        this.updateInputData();
+        this.deactivate();
+
+        const item = this.getCurrentItem();
+
+        if (item && DKTools.Utils.isFunction(item.cancelHandler)) {
+            item.cancelHandler(this._index, this);
+        } else {
+            this.callCancelHandler();
+        }
+    }
+
+    // R methods
+
+    /**
+     * Redraws the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isItemVisible
+     * @see DKTools.Sprite.Selectable.prototype.clearItem
+     * @see DKTools.Sprite.Selectable.prototype.drawItem
+     */
+    redrawItem(index) {
+        if (this.isItemVisible(index)) {
+            this.clearItem(index);
+            this.drawItem(index);
+        }
+    }
+
+    /**
+     * Redraws the current item (selected item)
+     *
+     * @see DKTools.Sprite.Selectable.prototype.redrawItem
+     */
+    redrawCurrentItem() {
+        this.redrawItem(this._index);
+    }
+
+    /**
+     * Removes the handler of the symbol
+     *
+     * @param {String} symbol - Symbol
+     */
+    removeHandler(symbol) {
+        delete this._handlers[symbol];
+    }
+
+    /**
+     * Removes the item
+     * Returns the removed item or null
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Object | null} Removed item or null
+     */
+    removeItem(index, blockRefreshAll = false) {
+        const item = this.getItem(index);
+
+        if (!item) {
+            return null;
+        }
+
+        DKTools.Utils.Array.remove(this._items, item);
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return item;
+    }
+
+    /**
+     * Removes the items
+     * Returns removed items
+     *
+     * @version 6.0.0
+     *
+     * @param {Number[]} items - Indexes
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.removeItem
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Object[]} Removed items
+     */
+    removeItems(items, blockRefreshAll = false) {
+        const removedItems = _.map(items, item => this.removeItem(item, true));
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return removedItems;
+    }
+
+    /**
+     * Replaces the item
+     * Returns replaced item or null
+     *
+     * @version 5.0.0
+     *
+     * @param {Object} item - Item
+     * @param {Number} [index=0] - Index
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype._checkItem
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Object | null} Replaced item
+     */
+    replaceItem(item, index, blockRefreshAll = false) {
+        const checkedItem = this._checkItem(item);
+
+        index = index || 0;
+
+        const replacedItem = this._items[index];
+
+        this._items[index] = checkedItem;
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return replacedItem;
+    }
+
+    /**
+     * Reselects the current item (selected item)
+     *
+     * @see DKTools.Sprite.Selectable.prototype.selectItem
+     */
+    reselect() {
+        this.selectItem(this._index);
+    }
+
+    /**
+     * Resets the scroll
+     *
+     * @see DKTools.Sprite.Selectable.prototype.selectItem
+     */
+    resetScroll() {
+        if (this._index !== 0) {
+            this.selectItem(0);
+        }
+    }
+
+    // S methods
+
+    /**
+     * Sets the events
+     *
+     * @version 3.0.0
+     * @private
+     * @override
+     *
+     * @see DKTools.Sprite.Button.prototype._setupEvents
+     * @see DKTools.Sprite.Selectable.prototype._setupMouseClickEvent
+     * @see DKTools.Sprite.Selectable.prototype._setupMouseLongPressEvent
+     * @see DKTools.Sprite.Selectable.prototype._setupMouseHoverEvents
+     * @see DKTools.Sprite.Selectable.prototype._setupWheelScrollEvents
+     */
+    _setupEvents() {
+        DKTools.Sprite.Button.prototype._setupEvents.call(this);
+        this._setupMouseClickEvent();
+        this._setupMouseLongPressEvent();
+        this._setupMouseHoverEvents();
+        this._setupWheelScrollEvents();
+    }
+
+    /**
+     * Sets the event of the click (mouse-click-left)
+     *
+     * @private
+     *
+     * @see DKTools.Sprite.Selectable.prototype.addEvent
+     */
+    _setupMouseClickEvent() {
+        this.addEvent({
+            type: 'mouse-click-left',
+            onUpdate: this._onTouch.bind(this, true)
+        });
+    }
+
+    /**
+     * Sets the event of the long press (mouse-long-press-left)
+     *
+     * @private
+     *
+     * @see DKTools.Sprite.Selectable.prototype.addEvent
+     */
+    _setupMouseLongPressEvent() {
+        this.addEvent({
+            type: 'mouse-long-press-left',
+            onUpdate: this._onTouch.bind(this, false)
+        });
+    }
+
+    /**
+     * Sets the events of the mouse hover (mouse-enter and mouse-move)
+     *
+     * @private
+     *
+     * @see DKTools.Sprite.Selectable.prototype.addEvent
+     */
+    _setupMouseHoverEvents() {
+        this.addEvent({
+            type: 'mouse-enter',
+            onUpdate: this.processMouseHover.bind(this)
+        });
+
+        this.addEvent({
+            type: 'mouse-move',
+            onUpdate: this.processMouseHover.bind(this)
+        });
+    }
+
+    /**
+     * Sets the events of the wheel scrolling (wheel-Y-inside and wheel-Y-outside)
+     *
+     * @private
+     *
+     * @see DKTools.Sprite.Selectable.prototype.addEvent
+     */
+    _setupWheelScrollEvents() {
+        this.addEvent({
+            type: 'wheel-Y-inside',
+            onUpdate: this.processWheelScroll.bind(this)
+        });
+
+        this.addEvent({
+            type: 'wheel-Y-outside',
+            onUpdate: this.processWheelScroll.bind(this)
+        });
+    }
+
+    /**
+     * Returns the standard index
+     *
+     * @returns {Number} Standard index
+     */
+    standardIndex() {
+        return 0;
+    }
+
+    /**
+     * Returns the standard number of the columns
+     *
+     * @returns {Number} Standard number of the columns
+     */
+    standardMaxCols() {
+        return 1;
+    }
+
+    /**
+     * Returns the standard fixed cursor
+     *
+     * @returns {Boolean} Standard fixed cursor
+     */
+    standardCursorFixed() {
+        return false;
+    }
+
+    /**
+     * Returns the standard cursor all
+     *
+     * @returns {Boolean} Standard cursor all
+     */
+    standardCursorAll() {
+        return false;
+    }
+
+    /**
+     * Returns the standard fixed horizontal position
+     *
+     * @returns {Boolean} Standard fixed horizontal position
+     */
+    standardFixedHorizontal() {
+        return false;
+    }
+
+    /**
+     * Returns the standard horizontal spacing
+     *
+     * @returns {Number} Standard horizontal spacing
+     */
+    standardHorizontalSpacing() {
+        return 0;
+    }
+
+    /**
+     * Returns the standard vertical spacing
+     *
+     * @returns {Number} Standard vertical spacing
+     */
+    standardVerticalSpacing() {
+        return 0;
+    }
+
+    /**
+     * Returns the standard text padding
+     *
+     * @returns {Number} Standard text padding
+     */
+    standardTextPadding() {
+        return 6;
+    }
+
+    /**
+     * Returns the standard handler of cursor down
+     *
+     * @since 6.1.0
+     *
+     * @returns {Function} Standard handler of cursor down
+     */
+    standardCursorDownHandler() {
+        return (wrap) => {
+            if (this.isHorizontal()) {
+                return;
+            }
+
+            const index = this._index;
+            const maxItems = this.getMaxItems();
+            const maxCols = this.getMaxCols();
+
+            if (index < maxItems - maxCols || (wrap && maxItems === this.getMaxRows() * maxCols)) {
+                this.selectItem((index + maxCols) % maxItems);
+            }
+        };
+    }
+
+    /**
+     * Returns the standard handler of cursor up
+     *
+     * @since 6.1.0
+     *
+     * @returns {Function} Standard handler of cursor up
+     */
+    standardCursorUpHandler() {
+        return (wrap) => {
+            if (this.isHorizontal()) {
+                return;
+            }
+
+            const index = this._index;
+            const maxItems = this.getMaxItems();
+            const maxCols = this.getMaxCols();
+
+            if (index >= maxCols || (wrap && maxItems === this.getMaxRows() * maxCols)) {
+                this.selectItem((index - maxCols + maxItems) % maxItems);
+            }
+        };
+    }
+
+    /**
+     * Returns the standard handler of cursor right
+     *
+     * @since 6.1.0
+     *
+     * @returns {Function} Standard handler of cursor right
+     */
+    standardCursorRightHandler() {
+        return (wrap) => {
+            const maxItems = this.getMaxItems();
+
+            if (maxItems < 2) {
+                return;
+            }
+
+            if (this.isVertical()) {
+                const index = this._index;
+                const maxCols = this.getMaxCols();
+
+                if (maxCols >= 2 && (index < maxItems - 1 || wrap)) {
+                    this.selectItem((index + 1) % maxItems);
+                }
+            } else {
+                this.selectNextItem(wrap);
+            }
+        };
+    }
+
+    /**
+     * Returns the standard handler of cursor left
+     *
+     * @since 6.1.0
+     *
+     * @returns {Function} Standard handler of cursor left
+     */
+    standardCursorLeftHandler() {
+        return (wrap) => {
+            const maxItems = this.getMaxItems();
+
+            if (maxItems < 2) {
+                return;
+            }
+
+            if (this.isVertical()) {
+                const index = this._index;
+                const maxCols = this.getMaxCols();
+
+                if (maxCols >= 2 && (index > 0 || wrap)) {
+                    this.selectItem((index - 1 + maxItems) % maxItems);
+                }
+            } else {
+                this.selectPrevItem(wrap);
+            }
+        };
+    }
+
+    /**
+     * Returns the standard handler of cursor page down
+     *
+     * @since 6.1.0
+     *
+     * @returns {Function} Standard handler of cursor page down
+     */
+    standardCursorPageDownHandler() {
+        return () => {
+            if (this.isHorizontal()) {
+                const topCol = this.getTopCol();
+                const maxPageCols = this.getMaxPageCols();
+                const maxItems = this.getMaxItems();
+
+                if (topCol + maxPageCols < maxItems) {
+                    this.setTopCol(topCol + maxPageCols);
+                    this.selectItem(Math.min(this._index + this.getMaxPageItems(), maxItems - 1));
+                }
+            } else {
+                const topRow = this.getTopRow();
+                const maxPageRows = this.getMaxPageRows();
+
+                if (topRow + maxPageRows < this.getMaxRows()) {
+                    this.setTopRow(topRow + maxPageRows);
+                    this.selectItem(Math.min(this._index + this.getMaxPageItems(), this.getMaxItems() - 1));
+                }
+            }
+        };
+    }
+
+    /**
+     * Returns the standard handler of cursor page up
+     *
+     * @since 6.1.0
+     *
+     * @returns {Function} Standard handler of cursor page up
+     */
+    standardCursorPageUpHandler() {
+        return () => {
+            if (this.isHorizontal()) {
+                const topCol = this.getTopCol();
+
+                if (topCol > 0) {
+                    this.setTopCol(topCol - this.getMaxPageCols());
+                    this.selectItem(Math.max(0, this._index - this.getMaxPageItems()));
+                }
+            } else {
+                const topRow = this.getTopRow();
+
+                if (topRow > 0) {
+                    this.setTopRow(topRow - this.getMaxPageRows());
+                    this.selectItem(Math.max(0, this._index - this.getMaxPageItems()));
+                }
+            }
+        };
+    }
+
+    /**
+     * Returns the standard list of the items
+     *
+     * @returns {Array} Standard list of the items
+     */
+    standardItems() {
+        return [];
+    }
+
+    /**
+     * Returns the standard handler of draw of the item
+     *
+     * @returns {Function} Standard handler of draw of the item
+     */
+    standardItemDrawHandler() {
+        return index => {
+            const name = this.getItemName(index);
+            const font = this.getItemFont(index);
+            const textColor = this.getItemTextColor(index);
+            const paintOpacity = this.getItemPaintOpacity(index);
+            const align = this.getItemAlign(index);
+            const rect = this.getItemRectForText(index);
+
+            this.drawText(name, {
+                font,
+                textColor,
+                paintOpacity,
+                align,
+                rect,
+                resetFont: true,
+                resetTextColor: true,
+                resetPaintOpacity: true
+            });
+        };
+    }
+
+    /**
+     * Returns the standard item width
+     *
+     * @returns {Function} Standard item width
+     */
+    standardItemWidth() {
+        return () => Math.floor((this.realWidth + this._horizontalSpacing) / this.getMaxCols() - this._horizontalSpacing);
+    }
+
+    /**
+     * Returns the standard item height
+     *
+     * @returns {Function} Standard item height
+     */
+    standardItemHeight() {
+        return this.getLineHeight();
+    }
+
+    /**
+     * Returns the standard item rect
+     *
+     * @returns {Function} Standard item rect
+     */
+    standardItemRect() {
+        return index => {
+            const rect = new Rectangle(0, 0, this.getItemWidth(), this.getItemHeight());
+            const maxCols = this.getMaxCols();
+
+            if (this.isHorizontal()) {
+                rect.x = (index - this.getTopCol()) * (rect.width + this._horizontalSpacing);
+                rect.y = 0;
+            } else {
+                rect.x = (index % maxCols) * (rect.width + this._horizontalSpacing);
+                rect.y = (Math.floor(index / maxCols) - this.getTopRow()) * (rect.height + this._verticalSpacing);
+            }
+
+            return rect;
+        };
+    }
+
+    /**
+     * Returns the standard item font
+     *
+     * @version 5.0.0
+     *
+     * @returns {Object} Standard item font
+     */
+    standardItemFont() {
+        return () => this.font;
+    }
+
+    /**
+     * Returns the standard text color of the item
+     *
+     * @version 5.0.0
+     *
+     * @returns {String} Standard text color of the item
+     */
+    standardItemTextColor() {
+        return () => this.textColor;
+    }
+
+    /**
+     * Returns the standard paint opacity of the item
+     *
+     * @returns {Number} Standard paint opacity of the item
+     */
+    standardItemPaintOpacity() {
+        return index => {
+            if (this.isItemEnabled(index)) {
+                return this.standardEnabledItemPaintOpacity();
+            } else {
+                return this.standardDisabledItemPaintOpacity();
+            }
+        };
+    }
+
+    /**
+     * Returns the standard paint opacity of the enabled item
+     *
+     * @returns {Number} Standard paint opacity of the enabled item
+     */
+    standardEnabledItemPaintOpacity() {
+        return 255;
+    }
+
+    /**
+     * Returns the standard paint opacity of the disabled item
+     *
+     * @returns {Number} Standard paint opacity of the disabled item
+     */
+    standardDisabledItemPaintOpacity() {
+        try {
+            return Window_Base.prototype.translucentOpacity.call(this);
+        } catch (e) {
+            return 160;
+        }
+    }
+
+    /**
+     * Returns the standard item align
+     *
+     * @returns {String} Standard item align
+     */
+    standardItemAlign() {
+        return this.align;
+    }
+
+    /**
+     * Sets all parameters
+     *
+     * @version 6.1.0
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     *
+     * @param {Number} [object.index] - Index
+     * @param {Number} [object.maxCols] - Number of the columns
+     * @param {Boolean} [object.fixedHorizontal] - Fixed horizontal position
+     * @param {Boolean} [object.cursorFixed] - Fixed cursor
+     * @param {Boolean} [object.cursorAll] - Cursor all
+     * @param {Number} [object.horizontalSpacing] - Horizontal spacing
+     * @param {Number} [object.verticalSpacing] - Vertical spacing
+     * @param {Number} [object.textPadding] - Text padding
+     * @param {Object[]} [object.items] - List of the items
+     * @param {Function} [object.drawItemHandler] - Handler of draw of the item
+     * @param {Function | Number} [object.itemWidth] - Width of the item
+     * @param {Function | Number} [object.itemHeight] - Height of the item
+     * @param {Function} [object.itemRect] - Rectangle of the item
+     * @param {Function | Object} [object.itemFont] - Font of the item
+     * @param {Function | String} [object.itemTextColor] - Text color of the item
+     * @param {Function | Number} [object.itemPaintOpacity] - Paint opacity of the item
+     * @param {Function | String} [object.itemAlign] - Align of the item
+     *
+     * @param {String} [object.font.fontFace] - Font face
+     * @param {Number} [object.font.fontSize] - Font size
+     * @param {Boolean} [object.font.fontItalic] - Font italic
+     *
+     * @see DKTools.Sprite.Button.prototype.setupAll
+     * @see DKTools.Sprite.Selectable.prototype.setupIndex
+     * @see DKTools.Sprite.Selectable.prototype.setupMaxCols
+     * @see DKTools.Sprite.Selectable.prototype.setupFixedHorizontal
+     * @see DKTools.Sprite.Selectable.prototype.setupCursorFixed
+     * @see DKTools.Sprite.Selectable.prototype.setupCursorAll
+     * @see DKTools.Sprite.Selectable.prototype.setupSpacing
+     * @see DKTools.Sprite.Selectable.prototype.setupTextPadding
+     * @see DKTools.Sprite.Selectable.prototype.setupItems
+     * @see DKTools.Sprite.Selectable.prototype.setupItemDrawHandler
+     * @see DKTools.Sprite.Selectable.prototype.setupItemWidth
+     * @see DKTools.Sprite.Selectable.prototype.setupItemHeight
+     * @see DKTools.Sprite.Selectable.prototype.setupItemRect
+     * @see DKTools.Sprite.Selectable.prototype.setupItemFont
+     * @see DKTools.Sprite.Selectable.prototype.setupItemTextColor
+     * @see DKTools.Sprite.Selectable.prototype.setupItemPaintOpacity
+     * @see DKTools.Sprite.Selectable.prototype.setupItemAlign
+     */
+    setupAll(object = {}) {
+        object = object || {};
+
+        DKTools.Sprite.Button.prototype.setupAll.call(this, object);
+
+        this.setupIndex(object.index);
+        this.setupMaxCols(object.maxCols);
+        this.setupFixedHorizontal(object.fixedHorizontal);
+        this.setupCursorFixed(object.cursorFixed);
+        this.setupCursorAll(object.cursorAll);
+        this.setupCursorDownHandler(object.cursorDownHandler);
+        this.setupCursorUpHandler(object.cursorUpHandler);
+        this.setupCursorRightHandler(object.cursorRightHandler);
+        this.setupCursorLeftHandler(object.cursorLeftHandler);
+        this.setupCursorPageDownHandler(object.cursorPageDownHandler);
+        this.setupCursorPageUpHandler(object.cursorPageUpHandler);
+        this.setupSpacing(object.horizontalSpacing, object.verticalSpacing);
+        this.setupTextPadding(object.textPadding);
+        this.setupItems(object.items);
+        this.setupItemDrawHandler(object.drawItemHandler);
+        this.setupItemWidth(object.itemWidth);
+        this.setupItemHeight(object.itemHeight);
+        this.setupItemRect(object.itemRect);
+        this.setupItemFont(object.itemFont);
+        this.setupItemTextColor(object.itemTextColor);
+        this.setupItemPaintOpacity(object.itemPaintOpacity);
+        this.setupItemAlign(object.itemAlign);
+    }
+
+    /**
+     * Sets the index
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} [index=this.standardIndex()] - Index
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardIndex
+     */
+    setupIndex(index) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._lastIndex = this._index;
+
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._index = _.defaultTo(index, this.standardIndex());
+    }
+
+    /**
+     * Sets the number of the columns
+     *
+     * @param {Number} [cols=this.standardMaxCols()] - Number of the columns
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardMaxCols
+     */
+    setupMaxCols(cols) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._maxCols = cols || this.standardMaxCols();
+    }
+
+    /**
+     * Sets the fixed horizontal position
+     *
+     * @param {Boolean} [fixedHorizontal=this.standardFixedHorizontal()] - Fixed horizontal position
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardFixedHorizontal
+     */
+    setupFixedHorizontal(fixedHorizontal) {
+        /**
+         * @private
+         * @readonly
+         * @type {Boolean}
+         */
+        this._fixedHorizontal = _.defaultTo(fixedHorizontal, this.standardFixedHorizontal());
+    }
+
+    /**
+     * Sets the fixed cursor
+     *
+     * @param {Boolean} [cursorFixed=this.standardCursorFixed()] - Fixed cursor
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardCursorFixed
+     */
+    setupCursorFixed(cursorFixed) {
+        /**
+         * @private
+         * @readonly
+         * @type {Boolean}
+         */
+        this._cursorFixed = _.defaultTo(cursorFixed, this.standardCursorFixed());
+    }
+
+    /**
+     * Sets the cursor all
+     *
+     * @param {Boolean} [cursorAll=this.standardCursorAll()] - Cursor all
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardCursorAll
+     */
+    setupCursorAll(cursorAll) {
+        /**
+         * @private
+         * @readonly
+         * @type {Boolean}
+         */
+        this._cursorAll = _.defaultTo(cursorAll, this.standardCursorAll());
+    }
+
+    /**
+     * Sets the handler of cursor down
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of cursor down
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardCursorDownHandler
+     */
+    setupCursorDownHandler(handler) {
+        this._cursorDownHandler = handler || this.standardCursorDownHandler();
+    }
+
+    /**
+     * Sets the handler of cursor up
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of cursor up
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardCursorUpHandler
+     */
+    setupCursorUpHandler(handler) {
+        this._cursorUpHandler = handler || this.standardCursorUpHandler();
+    }
+
+    /**
+     * Sets the handler of cursor right
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of cursor right
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardCursorRightHandler
+     */
+    setupCursorRightHandler(handler) {
+        this._cursorRightHandler = handler || this.standardCursorRightHandler();
+    }
+
+    /**
+     * Sets the handler of cursor left
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of cursor left
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardCursorLeftHandler
+     */
+    setupCursorLeftHandler(handler) {
+        this._cursorLeftHandler = handler || this.standardCursorLeftHandler();
+    }
+
+    /**
+     * Sets the handler of cursor page down
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of cursor page down
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardCursorPageDownHandler
+     */
+    setupCursorPageDownHandler(handler) {
+        this._cursorPageDownHandler = handler || this.standardCursorPageDownHandler();
+    }
+
+    /**
+     * Sets the handler of cursor page up
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of cursor page up
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardCursorPageUpHandler
+     */
+    setupCursorPageUpHandler(handler) {
+        this._cursorPageUpHandler = handler || this.standardCursorPageUpHandler();
+    }
+
+    /**
+     * Sets the horizontal spacing
+     *
+     * @param {Number} [spacing] - Horizontal spacing
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardHorizontalSpacing
+     */
+    setupHorizontalSpacing(spacing) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._horizontalSpacing = _.defaultTo(spacing, this.standardHorizontalSpacing());
+    }
+
+    /**
+     * Sets the vertical spacing
+     *
+     * @param {Number} [spacing] - Vertical spacing
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardVerticalSpacing
+     */
+    setupVerticalSpacing(spacing) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._verticalSpacing = _.defaultTo(spacing, this.standardVerticalSpacing());
+    }
+
+    /**
+     * Sets the horizontal and vertical spacings
+     *
+     * @param {Number} [horizontalSpacing] - Horizontal spacing
+     * @param {Number} [verticalSpacing] - Vertical spacing
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupHorizontalSpacing
+     * @see DKTools.Sprite.Selectable.prototype.setupVerticalSpacing
+     */
+    setupSpacing(horizontalSpacing, verticalSpacing) {
+        this.setupHorizontalSpacing(horizontalSpacing);
+        this.setupVerticalSpacing(verticalSpacing);
+    }
+
+    /**
+     * Sets the text padding
+     *
+     * @param {Number} [textPadding] - Text padding
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardTextPadding
+     */
+    setupTextPadding(textPadding) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._textPadding = _.defaultTo(textPadding, this.standardTextPadding());
+    }
+
+    /**
+     * Sets the list of the items
+     *
+     * @version 6.1.0
+     *
+     * @param {Object[]} [items] - Items
+     *
+     * @param {Function | String} [items[].name] - Item name
+     * @param {Function | PIXI.Rectangle | Rectangle | Object} [items[].rect] - Item rect
+     * @param {Function | String} [items[].align] - Item align
+     * @param {Function | String} [items[].textColor] - Item text color
+     * @param {Function | Object} [items[].font] - Item font
+     * @param {Function | Number} [items[].paintOpacity] - Item paint opacity
+     * @param {Function | Boolean} [items[].enabled] - Item activity
+     * @param {String} [items[].symbol] - Item symbol
+     * @param {Function} [items[].handler] - Symbol handler
+     * @param {Function} [items[].drawHandler] - Handler of draw of the item
+     * @param {Function} [items[].selectHandler] - Item select handler
+     * @param {Function} [items[].okHandler] - Item ok handler
+     * @param {Function} [items[].cancelHandler] - Item cancel handler
+     *
+     * @param {Number} [items[].rect.x] - The X coordinate
+     * @param {Number} [items[].rect.y] - The Y coordinate
+     * @param {Number} [items[].rect.width] - Width of the rectangle
+     * @param {Number} [items[].rect.height] - Height of the rectangle
+     *
+     * @param {String} [items[].font.fontFace] - Font face
+     * @param {Boolean} [items[].font.fontItalic] - Font italic
+     * @param {Number} [items[].font.fontSize] - Font size
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardItems
+     */
+    setupItems(items) {
+        this._items = _.map(items || this.standardItems(), item => this._checkItem(item));
+    }
+
+    /**
+     * Sets the handler of draw of the item
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of draw of the item
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardItemDrawHandler
+     */
+    setupItemDrawHandler(handler) {
+        /**
+         * @since 6.1.0
+         * @private
+         * @readonly
+         * @type {Function}
+         */
+        this._itemDrawHandler = handler || this.standardItemDrawHandler();
+    }
+
+    /**
+     * Sets the width of the item
+     *
+     * @param {Function | Number} [itemWidth] - Width of the item
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardItemWidth
+     */
+    setupItemWidth(itemWidth) {
+        /**
+         * @private
+         * @readonly
+         * @type {Function | Number}
+         */
+        this._itemWidth = itemWidth || this.standardItemWidth();
+    }
+
+    /**
+     * Sets the height of the item
+     *
+     * @param {Function | Number} [itemHeight] - Height of the item
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardItemHeight
+     */
+    setupItemHeight(itemHeight) {
+        /**
+         * @private
+         * @readonly
+         * @type {Function | Number}
+         */
+        this._itemHeight = itemHeight || this.standardItemHeight();
+    }
+
+    /**
+     * Sets the rectangle of the item
+     *
+     * @param {Function | PIXI.Rectangle | Rectangle | Object} [itemRect] - Rectangle of the item
+     *
+     * @param {Number} [itemRect.x] - The X coordinate
+     * @param {Number} [itemRect.y] - The Y coordinate
+     * @param {Number} [itemRect.width] - Width of the rectangle
+     * @param {Number} [itemRect.height] - Height of the rectangle
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardItemRect
+     */
+    setupItemRect(itemRect) {
+        /**
+         * @private
+         * @readonly
+         * @type {Function | PIXI.Rectangle | Rectangle | Object}
+         */
+        this._itemRect = itemRect || this.standardItemRect();
+    }
+
+    /**
+     * Sets the font of the item
+     *
+     * @param {Function | Object} [itemFont=this.standardItemFont()] - Font of the item
+     *
+     * @param {String} [itemFont.fontFace] - Font face
+     * @param {Number} [itemFont.fontSize] - Font size
+     * @param {Boolean} [itemFont.fontItalic] - Font italic
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardItemFont
+     */
+    setupItemFont(itemFont) {
+        /**
+         * @private
+         * @readonly
+         * @type {Function | Object}
+         */
+        this._itemFont = itemFont || this.standardItemFont();
+    }
+
+    /**
+     * Sets the text color of the item
+     *
+     * @param {Function | String} [itemTextColor=this.standardItemTextColor()] - Text color of the item
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardItemTextColor
+     */
+    setupItemTextColor(itemTextColor) {
+        /**
+         * @private
+         * @readonly
+         * @type {Function | String}
+         */
+        this._itemTextColor = itemTextColor || this.standardItemTextColor();
+    }
+
+    /**
+     * Sets the paint opacity of the item
+     *
+     * @param {Function | Number} [itemPaintOpacity=this.standardItemPaintOpacity()] - Paint opacity of the item
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardItemPaintOpacity
+     */
+    setupItemPaintOpacity(itemPaintOpacity) {
+        /**
+         * @private
+         * @readonly
+         * @type {Function | Number}
+         */
+        this._itemPaintOpacity = itemPaintOpacity || this.standardItemPaintOpacity();
+    }
+
+    /**
+     * Sets the align of the item
+     *
+     * @param {Function | String} [itemAlign=this.standardItemAlign()] - Align of the item
+     *
+     * @see DKTools.Sprite.Selectable.prototype.standardItemAlign
+     */
+    setupItemAlign(itemAlign) {
+        /**
+         * @private
+         * @readonly
+         * @type {Function | String}
+         */
+        this._itemAlign = itemAlign || this.standardItemAlign();
+    }
+
+    /**
+     * Changes all parameters
+     * Returns the number of changed parameters
+     *
+     * @version 6.1.0
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     * @param {Boolean} [activate=false] - Activates the object
+     *
+     * @param {Number} [object.index] - Index
+     * @param {Number} [object.maxCols] - Number of the columns
+     * @param {Boolean} [object.fixedHorizontal] - Fixed horizontal position
+     * @param {Boolean} [object.cursorFixed] - Fixed cursor
+     * @param {Boolean} [object.cursorAll] - Cursor all
+     * @param {Number} [object.horizontalSpacing] - Horizontal spacing
+     * @param {Number} [object.verticalSpacing] - Vertical spacing
+     * @param {Number} [object.textPadding] - Text padding
+     * @param {Object[]} [object.items] - List of the items
+     * @param {Function} [object.drawItemHandler] - Handler of draw of the item
+     * @param {Function | Number} [object.itemWidth] - Width of the item
+     * @param {Function | Number} [object.itemHeight] - Height of the item
+     * @param {Function} [object.itemRect] - Rectangle of the item
+     * @param {Function | Object} [object.itemFont] - Font of the item
+     * @param {Function | String} [object.itemTextColor] - Text color of the item
+     * @param {Function | Number} [object.itemPaintOpacity] - Paint opacity of the item
+     * @param {Function | String} [object.itemAlign] - Align of the item
+     *
+     * @param {String} [object.font.fontFace] - Font face
+     * @param {Number} [object.font.fontSize] - Font size
+     * @param {Boolean} [object.font.fontItalic] - Font italic
+     *
+     * @see DKTools.Sprite.Button.prototype.setAll
+     * @see DKTools.Sprite.Selectable.prototype.setIndex
+     * @see DKTools.Sprite.Selectable.prototype.setMaxCols
+     * @see DKTools.Sprite.Selectable.prototype.setFixedHorizontal
+     * @see DKTools.Sprite.Selectable.prototype.setCursorFixed
+     * @see DKTools.Sprite.Selectable.prototype.setCursorAll
+     * @see DKTools.Sprite.Selectable.prototype.setSpacing
+     * @see DKTools.Sprite.Selectable.prototype.setTextPadding
+     * @see DKTools.Sprite.Selectable.prototype.setItems
+     * @see DKTools.Sprite.Selectable.prototype.setItemDrawHandler
+     * @see DKTools.Sprite.Selectable.prototype.setItemWidth
+     * @see DKTools.Sprite.Selectable.prototype.setItemHeight
+     * @see DKTools.Sprite.Selectable.prototype.setItemRect
+     * @see DKTools.Sprite.Selectable.prototype.setItemFont
+     * @see DKTools.Sprite.Selectable.prototype.setItemTextColor
+     * @see DKTools.Sprite.Selectable.prototype.setItemPaintOpacity
+     * @see DKTools.Sprite.Selectable.prototype.setItemAlign
+     * @see DKTools.Sprite.Selectable.prototype.start
+     * @see DKTools.Sprite.Selectable.prototype.activate
+     *
+     * @returns {Number} Number of changed parameters
+     */
+    setAll(object = {}, blockStart = false, activate = false) {
+        object = object || {};
+
+        const block = true;
+        let changed = DKTools.Sprite.Button.prototype.setAll.call(this, object, block);
+
+        if (this.setIndex(object.index, block)) {
+            changed++;
+        }
+
+        if (this.setMaxCols(object.maxCols, block)) {
+            changed++;
+        }
+
+        if (this.setFixedHorizontal(object.fixedHorizontal, block)) {
+            changed++;
+        }
+
+        if (this.setCursorFixed(object.cursorFixed, block)) {
+            changed++;
+        }
+
+        if (this.setCursorAll(object.cursorAll, block)) {
+            changed++;
+        }
+
+        if (this.setCursorDownHandler(object.cursorDownHandler, block)) {
+            changed++;
+        }
+
+        if (this.setCursorUpHandler(object.cursorUpHandler, block)) {
+            changed++;
+        }
+
+        if (this.setCursorRightHandler(object.cursorRightHandler, block)) {
+            changed++;
+        }
+
+        if (this.setCursorLeftHandler(object.cursorLeftHandler, block)) {
+            changed++;
+        }
+
+        if (this.setCursorPageDownHandler(object.cursorPageDownHandler, block)) {
+            changed++;
+        }
+
+        if (this.setCursorPageUpHandler(object.cursorPageUpHandler, block)) {
+            changed++;
+        }
+
+        changed += this.setSpacing(object.horizontalSpacing, object.verticalSpacing, block);
+
+        if (this.setTextPadding(object.textPadding, block)) {
+            changed++;
+        }
+
+        if (this.setItems(object.items, block)) {
+            changed++;
+        }
+
+        if (this.setItemDrawHandler(object.drawItemHandler, block)) {
+            changed++;
+        }
+
+        if (this.setItemWidth(object.itemWidth, block)) {
+            changed++;
+        }
+
+        if (this.setItemHeight(object.itemHeight, block)) {
+            changed++;
+        }
+
+        if (this.setItemRect(object.itemRect, block)) {
+            changed++;
+        }
+
+        if (this.setItemFont(object.itemFont, block)) {
+            changed++;
+        }
+
+        if (this.setItemTextColor(object.itemTextColor, block)) {
+            changed++;
+        }
+
+        if (this.setItemPaintOpacity(object.itemPaintOpacity, block)) {
+            changed++;
+        }
+
+        if (this.setItemAlign(object.itemAlign, block)) {
+            changed++;
+        }
+
+        if (changed > 0) {
+            if (!blockStart) {
+                this.start();
+            }
+
+            if (activate) {
+                this.activate();
+            }
+        }
+
+        return changed;
+    }
+
+    /**
+     * Changes the index
+     * Returns true if the change occurred
+     *
+     * @param {Number} [index] - Index
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupIndex
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setIndex(index, blockRefreshAll = false) {
+        if (this._index === index) {
+            return false;
+        }
+
+        this.setupIndex(index);
+
+        if (this._index === this._lastIndex) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the number of the columns
+     * Returns true if the change occurred
+     *
+     * @param {Number} [cols] - Number of the columns
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupMaxCols
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setMaxCols(cols, blockRefreshAll = false) {
+        if (this._maxCols === cols) {
+            return false;
+        }
+
+        const lastCols = this._maxCols;
+
+        this.setupMaxCols(cols);
+
+        if (this._maxCols === lastCols) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the fixed horizontal position
+     * Returns true if the change occurred
+     *
+     * @param {Boolean} [fixedHorizontal] - Fixed horizontal position
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupFixedHorizontal
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setFixedHorizontal(fixedHorizontal, blockRefreshAll = false) {
+        if (this._fixedHorizontal === fixedHorizontal) {
+            return false;
+        }
+
+        const lastFixed = this._fixedHorizontal;
+
+        this.setupFixedHorizontal(fixedHorizontal);
+
+        if (this._fixedHorizontal === lastFixed) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the fixed cursor
+     * Returns true if the change occurred
+     *
+     * @param {Boolean} [cursorFixed] - Fixed cursor
+     * @param {Boolean} [blockRefreshAll=false] Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupCursorFixed
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setCursorFixed(cursorFixed, blockRefreshAll = false) {
+        if (this._cursorFixed === cursorFixed) {
+            return false;
+        }
+
+        const lastFixed = this._cursorFixed;
+
+        this.setupCursorFixed(cursorFixed);
+
+        if (this._cursorFixed === lastFixed) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the cursor all
+     * Returns true if the change occurred
+     *
+     * @param {Boolean} [cursorAll] - Cursor all
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupCursorAll
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setCursorAll(cursorAll, blockRefreshAll = false) {
+        if (this._cursorAll === cursorAll) {
+            return false;
+        }
+
+        const lastAll = this._cursorAll;
+
+        this.setupCursorAll(cursorAll);
+
+        if (this._cursorAll === lastAll) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the handler of cursor down
+     * Returns true if the change occurred
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of cursor down
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupCursorDownHandler
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setCursorDownHandler(handler, blockRefreshAll = false) {
+        if (this._cursorDownHandler === handler) {
+            return false;
+        }
+
+        const lastHandler = this._cursorDownHandler;
+
+        this.setupCursorDownHandler(handler);
+
+        if (this._cursorDownHandler === lastHandler) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the handler of cursor up
+     * Returns true if the change occurred
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of cursor up
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupCursorUpHandler
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setCursorUpHandler(handler, blockRefreshAll = false) {
+        if (this._cursorUpHandler === handler) {
+            return false;
+        }
+
+        const lastHandler = this._cursorUpHandler;
+
+        this.setupCursorUpHandler(handler);
+
+        if (this._cursorUpHandler === lastHandler) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the handler of cursor right
+     * Returns true if the change occurred
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of cursor right
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupCursorRightHandler
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setCursorRightHandler(handler, blockRefreshAll = false) {
+        if (this._cursorRightHandler === handler) {
+            return false;
+        }
+
+        const lastHandler = this._cursorRightHandler;
+
+        this.setupCursorRightHandler(handler);
+
+        if (this._cursorRightHandler === lastHandler) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the handler of cursor left
+     * Returns true if the change occurred
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of cursor left
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupCursorLeftHandler
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setCursorLeftHandler(handler, blockRefreshAll = false) {
+        if (this._cursorLeftHandler === handler) {
+            return false;
+        }
+
+        const lastHandler = this._cursorLeftHandler;
+
+        this.setupCursorLeftHandler(handler);
+
+        if (this._cursorLeftHandler === lastHandler) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the handler of cursor page down
+     * Returns true if the change occurred
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of cursor page down
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupCursorPageDownHandler
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setCursorPageDownHandler(handler, blockRefreshAll = false) {
+        if (this._cursorPageDownHandler === handler) {
+            return false;
+        }
+
+        const lastHandler = this._cursorPageDownHandler;
+
+        this.setupCursorPageDownHandler(handler);
+
+        if (this._cursorPageDownHandler === lastHandler) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the handler of cursor page up
+     * Returns true if the change occurred
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of cursor page up
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupCursorPageUpHandler
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setCursorPageUpHandler(handler, blockRefreshAll = false) {
+        if (this._cursorPageUpHandler === handler) {
+            return false;
+        }
+
+        const lastHandler = this._cursorPageUpHandler;
+
+        this.setupCursorPageUpHandler(handler);
+
+        if (this._cursorPageUpHandler === lastHandler) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the horizontal spacing
+     * Returns true if the change occurred
+     *
+     * @param {Number} [spacing] - Horizontal spacing
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupHorizontalSpacing
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setHorizontalSpacing(spacing, blockRefreshAll = false) {
+        if (this._horizontalSpacing === spacing) {
+            return false;
+        }
+
+        const lastSpacing = this._horizontalSpacing;
+
+        this.setupHorizontalSpacing(spacing);
+
+        if (this._horizontalSpacing === lastSpacing) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the vertical spacing
+     * Returns true if the change occurred
+     *
+     * @param {Number} [spacing] - Vertical spacing
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupVerticalSpacing
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setVerticalSpacing(spacing, blockRefreshAll = false) {
+        if (this._verticalSpacing === spacing) {
+            return false;
+        }
+
+        const lastSpacing = this._verticalSpacing;
+
+        this.setupVerticalSpacing(spacing);
+
+        if (this._verticalSpacing === lastSpacing) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the horizontal and vertical spacings
+     * Returns the number of changed parameters
+     *
+     * @param {Number} [horizontalSpacing] - Horizontal spacing
+     * @param {Number} [verticalSpacing] - Vertical spacing
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setHorizontalSpacing
+     * @see DKTools.Sprite.Selectable.prototype.setVerticalSpacing
+     *
+     * @returns {Number} Number of changed parameters
+     */
+    setSpacing(horizontalSpacing, verticalSpacing, blockRefreshAll = false) {
+        const block = true;
+        let changed = 0;
+
+        if (this.setHorizontalSpacing(horizontalSpacing, block)) {
+            changed++;
+        }
+
+        if (this.setVerticalSpacing(verticalSpacing, block)) {
+            changed++;
+        }
+
+        if (changed > 0 && !blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return changed;
+    }
+
+    /**
+     * Changes the text padding
+     * Returns true if the change occurred
+     *
+     * @param {Number} [textPadding] - Text padding
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupTextPadding
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setTextPadding(textPadding, blockRefreshAll = false) {
+        if (this._textPadding === textPadding) {
+            return false;
+        }
+
+        const lastPadding = this._textPadding;
+
+        this.setupTextPadding(textPadding);
+
+        if (this._textPadding === lastPadding) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the items
+     * Returns true if the change occurred
+     *
+     * @param {Object[]} [items] - List of the items
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupItems
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setItems(items, blockRefreshAll = false) {
+        if (this._items == items) {
+            return false;
+        }
+
+        this.setupItems(items);
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the handler of draw of the item
+     * Returns true if the change occurred
+     *
+     * @since 6.1.0
+     *
+     * @param {Function} [handler] - Handler of draw of the item
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupItemDrawHandler
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setItemDrawHandler(handler, blockRefreshAll = false) {
+        if (this._itemDrawHandler === handler) {
+            return false;
+        }
+
+        const lastHandler = this._itemDrawHandler;
+
+        this.setupItemDrawHandler(handler);
+
+        if (this._itemDrawHandler === lastHandler) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the width of the item
+     * Returns true if the change occurred
+     *
+     * @param {Function | Number} [itemWidth] - Width of the item
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupItemWidth
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setItemWidth(itemWidth, blockRefreshAll = false) {
+        if (this._itemWidth === itemWidth) {
+            return false;
+        }
+
+        const lastWidth = this._itemWidth;
+
+        this.setupItemWidth(itemWidth);
+
+        if (this._itemWidth === lastWidth) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the height of the item
+     * Returns true if the change occurred
+     *
+     * @param {Function | Number} [itemHeight] - Height of the item
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupItemHeight
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occured
+     */
+    setItemHeight(itemHeight, blockRefreshAll = false) {
+        if (this._itemHeight === itemHeight) {
+            return false;
+        }
+
+        const lastHeight = this._itemHeight;
+
+        this.setupItemHeight(itemHeight);
+
+        if (this._itemHeight === lastHeight) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the font of the item
+     * Returns true if the change occurred
+     *
+     * @param {Function | Object} [itemFont] - Font of the item
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupItemFont
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occured
+     */
+    setItemFont(itemFont, blockRefreshAll = false) {
+        if (this._itemFont === itemFont) {
+            return false;
+        }
+
+        const lastFont = this._itemFont;
+
+        this.setupItemFont(itemFont);
+
+        if (this._itemFont === lastFont) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the text color of the item
+     * Returns true if the change occurred
+     *
+     * @param {Function | String} [itemTextColor] - Text color of the item
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupItemTextColor
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occured
+     */
+    setItemTextColor(itemTextColor, blockRefreshAll = false) {
+        if (this._itemTextColor === itemTextColor) {
+            return false;
+        }
+
+        const lastTextColor = this._itemTextColor;
+
+        this.setupItemTextColor(itemTextColor);
+
+        if (this._itemTextColor === lastTextColor) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the item paint opacity
+     * Returns true if the change occurred
+     *
+     * @param {Function | Number} [itemPaintOpacity] - Paint opacity of the item
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupItemPaintOpacity
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occured
+     */
+    setItemPaintOpacity(itemPaintOpacity, blockRefreshAll = false) {
+        if (this._itemPaintOpacity === itemPaintOpacity) {
+            return false;
+        }
+
+        const lastPaintOpacity = this._itemPaintOpacity;
+
+        this.setupItemPaintOpacity(itemPaintOpacity);
+
+        if (this._itemPaintOpacity === lastPaintOpacity) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the align of the item
+     * Returns true if the change occurred
+     *
+     * @param {Function | String} [itemAlign] - Align of the item
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupItemAlign
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occured
+     */
+    setItemAlign(itemAlign, blockRefreshAll = false) {
+        if (this._itemAlign === itemAlign) {
+            return false;
+        }
+
+        const lastAlign = this._itemAlign;
+
+        this.setupItemAlign(itemAlign);
+
+        if (this._itemAlign === lastAlign) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the top row
+     *
+     * @param {Number} row - Row
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxTopRow
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     */
+    setTopRow(row, blockRefreshAll = false) {
+        const topRow = DKTools.Utils.Number.clamp(row, 0, this.getMaxTopRow());
+
+        if (this._topRow !== topRow) {
+            this._topRow = topRow;
+
+            if (!blockRefreshAll) {
+                this.refreshAll();
+            }
+        }
+    }
+
+    /**
+     * Changes the top column
+     *
+     * @param {Number} col - Column
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxTopCol
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     */
+    setTopCol(col, blockRefreshAll = false) {
+        const topCol = DKTools.Utils.Number.clamp(col, 0, this.getMaxTopCol());
+
+        if (this._topCol !== topCol) {
+            this._topCol = topCol;
+
+            if (!blockRefreshAll) {
+                this.refreshAll();
+            }
+        }
+    }
+
+    /**
+     * Chagnes the bottom row
+     *
+     * @param {Number} row - Row
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxPageRows
+     * @see DKTools.Sprite.Selectable.prototype.setTopRow
+     */
+    setBottomRow(row, blockRefreshAll = false) {
+        this.setTopRow(row - (this.getMaxPageRows() - 1), blockRefreshAll);
+    }
+
+    /**
+     * Chagnes the bottom column
+     *
+     * @param {Number} col - Column
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxPageCols
+     * @see DKTools.Sprite.Selectable.prototype.setTopCol
+     */
+    setBottomCol(col, blockRefreshAll = false) {
+        this.setTopCol(col - (this.getMaxPageCols() - 1), blockRefreshAll);
+    }
+
+    /**
+     * Changes the handler of the symbol
+     *
+     * @param {String} symbol - Symbol
+     * @param {Function} [handler] - Handler
+     */
+    setHandler(symbol, handler) {
+        this._handlers[symbol] = handler;
+    }
+
+    /**
+     * Changes the cursor rect
+     * Returns true if the change occurred
+     *
+     * @param {PIXI.Rectangle | Rectangle | Object | Number} object - The X coordinate or Rectangle
+     * @param {Number} [y] - The Y coordinate
+     * @param {Number} [width] - Width of the rect
+     * @param {Number} [height] - Height of the rect
+     *
+     * @param {Number} object.x - The X coordinate
+     * @param {Number} object.y - The Y coordinate
+     * @param {Number} object.width - Width of the rect
+     * @param {Number} object.height - Height of the rect
+     *
+     * @see DKTools.Sprite.Cursor.prototype.setCursorRect
+     *
+     * @returns {Boolean} Change occured
+     */
+    setCursorRect(object, y, width, height) {
+        return this._cursorSprite.setCursorRect(object, y, width, height);
+    }
+
+    /**
+     * Shows the cursor
+     */
+    showCursor() {
+        this._cursorSprite.show(true);
+    }
+
+    /**
+     * Selects the item
+     *
+     * @version 6.0.0
+     *
+     * @param {Number} index - Index
+     * @param {Boolean} [playCursor=false] - Play "cursor" sound
+     *
+     * @see DKTools.Sprite.Selectable.prototype.setupIndex
+     * @see DKTools.Sprite.Selectable.prototype.refreshAll
+     * @see DKTools.Sprite.Selectable.prototype.playCursorSound
+     * @see DKTools.Sprite.Selectable.prototype.updateSelectEvents
+     */
+    selectItem(index, playCursor = false) {
+        const item = this.getItem(index);
+
+        this.setupIndex(index);
+        this.refreshAll();
+
+        if (playCursor) {
+            this.playCursorSound();
+        }
+
+        if (item && DKTools.Utils.isFunction(item.selectHandler)) {
+            item.selectHandler(index, this);
+        }
+
+        this.updateSelectEvents();
+    }
+
+    /**
+     * Selects the item by symbol
+     *
+     * @param {String} symbol - Symbol
+     *
+     * @see DKTools.Sprite.Selectable.prototype.findSymbol
+     * @see DKTools.Sprite.Selectable.prototype.selectItem
+     */
+    selectSymbol(symbol) {
+        const index = Math.max(0, this.findSymbol(symbol));
+
+        this.selectItem(index);
+    }
+
+    /**
+     * Selects the item by ext
+     *
+     * @param {*} ext - Ext of the item
+     *
+     * @see DKTools.Sprite.Selectable.prototype.findExt
+     * @see DKTools.Sprite.Selectable.prototype.selectItem
+     */
+    selectExt(ext) {
+        const index = Math.max(0, this.findExt(ext));
+
+        this.selectItem(index);
+    }
+
+    /**
+     * Selects the previous item
+     *
+     * @version 6.0.0
+     *
+     * @param {Boolean} [wrap=false] - Cyclic selection
+     * @param {Boolean} [playCursor=false] - Play "cursor" sound
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getPrevIndex
+     * @see DKTools.Sprite.Selectable.prototype.selectItem
+     */
+    selectPrevItem(wrap = false, playCursor = false) {
+        const index = this.getPrevIndex(wrap);
+
+        if (index >= 0) {
+            this.selectItem(index, playCursor);
+        }
+    }
+
+    /**
+     * Selects the next item
+     *
+     * @version 6.0.0
+     *
+     * @param {Boolean} [wrap=false] - Cyclic selection
+     * @param {Boolean} [playCursor=false] - Play "cursor" sound
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getNextIndex
+     * @see DKTools.Sprite.Selectable.prototype.selectItem
+     */
+    selectNextItem(wrap = false, playCursor = false) {
+        const index = this.getNextIndex(wrap);
+
+        if (index >= 0) {
+            this.selectItem(index, playCursor);
+        }
+    }
+
+    /**
+     * Selects the last item
+     *
+     * @since 6.1.0
+     *
+     * @param {Boolean} [playCursor=false] - Play "cursor" sound
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getMaxItems
+     * @see DKTools.Sprite.Selectable.prototype.selectItem
+     */
+    selectLastItem(playCursor = false) {
+        this.selectItem(this.getMaxItems() - 1, playCursor);
+    }
+
+    /**
+     * Scrolls down
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getTopRow
+     * @see DKTools.Sprite.Selectable.prototype.getMaxRows
+     * @see DKTools.Sprite.Selectable.prototype.cursorDown
+     */
+    scrollDown() {
+        if (this.getTopRow() + 1 < this.getMaxRows()) {
+            this.cursorDown();
+        }
+    }
+
+    /**
+     * Scrolls up
+     *
+     * @version 3.0.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getTopRow
+     * @see DKTools.Sprite.Selectable.prototype.cursorUp
+     */
+    scrollUp() {
+        if (this.getCurrentRow() > 0) {
+            this.cursorUp();
+        }
+    }
+
+    /**
+     * Scrolls right
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getTopCol
+     * @see DKTools.Sprite.Selectable.prototype.getMaxItems
+     * @see DKTools.Sprite.Selectable.prototype.cursorRight
+     */
+    scrollRight() {
+        if (this.getTopCol() + 1 < this.getMaxItems()) {
+            this.cursorRight();
+        }
+    }
+
+    /**
+     * Scrolls left
+     *
+     * @version 3.0.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getTopCol
+     * @see DKTools.Sprite.Selectable.prototype.cursorLeft
+     */
+    scrollLeft() {
+        if (this.getCurrentCol() > 0) {
+            this.cursorLeft();
+        }
+    }
+
+    // U methods
+
+    /**
+     * Updates all
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.Selectable.prototype.updateCursor
+     */
+    updateAll() {
+        DKTools.Sprite.Button.prototype.updateAll.call(this);
+        this.updateCursor();
+    }
+
+    /**
+     * Updates the cursor
+     *
+     * @see DKTools.Sprite.Selectable.prototype.isHorizontal
+     * @see DKTools.Sprite.Selectable.prototype.isCursorAll
+     * @see DKTools.Sprite.Selectable.prototype.isCursorVisible
+     * @see DKTools.Sprite.Selectable.prototype.getCurrentCol
+     * @see DKTools.Sprite.Selectable.prototype.getCurrentRow
+     * @see DKTools.Sprite.Selectable.prototype.getTopCol
+     * @see DKTools.Sprite.Selectable.prototype.getTopRow
+     * @see DKTools.Sprite.Selectable.prototype.getBottomCol
+     * @see DKTools.Sprite.Selectable.prototype.getBottomRow
+     * @see DKTools.Sprite.Selectable.prototype.getMaxRows
+     * @see DKTools.Sprite.Selectable.prototype.getItemHeight
+     * @see DKTools.Sprite.Selectable.prototype.setTopCol
+     * @see DKTools.Sprite.Selectable.prototype.setTopRow
+     * @see DKTools.Sprite.Selectable.prototype.setBottomCol
+     * @see DKTools.Sprite.Selectable.prototype.setBottomRow
+     * @see DKTools.Sprite.Selectable.prototype.setCursorRect
+     * @see DKTools.Sprite.Selectable.prototype.resetScroll
+     * @see DKTools.Sprite.Selectable.prototype.getItemRect
+     */
+    updateCursor() {
+        if (this.isHorizontal()) {
+            const col = this.getCurrentCol();
+
+            if (col < this.getTopCol()) {
+                this.setTopCol(col);
+            } else if (col > this.getBottomCol()) {
+                this.setBottomCol(col);
+            }
+        } else {
+            const row = this.getCurrentRow();
+
+            if (row < this.getTopRow()) {
+                this.setTopRow(row);
+            } else if (row > this.getBottomRow()) {
+                this.setBottomRow(row);
+            }
+        }
+
+        if (this.isCursorAll()) {
+            const allRowsHeight = this.getMaxRows() * this.getItemHeight();
+
+            this.setCursorRect(0, 0, this.realWidth, allRowsHeight);
+            this.resetScroll();
+        } else if (this.isCursorVisible() || !this._cursorSprite.hasBitmap()) {
+            const rect = this.getItemRect(this._index);
+
+            this.setCursorRect(rect);
+        } else {
+            this.setCursorRect(Rectangle.emptyRectangle);
+        }
+    }
+
+    /**
+     * Updates the events with type: select
+     *
+     * @see DKTools.Sprite.Selectable.prototype.updateEventsContainer
+     */
+    updateSelectEvents() {
+        this.updateEventsContainer('select');
+    }
+
+};
 
 // properties
 
@@ -22781,4310 +27049,6 @@ Object.defineProperties(DKTools.Sprite.Selectable.prototype, {
 
 });
 
-// A methods
-
-/**
- * Adds children objects to processing
- *
- * @private
- * @override
- *
- * @see DKTools.Sprite.Button.prototype._addAllChildren
- * @see DKTools.Sprite.Selectable.prototype._addCursorSprite
- */
-DKTools.Sprite.Selectable.prototype._addAllChildren = function() {
-    DKTools.Sprite.Button.prototype._addAllChildren.call(this);
-    this._addCursorSprite();
-};
-
-/**
- * Adds sprite of the cursor to processing
- *
- * @private
- */
-DKTools.Sprite.Selectable.prototype._addCursorSprite = function() {
-    this.addChild(this._cursorSprite);
-};
-
-/**
- * Activates the object
- *
- * @override
- */
-DKTools.Sprite.Selectable.prototype.activate = function() {
-    DKTools.Sprite.Button.prototype.activate.call(this);
-    this.reselect();
-};
-
-/**
- * Adds the item
- * Returns added item or null
- *
- * @version 5.0.0
- *
- * @param {Object} item - Item
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxItems
- * @see DKTools.Sprite.Selectable.prototype.insertItem
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Object | null} Added item or null
- */
-DKTools.Sprite.Selectable.prototype.addItem = function(item, blockRefreshAll = false) {
-    const addedItem = this.insertItem(item, this.getMaxItems() - 1, true);
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return addedItem;
-};
-
-/**
- * Adds the items
- * Returns added items
- *
- * @version 5.0.0
- *
- * @param {Object[]} items - Items
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.addItem
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Object[]} Added items
- */
-DKTools.Sprite.Selectable.prototype.addItems = function(items, blockRefreshAll = false) {
-    const addedItems = _.map(items, item => this.addItem(item, true));
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return addedItems;
-};
-
-// C methods
-
-/**
- * Clears all data
- *
- * @private
- * @override
- *
- * @see DKTools.Sprite.Button.prototype._clearAll
- * @see DKTools.Sprite.Selectable.prototype._clearItems
- * @see DKTools.Sprite.Selectable.prototype._clearHandlers
- * @see DKTools.Sprite.Selectable.prototype._clearTopRow
- * @see DKTools.Sprite.Selectable.prototype._clearTopCol
- */
-DKTools.Sprite.Selectable.prototype._clearAll = function() {
-    DKTools.Sprite.Button.prototype._clearAll.call(this);
-    this._clearItems();
-    this._clearHandlers();
-    this._clearTopRow();
-    this._clearTopCol();
-};
-
-/**
- * Clears items
- *
- * @private
- */
-DKTools.Sprite.Selectable.prototype._clearItems = function() {
-    /**
-     * @private
-     * @readonly
-     * @type {Object[]}
-     */
-    this._items = [];
-};
-
-/**
- * Clears the selection handlers
- *
- * @private
- */
-DKTools.Sprite.Selectable.prototype._clearHandlers = function() {
-    /**
-     * @readonly
-     * @private
-     * @type {Object}
-     */
-    this._handlers = {};
-};
-
-/**
- * Clears the top row
- *
- * @private
- */
-DKTools.Sprite.Selectable.prototype._clearTopRow = function() {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._topRow = 0;
-};
-
-/**
- * Clears the top col
- *
- * @private
- */
-DKTools.Sprite.Selectable.prototype._clearTopCol = function() {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._topCol = 0;
-};
-
-/**
- * Creates all
- *
- * @private
- * @override
- *
- * @see DKTools.Sprite.Button.prototype._createAll
- * @see DKTools.Sprite.Selectable.prototype._createCursorSprite
- */
-DKTools.Sprite.Selectable.prototype._createAll = function() {
-    DKTools.Sprite.Button.prototype._createAll.call(this);
-    this._createCursorSprite();
-};
-
-/**
- * Creates sprite of the cursor
- *
- * @private
- *
- * @see DKTools.Sprite.Cursor
- */
-DKTools.Sprite.Selectable.prototype._createCursorSprite = function() {
-    /**
-     * @private
-     * @readonly
-     * @type {DKTools.Sprite.Cursor}
-     */
-    this._cursorSprite = new DKTools.Sprite.Cursor();
-};
-
-/**
- * Checks the item
- * Returns the checked item
- *
- * @private
- *
- * @param {Object} item - Item
- *
- * @see DKTools.Sprite.Selectable.prototype.setHandler
- *
- * @returns {Object} Checked item
- */
-DKTools.Sprite.Selectable.prototype._checkItem = function(item) {
-    if (item.enabled === undefined) {
-        item.enabled = true;
-    }
-
-    if (item.ext === undefined) {
-        item.ext = null;
-    }
-
-    if (item.symbol && DKTools.Utils.isFunction(item.handler)) {
-        this.setHandler(item.symbol, item.handler);
-    }
-
-    return item;
-};
-
-/**
- * Calls the handler of the symbol
- *
- * @param {String} symbol - Symbol
- *
- * @see DKTools.Sprite.Selectable.prototype.isHandled
- */
-DKTools.Sprite.Selectable.prototype.callHandler = function(symbol) {
-    if (this.isHandled(symbol)) {
-        this._handlers[symbol](this._index, this);
-    }
-};
-
-/**
- * Calls the handler of the Ok
- *
- * @see DKTools.Sprite.Selectable.prototype.getCurrentItemSymbol
- * @see DKTools.Sprite.Selectable.prototype.isHandled
- * @see DKTools.Sprite.Selectable.prototype.callHandler
- * @see DKTools.Sprite.Selectable.prototype.activate
- */
-DKTools.Sprite.Selectable.prototype.callOkHandler = function() {
-    const symbol = this.getCurrentItemSymbol();
-
-    if (this.isHandled(symbol)) {
-        this.callHandler(symbol);
-    } else if (this.isHandled('ok')) {
-        this.callHandler('ok');
-    } else {
-        this.activate();
-    }
-};
-
-/**
- * Calls the handler of the cancel
- *
- * @see DKTools.Sprite.Selectable.prototype.callHandler
- */
-DKTools.Sprite.Selectable.prototype.callCancelHandler = function() {
-    this.callHandler('cancel');
-};
-
-/**
- * Clears the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getItemRect
- * @see DKTools.Sprite.Selectable.prototype.clearRect
- */
-DKTools.Sprite.Selectable.prototype.clearItem = function(index) {
-    this.clearRect(this.getItemRect(index));
-};
-
-/**
- * Moves the cursor to down
- *
- * @version 6.1.0
- *
- * @param {Boolean} [wrap=false] - Cyclic selection
- *
- * @see DKTools.Sprite.Selectable.prototype.hasCursorDownHandler
- */
-DKTools.Sprite.Selectable.prototype.cursorDown = function(wrap = false) {
-    if (this.hasCursorDownHandler()) {
-        this._cursorDownHandler(wrap, this);
-    }
-};
-
-/**
- * Moves the cursor to up
- *
- * @version 6.1.0
- *
- * @param {Boolean} [wrap=false] - Cyclic selection
- *
- * @see DKTools.Sprite.Selectable.prototype.hasCursorUpHandler
- */
-DKTools.Sprite.Selectable.prototype.cursorUp = function(wrap = false) {
-    if (this.hasCursorUpHandler()) {
-        this._cursorUpHandler(wrap, this);
-    }
-};
-
-/**
- * Moves the cursor to right
- *
- * @version 6.1.0
- *
- * @param {Boolean} [wrap=false] - Cyclic selection
- *
- * @see DKTools.Sprite.Selectable.prototype.hasCursorRightHandler
- */
-DKTools.Sprite.Selectable.prototype.cursorRight = function(wrap = false) {
-    if (this.hasCursorRightHandler()) {
-        this._cursorRightHandler(wrap, this);
-    }
-};
-
-/**
- * Moves the cursor to left
- *
- * @version 6.1.0
- *
- * @param {Boolean} [wrap=false] - Cyclic selection
- *
- * @see DKTools.Sprite.Selectable.prototype.hasCursorRightHandler
- */
-DKTools.Sprite.Selectable.prototype.cursorLeft = function(wrap = false) {
-    if (this.hasCursorLeftHandler()) {
-        this._cursorLeftHandler(wrap, this);
-    }
-};
-
-/**
- * Moves the cursor to lower page
- *
- * @since 6.1.0
- *
- * @see DKTools.Sprite.Selectable.prototype.hasCursorPageDownHandler
- */
-DKTools.Sprite.Selectable.prototype.cursorPageDown = function() {
-    if (this.hasCursorPageDownHandler()) {
-        this._cursorPageDownHandler(this);
-    }
-};
-
-/**
- * Moves the cursor to upper page
- *
- * @since 6.1.0
- *
- * @see DKTools.Sprite.Selectable.prototype.hasCursorPageUpHandler
- */
-DKTools.Sprite.Selectable.prototype.cursorPageUp = function() {
-    if (this.hasCursorPageUpHandler()) {
-        this._cursorPageUpHandler(this);
-    }
-};
-
-// D methods
-
-/**
- * Deactivates the object
- *
- * @override
- *
- * @param {Boolean} [deselect=false] - Deselects the current item (selected item)
- *
- * @see DKTools.Sprite.Selectable.prototype.deselect
- */
-DKTools.Sprite.Selectable.prototype.deactivate = function(deselect = false) {
-    DKTools.Sprite.Button.prototype.deactivate.call(this);
-
-    if (deselect) {
-        this.deselect();
-    }
-};
-
-/**
- * Deselects the current item (selected item)
- *
- * @see DKTools.Sprite.Selectable.prototype.selectItem
- */
-DKTools.Sprite.Selectable.prototype.deselect = function() {
-    this.selectItem(-1);
-};
-
-/**
- * Disables the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.getItem
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- */
-DKTools.Sprite.Selectable.prototype.disableItem = function(index, blockRefreshAll = false) {
-    const item = this.getItem(index) || {};
-
-    item.enabled = false;
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-};
-
-/**
- * Draws all
- *
- * @override
- */
-DKTools.Sprite.Selectable.prototype.drawAll = function() {
-    DKTools.Sprite.Button.prototype.drawAll.call(this);
-    this.drawAllItems();
-};
-
-/**
- * Draws all items
- *
- * @version 5.0.0
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxPageItems
- * @see DKTools.Sprite.Selectable.prototype.getMaxItems
- * @see DKTools.Sprite.Selectable.prototype.getTopIndex
- * @see DKTools.Sprite.Selectable.prototype.drawItem
- */
-DKTools.Sprite.Selectable.prototype.drawAllItems = function() {
-    const maxPageItems = this.getMaxPageItems();
-    const maxItems = this.getMaxItems();
-    let index = this.getTopIndex();
-
-    for (let i = 0; i < maxPageItems && index < maxItems; i++, index++) {
-        this.drawItem(index);
-    }
-};
-
-/**
- * Draws the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getItem
- * @see DKTools.Sprite.Selectable.prototype.hasDrawItemHandler
- */
-DKTools.Sprite.Selectable.prototype.drawItem = function(index) {
-    const item = this.getItem(index) || {};
-
-    if (DKTools.Utils.isFunction(item.drawHandler)) {
-        item.drawHandler(index, this);
-    } else if (this.hasDrawItemHandler()) {
-        this._itemDrawHandler(index, this);
-    }
-};
-
-// E methods
-
-/**
- * Enables the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.getItem
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- */
-DKTools.Sprite.Selectable.prototype.enableItem = function(index, blockRefreshAll = false) {
-    const item = this.getItem(index) || {};
-
-    item.enabled = true;
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-};
-
-// F methods
-
-/**
- * Returns the index of the item by symbol
- *
- * @param {Symbol} symbol - Symbol
- * @returns {Number} Index of the item by symbol
- */
-DKTools.Sprite.Selectable.prototype.findSymbol = function(symbol) {
-    return _.findIndex(this._items, { symbol });
-};
-
-/**
- * Returns the index of the item by ext
- *
- * @param {*} ext - Ext of the item
- * @returns {Number} Index of the item by ext
- */
-DKTools.Sprite.Selectable.prototype.findExt = function(ext) {
-    return _.findIndex(this._items, { ext });
-};
-
-// G methods
-
-/**
- * Returns the name of the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @returns {String | undefined} Name of the item
- */
-DKTools.Sprite.Selectable.prototype.getItemName = function(index) {
-    const item = this.getItem(index) || {};
-
-    if (DKTools.Utils.isFunction(item.name)) {
-        return item.name(index, this);
-    }
-
-    return item.name;
-};
-
-/**
- * Returns the name of the current item (selected item)
- *
- * @see DKTools.Sprite.Selectable.prototype.getItemName
- *
- * @returns {String | undefined} Name of the current item (selected item) or undefined
- */
-DKTools.Sprite.Selectable.prototype.getCurrentItemName = function() {
-    return this.getItemName(this._index);
-};
-
-/**
- * Returns the rectangle of the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getItem
- *
- * @returns {Rectangle} Rectangle of the item
- */
-DKTools.Sprite.Selectable.prototype.getItemRect = function(index) {
-    const item = this.getItem(index) || {};
-    const itemRect = item.rect || this._itemRect;
-
-    if (DKTools.Utils.isFunction(itemRect)) {
-        return itemRect(index, this);
-    }
-
-    return itemRect;
-};
-
-/**
- * Returns the rectangle of the current item (selected item)
- *
- * @version 5.0.0
- *
- * @see DKTools.Sprite.Selectable.prototype.getItemRect
- *
- * @returns {Rectangle} Rectangle of the current item (selected item)
- */
-DKTools.Sprite.Selectable.prototype.getCurrentItemRect = function() {
-    return this.getItemRect(this._index);
-};
-
-/**
- * Returns the rectangle of text of the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getItemRect
- *
- * @returns {Rectangle} Rectangle of text of the item
- */
-DKTools.Sprite.Selectable.prototype.getItemRectForText = function(index) {
-    const rect = this.getItemRect(index);
-
-    rect.x += this._textPadding;
-    rect.width -= this._textPadding * 2;
-
-    return rect;
-};
-
-/**
- * Returns the width of the item
- *
- * @returns {Number} Width of the item
- */
-DKTools.Sprite.Selectable.prototype.getItemWidth = function() {
-    if (DKTools.Utils.isFunction(this._itemWidth)) {
-        return this._itemWidth(this);
-    }
-
-    return this._itemWidth;
-};
-
-/**
- * Returns the height of the item
- *
- * @returns {Number} Height of the item
- */
-DKTools.Sprite.Selectable.prototype.getItemHeight = function() {
-    if (DKTools.Utils.isFunction(this._itemHeight)) {
-        return this._itemHeight(this);
-    } else if (DKTools.Utils.isString(this._itemHeight)) { // number of lines
-        return this.getLineHeight() * parseFloat(this._itemHeight);
-    }
-
-    return this._itemHeight;
-};
-
-/**
- * Returns the item by index
- *
- * @param {Number} index - Index
- * @returns {Object | null} Item or null
- */
-DKTools.Sprite.Selectable.prototype.getItem = function(index) {
-    return this._items[index] || null;
-};
-
-/**
- * Returns the index of the item
- *
- * @param {Object} item - item
- * @returns {Number} Index of the item
- */
-DKTools.Sprite.Selectable.prototype.getItemIndex = function(item) {
-    return _.indexOf(this._items, item);
-};
-
-/**
- * Returns the font of the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getItem
- *
- * @returns {Object} Font of the item
- */
-DKTools.Sprite.Selectable.prototype.getItemFont = function(index) {
-    const item = this.getItem(index) || {};
-    const itemFont = item.font || this._itemFont;
-
-    if (DKTools.Utils.isFunction(itemFont)) {
-        return itemFont(index, this);
-    }
-
-    return itemFont;
-};
-
-/**
- * Returns the text color of the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getItem
- *
- * @returns {String} Text color of the item
- */
-DKTools.Sprite.Selectable.prototype.getItemTextColor = function(index) {
-    const item = this.getItem(index) || {};
-    const itemTextColor = item.textColor || this._itemTextColor;
-
-    if (DKTools.Utils.isFunction(itemTextColor)) {
-        return itemTextColor(index, this);
-    }
-
-    return itemTextColor;
-};
-
-/**
- * Returns the paint opacity of the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getItem
- *
- * @returns {Number} Paint opacity of the item
- */
-DKTools.Sprite.Selectable.prototype.getItemPaintOpacity = function(index) {
-    const item = this.getItem(index) || {};
-
-    if (DKTools.Utils.isFunction(item.paintOpacity)) {
-        return item.paintOpacity(index, this);
-    } else if (DKTools.Utils.isNumber(item.paintOpacity)) {
-        return item.paintOpacity;
-    } else if (DKTools.Utils.isFunction(this._itemPaintOpacity)) {
-        return this._itemPaintOpacity(index, this);
-    }
-
-    return this._itemPaintOpacity;
-};
-
-/**
- * Returns the align of the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getItem
- *
- * @returns {String} Align of the item
- */
-DKTools.Sprite.Selectable.prototype.getItemAlign = function(index) {
-    const item = this.getItem(index) || {};
-    const itemAlign = item.align || this._itemAlign;
-
-    if (DKTools.Utils.isFunction(itemAlign)) {
-        return itemAlign(index, this);
-    }
-
-    return itemAlign;
-};
-
-/**
- * Returns the full info of the item
- *
- * @since 6.0.0
- *
- * @param {Number} index - Index
- *
- * @returns {{ index: Number, item: Object, name: String, enabled: Boolean, rect: Rectangle, rectForText: Rectangle, font: Object, textColor: String, paintOpacity: Number, align: String }} Full info of the item
- */
-DKTools.Sprite.Selectable.prototype.getItemFullInfo = function(index) {
-    const item = this.getItem(index);
-
-    return {
-        ...item,
-        index,
-        item,
-        name: this.getItemName(index),
-        enabled: this.isItemEnabled(index),
-        handled: this.isItemHandled(index),
-        rect: this.getItemRect(index),
-        rectForText: this.getItemRectForText(index),
-        font: this.getItemFont(index),
-        textColor: this.getItemTextColor(index),
-        paintOpacity: this.getItemPaintOpacity(index),
-        align: this.getItemAlign(index)
-    };
-};
-
-/**
- * Returns the previous index
- *
- * @param {Boolean} [wrap=false] - Cyclic selection
- * @returns {Number} Previous index
- */
-DKTools.Sprite.Selectable.prototype.getPrevIndex = function(wrap = false) {
-    if (this._index > 0) {
-        return this._index - 1;
-    } else if (wrap) {
-        return this.getMaxItems() - 1;
-    }
-
-    return -1;
-};
-
-/**
- * Returns the next index
- *
- * @param {Boolean} [wrap=false] - Cyclic selection
- * @returns {Number} Next index
- */
-DKTools.Sprite.Selectable.prototype.getNextIndex = function(wrap = false) {
-    if (this._index < this.getMaxItems() - 1) {
-        return this._index + 1;
-    } else if (wrap) {
-        return 0;
-    }
-
-    return -1;
-};
-
-/**
- * Returns the previous item
- *
- * @param {Boolean} [wrap=false] - Cyclic selection
- *
- * @see DKTools.Sprite.Selectable.prototype.getPrevIndex
- * @see DKTools.Sprite.Selectable.prototype.getItem
- *
- * @returns {Object | null} Previous item or null
- */
-DKTools.Sprite.Selectable.prototype.getPrevItem = function(wrap = false) {
-    return this.getItem(this.getPrevIndex(wrap));
-};
-
-/**
- * Returns the next item
- *
- * @param {Boolean} [wrap=false] - Cyclic selection
- *
- * @see DKTools.Sprite.Selectable.prototype.getNextIndex
- * @see DKTools.Sprite.Selectable.prototype.getItem
- *
- * @returns {Object | null} Next item or null
- */
-DKTools.Sprite.Selectable.prototype.getNextItem = function(wrap = false) {
-    return this.getItem(this.getNextIndex(wrap));
-};
-
-/**
- * Returns the current item (selected item)
- *
- * @see DKTools.Sprite.Selectable.prototype.getItem
- *
- * @returns {Object | null} Current item (selected item) or null
- */
-DKTools.Sprite.Selectable.prototype.getCurrentItem = function() {
-    return this.getItem(this._index);
-};
-
-/**
- * Returns the visible items
- *
- * @returns {Object[]} Visible items
- */
-DKTools.Sprite.Selectable.prototype.getVisibleItems = function() {
-    const maxPageItems = this.getMaxPageItems();
-    const maxItems = this.getMaxItems();
-    const items = [];
-    let index = this.getTopIndex();
-
-    for (let i = 0; i < maxPageItems && index < maxItems; i++, index++) {
-        items.push(this.getItem(index));
-    }
-
-    return items;
-};
-
-/**
- * Returns the symbol of the item by index
- *
- * @param {Number} index - Index
- * @returns {String | null} Symbol of the item by index or null
- */
-DKTools.Sprite.Selectable.prototype.getItemSymbol = function(index) {
-    const item = this.getItem(index);
-
-    return item ? item.symbol : null;
-};
-
-/**
- * Returns the ext of the item by index
- *
- * @param {Number} index - Index
- * @returns {* | null} Ext of the item by index or null
- */
-DKTools.Sprite.Selectable.prototype.getItemExt = function(index) {
-    var item = this.getItem(index);
-
-    return item ? item.ext : null;
-};
-
-/**
- * Returns the symbol of the current item (selected item)
- *
- * @see DKTools.Sprite.Selectable.prototype.getItemSymbol
- *
- * @returns {String | null} Symbol of the current item (selected item) or null
- */
-DKTools.Sprite.Selectable.prototype.getCurrentItemSymbol = function() {
-    return this.getItemSymbol(this._index);
-};
-
-/**
- * Returns the ext of the current item (selected item)
- *
- * @see DKTools.Sprite.Selectable.prototype.getItemExt
- *
- * @returns {* | null} Ext of the current item (selected item) or null
- */
-DKTools.Sprite.Selectable.prototype.getCurrentItemExt = function() {
-    return this.getItemExt(this._index);
-};
-
-/**
- * Returns the number of the items
- *
- * @returns {Number} Number of the items
- */
-DKTools.Sprite.Selectable.prototype.getMaxItems = function() {
-    return this._items.length;
-};
-
-/**
- * Returns the maximum number of the rows
- *
- * @returns {Number} Maximum number of the rows
- */
-DKTools.Sprite.Selectable.prototype.getMaxRows = function() {
-    if (this.isFixedHorizontal()) {
-        return 1;
-    }
-
-    return Math.max(1, Math.ceil(this.getMaxItems() / this.getMaxCols()));
-};
-
-/**
- * Returns the maximum number of the columns
- *
- * @returns {Number} Maximum number of the columns
- */
-DKTools.Sprite.Selectable.prototype.getMaxCols = function() {
-    return this._maxCols;
-};
-
-/**
- * Returns the maximum top row
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxRows
- * @see DKTools.Sprite.Selectable.prototype.getMaxPageRows
- *
- * @returns {Number} Maximum top row
- */
-DKTools.Sprite.Selectable.prototype.getMaxTopRow = function() {
-    return Math.max(0, this.getMaxRows() - this.getMaxPageRows());
-};
-
-/**
- * Returns the maximum top column
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxItems
- * @see DKTools.Sprite.Selectable.prototype.getMaxPageCols
- *
- * @returns {Number} Maximum top column
- */
-DKTools.Sprite.Selectable.prototype.getMaxTopCol = function() {
-    return Math.max(0, this.getMaxItems() - this.getMaxPageCols());
-};
-
-/**
- * Returns the maximum page rows
- *
- * @see DKTools.Sprite.Selectable.prototype.getItemHeight
- * @see DKTools.Sprite.Selectable.prototype.getMaxRows
- *
- * @returns {Number} Maximum page rows
- */
-DKTools.Sprite.Selectable.prototype.getMaxPageRows = function() {
-    const spacing = this._verticalSpacing;
-    const realHeight = this.realHeight;
-    const itemHeight = this.getItemHeight();
-    const maxRows = this.getMaxRows();
-    let rows = 0, height = 0;
-
-    for (; rows < maxRows; rows++) {
-        if (rows === maxRows - 1) {
-            if (height + itemHeight > realHeight) {
-                break;
-            }
-        } else if (height + itemHeight + spacing > realHeight) {
-            break;
-        }
-
-        height += itemHeight + spacing;
-    }
-
-    return rows;
-};
-
-/**
- * Returns the maximum page columns
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxCols
- *
- * @returns {Number} Maximum page columns
- */
-DKTools.Sprite.Selectable.prototype.getMaxPageCols = function() {
-    return this.getMaxCols();
-};
-
-/**
- * Returns the maximum page items
- *
- * @see DKTools.Sprite.Selectable.prototype.isHorizontal
- * @see DKTools.Sprite.Selectable.prototype.getMaxPageCols
- * @see DKTools.Sprite.Selectable.prototype.getMaxPageRows
- *
- * @returns {Number} Maximum page items
- */
-DKTools.Sprite.Selectable.prototype.getMaxPageItems = function() {
-    if (this.isHorizontal()) {
-        return this.getMaxPageCols();
-    }
-
-    return this.getMaxPageRows() * this.getMaxPageCols();
-};
-
-/**
- * Returns the row
- *
- * @since 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxCols
- *
- * @returns {Number} Row
- */
-DKTools.Sprite.Selectable.prototype.getRow = function(index) {
-    return Math.floor(index / this.getMaxCols());
-};
-
-/**
- * Returns the current row
- *
- * @see DKTools.Sprite.Selectable.prototype.getRow
- *
- * @returns {Number} Current row
- */
-DKTools.Sprite.Selectable.prototype.getCurrentRow = function() {
-    return this.getRow(this._index);
-};
-
-/**
- * Returns the row of the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.hasItem
- * @see DKTools.Sprite.Selectable.prototype.getRow
- *
- * @returns {Number} Row of the item or -1
- */
-DKTools.Sprite.Selectable.prototype.getItemRow = function(index) {
-    if (!this.hasItem(index)) {
-        return -1;
-    }
-
-    return this.getRow(index);
-};
-
-/**
- * Returns the list of the items by row
- *
- * @param {Number} row - Row
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxRows
- * @see DKTools.Sprite.Selectable.prototype.getMaxPageItems
- * @see DKTools.Sprite.Selectable.prototype.getMaxItems
- * @see DKTools.Sprite.Selectable.prototype.getMaxCols
- * @see DKTools.Sprite.Selectable.prototype.getRow
- * @see DKTools.Sprite.Selectable.prototype.getItem
- *
- * @returns {Object[]} List of the items by row
- */
-DKTools.Sprite.Selectable.prototype.getRowItems = function(row) {
-    const items = [];
-
-    if (DKTools.Utils.Number.inRange(row, 0, this.getMaxRows())) {
-        const maxPageItems = this.getMaxPageItems();
-        const maxItems = this.getMaxItems();
-        let index = row * this.getMaxCols();
-
-        for (let i = 0; i < maxPageItems && index < maxItems && this.getRow(index) === row; i++, index++) {
-            items.push(this.getItem(index));
-        }
-    }
-
-    return items;
-};
-
-/**
- * Returns the column
- *
- * @since 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxCols
- *
- * @returns {Number} Column
- */
-DKTools.Sprite.Selectable.prototype.getCol = function(index) {
-    return Math.floor(index % this.getMaxCols());
-};
-
-/**
- * Returns the current column
- *
- * @see DKTools.Sprite.Selectable.prototype.isHorizontal
- * @see DKTools.Sprite.Selectable.prototype.getCol
- *
- * @returns {Number} Current column
- */
-DKTools.Sprite.Selectable.prototype.getCurrentCol = function() {
-    if (this.isHorizontal()) {
-        return this._index;
-    }
-
-    return this.getCol(this._index);
-};
-
-/**
- * Returns the column of the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index or Item
- *
- * @see DKTools.Sprite.Selectable.prototype.hasItem
- * @see DKTools.Sprite.Selectable.prototype.getCol
- *
- * @returns {Number} Column of the item or -1
- */
-DKTools.Sprite.Selectable.prototype.getItemCol = function(index) {
-    if (!this.hasItem(index)) {
-        return -1;
-    }
-
-    return this.getCol(index);
-};
-
-/**
- * Returns the list of the items by column
- *
- * @param {Number} col - Column
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxCols
- * @see DKTools.Sprite.Selectable.prototype.getMaxItems
- * @see DKTools.Sprite.Selectable.prototype.getCol
- * @see DKTools.Sprite.Selectable.prototype.getItem
- *
- * @returns {Object[]} List of the items by column
- */
-DKTools.Sprite.Selectable.prototype.getColItems = function(col) {
-    const items = [];
-
-    if (DKTools.Utils.Number.inRange(col, 0, this.getMaxCols())) {
-        const maxItems = this.getMaxItems();
-
-        for (let index = 0; index < maxItems; index++) {
-            if (this.getCol(index) === col) {
-                items.push(this.getItem(index));
-            }
-        }
-    }
-
-    return items;
-};
-
-/**
- * Returns the top index
- *
- * @see DKTools.Sprite.Selectable.prototype.isHorizontal
- * @see DKTools.Sprite.Selectable.prototype.getTopCol
- * @see DKTools.Sprite.Selectable.prototype.getTopRow
- * @see DKTools.Sprite.Selectable.prototype.getMaxCols
- *
- * @returns {Number} Top index
- */
-DKTools.Sprite.Selectable.prototype.getTopIndex = function() {
-    if (this.isHorizontal()) {
-        return this.getTopCol();
-    }
-
-    return this.getTopRow() * this.getMaxCols();
-};
-
-/**
- * Returns the top row
- *
- * @returns {Number} Top row
- */
-DKTools.Sprite.Selectable.prototype.getTopRow = function() {
-    return this._topRow;
-};
-
-/**
- * Returns the top column
- *
- * @returns {Number} Top column
- */
-DKTools.Sprite.Selectable.prototype.getTopCol = function() {
-    return this._topCol;
-};
-
-/**
- * Returns the bottom row
- *
- * @see DKTools.Sprite.Selectable.prototype.getTopRow
- * @see DKTools.Sprite.Selectable.prototype.getMaxPageRows
- *
- * @returns {Number} Bottom row
- */
-DKTools.Sprite.Selectable.prototype.getBottomRow = function() {
-    return Math.max(0, this.getTopRow() + this.getMaxPageRows() - 1);
-};
-
-/**
- * Returns the bottom column
- *
- * @see DKTools.Sprite.Selectable.prototype.getTopCol
- * @see DKTools.Sprite.Selectable.prototype.getMaxPageCols
- *
- * @returns {Number} Bottom column
- */
-DKTools.Sprite.Selectable.prototype.getBottomCol = function() {
-    return Math.max(0, this.getTopCol() + this.getMaxPageCols() - 1);
-};
-
-/**
- * Returns the bottom index
- *
- * @see DKTools.Sprite.Selectable.prototype.getTopIndex
- * @see DKTools.Sprite.Selectable.prototype.getMaxPageItems
- * @see DKTools.Sprite.Selectable.prototype.getMaxItems
- *
- * @returns {Number} Bottom index
- */
-DKTools.Sprite.Selectable.prototype.getBottomIndex = function() {
-    return Math.min(this.getTopIndex() + this.getMaxPageItems(), this.getMaxItems()) - 1;
-};
-
-// H methods
-
-/**
- * Returns true if the item exists
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getItem
- *
- * @returns {Boolean} Item exists
- */
-DKTools.Sprite.Selectable.prototype.hasItem = function(index) {
-    return !!this.getItem(index);
-};
-
-/**
- * Returns true if the items exists
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxItems
- *
- * @returns {Boolean} Items exists
- */
-DKTools.Sprite.Selectable.prototype.hasItems = function() {
-    return this.getMaxItems() > 0;
-};
-
-/**
- * Returns true if the item with symbol exists
- *
- * @since 6.1.0
- * @param {String} symbol - Symbol
- *
- * @returns {Boolean} Item with symbol exists
- */
-DKTools.Sprite.Selectable.prototype.hasSymbol = function(symbol) {
-    return _.includes(this._items, { symbol });
-};
-
-/**
- * Returns true if the item with ext exists
- *
- * @since 6.1.0
- * @param {*} ext - Ext
- *
- * @returns {Boolean} Item with ext exists
- */
-DKTools.Sprite.Selectable.prototype.hasExt = function(ext) {
-    return _.includes(this._items, { ext });
-};
-
-/**
- * Returns true if the handler of cursor down exists
- *
- * @since 6.1.0
- * @returns {Boolean} Handler of cursor down exists
- */
-DKTools.Sprite.Selectable.prototype.hasCursorDownHandler = function() {
-    return !!this._cursorDownHandler;
-};
-
-/**
- * Returns true if the handler of cursor up exists
- *
- * @since 6.1.0
- * @returns {Boolean} Handler of cursor up exists
- */
-DKTools.Sprite.Selectable.prototype.hasCursorUpHandler = function() {
-    return !!this._cursorUpHandler;
-};
-
-/**
- * Returns true if the handler of cursor right exists
- *
- * @since 6.1.0
- * @returns {Boolean} Handler of cursor right exists
- */
-DKTools.Sprite.Selectable.prototype.hasCursorRightHandler = function() {
-    return !!this._cursorRightHandler;
-};
-
-/**
- * Returns true if the handler of cursor left exists
- *
- * @since 6.1.0
- * @returns {Boolean} Handler of cursor left exists
- */
-DKTools.Sprite.Selectable.prototype.hasCursorLeftHandler = function() {
-    return !!this._cursorLeftHandler;
-};
-
-/**
- * Returns true if the handler of cursor page down exists
- *
- * @since 6.1.0
- * @returns {Boolean} Handler of cursor page down exists
- */
-DKTools.Sprite.Selectable.prototype.hasCursorPageDownHandler = function() {
-    return !!this._cursorPageDownHandler;
-};
-
-/**
- * Returns true if the handler of cursor page up exists
- *
- * @since 6.1.0
- * @returns {Boolean} Handler of cursor page up exists
- */
-DKTools.Sprite.Selectable.prototype.hasCursorPageUpHandler = function() {
-    return !!this._cursorPageUpHandler;
-};
-
-/**
- * Returns true if the handler of draw of the item exists
- *
- * @returns {Boolean} Handler of draw of the item exists
- */
-DKTools.Sprite.Selectable.prototype.hasDrawItemHandler = function() {
-    return !!this._itemDrawHandler;
-};
-
-/**
- * Hides the cursor
- */
-DKTools.Sprite.Selectable.prototype.hideCursor = function() {
-    this._cursorSprite.hide();
-};
-
-/**
- * @param {Number} x - The X coordinate
- * @param {Number} y - The Y coordinate
- *
- * @see DKTools.Sprite.Selectable.prototype.isOutside
- * @see DKTools.Sprite.Selectable.prototype.canvasToLocalX
- * @see DKTools.Sprite.Selectable.prototype.canvasToLocalY
- * @see DKTools.Sprite.Selectable.prototype.getMaxPageItems
- * @see DKTools.Sprite.Selectable.prototype.getMaxItems
- * @see DKTools.Sprite.Selectable.prototype.getTopIndex
- * @see DKTools.Sprite.Selectable.prototype.getItemRect
- *
- * @returns {Number}
- */
-DKTools.Sprite.Selectable.prototype.hitTest = function(x, y) {
-    if (this.isOutside(x, y)) {
-        return -1;
-    }
-
-    const scale = this.scale;
-    const localX = this.canvasToLocalX(x);
-    const localY = this.canvasToLocalY(y);
-    const maxPageItems = this.getMaxPageItems();
-    const maxItems = this.getMaxItems();
-    let index = this.getTopIndex();
-
-    for (let i = 0; i < maxPageItems && index < maxItems; i++, index++) {
-        const rect = this.getItemRect(index);
-
-        rect.x *= scale.x;
-        rect.y *= scale.y;
-        rect.width *= scale.x;
-        rect.height *= scale.y;
-
-        if (rect.contains(localX, localY)) {
-            return index;
-        }
-    }
-
-    return -1;
-};
-
-// I methods
-
-/**
- * Inserts the item
- * Returns inserted item or null
- *
- * @version 5.0.0
- *
- * @param {Object} item - Item
- * @param {Number} [index=0] - Index to insert
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype._checkItem
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Object | null} Inserted item or null
- */
-DKTools.Sprite.Selectable.prototype.insertItem = function(item, index, blockRefreshAll = false) {
-    const checkedItem = this._checkItem(item);
-
-    DKTools.Utils.Array.insert(this._items, checkedItem, index);
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return checkedItem;
-};
-
-/**
- * Inserts the items
- * Returns inserted items
- *
- * @version 5.0.0
- *
- * @param {Object[]} items - Items
- * @param {Number} [index=0] - Index to insert
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.insertItem
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Object[]} Inserted items
- */
-DKTools.Sprite.Selectable.prototype.insertItems = function(items, index, blockRefreshAll = false) {
-    index = index || 0;
-
-    const insertedItems = _.map(items, (item, i) => this.insertItem(item, index + i, true));
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return insertedItems;
-};
-
-/**
- * Returns true if the cursor is fixed
- *
- * @returns {Boolean} Cursor is fixed
- */
-DKTools.Sprite.Selectable.prototype.isCursorFixed = function() {
-    return this._cursorFixed;
-};
-
-/**
- * Returns true if the cursor all
- *
- * @returns {Boolean} Cursor all
- */
-DKTools.Sprite.Selectable.prototype.isCursorAll = function() {
-    return this._cursorAll;
-};
-
-/**
- * Returns true if the fixed horizontal position of the items
- *
- * @returns {Boolean} Fixed horizontal position of the items
- */
-DKTools.Sprite.Selectable.prototype.isFixedHorizontal = function() {
-    return this._fixedHorizontal;
-};
-
-/**
- * Returns true if the position of the items is horizontal
- *
- * @see DKTools.Sprite.Selectable.prototype.isFixedHorizontal
- * @see DKTools.Sprite.Selectable.prototype.getMaxPageRows
- *
- * @returns {Boolean} Position of the items is horizontal
- */
-DKTools.Sprite.Selectable.prototype.isHorizontal = function() {
-    return this.isFixedHorizontal() || this.getMaxPageRows() === 1;
-};
-
-/**
- * Returns true if the position of the items is vertical
- *
- * @see DKTools.Sprite.Selectable.prototype.isHorizontal
- *
- * @returns {Boolean} Position of the items is vertical
- */
-DKTools.Sprite.Selectable.prototype.isVertical = function() {
-    return !this.isHorizontal();
-};
-
-/**
- * Returns true if the cursor can move
- *
- * @see DKTools.Sprite.Selectable.prototype.isVisibleAndActive
- * @see DKTools.Sprite.Selectable.prototype.isCursorFixed
- * @see DKTools.Sprite.Selectable.prototype.isCursorAll
- * @see DKTools.Sprite.Selectable.prototype.hasItems
- *
- * @returns {Boolean} Cursor can move
- */
-DKTools.Sprite.Selectable.prototype.isCursorMovable = function() {
-    return this.isVisibleAndActive() && !this.isCursorFixed() && !this.isCursorAll() && this.hasItems();
-};
-
-/**
- * Returns true if the Ok is enabled
- *
- * @returns {Boolean} Ok is enabled
- */
-DKTools.Sprite.Selectable.prototype.isOkEnabled = function() {
-    return true;
-};
-
-/**
- * Returns true if the cancel is enabled
- *
- * @see DKTools.Sprite.Selectable.prototype.isHandled
- *
- * @returns {Boolean} Cancel is enabled
- */
-DKTools.Sprite.Selectable.prototype.isCancelEnabled = function() {
-    return this.isHandled('cancel');
-};
-
-/**
- * Returns true if the Ok is triggered
- *
- * @returns {Boolean} Ok is triggered
- */
-DKTools.Sprite.Selectable.prototype.isOkTriggered = function() {
-    return Input.isRepeated('ok');
-};
-
-/**
- * Returns true if the cancel is triggered
- *
- * @returns {Boolean} Cancel is triggered
- */
-DKTools.Sprite.Selectable.prototype.isCancelTriggered = function() {
-    return Input.isRepeated('cancel') || TouchInput.isCancelled();
-};
-
-/**
- * Returns true if the cursor is visible
- *
- * @see DKTools.Sprite.Selectable.prototype.isHorizontal
- * @see DKTools.Sprite.Selectable.prototype.getTopCol
- * @see DKTools.Sprite.Selectable.prototype.getBottomCol
- * @see DKTools.Sprite.Selectable.prototype.getCurrentRow
- * @see DKTools.Sprite.Selectable.prototype.getTopRow
- * @see DKTools.Sprite.Selectable.prototype.getBottomRow
- *
- * @returns {Boolean} Cursor is visible
- */
-DKTools.Sprite.Selectable.prototype.isCursorVisible = function() {
-    if (!this._cursorSprite.isVisible()) {
-        return false;
-    }
-
-    if (this.isHorizontal()) {
-        const col = this.getCurrentCol();
-
-        return col >= this.getTopCol() && col <= this.getBottomCol();
-    }
-
-    const row = this.getCurrentRow();
-
-    return row >= this.getTopRow() && row <= this.getBottomRow();
-};
-
-/**
- * Returns true if the item is enabled
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getItem
- *
- * @returns {Boolean} Item is enabled
- */
-DKTools.Sprite.Selectable.prototype.isItemEnabled = function(index) {
-    const item = this.getItem(index) || {};
-    const itemEnabled = item.enabled;
-
-    if (DKTools.Utils.isFunction(itemEnabled)) {
-        return itemEnabled(index, this);
-    }
-
-    return itemEnabled;
-};
-
-/**
- * Returns true if the current item (selected item) is enabled
- *
- * @see DKTools.Sprite.Selectable.prototype.isItemEnabled
- *
- * @returns {Boolean} Current item (selected item) is enabled
- */
-DKTools.Sprite.Selectable.prototype.isCurrentItemEnabled = function() {
-    return this.isItemEnabled(this._index);
-};
-
-/**
- * Returns true if the item is visible
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getTopIndex
- * @see DKTools.Sprite.Selectable.prototype.getBottomIndex
- *
- * @returns {Boolean} Item is visible
- */
-DKTools.Sprite.Selectable.prototype.isItemVisible = function(index) {
-    return DKTools.Utils.Number.inRange(index, this.getTopIndex(), this.getBottomIndex() + 1);
-};
-
-/**
- * Returns true if the item is selected
- *
- * @since 6.0.0
- *
- * @param {Number} index - Index
- *
- * @returns {Boolean} Item is selected
- */
-DKTools.Sprite.Selectable.prototype.isItemSelected = function(index) {
-    return this._index === index;
-};
-
-/**
- * Returns true if the symbol is handling
- *
- * @param {String} symbol - Symbol
- * @returns {Boolean} Symbol is handling
- */
-DKTools.Sprite.Selectable.prototype.isHandled = function(symbol) {
-    return !!this._handlers[symbol];
-};
-
-/**
- * Returns true if the item is handling
- *
- * @since 6.1.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.getItem
- * @see DKTools.Sprite.Selectable.prototype.isHandled
- *
- * @returns {Boolean} Item is handling
- */
-DKTools.Sprite.Selectable.prototype.isItemHandled = function(index) {
-    const item = this.getItem(index) || {};
-
-    return this.isHandled(item.symbol) || DKTools.Utils.isFunction(item.okHandler);
-};
-
-/**
- * Returns true if the current item (selected item) is handling
- *
- * @since 6.1.0
- *
- * DKTools.Sprite.Selectable.prototype.isItemHandled
- *
- * @returns {Boolean} Current item (selected item) is handling
- */
-DKTools.Sprite.Selectable.prototype.isCurrentItemHandled = function() {
-    return this.isItemHandled(this._index);
-};
-
-// O methods
-
-/**
- * @private
- * @param {Boolean} [triggered=false]
- *
- * @see DKTools.Sprite.Selectable.prototype.hitTest
- * @see DKTools.Sprite.Selectable.prototype.isOkEnabled
- * @see DKTools.Sprite.Selectable.prototype.isCursorMovable
- * @see DKTools.Sprite.Selectable.prototype.processOk
- * @see DKTools.Sprite.Selectable.prototype.selectItem
- * @see DKTools.Sprite.Selectable.prototype.playCursorSound
- */
-DKTools.Sprite.Selectable.prototype._onTouch = function(triggered = false) {
-    const lastIndex = this._index;
-    const x = TouchInput.x;
-    const y = TouchInput.y;
-    const hitIndex = this.hitTest(x, y);
-
-    if (hitIndex >= 0) {
-        if (this._index === hitIndex) {
-            if (triggered && this.isOkEnabled()) {
-                this.processOk();
-            }
-        } else if (this.isCursorMovable()) {
-            this.selectItem(hitIndex);
-        }
-    }
-
-    if (this._index !== lastIndex) {
-        this.playCursorSound();
-    }
-};
-
-// P methods
-
-/**
- * Plays "ok" sound
- *
- * @see SoundManager.playOk
- */
-DKTools.Sprite.Selectable.prototype.playOkSound = function() {
-    SoundManager.playOk();
-};
-
-/**
- * Plays "cancel" sound
- *
- * @see SoundManager.playCancel
- */
-DKTools.Sprite.Selectable.prototype.playCancelSound = function() {
-    SoundManager.playCancel();
-};
-
-/**
- * Plays "cursor" sound
- *
- * @see SoundManager.playCursor
- */
-DKTools.Sprite.Selectable.prototype.playCursorSound = function() {
-    SoundManager.playCursor();
-};
-
-/**
- * Plays "buzzer" sound
- *
- * @see SoundManager.playBuzzer
- */
-DKTools.Sprite.Selectable.prototype.playBuzzerSound = function() {
-    SoundManager.playBuzzer();
-};
-
-/**
- * Processes all
- *
- * @override
- *
- * @see DKTools.Sprite.Selectable.prototype.processCursorMove
- * @see DKTools.Sprite.Selectable.prototype.processHandling
- */
-DKTools.Sprite.Selectable.prototype.processAll = function() {
-    DKTools.Sprite.Button.prototype.processAll.call(this);
-
-    this.processCursorMove();
-    this.processHandling();
-};
-
-/**
- * Processes the move of the cursor
- *
- * @see DKTools.Sprite.Selectable.prototype.isCursorMovable
- * @see DKTools.Sprite.Selectable.prototype.isHandled
- * @see DKTools.Sprite.Selectable.prototype.cursorDown
- * @see DKTools.Sprite.Selectable.prototype.cursorUp
- * @see DKTools.Sprite.Selectable.prototype.cursorRight
- * @see DKTools.Sprite.Selectable.prototype.cursorLeft
- * @see DKTools.Sprite.Selectable.prototype.cursorPageDown
- * @see DKTools.Sprite.Selectable.prototype.cursorPageUp
- * @see DKTools.Sprite.Selectable.prototype.playCursorSound
- */
-DKTools.Sprite.Selectable.prototype.processCursorMove = function() {
-    if (!this.isCursorMovable()) {
-        return;
-    }
-
-    const lastIndex = this._index;
-
-    if (Input.isRepeated('down')) {
-        this.cursorDown(Input.isTriggered('down'));
-    }
-
-    if (Input.isRepeated('up')) {
-        this.cursorUp(Input.isTriggered('up'));
-    }
-
-    if (Input.isRepeated('right')) {
-        this.cursorRight(Input.isTriggered('right'));
-    }
-
-    if (Input.isRepeated('left')) {
-        this.cursorLeft(Input.isTriggered('left'));
-    }
-
-    if (Input.isTriggered('pagedown')) {
-        this.cursorPageDown();
-    }
-
-    if (Input.isTriggered('pageup')) {
-        this.cursorPageUp();
-    }
-
-    if (this._index !== lastIndex) {
-        this.playCursorSound();
-    }
-};
-
-/**
- * Processes the handling
- *
- * @see DKTools.Sprite.Selectable.prototype.isVisibleAndActive
- * @see DKTools.Sprite.Selectable.prototype.isOkEnabled
- * @see DKTools.Sprite.Selectable.prototype.isOkTriggered
- * @see DKTools.Sprite.Selectable.prototype.isCancelEnabled
- * @see DKTools.Sprite.Selectable.prototype.isCancelTriggered
- * @see DKTools.Sprite.Selectable.prototype.isHandled
- * @see DKTools.Sprite.Selectable.prototype.processOk
- * @see DKTools.Sprite.Selectable.prototype.processCancel
- * @see DKTools.Sprite.Selectable.prototype.processPageDown
- * @see DKTools.Sprite.Selectable.prototype.processPageUp
- */
-DKTools.Sprite.Selectable.prototype.processHandling = function() {
-    if (!this.isVisibleAndActive()) {
-        return;
-    }
-
-    if (this.isOkEnabled() && this.isOkTriggered()) {
-        this.processOk();
-    } else if (this.isCancelEnabled() && this.isCancelTriggered()) {
-        this.processCancel();
-    }
-};
-
-/**
- * Processes the hover of the mouse
- *
- * @see DKTools.Sprite.Selectable.prototype.isOptionEnabled
- * @see DKTools.Sprite.Selectable.prototype.isCursorMovable
- * @see DKTools.Sprite.Selectable.prototype.hitTest
- * @see DKTools.Sprite.Selectable.prototype.selectItem
- * @see DKTools.Sprite.Selectable.prototype.playCursorSound
- */
-DKTools.Sprite.Selectable.prototype.processMouseHover = function() {
-    if (this.isOptionEnabled('process-mouse-hover') && this.isCursorMovable()) {
-        const lastIndex = this._index;
-        const x = TouchInput.mouseX;
-        const y = TouchInput.mouseY;
-        const hitIndex = this.hitTest(x, y);
-
-        if (hitIndex >= 0 && hitIndex !== lastIndex) {
-            this.selectItem(hitIndex, true);
-        }
-    }
-};
-
-/**
- * Processes the scroll of the mouse wheel
- *
- * @see DKTools.Sprite.Selectable.prototype.isOptionEnabled
- * @see DKTools.Sprite.Selectable.prototype.isVisibleAndActive
- * @see DKTools.Sprite.Selectable.prototype.isHorizontal
- * @see DKTools.Sprite.Selectable.prototype.scrollRight
- * @see DKTools.Sprite.Selectable.prototype.scrollDown
- * @see DKTools.Sprite.Selectable.prototype.scrollLeft
- * @see DKTools.Sprite.Selectable.prototype.scrollUp
- */
-DKTools.Sprite.Selectable.prototype.processWheelScroll = function() {
-    if (this.isOptionEnabled('process-wheel-scroll') && this.isVisibleAndActive()) {
-        const wheelY = this._wheelY;
-
-        if (wheelY > 0) {
-            if (this.isHorizontal()) {
-                this.scrollRight();
-            } else {
-                this.scrollDown();
-            }
-        } else {
-            if (this.isHorizontal()) {
-                this.scrollLeft();
-            } else {
-                this.scrollUp();
-            }
-        }
-    }
-};
-
-/**
- * Processes ok
- *
- * @version 6.0.0
- *
- * @see DKTools.Sprite.Selectable.prototype.isCurrentItemEnabled
- * @see DKTools.Sprite.Selectable.prototype.updateInputData
- * @see DKTools.Sprite.Selectable.prototype.deactivate
- * @see DKTools.Sprite.Selectable.prototype.callOkHandler
- * @see DKTools.Sprite.Selectable.prototype.playOkSound
- * @see DKTools.Sprite.Selectable.prototype.playBuzzerSound
- */
-DKTools.Sprite.Selectable.prototype.processOk = function() {
-    if (this.isCurrentItemEnabled()) {
-        this.playOkSound();
-        this.updateInputData();
-        this.deactivate();
-
-        const item = this.getCurrentItem() || {};
-
-        if (DKTools.Utils.isFunction(item.okHandler)) {
-            item.okHandler(this._index, this);
-        } else {
-            this.callOkHandler();
-        }
-    } else {
-        this.playBuzzerSound();
-    }
-};
-
-/**
- * Processes cancel
- *
- * @version 6.0.0
- *
- * @see DKTools.Sprite.Selectable.prototype.playCancelSound
- * @see DKTools.Sprite.Selectable.prototype.updateInputData
- * @see DKTools.Sprite.Selectable.prototype.deactivate
- * @see DKTools.Sprite.Selectable.prototype.callCancelHandler
- */
-DKTools.Sprite.Selectable.prototype.processCancel = function() {
-    this.playCancelSound();
-    this.updateInputData();
-    this.deactivate();
-
-    const item = this.getCurrentItem();
-
-    if (item && DKTools.Utils.isFunction(item.cancelHandler)) {
-        item.cancelHandler(this._index, this);
-    } else {
-        this.callCancelHandler();
-    }
-};
-
-// R methods
-
-/**
- * Redraws the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.isItemVisible
- * @see DKTools.Sprite.Selectable.prototype.clearItem
- * @see DKTools.Sprite.Selectable.prototype.drawItem
- */
-DKTools.Sprite.Selectable.prototype.redrawItem = function(index) {
-    if (this.isItemVisible(index)) {
-        this.clearItem(index);
-        this.drawItem(index);
-    }
-};
-
-/**
- * Redraws the current item (selected item)
- *
- * @see DKTools.Sprite.Selectable.prototype.redrawItem
- */
-DKTools.Sprite.Selectable.prototype.redrawCurrentItem = function() {
-    this.redrawItem(this._index);
-};
-
-/**
- * Removes the handler of the symbol
- *
- * @param {String} symbol - Symbol
- */
-DKTools.Sprite.Selectable.prototype.removeHandler = function(symbol) {
-    delete this._handlers[symbol];
-};
-
-/**
- * Removes the item
- * Returns the removed item or null
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.getItem
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Object | null} Removed item or null
- */
-DKTools.Sprite.Selectable.prototype.removeItem = function(index, blockRefreshAll = false) {
-    const item = this.getItem(index);
-
-    if (!item) {
-        return null;
-    }
-
-    DKTools.Utils.Array.remove(this._items, item);
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return item;
-};
-
-/**
- * Removes the items
- * Returns removed items
- *
- * @version 6.0.0
- *
- * @param {Number[]} items - Indexes
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.removeItem
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Object[]} Removed items
- */
-DKTools.Sprite.Selectable.prototype.removeItems = function(items, blockRefreshAll = false) {
-    const removedItems = _.map(items, item => this.removeItem(item, true));
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return removedItems;
-};
-
-/**
- * Replaces the item
- * Returns replaced item or null
- *
- * @version 5.0.0
- *
- * @param {Object} item - Item
- * @param {Number} [index=0] - Index
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype._checkItem
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Object | null} Replaced item
- */
-DKTools.Sprite.Selectable.prototype.replaceItem = function(item, index, blockRefreshAll = false) {
-    const checkedItem = this._checkItem(item);
-
-    index = index || 0;
-
-    const replacedItem = this._items[index];
-
-    this._items[index] = checkedItem;
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return replacedItem;
-};
-
-/**
- * Reselects the current item (selected item)
- *
- * @see DKTools.Sprite.Selectable.prototype.selectItem
- */
-DKTools.Sprite.Selectable.prototype.reselect = function() {
-    this.selectItem(this._index);
-};
-
-/**
- * Resets the scroll
- *
- * @see DKTools.Sprite.Selectable.prototype.selectItem
- */
-DKTools.Sprite.Selectable.prototype.resetScroll = function() {
-    if (this._index !== 0) {
-        this.selectItem(0);
-    }
-};
-
-// S methods
-
-/**
- * Sets the events
- *
- * @version 3.0.0
- * @private
- * @override
- *
- * @see DKTools.Sprite.Button.prototype._setupEvents
- * @see DKTools.Sprite.Selectable.prototype._setupMouseClickEvent
- * @see DKTools.Sprite.Selectable.prototype._setupMouseLongPressEvent
- * @see DKTools.Sprite.Selectable.prototype._setupMouseHoverEvents
- * @see DKTools.Sprite.Selectable.prototype._setupWheelScrollEvents
- */
-DKTools.Sprite.Selectable.prototype._setupEvents = function() {
-    DKTools.Sprite.Button.prototype._setupEvents.call(this);
-    this._setupMouseClickEvent();
-    this._setupMouseLongPressEvent();
-    this._setupMouseHoverEvents();
-    this._setupWheelScrollEvents();
-};
-
-/**
- * Sets the event of the click (mouse-click-left)
- *
- * @private
- *
- * @see DKTools.Sprite.Selectable.prototype.addEvent
- */
-DKTools.Sprite.Selectable.prototype._setupMouseClickEvent = function() {
-    this.addEvent({
-        type: 'mouse-click-left',
-        onUpdate: this._onTouch.bind(this, true)
-    });
-};
-
-/**
- * Sets the event of the long press (mouse-long-press-left)
- *
- * @private
- *
- * @see DKTools.Sprite.Selectable.prototype.addEvent
- */
-DKTools.Sprite.Selectable.prototype._setupMouseLongPressEvent = function() {
-    this.addEvent({
-        type: 'mouse-long-press-left',
-        onUpdate: this._onTouch.bind(this, false)
-    });
-};
-
-/**
- * Sets the events of the mouse hover (mouse-enter and mouse-move)
- *
- * @private
- *
- * @see DKTools.Sprite.Selectable.prototype.addEvent
- */
-DKTools.Sprite.Selectable.prototype._setupMouseHoverEvents = function() {
-    this.addEvent({
-        type: 'mouse-enter',
-        onUpdate: this.processMouseHover.bind(this)
-    });
-
-    this.addEvent({
-        type: 'mouse-move',
-        onUpdate: this.processMouseHover.bind(this)
-    });
-};
-
-/**
- * Sets the events of the wheel scrolling (wheel-Y-inside and wheel-Y-outside)
- *
- * @private
- *
- * @see DKTools.Sprite.Selectable.prototype.addEvent
- */
-DKTools.Sprite.Selectable.prototype._setupWheelScrollEvents = function() {
-    this.addEvent({
-        type: 'wheel-Y-inside',
-        onUpdate: this.processWheelScroll.bind(this)
-    });
-
-    this.addEvent({
-        type: 'wheel-Y-outside',
-        onUpdate: this.processWheelScroll.bind(this)
-    });
-};
-
-/**
- * Returns the standard index
- *
- * @returns {Number} Standard index
- */
-DKTools.Sprite.Selectable.prototype.standardIndex = function() {
-    return 0;
-};
-
-/**
- * Returns the standard number of the columns
- *
- * @returns {Number} Standard number of the columns
- */
-DKTools.Sprite.Selectable.prototype.standardMaxCols = function() {
-    return 1;
-};
-
-/**
- * Returns the standard fixed cursor
- *
- * @returns {Boolean} Standard fixed cursor
- */
-DKTools.Sprite.Selectable.prototype.standardCursorFixed = function() {
-    return false;
-};
-
-/**
- * Returns the standard cursor all
- *
- * @returns {Boolean} Standard cursor all
- */
-DKTools.Sprite.Selectable.prototype.standardCursorAll = function() {
-    return false;
-};
-
-/**
- * Returns the standard fixed horizontal position
- *
- * @returns {Boolean} Standard fixed horizontal position
- */
-DKTools.Sprite.Selectable.prototype.standardFixedHorizontal = function() {
-    return false;
-};
-
-/**
- * Returns the standard horizontal spacing
- *
- * @returns {Number} Standard horizontal spacing
- */
-DKTools.Sprite.Selectable.prototype.standardHorizontalSpacing = function() {
-    return 0;
-};
-
-/**
- * Returns the standard vertical spacing
- *
- * @returns {Number} Standard vertical spacing
- */
-DKTools.Sprite.Selectable.prototype.standardVerticalSpacing = function() {
-    return 0;
-};
-
-/**
- * Returns the standard text padding
- *
- * @returns {Number} Standard text padding
- */
-DKTools.Sprite.Selectable.prototype.standardTextPadding = function() {
-    return 6;
-};
-
-/**
- * Returns the standard handler of cursor down
- *
- * @since 6.1.0
- *
- * @returns {Function} Standard handler of cursor down
- */
-DKTools.Sprite.Selectable.prototype.standardCursorDownHandler = function() {
-    return (wrap) => {
-        if (this.isHorizontal()) {
-            return;
-        }
-
-        const index = this._index;
-        const maxItems = this.getMaxItems();
-        const maxCols = this.getMaxCols();
-
-        if (index < maxItems - maxCols || (wrap && maxItems === this.getMaxRows() * maxCols)) {
-            this.selectItem((index + maxCols) % maxItems);
-        }
-    };
-};
-
-/**
- * Returns the standard handler of cursor up
- *
- * @since 6.1.0
- *
- * @returns {Function} Standard handler of cursor up
- */
-DKTools.Sprite.Selectable.prototype.standardCursorUpHandler = function() {
-    return (wrap) => {
-        if (this.isHorizontal()) {
-            return;
-        }
-
-        const index = this._index;
-        const maxItems = this.getMaxItems();
-        const maxCols = this.getMaxCols();
-
-        if (index >= maxCols || (wrap && maxItems === this.getMaxRows() * maxCols)) {
-            this.selectItem((index - maxCols + maxItems) % maxItems);
-        }
-    };
-};
-
-/**
- * Returns the standard handler of cursor right
- *
- * @since 6.1.0
- *
- * @returns {Function} Standard handler of cursor right
- */
-DKTools.Sprite.Selectable.prototype.standardCursorRightHandler = function() {
-    return (wrap) => {
-        const maxItems = this.getMaxItems();
-
-        if (maxItems < 2) {
-            return;
-        }
-
-        if (this.isVertical()) {
-            const index = this._index;
-            const maxCols = this.getMaxCols();
-
-            if (maxCols >= 2 && (index < maxItems - 1 || wrap)) {
-                this.selectItem((index + 1) % maxItems);
-            }
-        } else {
-            this.selectNextItem(wrap);
-        }
-    };
-};
-
-/**
- * Returns the standard handler of cursor left
- *
- * @since 6.1.0
- *
- * @returns {Function} Standard handler of cursor left
- */
-DKTools.Sprite.Selectable.prototype.standardCursorLeftHandler = function() {
-    return (wrap) => {
-        const maxItems = this.getMaxItems();
-
-        if (maxItems < 2) {
-            return;
-        }
-
-        if (this.isVertical()) {
-            const index = this._index;
-            const maxCols = this.getMaxCols();
-
-            if (maxCols >= 2 && (index > 0 || wrap)) {
-                this.selectItem((index - 1 + maxItems) % maxItems);
-            }
-        } else {
-            this.selectPrevItem(wrap);
-        }
-    };
-};
-
-/**
- * Returns the standard handler of cursor page down
- *
- * @since 6.1.0
- *
- * @returns {Function} Standard handler of cursor page down
- */
-DKTools.Sprite.Selectable.prototype.standardCursorPageDownHandler = function() {
-    return () => {
-        if (this.isHorizontal()) {
-            const topCol = this.getTopCol();
-            const maxPageCols = this.getMaxPageCols();
-            const maxItems = this.getMaxItems();
-
-            if (topCol + maxPageCols < maxItems) {
-                this.setTopCol(topCol + maxPageCols);
-                this.selectItem(Math.min(this._index + this.getMaxPageItems(), maxItems - 1));
-            }
-        } else {
-            const topRow = this.getTopRow();
-            const maxPageRows = this.getMaxPageRows();
-
-            if (topRow + maxPageRows < this.getMaxRows()) {
-                this.setTopRow(topRow + maxPageRows);
-                this.selectItem(Math.min(this._index + this.getMaxPageItems(), this.getMaxItems() - 1));
-            }
-        }
-    };
-};
-
-/**
- * Returns the standard handler of cursor page up
- *
- * @since 6.1.0
- *
- * @returns {Function} Standard handler of cursor page up
- */
-DKTools.Sprite.Selectable.prototype.standardCursorPageUpHandler = function() {
-    return () => {
-        if (this.isHorizontal()) {
-            const topCol = this.getTopCol();
-
-            if (topCol > 0) {
-                this.setTopCol(topCol - this.getMaxPageCols());
-                this.selectItem(Math.max(0, this._index - this.getMaxPageItems()));
-            }
-        } else {
-            const topRow = this.getTopRow();
-
-            if (topRow > 0) {
-                this.setTopRow(topRow - this.getMaxPageRows());
-                this.selectItem(Math.max(0, this._index - this.getMaxPageItems()));
-            }
-        }
-    };
-};
-
-/**
- * Returns the standard list of the items
- *
- * @returns {Array} Standard list of the items
- */
-DKTools.Sprite.Selectable.prototype.standardItems = function() {
-    return [];
-};
-
-/**
- * Returns the standard handler of draw of the item
- *
- * @returns {Function} Standard handler of draw of the item
- */
-DKTools.Sprite.Selectable.prototype.standardItemDrawHandler = function() {
-    return index => {
-        const name = this.getItemName(index);
-        const font = this.getItemFont(index);
-        const textColor = this.getItemTextColor(index);
-        const paintOpacity = this.getItemPaintOpacity(index);
-        const align = this.getItemAlign(index);
-        const rect = this.getItemRectForText(index);
-
-        this.drawText(name, {
-            font,
-            textColor,
-            paintOpacity,
-            align,
-            rect,
-            resetFont: true,
-            resetTextColor: true,
-            resetPaintOpacity: true
-        });
-    };
-};
-
-/**
- * Returns the standard item width
- *
- * @returns {Function} Standard item width
- */
-DKTools.Sprite.Selectable.prototype.standardItemWidth = function() {
-    return () => Math.floor((this.realWidth + this._horizontalSpacing) / this.getMaxCols() - this._horizontalSpacing);
-};
-
-/**
- * Returns the standard item height
- *
- * @returns {Function} Standard item height
- */
-DKTools.Sprite.Selectable.prototype.standardItemHeight = function() {
-    return this.getLineHeight();
-};
-
-/**
- * Returns the standard item rect
- *
- * @returns {Function} Standard item rect
- */
-DKTools.Sprite.Selectable.prototype.standardItemRect = function() {
-    return index => {
-        const rect = new Rectangle(0, 0, this.getItemWidth(), this.getItemHeight());
-        const maxCols = this.getMaxCols();
-
-        if (this.isHorizontal()) {
-            rect.x = (index - this.getTopCol()) * (rect.width + this._horizontalSpacing);
-            rect.y = 0;
-        } else {
-            rect.x = (index % maxCols) * (rect.width + this._horizontalSpacing);
-            rect.y = (Math.floor(index / maxCols) - this.getTopRow()) * (rect.height + this._verticalSpacing);
-        }
-
-        return rect;
-    };
-};
-
-/**
- * Returns the standard item font
- *
- * @version 5.0.0
- *
- * @returns {Object} Standard item font
- */
-DKTools.Sprite.Selectable.prototype.standardItemFont = function() {
-    return () => this.font;
-};
-
-/**
- * Returns the standard text color of the item
- *
- * @version 5.0.0
- *
- * @returns {String} Standard text color of the item
- */
-DKTools.Sprite.Selectable.prototype.standardItemTextColor = function() {
-    return () => this.textColor;
-};
-
-/**
- * Returns the standard paint opacity of the item
- *
- * @returns {Number} Standard paint opacity of the item
- */
-DKTools.Sprite.Selectable.prototype.standardItemPaintOpacity = function() {
-    return index => {
-        if (this.isItemEnabled(index)) {
-            return this.standardEnabledItemPaintOpacity();
-        } else {
-            return this.standardDisabledItemPaintOpacity();
-        }
-    };
-};
-
-/**
- * Returns the standard paint opacity of the enabled item
- *
- * @returns {Number} Standard paint opacity of the enabled item
- */
-DKTools.Sprite.Selectable.prototype.standardEnabledItemPaintOpacity = function() {
-    return 255;
-};
-
-/**
- * Returns the standard paint opacity of the disabled item
- *
- * @returns {Number} Standard paint opacity of the disabled item
- */
-DKTools.Sprite.Selectable.prototype.standardDisabledItemPaintOpacity = function() {
-    try {
-        return Window_Base.prototype.translucentOpacity.call(this);
-    } catch (e) {
-        return 160;
-    }
-};
-
-/**
- * Returns the standard item align
- *
- * @returns {String} Standard item align
- */
-DKTools.Sprite.Selectable.prototype.standardItemAlign = function() {
-    return this.align;
-};
-
-/**
- * Sets all parameters
- *
- * @version 6.1.0
- * @override
- *
- * @param {Object} [object={}] - Parameters
- *
- * @param {Number} [object.index] - Index
- * @param {Number} [object.maxCols] - Number of the columns
- * @param {Boolean} [object.fixedHorizontal] - Fixed horizontal position
- * @param {Boolean} [object.cursorFixed] - Fixed cursor
- * @param {Boolean} [object.cursorAll] - Cursor all
- * @param {Number} [object.horizontalSpacing] - Horizontal spacing
- * @param {Number} [object.verticalSpacing] - Vertical spacing
- * @param {Number} [object.textPadding] - Text padding
- * @param {Object[]} [object.items] - List of the items
- * @param {Function} [object.drawItemHandler] - Handler of draw of the item
- * @param {Function | Number} [object.itemWidth] - Width of the item
- * @param {Function | Number} [object.itemHeight] - Height of the item
- * @param {Function} [object.itemRect] - Rectangle of the item
- * @param {Function | Object} [object.itemFont] - Font of the item
- * @param {Function | String} [object.itemTextColor] - Text color of the item
- * @param {Function | Number} [object.itemPaintOpacity] - Paint opacity of the item
- * @param {Function | String} [object.itemAlign] - Align of the item
- *
- * @param {String} [object.font.fontFace] - Font face
- * @param {Number} [object.font.fontSize] - Font size
- * @param {Boolean} [object.font.fontItalic] - Font italic
- *
- * @see DKTools.Sprite.Button.prototype.setupAll
- * @see DKTools.Sprite.Selectable.prototype.setupIndex
- * @see DKTools.Sprite.Selectable.prototype.setupMaxCols
- * @see DKTools.Sprite.Selectable.prototype.setupFixedHorizontal
- * @see DKTools.Sprite.Selectable.prototype.setupCursorFixed
- * @see DKTools.Sprite.Selectable.prototype.setupCursorAll
- * @see DKTools.Sprite.Selectable.prototype.setupSpacing
- * @see DKTools.Sprite.Selectable.prototype.setupTextPadding
- * @see DKTools.Sprite.Selectable.prototype.setupItems
- * @see DKTools.Sprite.Selectable.prototype.setupItemDrawHandler
- * @see DKTools.Sprite.Selectable.prototype.setupItemWidth
- * @see DKTools.Sprite.Selectable.prototype.setupItemHeight
- * @see DKTools.Sprite.Selectable.prototype.setupItemRect
- * @see DKTools.Sprite.Selectable.prototype.setupItemFont
- * @see DKTools.Sprite.Selectable.prototype.setupItemTextColor
- * @see DKTools.Sprite.Selectable.prototype.setupItemPaintOpacity
- * @see DKTools.Sprite.Selectable.prototype.setupItemAlign
- */
-DKTools.Sprite.Selectable.prototype.setupAll = function(object = {}) {
-    object = object || {};
-
-    DKTools.Sprite.Button.prototype.setupAll.call(this, object);
-
-    this.setupIndex(object.index);
-    this.setupMaxCols(object.maxCols);
-    this.setupFixedHorizontal(object.fixedHorizontal);
-    this.setupCursorFixed(object.cursorFixed);
-    this.setupCursorAll(object.cursorAll);
-    this.setupCursorDownHandler(object.cursorDownHandler);
-    this.setupCursorUpHandler(object.cursorUpHandler);
-    this.setupCursorRightHandler(object.cursorRightHandler);
-    this.setupCursorLeftHandler(object.cursorLeftHandler);
-    this.setupCursorPageDownHandler(object.cursorPageDownHandler);
-    this.setupCursorPageUpHandler(object.cursorPageUpHandler);
-    this.setupSpacing(object.horizontalSpacing, object.verticalSpacing);
-    this.setupTextPadding(object.textPadding);
-    this.setupItems(object.items);
-    this.setupItemDrawHandler(object.drawItemHandler);
-    this.setupItemWidth(object.itemWidth);
-    this.setupItemHeight(object.itemHeight);
-    this.setupItemRect(object.itemRect);
-    this.setupItemFont(object.itemFont);
-    this.setupItemTextColor(object.itemTextColor);
-    this.setupItemPaintOpacity(object.itemPaintOpacity);
-    this.setupItemAlign(object.itemAlign);
-};
-
-/**
- * Sets the index
- *
- * @version 6.0.0
- *
- * @param {Number} [index=this.standardIndex()] - Index
- *
- * @see DKTools.Sprite.Selectable.prototype.standardIndex
- */
-DKTools.Sprite.Selectable.prototype.setupIndex = function(index) {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._lastIndex = this._index;
-
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._index = _.defaultTo(index, this.standardIndex());
-};
-
-/**
- * Sets the number of the columns
- *
- * @param {Number} [cols=this.standardMaxCols()] - Number of the columns
- *
- * @see DKTools.Sprite.Selectable.prototype.standardMaxCols
- */
-DKTools.Sprite.Selectable.prototype.setupMaxCols = function(cols) {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._maxCols = cols || this.standardMaxCols();
-};
-
-/**
- * Sets the fixed horizontal position
- *
- * @param {Boolean} [fixedHorizontal=this.standardFixedHorizontal()] - Fixed horizontal position
- *
- * @see DKTools.Sprite.Selectable.prototype.standardFixedHorizontal
- */
-DKTools.Sprite.Selectable.prototype.setupFixedHorizontal = function(fixedHorizontal) {
-    /**
-     * @private
-     * @readonly
-     * @type {Boolean}
-     */
-    this._fixedHorizontal = _.defaultTo(fixedHorizontal, this.standardFixedHorizontal());
-};
-
-/**
- * Sets the fixed cursor
- *
- * @param {Boolean} [cursorFixed=this.standardCursorFixed()] - Fixed cursor
- *
- * @see DKTools.Sprite.Selectable.prototype.standardCursorFixed
- */
-DKTools.Sprite.Selectable.prototype.setupCursorFixed = function(cursorFixed) {
-    /**
-     * @private
-     * @readonly
-     * @type {Boolean}
-     */
-    this._cursorFixed = _.defaultTo(cursorFixed, this.standardCursorFixed());
-};
-
-/**
- * Sets the cursor all
- *
- * @param {Boolean} [cursorAll=this.standardCursorAll()] - Cursor all
- *
- * @see DKTools.Sprite.Selectable.prototype.standardCursorAll
- */
-DKTools.Sprite.Selectable.prototype.setupCursorAll = function(cursorAll) {
-    /**
-     * @private
-     * @readonly
-     * @type {Boolean}
-     */
-    this._cursorAll = _.defaultTo(cursorAll, this.standardCursorAll());
-};
-
-/**
- * Sets the handler of cursor down
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of cursor down
- *
- * @see DKTools.Sprite.Selectable.prototype.standardCursorDownHandler
- */
-DKTools.Sprite.Selectable.prototype.setupCursorDownHandler = function(handler) {
-    this._cursorDownHandler = handler || this.standardCursorDownHandler();
-};
-
-/**
- * Sets the handler of cursor up
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of cursor up
- *
- * @see DKTools.Sprite.Selectable.prototype.standardCursorUpHandler
- */
-DKTools.Sprite.Selectable.prototype.setupCursorUpHandler = function(handler) {
-    this._cursorUpHandler = handler || this.standardCursorUpHandler();
-};
-
-/**
- * Sets the handler of cursor right
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of cursor right
- *
- * @see DKTools.Sprite.Selectable.prototype.standardCursorRightHandler
- */
-DKTools.Sprite.Selectable.prototype.setupCursorRightHandler = function(handler) {
-    this._cursorRightHandler = handler || this.standardCursorRightHandler();
-};
-
-/**
- * Sets the handler of cursor left
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of cursor left
- *
- * @see DKTools.Sprite.Selectable.prototype.standardCursorLeftHandler
- */
-DKTools.Sprite.Selectable.prototype.setupCursorLeftHandler = function(handler) {
-    this._cursorLeftHandler = handler || this.standardCursorLeftHandler();
-};
-
-/**
- * Sets the handler of cursor page down
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of cursor page down
- *
- * @see DKTools.Sprite.Selectable.prototype.standardCursorPageDownHandler
- */
-DKTools.Sprite.Selectable.prototype.setupCursorPageDownHandler = function(handler) {
-    this._cursorPageDownHandler = handler || this.standardCursorPageDownHandler();
-};
-
-/**
- * Sets the handler of cursor page up
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of cursor page up
- *
- * @see DKTools.Sprite.Selectable.prototype.standardCursorPageUpHandler
- */
-DKTools.Sprite.Selectable.prototype.setupCursorPageUpHandler = function(handler) {
-    this._cursorPageUpHandler = handler || this.standardCursorPageUpHandler();
-};
-
-/**
- * Sets the horizontal spacing
- *
- * @param {Number} [spacing] - Horizontal spacing
- *
- * @see DKTools.Sprite.Selectable.prototype.standardHorizontalSpacing
- */
-DKTools.Sprite.Selectable.prototype.setupHorizontalSpacing = function(spacing) {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._horizontalSpacing = _.defaultTo(spacing, this.standardHorizontalSpacing());
-};
-
-/**
- * Sets the vertical spacing
- *
- * @param {Number} [spacing] - Vertical spacing
- *
- * @see DKTools.Sprite.Selectable.prototype.standardVerticalSpacing
- */
-DKTools.Sprite.Selectable.prototype.setupVerticalSpacing = function(spacing) {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._verticalSpacing = _.defaultTo(spacing, this.standardVerticalSpacing());
-};
-
-/**
- * Sets the horizontal and vertical spacings
- *
- * @param {Number} [horizontalSpacing] - Horizontal spacing
- * @param {Number} [verticalSpacing] - Vertical spacing
- *
- * @see DKTools.Sprite.Selectable.prototype.setupHorizontalSpacing
- * @see DKTools.Sprite.Selectable.prototype.setupVerticalSpacing
- */
-DKTools.Sprite.Selectable.prototype.setupSpacing = function(horizontalSpacing, verticalSpacing) {
-    this.setupHorizontalSpacing(horizontalSpacing);
-    this.setupVerticalSpacing(verticalSpacing);
-};
-
-/**
- * Sets the text padding
- *
- * @param {Number} [textPadding] - Text padding
- *
- * @see DKTools.Sprite.Selectable.prototype.standardTextPadding
- */
-DKTools.Sprite.Selectable.prototype.setupTextPadding = function(textPadding) {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._textPadding = _.defaultTo(textPadding, this.standardTextPadding());
-};
-
-/**
- * Sets the list of the items
- *
- * @version 6.1.0
- *
- * @param {Object[]} [items] - Items
- *
- * @param {Function | String} [items[].name] - Item name
- * @param {Function | PIXI.Rectangle | Rectangle | Object} [items[].rect] - Item rect
- * @param {Function | String} [items[].align] - Item align
- * @param {Function | String} [items[].textColor] - Item text color
- * @param {Function | Object} [items[].font] - Item font
- * @param {Function | Number} [items[].paintOpacity] - Item paint opacity
- * @param {Function | Boolean} [items[].enabled] - Item activity
- * @param {String} [items[].symbol] - Item symbol
- * @param {Function} [items[].handler] - Symbol handler
- * @param {Function} [items[].drawHandler] - Handler of draw of the item
- * @param {Function} [items[].selectHandler] - Item select handler
- * @param {Function} [items[].okHandler] - Item ok handler
- * @param {Function} [items[].cancelHandler] - Item cancel handler
- *
- * @param {Number} [items[].rect.x] - The X coordinate
- * @param {Number} [items[].rect.y] - The Y coordinate
- * @param {Number} [items[].rect.width] - Width of the rectangle
- * @param {Number} [items[].rect.height] - Height of the rectangle
- *
- * @param {String} [items[].font.fontFace] - Font face
- * @param {Boolean} [items[].font.fontItalic] - Font italic
- * @param {Number} [items[].font.fontSize] - Font size
- *
- * @see DKTools.Sprite.Selectable.prototype.standardItems
- */
-DKTools.Sprite.Selectable.prototype.setupItems = function(items) {
-    this._items = _.map(items || this.standardItems(), item => this._checkItem(item));
-};
-
-/**
- * Sets the handler of draw of the item
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of draw of the item
- *
- * @see DKTools.Sprite.Selectable.prototype.standardItemDrawHandler
- */
-DKTools.Sprite.Selectable.prototype.setupItemDrawHandler = function(handler) {
-    /**
-     * @since 6.1.0
-     * @private
-     * @readonly
-     * @type {Function}
-     */
-    this._itemDrawHandler = handler || this.standardItemDrawHandler();
-};
-
-/**
- * Sets the width of the item
- *
- * @param {Function | Number} [itemWidth] - Width of the item
- *
- * @see DKTools.Sprite.Selectable.prototype.standardItemWidth
- */
-DKTools.Sprite.Selectable.prototype.setupItemWidth = function(itemWidth) {
-    /**
-     * @private
-     * @readonly
-     * @type {Function | Number}
-     */
-    this._itemWidth = itemWidth || this.standardItemWidth();
-};
-
-/**
- * Sets the height of the item
- *
- * @param {Function | Number} [itemHeight] - Height of the item
- *
- * @see DKTools.Sprite.Selectable.prototype.standardItemHeight
- */
-DKTools.Sprite.Selectable.prototype.setupItemHeight = function(itemHeight) {
-    /**
-     * @private
-     * @readonly
-     * @type {Function | Number}
-     */
-    this._itemHeight = itemHeight || this.standardItemHeight();
-};
-
-/**
- * Sets the rectangle of the item
- *
- * @param {Function | PIXI.Rectangle | Rectangle | Object} [itemRect] - Rectangle of the item
- *
- * @param {Number} [itemRect.x] - The X coordinate
- * @param {Number} [itemRect.y] - The Y coordinate
- * @param {Number} [itemRect.width] - Width of the rectangle
- * @param {Number} [itemRect.height] - Height of the rectangle
- *
- * @see DKTools.Sprite.Selectable.prototype.standardItemRect
- */
-DKTools.Sprite.Selectable.prototype.setupItemRect = function(itemRect) {
-    /**
-     * @private
-     * @readonly
-     * @type {Function | PIXI.Rectangle | Rectangle | Object}
-     */
-    this._itemRect = itemRect || this.standardItemRect();
-};
-
-/**
- * Sets the font of the item
- *
- * @param {Function | Object} [itemFont=this.standardItemFont()] - Font of the item
- *
- * @param {String} [itemFont.fontFace] - Font face
- * @param {Number} [itemFont.fontSize] - Font size
- * @param {Boolean} [itemFont.fontItalic] - Font italic
- *
- * @see DKTools.Sprite.Selectable.prototype.standardItemFont
- */
-DKTools.Sprite.Selectable.prototype.setupItemFont = function(itemFont) {
-    /**
-     * @private
-     * @readonly
-     * @type {Function | Object}
-     */
-    this._itemFont = itemFont || this.standardItemFont();
-};
-
-/**
- * Sets the text color of the item
- *
- * @param {Function | String} [itemTextColor=this.standardItemTextColor()] - Text color of the item
- *
- * @see DKTools.Sprite.Selectable.prototype.standardItemTextColor
- */
-DKTools.Sprite.Selectable.prototype.setupItemTextColor = function(itemTextColor) {
-    /**
-     * @private
-     * @readonly
-     * @type {Function | String}
-     */
-    this._itemTextColor = itemTextColor || this.standardItemTextColor();
-};
-
-/**
- * Sets the paint opacity of the item
- *
- * @param {Function | Number} [itemPaintOpacity=this.standardItemPaintOpacity()] - Paint opacity of the item
- *
- * @see DKTools.Sprite.Selectable.prototype.standardItemPaintOpacity
- */
-DKTools.Sprite.Selectable.prototype.setupItemPaintOpacity = function(itemPaintOpacity) {
-    /**
-     * @private
-     * @readonly
-     * @type {Function | Number}
-     */
-    this._itemPaintOpacity = itemPaintOpacity || this.standardItemPaintOpacity();
-};
-
-/**
- * Sets the align of the item
- *
- * @param {Function | String} [itemAlign=this.standardItemAlign()] - Align of the item
- *
- * @see DKTools.Sprite.Selectable.prototype.standardItemAlign
- */
-DKTools.Sprite.Selectable.prototype.setupItemAlign = function(itemAlign) {
-    /**
-     * @private
-     * @readonly
-     * @type {Function | String}
-     */
-    this._itemAlign = itemAlign || this.standardItemAlign();
-};
-
-/**
- * Changes all parameters
- * Returns the number of changed parameters
- *
- * @version 6.1.0
- * @override
- *
- * @param {Object} [object={}] - Parameters
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- * @param {Boolean} [activate=false] - Activates the object
- *
- * @param {Number} [object.index] - Index
- * @param {Number} [object.maxCols] - Number of the columns
- * @param {Boolean} [object.fixedHorizontal] - Fixed horizontal position
- * @param {Boolean} [object.cursorFixed] - Fixed cursor
- * @param {Boolean} [object.cursorAll] - Cursor all
- * @param {Number} [object.horizontalSpacing] - Horizontal spacing
- * @param {Number} [object.verticalSpacing] - Vertical spacing
- * @param {Number} [object.textPadding] - Text padding
- * @param {Object[]} [object.items] - List of the items
- * @param {Function} [object.drawItemHandler] - Handler of draw of the item
- * @param {Function | Number} [object.itemWidth] - Width of the item
- * @param {Function | Number} [object.itemHeight] - Height of the item
- * @param {Function} [object.itemRect] - Rectangle of the item
- * @param {Function | Object} [object.itemFont] - Font of the item
- * @param {Function | String} [object.itemTextColor] - Text color of the item
- * @param {Function | Number} [object.itemPaintOpacity] - Paint opacity of the item
- * @param {Function | String} [object.itemAlign] - Align of the item
- *
- * @param {String} [object.font.fontFace] - Font face
- * @param {Number} [object.font.fontSize] - Font size
- * @param {Boolean} [object.font.fontItalic] - Font italic
- *
- * @see DKTools.Sprite.Button.prototype.setAll
- * @see DKTools.Sprite.Selectable.prototype.setIndex
- * @see DKTools.Sprite.Selectable.prototype.setMaxCols
- * @see DKTools.Sprite.Selectable.prototype.setFixedHorizontal
- * @see DKTools.Sprite.Selectable.prototype.setCursorFixed
- * @see DKTools.Sprite.Selectable.prototype.setCursorAll
- * @see DKTools.Sprite.Selectable.prototype.setSpacing
- * @see DKTools.Sprite.Selectable.prototype.setTextPadding
- * @see DKTools.Sprite.Selectable.prototype.setItems
- * @see DKTools.Sprite.Selectable.prototype.setItemDrawHandler
- * @see DKTools.Sprite.Selectable.prototype.setItemWidth
- * @see DKTools.Sprite.Selectable.prototype.setItemHeight
- * @see DKTools.Sprite.Selectable.prototype.setItemRect
- * @see DKTools.Sprite.Selectable.prototype.setItemFont
- * @see DKTools.Sprite.Selectable.prototype.setItemTextColor
- * @see DKTools.Sprite.Selectable.prototype.setItemPaintOpacity
- * @see DKTools.Sprite.Selectable.prototype.setItemAlign
- * @see DKTools.Sprite.Selectable.prototype.start
- * @see DKTools.Sprite.Selectable.prototype.activate
- *
- * @returns {Number} Number of changed parameters
- */
-DKTools.Sprite.Selectable.prototype.setAll = function(object = {}, blockStart = false, activate = false) {
-    object = object || {};
-
-    const block = true;
-    let changed = DKTools.Sprite.Button.prototype.setAll.call(this, object, block);
-
-    if (this.setIndex(object.index, block)) {
-        changed++;
-    }
-
-    if (this.setMaxCols(object.maxCols, block)) {
-        changed++;
-    }
-
-    if (this.setFixedHorizontal(object.fixedHorizontal, block)) {
-        changed++;
-    }
-
-    if (this.setCursorFixed(object.cursorFixed, block)) {
-        changed++;
-    }
-
-    if (this.setCursorAll(object.cursorAll, block)) {
-        changed++;
-    }
-
-    if (this.setCursorDownHandler(object.cursorDownHandler, block)) {
-        changed++;
-    }
-
-    if (this.setCursorUpHandler(object.cursorUpHandler, block)) {
-        changed++;
-    }
-
-    if (this.setCursorRightHandler(object.cursorRightHandler, block)) {
-        changed++;
-    }
-
-    if (this.setCursorLeftHandler(object.cursorLeftHandler, block)) {
-        changed++;
-    }
-
-    if (this.setCursorPageDownHandler(object.cursorPageDownHandler, block)) {
-        changed++;
-    }
-
-    if (this.setCursorPageUpHandler(object.cursorPageUpHandler, block)) {
-        changed++;
-    }
-
-    changed += this.setSpacing(object.horizontalSpacing, object.verticalSpacing, block);
-
-    if (this.setTextPadding(object.textPadding, block)) {
-        changed++;
-    }
-
-    if (this.setItems(object.items, block)) {
-        changed++;
-    }
-
-    if (this.setItemDrawHandler(object.drawItemHandler, block)) {
-        changed++;
-    }
-
-    if (this.setItemWidth(object.itemWidth, block)) {
-        changed++;
-    }
-
-    if (this.setItemHeight(object.itemHeight, block)) {
-        changed++;
-    }
-
-    if (this.setItemRect(object.itemRect, block)) {
-        changed++;
-    }
-
-    if (this.setItemFont(object.itemFont, block)) {
-        changed++;
-    }
-
-    if (this.setItemTextColor(object.itemTextColor, block)) {
-        changed++;
-    }
-
-    if (this.setItemPaintOpacity(object.itemPaintOpacity, block)) {
-        changed++;
-    }
-
-    if (this.setItemAlign(object.itemAlign, block)) {
-        changed++;
-    }
-
-    if (changed > 0) {
-        if (!blockStart) {
-            this.start();
-        }
-
-        if (activate) {
-            this.activate();
-        }
-    }
-
-    return changed;
-};
-
-/**
- * Changes the index
- * Returns true if the change occurred
- *
- * @param {Number} [index] - Index
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupIndex
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setIndex = function(index, blockRefreshAll = false) {
-    if (this._index === index) {
-        return false;
-    }
-
-    this.setupIndex(index);
-
-    if (this._index === this._lastIndex) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the number of the columns
- * Returns true if the change occurred
- *
- * @param {Number} [cols] - Number of the columns
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupMaxCols
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setMaxCols = function(cols, blockRefreshAll = false) {
-    if (this._maxCols === cols) {
-        return false;
-    }
-
-    const lastCols = this._maxCols;
-
-    this.setupMaxCols(cols);
-
-    if (this._maxCols === lastCols) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the fixed horizontal position
- * Returns true if the change occurred
- *
- * @param {Boolean} [fixedHorizontal] - Fixed horizontal position
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupFixedHorizontal
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setFixedHorizontal = function(fixedHorizontal, blockRefreshAll = false) {
-    if (this._fixedHorizontal === fixedHorizontal) {
-        return false;
-    }
-
-    const lastFixed = this._fixedHorizontal;
-
-    this.setupFixedHorizontal(fixedHorizontal);
-
-    if (this._fixedHorizontal === lastFixed) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the fixed cursor
- * Returns true if the change occurred
- *
- * @param {Boolean} [cursorFixed] - Fixed cursor
- * @param {Boolean} [blockRefreshAll=false] Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupCursorFixed
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setCursorFixed = function(cursorFixed, blockRefreshAll = false) {
-    if (this._cursorFixed === cursorFixed) {
-        return false;
-    }
-
-    const lastFixed = this._cursorFixed;
-
-    this.setupCursorFixed(cursorFixed);
-
-    if (this._cursorFixed === lastFixed) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the cursor all
- * Returns true if the change occurred
- *
- * @param {Boolean} [cursorAll] - Cursor all
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupCursorAll
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setCursorAll = function(cursorAll, blockRefreshAll = false) {
-    if (this._cursorAll === cursorAll) {
-        return false;
-    }
-
-    const lastAll = this._cursorAll;
-
-    this.setupCursorAll(cursorAll);
-
-    if (this._cursorAll === lastAll) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the handler of cursor down
- * Returns true if the change occurred
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of cursor down
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupCursorDownHandler
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setCursorDownHandler = function(handler, blockRefreshAll = false) {
-    if (this._cursorDownHandler === handler) {
-        return false;
-    }
-
-    const lastHandler = this._cursorDownHandler;
-
-    this.setupCursorDownHandler(handler);
-
-    if (this._cursorDownHandler === lastHandler) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the handler of cursor up
- * Returns true if the change occurred
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of cursor up
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupCursorUpHandler
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setCursorUpHandler = function(handler, blockRefreshAll = false) {
-    if (this._cursorUpHandler === handler) {
-        return false;
-    }
-
-    const lastHandler = this._cursorUpHandler;
-
-    this.setupCursorUpHandler(handler);
-
-    if (this._cursorUpHandler === lastHandler) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the handler of cursor right
- * Returns true if the change occurred
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of cursor right
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupCursorRightHandler
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setCursorRightHandler = function(handler, blockRefreshAll = false) {
-    if (this._cursorRightHandler === handler) {
-        return false;
-    }
-
-    const lastHandler = this._cursorRightHandler;
-
-    this.setupCursorRightHandler(handler);
-
-    if (this._cursorRightHandler === lastHandler) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the handler of cursor left
- * Returns true if the change occurred
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of cursor left
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupCursorLeftHandler
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setCursorLeftHandler = function(handler, blockRefreshAll = false) {
-    if (this._cursorLeftHandler === handler) {
-        return false;
-    }
-
-    const lastHandler = this._cursorLeftHandler;
-
-    this.setupCursorLeftHandler(handler);
-
-    if (this._cursorLeftHandler === lastHandler) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the handler of cursor page down
- * Returns true if the change occurred
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of cursor page down
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupCursorPageDownHandler
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setCursorPageDownHandler = function(handler, blockRefreshAll = false) {
-    if (this._cursorPageDownHandler === handler) {
-        return false;
-    }
-
-    const lastHandler = this._cursorPageDownHandler;
-
-    this.setupCursorPageDownHandler(handler);
-
-    if (this._cursorPageDownHandler === lastHandler) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the handler of cursor page up
- * Returns true if the change occurred
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of cursor page up
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupCursorPageUpHandler
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setCursorPageUpHandler = function(handler, blockRefreshAll = false) {
-    if (this._cursorPageUpHandler === handler) {
-        return false;
-    }
-
-    const lastHandler = this._cursorPageUpHandler;
-
-    this.setupCursorPageUpHandler(handler);
-
-    if (this._cursorPageUpHandler === lastHandler) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the horizontal spacing
- * Returns true if the change occurred
- *
- * @param {Number} [spacing] - Horizontal spacing
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupHorizontalSpacing
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setHorizontalSpacing = function(spacing, blockRefreshAll = false) {
-    if (this._horizontalSpacing === spacing) {
-        return false;
-    }
-
-    const lastSpacing = this._horizontalSpacing;
-
-    this.setupHorizontalSpacing(spacing);
-
-    if (this._horizontalSpacing === lastSpacing) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the vertical spacing
- * Returns true if the change occurred
- *
- * @param {Number} [spacing] - Vertical spacing
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupVerticalSpacing
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setVerticalSpacing = function(spacing, blockRefreshAll = false) {
-    if (this._verticalSpacing === spacing) {
-        return false;
-    }
-
-    const lastSpacing = this._verticalSpacing;
-
-    this.setupVerticalSpacing(spacing);
-
-    if (this._verticalSpacing === lastSpacing) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the horizontal and vertical spacings
- * Returns the number of changed parameters
- *
- * @param {Number} [horizontalSpacing] - Horizontal spacing
- * @param {Number} [verticalSpacing] - Vertical spacing
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setHorizontalSpacing
- * @see DKTools.Sprite.Selectable.prototype.setVerticalSpacing
- *
- * @returns {Number} Number of changed parameters
- */
-DKTools.Sprite.Selectable.prototype.setSpacing = function(horizontalSpacing, verticalSpacing, blockRefreshAll = false) {
-    const block = true;
-    let changed = 0;
-
-    if (this.setHorizontalSpacing(horizontalSpacing, block)) {
-        changed++;
-    }
-
-    if (this.setVerticalSpacing(verticalSpacing, block)) {
-        changed++;
-    }
-
-    if (changed > 0 && !blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return changed;
-};
-
-/**
- * Changes the text padding
- * Returns true if the change occurred
- *
- * @param {Number} [textPadding] - Text padding
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupTextPadding
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setTextPadding = function(textPadding, blockRefreshAll = false) {
-    if (this._textPadding === textPadding) {
-        return false;
-    }
-
-    const lastPadding = this._textPadding;
-
-    this.setupTextPadding(textPadding);
-
-    if (this._textPadding === lastPadding) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the items
- * Returns true if the change occurred
- *
- * @param {Object[]} [items] - List of the items
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupItems
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setItems = function(items, blockRefreshAll = false) {
-    if (this._items == items) {
-        return false;
-    }
-
-    this.setupItems(items);
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the handler of draw of the item
- * Returns true if the change occurred
- *
- * @since 6.1.0
- *
- * @param {Function} [handler] - Handler of draw of the item
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupItemDrawHandler
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setItemDrawHandler = function(handler, blockRefreshAll = false) {
-    if (this._itemDrawHandler === handler) {
-        return false;
-    }
-
-    const lastHandler = this._itemDrawHandler;
-
-    this.setupItemDrawHandler(handler);
-
-    if (this._itemDrawHandler === lastHandler) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the width of the item
- * Returns true if the change occurred
- *
- * @param {Function | Number} [itemWidth] - Width of the item
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupItemWidth
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.Selectable.prototype.setItemWidth = function(itemWidth, blockRefreshAll = false) {
-    if (this._itemWidth === itemWidth) {
-        return false;
-    }
-
-    const lastWidth = this._itemWidth;
-
-    this.setupItemWidth(itemWidth);
-
-    if (this._itemWidth === lastWidth) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the height of the item
- * Returns true if the change occurred
- *
- * @param {Function | Number} [itemHeight] - Height of the item
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupItemHeight
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occured
- */
-DKTools.Sprite.Selectable.prototype.setItemHeight = function(itemHeight, blockRefreshAll = false) {
-    if (this._itemHeight === itemHeight) {
-        return false;
-    }
-
-    const lastHeight = this._itemHeight;
-
-    this.setupItemHeight(itemHeight);
-
-    if (this._itemHeight === lastHeight) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the font of the item
- * Returns true if the change occurred
- *
- * @param {Function | Object} [itemFont] - Font of the item
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupItemFont
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occured
- */
-DKTools.Sprite.Selectable.prototype.setItemFont = function(itemFont, blockRefreshAll = false) {
-    if (this._itemFont === itemFont) {
-        return false;
-    }
-
-    const lastFont = this._itemFont;
-
-    this.setupItemFont(itemFont);
-
-    if (this._itemFont === lastFont) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the text color of the item
- * Returns true if the change occurred
- *
- * @param {Function | String} [itemTextColor] - Text color of the item
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupItemTextColor
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occured
- */
-DKTools.Sprite.Selectable.prototype.setItemTextColor = function(itemTextColor, blockRefreshAll = false) {
-    if (this._itemTextColor === itemTextColor) {
-        return false;
-    }
-
-    const lastTextColor = this._itemTextColor;
-
-    this.setupItemTextColor(itemTextColor);
-
-    if (this._itemTextColor === lastTextColor) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the item paint opacity
- * Returns true if the change occurred
- *
- * @param {Function | Number} [itemPaintOpacity] - Paint opacity of the item
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupItemPaintOpacity
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occured
- */
-DKTools.Sprite.Selectable.prototype.setItemPaintOpacity = function(itemPaintOpacity, blockRefreshAll = false) {
-    if (this._itemPaintOpacity === itemPaintOpacity) {
-        return false;
-    }
-
-    const lastPaintOpacity = this._itemPaintOpacity;
-
-    this.setupItemPaintOpacity(itemPaintOpacity);
-
-    if (this._itemPaintOpacity === lastPaintOpacity) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the align of the item
- * Returns true if the change occurred
- *
- * @param {Function | String} [itemAlign] - Align of the item
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.setupItemAlign
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- *
- * @returns {Boolean} Change occured
- */
-DKTools.Sprite.Selectable.prototype.setItemAlign = function(itemAlign, blockRefreshAll = false) {
-    if (this._itemAlign === itemAlign) {
-        return false;
-    }
-
-    const lastAlign = this._itemAlign;
-
-    this.setupItemAlign(itemAlign);
-
-    if (this._itemAlign === lastAlign) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the top row
- *
- * @param {Number} row - Row
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxTopRow
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- */
-DKTools.Sprite.Selectable.prototype.setTopRow = function(row, blockRefreshAll = false) {
-    const topRow = DKTools.Utils.Number.clamp(row, 0, this.getMaxTopRow());
-
-    if (this._topRow !== topRow) {
-        this._topRow = topRow;
-
-        if (!blockRefreshAll) {
-            this.refreshAll();
-        }
-    }
-};
-
-/**
- * Changes the top column
- *
- * @param {Number} col - Column
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxTopCol
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- */
-DKTools.Sprite.Selectable.prototype.setTopCol = function(col, blockRefreshAll = false) {
-    const topCol = DKTools.Utils.Number.clamp(col, 0, this.getMaxTopCol());
-
-    if (this._topCol !== topCol) {
-        this._topCol = topCol;
-
-        if (!blockRefreshAll) {
-            this.refreshAll();
-        }
-    }
-};
-
-/**
- * Chagnes the bottom row
- *
- * @param {Number} row - Row
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxPageRows
- * @see DKTools.Sprite.Selectable.prototype.setTopRow
- */
-DKTools.Sprite.Selectable.prototype.setBottomRow = function(row, blockRefreshAll = false) {
-    this.setTopRow(row - (this.getMaxPageRows() - 1), blockRefreshAll);
-};
-
-/**
- * Chagnes the bottom column
- *
- * @param {Number} col - Column
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxPageCols
- * @see DKTools.Sprite.Selectable.prototype.setTopCol
- */
-DKTools.Sprite.Selectable.prototype.setBottomCol = function(col, blockRefreshAll = false) {
-    this.setTopCol(col - (this.getMaxPageCols() - 1), blockRefreshAll);
-};
-
-/**
- * Changes the handler of the symbol
- *
- * @param {String} symbol - Symbol
- * @param {Function} [handler] - Handler
- */
-DKTools.Sprite.Selectable.prototype.setHandler = function(symbol, handler) {
-    this._handlers[symbol] = handler;
-};
-
-/**
- * Changes the cursor rect
- * Returns true if the change occurred
- *
- * @param {PIXI.Rectangle | Rectangle | Object | Number} object - The X coordinate or Rectangle
- * @param {Number} [y] - The Y coordinate
- * @param {Number} [width] - Width of the rect
- * @param {Number} [height] - Height of the rect
- *
- * @param {Number} object.x - The X coordinate
- * @param {Number} object.y - The Y coordinate
- * @param {Number} object.width - Width of the rect
- * @param {Number} object.height - Height of the rect
- *
- * @see DKTools.Sprite.Cursor.prototype.setCursorRect
- *
- * @returns {Boolean} Change occured
- */
-DKTools.Sprite.Selectable.prototype.setCursorRect = function(object, y, width, height) {
-    return this._cursorSprite.setCursorRect(object, y, width, height);
-};
-
-/**
- * Shows the cursor
- */
-DKTools.Sprite.Selectable.prototype.showCursor = function() {
-    this._cursorSprite.show(true);
-};
-
-/**
- * Selects the item
- *
- * @version 6.0.0
- *
- * @param {Number} index - Index
- * @param {Boolean} [playCursor=false] - Play "cursor" sound
- *
- * @see DKTools.Sprite.Selectable.prototype.setupIndex
- * @see DKTools.Sprite.Selectable.prototype.refreshAll
- * @see DKTools.Sprite.Selectable.prototype.playCursorSound
- * @see DKTools.Sprite.Selectable.prototype.updateSelectEvents
- */
-DKTools.Sprite.Selectable.prototype.selectItem = function(index, playCursor = false) {
-    const item = this.getItem(index);
-
-    this.setupIndex(index);
-    this.refreshAll();
-
-    if (playCursor) {
-        this.playCursorSound();
-    }
-
-    if (item && DKTools.Utils.isFunction(item.selectHandler)) {
-        item.selectHandler(index, this);
-    }
-
-    this.updateSelectEvents();
-};
-
-/**
- * Selects the item by symbol
- *
- * @param {String} symbol - Symbol
- *
- * @see DKTools.Sprite.Selectable.prototype.findSymbol
- * @see DKTools.Sprite.Selectable.prototype.selectItem
- */
-DKTools.Sprite.Selectable.prototype.selectSymbol = function(symbol) {
-    const index = Math.max(0, this.findSymbol(symbol));
-
-    this.selectItem(index);
-};
-
-/**
- * Selects the item by ext
- *
- * @param {*} ext - Ext of the item
- *
- * @see DKTools.Sprite.Selectable.prototype.findExt
- * @see DKTools.Sprite.Selectable.prototype.selectItem
- */
-DKTools.Sprite.Selectable.prototype.selectExt = function(ext) {
-    const index = Math.max(0, this.findExt(ext));
-
-    this.selectItem(index);
-};
-
-/**
- * Selects the previous item
- *
- * @version 6.0.0
- *
- * @param {Boolean} [wrap=false] - Cyclic selection
- * @param {Boolean} [playCursor=false] - Play "cursor" sound
- *
- * @see DKTools.Sprite.Selectable.prototype.getPrevIndex
- * @see DKTools.Sprite.Selectable.prototype.selectItem
- */
-DKTools.Sprite.Selectable.prototype.selectPrevItem = function(wrap = false, playCursor = false) {
-    const index = this.getPrevIndex(wrap);
-
-    if (index >= 0) {
-        this.selectItem(index, playCursor);
-    }
-};
-
-/**
- * Selects the next item
- *
- * @version 6.0.0
- *
- * @param {Boolean} [wrap=false] - Cyclic selection
- * @param {Boolean} [playCursor=false] - Play "cursor" sound
- *
- * @see DKTools.Sprite.Selectable.prototype.getNextIndex
- * @see DKTools.Sprite.Selectable.prototype.selectItem
- */
-DKTools.Sprite.Selectable.prototype.selectNextItem = function(wrap = false, playCursor = false) {
-    const index = this.getNextIndex(wrap);
-
-    if (index >= 0) {
-        this.selectItem(index, playCursor);
-    }
-};
-
-/**
- * Selects the last item
- *
- * @since 6.1.0
- *
- * @param {Boolean} [playCursor=false] - Play "cursor" sound
- *
- * @see DKTools.Sprite.Selectable.prototype.getMaxItems
- * @see DKTools.Sprite.Selectable.prototype.selectItem
- */
-DKTools.Sprite.Selectable.prototype.selectLastItem = function(playCursor = false) {
-    this.selectItem(this.getMaxItems() - 1, playCursor);
-};
-
-/**
- * Scrolls down
- *
- * @see DKTools.Sprite.Selectable.prototype.getTopRow
- * @see DKTools.Sprite.Selectable.prototype.getMaxRows
- * @see DKTools.Sprite.Selectable.prototype.cursorDown
- */
-DKTools.Sprite.Selectable.prototype.scrollDown = function() {
-    if (this.getTopRow() + 1 < this.getMaxRows()) {
-        this.cursorDown();
-    }
-};
-
-/**
- * Scrolls up
- *
- * @version 3.0.0
- *
- * @see DKTools.Sprite.Selectable.prototype.getTopRow
- * @see DKTools.Sprite.Selectable.prototype.cursorUp
- */
-DKTools.Sprite.Selectable.prototype.scrollUp = function() {
-    if (this.getCurrentRow() > 0) {
-        this.cursorUp();
-    }
-};
-
-/**
- * Scrolls right
- *
- * @see DKTools.Sprite.Selectable.prototype.getTopCol
- * @see DKTools.Sprite.Selectable.prototype.getMaxItems
- * @see DKTools.Sprite.Selectable.prototype.cursorRight
- */
-DKTools.Sprite.Selectable.prototype.scrollRight = function() {
-    if (this.getTopCol() + 1 < this.getMaxItems()) {
-        this.cursorRight();
-    }
-};
-
-/**
- * Scrolls left
- *
- * @version 3.0.0
- *
- * @see DKTools.Sprite.Selectable.prototype.getTopCol
- * @see DKTools.Sprite.Selectable.prototype.cursorLeft
- */
-DKTools.Sprite.Selectable.prototype.scrollLeft = function() {
-    if (this.getCurrentCol() > 0) {
-        this.cursorLeft();
-    }
-};
-
-// U methods
-
-/**
- * Updates all
- *
- * @override
- *
- * @see DKTools.Sprite.Selectable.prototype.updateCursor
- */
-DKTools.Sprite.Selectable.prototype.updateAll = function() {
-    DKTools.Sprite.Button.prototype.updateAll.call(this);
-    this.updateCursor();
-};
-
-/**
- * Updates the cursor
- *
- * @see DKTools.Sprite.Selectable.prototype.isHorizontal
- * @see DKTools.Sprite.Selectable.prototype.isCursorAll
- * @see DKTools.Sprite.Selectable.prototype.isCursorVisible
- * @see DKTools.Sprite.Selectable.prototype.getCurrentCol
- * @see DKTools.Sprite.Selectable.prototype.getCurrentRow
- * @see DKTools.Sprite.Selectable.prototype.getTopCol
- * @see DKTools.Sprite.Selectable.prototype.getTopRow
- * @see DKTools.Sprite.Selectable.prototype.getBottomCol
- * @see DKTools.Sprite.Selectable.prototype.getBottomRow
- * @see DKTools.Sprite.Selectable.prototype.getMaxRows
- * @see DKTools.Sprite.Selectable.prototype.getItemHeight
- * @see DKTools.Sprite.Selectable.prototype.setTopCol
- * @see DKTools.Sprite.Selectable.prototype.setTopRow
- * @see DKTools.Sprite.Selectable.prototype.setBottomCol
- * @see DKTools.Sprite.Selectable.prototype.setBottomRow
- * @see DKTools.Sprite.Selectable.prototype.setCursorRect
- * @see DKTools.Sprite.Selectable.prototype.resetScroll
- * @see DKTools.Sprite.Selectable.prototype.getItemRect
- */
-DKTools.Sprite.Selectable.prototype.updateCursor = function() {
-    if (this.isHorizontal()) {
-        const col = this.getCurrentCol();
-
-        if (col < this.getTopCol()) {
-            this.setTopCol(col);
-        } else if (col > this.getBottomCol()) {
-            this.setBottomCol(col);
-        }
-    } else {
-        const row = this.getCurrentRow();
-
-        if (row < this.getTopRow()) {
-            this.setTopRow(row);
-        } else if (row > this.getBottomRow()) {
-            this.setBottomRow(row);
-        }
-    }
-
-    if (this.isCursorAll()) {
-        const allRowsHeight = this.getMaxRows() * this.getItemHeight();
-
-        this.setCursorRect(0, 0, this.realWidth, allRowsHeight);
-        this.resetScroll();
-    } else if (this.isCursorVisible() || !this._cursorSprite.hasBitmap()) {
-        const rect = this.getItemRect(this._index);
-
-        this.setCursorRect(rect);
-    } else {
-        this.setCursorRect(Rectangle.emptyRectangle);
-    }
-};
-
-/**
- * Updates the events with type: select
- *
- * @see DKTools.Sprite.Selectable.prototype.updateEventsContainer
- */
-DKTools.Sprite.Selectable.prototype.updateSelectEvents = function() {
-    this.updateEventsContainer('select');
-};
-
 
 
 
@@ -27093,8 +27057,882 @@ DKTools.Sprite.Selectable.prototype.updateSelectEvents = function() {
 // DKTools.Sprite.ProgressBar
 //===========================================================================
 
-DKTools.Sprite.ProgressBar.prototype = Object.create(DKTools.Sprite.prototype);
-DKTools.Sprite.ProgressBar.prototype.constructor = DKTools.Sprite.ProgressBar;
+/**
+ * Progress bar class
+ *
+ * @class DKTools.Sprite.ProgressBar
+ * @extends DKTools.Sprite
+ *
+ * @memberof DKTools.Sprite
+ *
+ * @see DKTools.Sprite.ProgressBar.prototype.initialize
+ */
+DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
+
+    // A methods
+
+    /**
+     * Adds the value
+     *
+     * @param {Number} value - Value
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setValue
+     */
+    addValue(value) {
+        if (value) {
+            this.setValue(this._value + value);
+        }
+    }
+
+    /**
+     * Animates the full value
+     * Returns the update event
+     *
+     * @param {Number} duration - Duration of animation
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.animateValue
+     *
+     * @returns {DKTools.Event} Update event
+     */
+    aimateFull(duration) {
+        return this.animateValue(this._maxValue, duration);
+    }
+
+    /**
+     * Animates the empty value
+     * Returns the update event
+     *
+     * @param {Number} duration - Duration of animation
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.animateValue
+     *
+     * @returns {DKTools.Event} Update event
+     */
+    animateEmpty(duration) {
+        return this.animateValue(0, duration);
+    }
+
+    /**
+     * Animates the value
+     * Returns the update event
+     *
+     * @param {Number} value - Value
+     * @param {Number} duration - Duration of animation
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.addEvent
+     * @see DKTools.Sprite.ProgressBar.prototype._updateAnimateValue
+     *
+     * @returns {DKTools.Event} Update event
+     */
+    animateValue(value, duration) {
+        return this.addEvent({
+            type: 'update',
+            repeatTime: duration,
+            repeats: 0,
+            onUpdate: this._updateAnimateValue.bind(this, value)
+        });
+    }
+
+    // C methods
+
+    /**
+     * Returns true if the progress bar can clone the fixed bitmap
+     *
+     * @override
+     * @returns {Boolean} Progress bar can clone the fixed bitmap
+     */
+    canCloneFixedBitmap() {
+        return false;
+    }
+
+    // D methods
+
+    /**
+     * Draws the graphic of progress
+     *
+     * @private
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.hasDrawGraphicHandler
+     */
+    _drawProgressGraphic() {
+        if (this.hasDrawGraphicHandler()) {
+            this._drawGraphicHandler(this);
+        }
+    }
+
+    /**
+     * Draws the text of progress
+     *
+     * @private
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.hasDrawTextHandler
+     */
+    _drawProgressText() {
+        if (this.hasDrawTextHandler()) {
+            this._drawTextHandler(this);
+        }
+    }
+
+    /**
+     * Draws all
+     *
+     * @override
+     */
+    drawAll() {
+        DKTools.Sprite.prototype.drawAll.call(this);
+        this.drawProgress();
+    }
+
+    /**
+     * Draws the progress
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype._drawProgressGraphic
+     * @see DKTools.Sprite.ProgressBar.prototype._drawProgressText
+     */
+    drawProgress() {
+        this._drawProgressGraphic();
+        this._drawProgressText();
+    }
+
+    // G methods
+
+    /**
+     * Returns the next value
+     *
+     * @returns {Number} Next value
+     */
+    getNextValue() {
+        return Math.min(this._value + this._valueStep, this._maxValue);
+    }
+
+    /**
+     * Returns the current value in percent
+     *
+     * @returns {Number} Current value in percent
+     */
+    getPercents() {
+        return Math.ceil(this._value / this._maxValue * 100);
+    }
+
+    /**
+     * Returns the previous value
+     *
+     * @returns {Number} Previous value
+     */
+    getPrevValue() {
+        return Math.max(0, this._value - this._valueStep);
+    }
+
+    // H methods
+
+    /**
+     * Returns true if the progress bar has the handler of draw of the graphic
+     *
+     * @returns {Boolean} Progress bar has the handler of draw of the graphic
+     */
+    hasDrawGraphicHandler() {
+        return !!this._drawGraphicHandler;
+    }
+
+    /**
+     * Returns true if the progress bar has the handler of draw of the text
+     *
+     * @returns {Boolean} Progress bar has the handler of draw of the text
+     */
+    hasDrawTextHandler() {
+        return !!this._drawTextHandler;
+    }
+
+    // I methods
+
+    /**
+     * Returns true if the progress bar is empty
+     *
+     * @returns {Boolean} Progress bar is empty
+     */
+    isEmpty() {
+        return this._value === 0;
+    }
+
+    /**
+     * Returns true if the progress bar is full
+     *
+     * @returns {Boolean} Progress bar is full
+     */
+    isFull() {
+        return this._value === this._maxValue;
+    }
+
+    /**
+     * Returns true if the progress bar is horizontal
+     *
+     * @returns {Boolean} Progress bar is horizontal
+     */
+    isHorizontal() {
+        return this.width > this.height;
+    }
+
+    /**
+     * Returns true if the progress bar is vertical
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.isHorizontal
+     *
+     * @returns {Boolean} Progress bar is vertical
+     */
+    isVertical() {
+        return !this.isHorizontal();
+    }
+
+    // M methods
+
+    /**
+     * Makes the progress bar empty
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setValue
+     */
+    makeEmpty() {
+        this.setValue(0);
+    }
+
+    /**
+     * Makes the progress bar full
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setValue
+     */
+    makeFull() {
+        this.setValue(this._maxValue);
+    }
+
+    // N methods
+
+    /**
+     * Sets the next value
+     * Returns true if the change occurred
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.getNextValue
+     * @see DKTools.Sprite.ProgressBar.prototype.setValue
+     *
+     * @returns {Boolean} Change occurred
+     */
+    nextValue() {
+        return this.setValue(this.getNextValue());
+    }
+
+    // P methods
+
+    /**
+     * Sets the previous value
+     * Returns true if the change occurred
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.getPrevValue
+     * @see DKTools.Sprite.ProgressBar.prototype.setValue
+     *
+     * @returns {Boolean} Change occurred
+     */
+    prevValue() {
+        return this.setValue(this.getPrevValue());
+    }
+
+    // S methods
+
+    /**
+     * Changes all parameters
+     * Returns the number of changed parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     * @param {Boolean} [activate=false] - Activates the progress bar
+     *
+     * @param {Number} [object.valueStep] - Value step
+     * @param {Number} [object.maxValue] - Maximum value
+     * @param {Number} [object.value] - Value
+     * @param {String} [object.backgroundColor] - Background color
+     * @param {String} [object.progressColor] - Progress color
+     * @param {Function} [object.drawGraphicHandler] - Handler of draw of the graphic
+     * @param {Function} [object.drawTextHandler] - Handler of draw of the text
+     *
+     * @see DKTools.Sprite.prototype.setAll
+     * @see DKTools.Sprite.ProgressBar.prototype.setValueStep
+     * @see DKTools.Sprite.ProgressBar.prototype.setMaxValue
+     * @see DKTools.Sprite.ProgressBar.prototype.setValue
+     * @see DKTools.Sprite.ProgressBar.prototype.setBackgroundColor
+     * @see DKTools.Sprite.ProgressBar.prototype.setProgressColor
+     * @see DKTools.Sprite.ProgressBar.prototype.setDrawGraphicHandler
+     * @see DKTools.Sprite.ProgressBar.prototype.setDrawTextHandler
+     * @see DKTools.Sprite.ProgressBar.prototype.start
+     * @see DKTools.Sprite.ProgressBar.prototype.activate
+     *
+     * @returns {Number} Number of changed parameters
+     */
+    setAll(object = {}, blockStart = false, activate = false) {
+        object = object || {};
+        const block = true;
+
+        let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
+
+        if (this.setValueStep(object.valueStep, block)) {
+            changed++;
+        }
+
+        if (this.setMaxValue(object.maxValue, block)) {
+            changed++;
+        }
+
+        if (this.setValue(object.value, block)) {
+            changed++;
+        }
+
+        if (this.setBackgroundColor(object.backgroundColor, block)) {
+            changed++;
+        }
+
+        if (this.setProgressColor(object.progressColor, block)) {
+            changed++;
+        }
+
+        if (this.setDrawGraphicHandler(object.drawGraphicHandler, block)) {
+            changed++;
+        }
+
+        if (this.setDrawTextHandler(object.drawTextHandler, block)) {
+            changed++;
+        }
+
+        if (changed > 0) {
+            if (!blockStart) {
+                this.start();
+            }
+
+            if (activate) {
+                this.activate();
+            }
+        }
+
+        return changed;
+    }
+
+    /**
+     * Changes the background color
+     * Returns true if the change occurred
+     *
+     * @param {String} [color] - Background color
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setupBackgroundColor
+     * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setBackgroundColor(color, blockRefreshAll = false) {
+        if (this._backgroundColor === color) {
+            return false;
+        }
+
+        const lastColor = this._backgroundColor;
+
+        this.setupBackgroundColor(color);
+
+        if (this._backgroundColor === lastColor) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the handler of draw of the graphic
+     * Returns true if the change occurred
+     *
+     * @param {Function} [handler] - Handler of draw of the graphic
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setupDrawGraphicHandler
+     * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setDrawGraphicHandler(handler, blockRefreshAll = false) {
+        if (this._drawGraphicHandler === handler) {
+            return false;
+        }
+
+        this.setupDrawGraphicHandler(handler);
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the handler of draw of the text
+     * Returns true if the change occurred
+     *
+     * @param {Function} [handler] - Handler of draw of the text
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setupDrawTextHandler
+     * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setDrawTextHandler(handler, blockRefreshAll = false) {
+        if (this._drawTextHandler === handler) {
+            return false;
+        }
+
+        this.setupDrawTextHandler(handler);
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the maximum value
+     * Returns true if the change occurred
+     *
+     * @param {Number} [max] - Maximum value
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setupMaxValue
+     * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setMaxValue(max, blockRefreshAll = false) {
+        if (this._maxValue === max) {
+            return false;
+        }
+
+        const lastMax = this._maxValue;
+
+        this.setupMaxValue(max);
+
+        if (this._maxValue === lastMax) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the progress color
+     * Returns true if the change occurred
+     *
+     * @param {String} [color] - Progress color
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setupProgressColor
+     * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setProgressColor(color, blockRefreshAll = false) {
+        if (this._progressColor === color) {
+            return false;
+        }
+
+        const lastColor = this._progressColor;
+
+        this.setupProgressColor(color);
+
+        if (this._progressColor === lastColor) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the value
+     * Returns true if the change occurred
+     *
+     * @param {Number} [value] - Value
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setupValue
+     * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
+     * @see DKTools.Sprite.ProgressBar.prototype.updateValueEvents
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setValue(value, blockRefreshAll = false) {
+        if (this._value === value) {
+            return false;
+        }
+
+        const lastValue = this._value;
+
+        this.setupValue(value);
+
+        if (this._value === lastValue) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        this.updateValueEvents();
+
+        return true;
+    }
+
+    /**
+     * Changes the value step
+     * Returns true if the change occurred
+     *
+     * @param {Number} [step] - Шаг значения
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setupValueStep
+     * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setValueStep(step, blockRefreshAll = false) {
+        if (this._valueStep === step) {
+            return false;
+        }
+
+        const lastStep = this._valueStep;
+
+        this.setupValueStep(step);
+
+        if (this._valueStep === lastStep) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Sets all parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     *
+     * @param {Number} [object.valueStep] - Value step
+     * @param {Number} [object.maxValue] - Maximum value
+     * @param {Number} [object.value] - Value
+     * @param {String} [object.backgroundColor] - Background color
+     * @param {String} [object.progressColor] - Progress color
+     * @param {Function} [object.drawGraphicHandler] - Handler of draw of the graphic
+     * @param {Function} [object.drawTextHandler] - Handler of draw of the text
+     *
+     * @see DKTools.Sprite.prototype.setupAll
+     * @see DKTools.Sprite.ProgressBar.setupValueStep
+     * @see DKTools.Sprite.ProgressBar.setupMaxValue
+     * @see DKTools.Sprite.ProgressBar.setupValue
+     * @see DKTools.Sprite.ProgressBar.setupBackgroundColor
+     * @see DKTools.Sprite.ProgressBar.setupProgressColor
+     * @see DKTools.Sprite.ProgressBar.setupDrawGraphicHandler
+     * @see DKTools.Sprite.ProgressBar.setupDrawTextHandler
+     */
+    setupAll(object = {}) {
+        object = object || {};
+
+        DKTools.Sprite.prototype.setupAll.call(this, object);
+
+        this.setupValueStep(object.valueStep);
+        this.setupMaxValue(object.maxValue);
+        this.setupValue(object.value);
+        this.setupBackgroundColor(object.progressColor);
+        this.setupProgressColor(object.progressColor);
+        this.setupDrawGraphicHandler(object.drawGraphicHandler);
+        this.setupDrawTextHandler(object.drawTextHandler);
+    }
+
+    /**
+     * Sets the background color
+     *
+     * @param {String} [color=this.standardBackgroundColor()] - Background color
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setupBackgroundColor
+     */
+    setupBackgroundColor(color) {
+        /**
+         * @private
+         * @readonly
+         * @type {String}
+         */
+        this._backgroundColor = color || this.standardBackgroundColor();
+    }
+
+    /**
+     * Sets the handler of draw of the graphic
+     *
+     * @param {Function} [handler=this.standardDrawGraphicHandler()] - Handler of draw of the graphic
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.standardDrawGraphicHandler
+     */
+    setupDrawGraphicHandler(handler) {
+        /**
+         * @private
+         * @readonly
+         * @type {Function}
+         */
+        this._drawGraphicHandler = handler || this.standardDrawGraphicHandler();
+    }
+
+    /**
+     * Sets the handler of draw of the text
+     *
+     * @param {Function} [handler=this.standardDrawTextHandler()] - Handler of draw of the text
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.standardDrawTextHandler
+     */
+    setupDrawTextHandler(handler) {
+        /**
+         * @private
+         * @readonly
+         * @type {Function}
+         */
+        this._drawTextHandler = handler || this.standardDrawTextHandler();
+    }
+
+    /**
+     * Sets the maximum value
+     *
+     * @param {Number} [max=this.standardMaxValue()] - Maximum value
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setupMaxValue
+     */
+    setupMaxValue(max) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._maxValue = max || this.standardMaxValue();
+    }
+
+    /**
+     * Sets the progress color
+     *
+     * @param {String} [color=this.standardProgressColor()] - Progress color
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.standardProgressColor
+     */
+    setupProgressColor(color) {
+        /**
+         * @private
+         * @readonly
+         * @type {String}
+         */
+        this._progressColor = color || this.standardProgressColor();
+    }
+
+    /**
+     * Sets the value
+     *
+     * @param {Number} [value=this.standardValue()] - Value
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.standardValue
+     */
+    setupValue(value) {
+        const max = this._maxValue;
+        const newValue = Math.max(0, Math.min(value, max));
+
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._value = _.defaultTo(newValue, this.standardValue());
+    }
+
+    /**
+     * Sets the value step
+     *
+     * @param {Number} [step=this.standardValueStep()] - Value step
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.standardValueStep
+     */
+    setupValueStep(step) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._valueStep = step || this.standardValueStep();
+    }
+
+    /**
+     * Returns the standard activity of the progress bar
+     *
+     * @override
+     * @returns {Boolean} Standard activity of the progress bar
+     */
+    standardActive() {
+        return false;
+    }
+
+    /**
+     * Returns the standard background color
+     *
+     * @returns {String} Standard background color
+     */
+    standardBackgroundColor() {
+        return 'grey';
+    }
+
+    /**
+     * Returns the standard handler of draw of the graphic
+     *
+     * @returns {null} Standard handler of draw of the graphic
+     */
+    standardDrawGraphicHandler() {
+        return null;
+    }
+
+    /**
+     * Returns the standard handler of draw of the text
+     *
+     * @returns {null} Standard handler of draw of the text
+     */
+    standardDrawTextHandler() {
+        return null;
+    }
+
+    /**
+     * Returns the standard maximum value
+     *
+     * @returns {Number} Standard maximum value
+     */
+    standardMaxValue() {
+        return 100;
+    }
+
+    /**
+     * Returns the standard progress color
+     *
+     * @returns {String} Standard progress color
+     */
+    standardProgressColor() {
+        return '#33ccff';
+    }
+
+    /**
+     * Returns the standard value
+     *
+     * @returns {Number} Standard value
+     */
+    standardValue() {
+        return 0;
+    }
+
+    /**
+     * Returns the standard value step
+     *
+     * @returns {Number} Standard value step
+     */
+    standardValueStep() {
+        return 1;
+    }
+
+    /**
+     * Subtracts the value
+     *
+     * @param {Number} value - Value
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.addValue
+     */
+    subValue(value) {
+        this.addValue(-value);
+    }
+
+    // U methods
+
+    /**
+     * Handler of update of animate the value
+     *
+     * @private
+     *
+     * @param {Number} value - Value
+     * @param {DKTools.Event} event - Event
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setValue
+     */
+    _updateAnimateValue(value, event) {
+        const remainingTime = event.remainingTime;
+        const newValue = (this._value * (remainingTime - 1) + value) / remainingTime;
+
+        this.setValue(newValue);
+    }
+
+    /**
+     * Updates the events with type: empty
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.isEmpty
+     * @see DKTools.Sprite.ProgressBar.prototype.updateEventsContainer
+     */
+    updateEmptyEvents() {
+        if (this.isEmpty()) {
+            this.updateEventsContainer('empty');
+        }
+    }
+
+    /**
+     * Updates the events
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.prototype.updateEvents
+     * @see DKTools.Sprite.ProgressBar.prototype.updateEmptyEvents
+     * @see DKTools.Sprite.ProgressBar.prototype.updateFullEvents
+     */
+    updateEvents() {
+        DKTools.Sprite.prototype.updateEvents.call(this);
+        this.updateEmptyEvents();
+        this.updateFullEvents();
+    }
+
+    /**
+     * Updates the events with type: full
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.isFull
+     * @see DKTools.Sprite.ProgressBar.prototype.updateEventsContainer
+     */
+    updateFullEvents() {
+        if (this.isFull()) {
+            this.updateEventsContainer('full');
+        }
+    }
+
+    /**
+     * Updates the events with type: value
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.updateEventsContainer
+     */
+    updateValueEvents() {
+        this.updateEventsContainer('value');
+    }
+
+};
 
 // properties
 
@@ -27200,870 +28038,6 @@ Object.defineProperties(DKTools.Sprite.ProgressBar.prototype, {
 
 });
 
-// standard methods
-
-/**
- * Returns the standard activity of the progress bar
- *
- * @override
- * @returns {Boolean} Standard activity of the progress bar
- */
-DKTools.Sprite.ProgressBar.prototype.standardActive = function() {
-    return false;
-};
-
-/**
- * Returns the standard value step
- *
- * @returns {Number} Standard value step
- */
-DKTools.Sprite.ProgressBar.prototype.standardValueStep = function() {
-    return 1;
-};
-
-/**
- * Returns the standard maximum value
- *
- * @returns {Number} Standard maximum value
- */
-DKTools.Sprite.ProgressBar.prototype.standardMaxValue = function() {
-    return 100;
-};
-
-/**
- * Returns the standard value
- *
- * @returns {Number} Standard value
- */
-DKTools.Sprite.ProgressBar.prototype.standardValue = function() {
-    return 0;
-};
-
-/**
- * Returns the standard background color
- *
- * @returns {String} Standard background color
- */
-DKTools.Sprite.ProgressBar.prototype.standardBackgroundColor = function() {
-    return 'grey';
-};
-
-/**
- * Returns the standard progress color
- *
- * @returns {String} Standard progress color
- */
-DKTools.Sprite.ProgressBar.prototype.standardProgressColor = function() {
-    return '#33ccff';
-};
-
-/**
- * Returns the standard handler of draw of the graphic
- *
- * @returns {null} Standard handler of draw of the graphic
- */
-DKTools.Sprite.ProgressBar.prototype.standardDrawGraphicHandler = function() {
-    return null;
-};
-
-/**
- * Returns the standard handler of draw of the text
- *
- * @returns {null} Standard handler of draw of the text
- */
-DKTools.Sprite.ProgressBar.prototype.standardDrawTextHandler = function() {
-    return null;
-};
-
-// setup methods
-
-/**
- * Sets all parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- *
- * @param {Number} [object.valueStep] - Value step
- * @param {Number} [object.maxValue] - Maximum value
- * @param {Number} [object.value] - Value
- * @param {String} [object.backgroundColor] - Background color
- * @param {String} [object.progressColor] - Progress color
- * @param {Function} [object.drawGraphicHandler] - Handler of draw of the graphic
- * @param {Function} [object.drawTextHandler] - Handler of draw of the text
- *
- * @see DKTools.Sprite.prototype.setupAll
- * @see DKTools.Sprite.ProgressBar.setupValueStep
- * @see DKTools.Sprite.ProgressBar.setupMaxValue
- * @see DKTools.Sprite.ProgressBar.setupValue
- * @see DKTools.Sprite.ProgressBar.setupBackgroundColor
- * @see DKTools.Sprite.ProgressBar.setupProgressColor
- * @see DKTools.Sprite.ProgressBar.setupDrawGraphicHandler
- * @see DKTools.Sprite.ProgressBar.setupDrawTextHandler
- */
-DKTools.Sprite.ProgressBar.prototype.setupAll = function(object = {}) {
-    object = object || {};
-
-    DKTools.Sprite.prototype.setupAll.call(this, object);
-
-    this.setupValueStep(object.valueStep);
-    this.setupMaxValue(object.maxValue);
-    this.setupValue(object.value);
-    this.setupBackgroundColor(object.progressColor);
-    this.setupProgressColor(object.progressColor);
-    this.setupDrawGraphicHandler(object.drawGraphicHandler);
-    this.setupDrawTextHandler(object.drawTextHandler);
-};
-
-/**
- * Sets the value step
- *
- * @param {Number} [step=this.standardValueStep()] - Value step
- *
- * @see DKTools.Sprite.ProgressBar.prototype.standardValueStep
- */
-DKTools.Sprite.ProgressBar.prototype.setupValueStep = function(step) {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._valueStep = step || this.standardValueStep();
-};
-
-/**
- * Sets the maximum value
- *
- * @param {Number} [max=this.standardMaxValue()] - Maximum value
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setupMaxValue
- */
-DKTools.Sprite.ProgressBar.prototype.setupMaxValue = function(max) {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._maxValue = max || this.standardMaxValue();
-};
-
-/**
- * Sets the value
- *
- * @param {Number} [value=this.standardValue()] - Value
- *
- * @see DKTools.Sprite.ProgressBar.prototype.standardValue
- */
-DKTools.Sprite.ProgressBar.prototype.setupValue = function(value) {
-    const max = this._maxValue;
-    const newValue = Math.max(0, Math.min(value, max));
-
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._value = _.defaultTo(newValue, this.standardValue());
-};
-
-/**
- * Sets the background color
- *
- * @param {String} [color=this.standardBackgroundColor()] - Background color
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setupBackgroundColor
- */
-DKTools.Sprite.ProgressBar.prototype.setupBackgroundColor = function(color) {
-    /**
-     * @private
-     * @readonly
-     * @type {String}
-     */
-    this._backgroundColor = color || this.standardBackgroundColor();
-};
-
-/**
- * Sets the progress color
- *
- * @param {String} [color=this.standardProgressColor()] - Progress color
- *
- * @see DKTools.Sprite.ProgressBar.prototype.standardProgressColor
- */
-DKTools.Sprite.ProgressBar.prototype.setupProgressColor = function(color) {
-    /**
-     * @private
-     * @readonly
-     * @type {String}
-     */
-    this._progressColor = color || this.standardProgressColor();
-};
-
-/**
- * Sets the handler of draw of the graphic
- *
- * @param {Function} [handler=this.standardDrawGraphicHandler()] - Handler of draw of the graphic
- *
- * @see DKTools.Sprite.ProgressBar.prototype.standardDrawGraphicHandler
- */
-DKTools.Sprite.ProgressBar.prototype.setupDrawGraphicHandler = function(handler) {
-    /**
-     * @private
-     * @readonly
-     * @type {Function}
-     */
-    this._drawGraphicHandler = handler || this.standardDrawGraphicHandler();
-};
-
-/**
- * Sets the handler of draw of the text
- *
- * @param {Function} [handler=this.standardDrawTextHandler()] - Handler of draw of the text
- *
- * @see DKTools.Sprite.ProgressBar.prototype.standardDrawTextHandler
- */
-DKTools.Sprite.ProgressBar.prototype.setupDrawTextHandler = function(handler) {
-    /**
-     * @private
-     * @readonly
-     * @type {Function}
-     */
-    this._drawTextHandler = handler || this.standardDrawTextHandler();
-};
-
-// set methods
-
-/**
- * Changes all parameters
- * Returns the number of changed parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- * @param {Boolean} [activate=false] - Activates the progress bar
- *
- * @param {Number} [object.valueStep] - Value step
- * @param {Number} [object.maxValue] - Maximum value
- * @param {Number} [object.value] - Value
- * @param {String} [object.backgroundColor] - Background color
- * @param {String} [object.progressColor] - Progress color
- * @param {Function} [object.drawGraphicHandler] - Handler of draw of the graphic
- * @param {Function} [object.drawTextHandler] - Handler of draw of the text
- *
- * @see DKTools.Sprite.prototype.setAll
- * @see DKTools.Sprite.ProgressBar.prototype.setValueStep
- * @see DKTools.Sprite.ProgressBar.prototype.setMaxValue
- * @see DKTools.Sprite.ProgressBar.prototype.setValue
- * @see DKTools.Sprite.ProgressBar.prototype.setBackgroundColor
- * @see DKTools.Sprite.ProgressBar.prototype.setProgressColor
- * @see DKTools.Sprite.ProgressBar.prototype.setDrawGraphicHandler
- * @see DKTools.Sprite.ProgressBar.prototype.setDrawTextHandler
- * @see DKTools.Sprite.ProgressBar.prototype.start
- * @see DKTools.Sprite.ProgressBar.prototype.activate
- *
- * @returns {Number} Number of changed parameters
- */
-DKTools.Sprite.ProgressBar.prototype.setAll = function(object = {}, blockStart = false, activate = false) {
-    object = object || {};
-    const block = true;
-
-    let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
-
-    if (this.setValueStep(object.valueStep, block)) {
-        changed++;
-    }
-
-    if (this.setMaxValue(object.maxValue, block)) {
-        changed++;
-    }
-
-    if (this.setValue(object.value, block)) {
-        changed++;
-    }
-
-    if (this.setBackgroundColor(object.backgroundColor, block)) {
-        changed++;
-    }
-
-    if (this.setProgressColor(object.progressColor, block)) {
-        changed++;
-    }
-
-    if (this.setDrawGraphicHandler(object.drawGraphicHandler, block)) {
-        changed++;
-    }
-
-    if (this.setDrawTextHandler(object.drawTextHandler, block)) {
-        changed++;
-    }
-
-    if (changed > 0) {
-        if (!blockStart) {
-            this.start();
-        }
-
-        if (activate) {
-            this.activate();
-        }
-    }
-
-    return changed;
-};
-
-/**
- * Changes the value step
- * Returns true if the change occurred
- *
- * @param {Number} [step] - Шаг значения
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setupValueStep
- * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.ProgressBar.prototype.setValueStep = function(step, blockRefreshAll = false) {
-    if (this._valueStep === step) {
-        return false;
-    }
-
-    const lastStep = this._valueStep;
-
-    this.setupValueStep(step);
-
-    if (this._valueStep === lastStep) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the maximum value
- * Returns true if the change occurred
- *
- * @param {Number} [max] - Maximum value
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setupMaxValue
- * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.ProgressBar.prototype.setMaxValue = function(max, blockRefreshAll = false) {
-    if (this._maxValue === max) {
-        return false;
-    }
-
-    const lastMax = this._maxValue;
-
-    this.setupMaxValue(max);
-
-    if (this._maxValue === lastMax) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the value
- * Returns true if the change occurred
- *
- * @param {Number} [value] - Value
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setupValue
- * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
- * @see DKTools.Sprite.ProgressBar.prototype.updateValueEvents
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.ProgressBar.prototype.setValue = function(value, blockRefreshAll = false) {
-    if (this._value === value) {
-        return false;
-    }
-
-    const lastValue = this._value;
-
-    this.setupValue(value);
-
-    if (this._value === lastValue) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    this.updateValueEvents();
-
-    return true;
-};
-
-/**
- * Changes the background color
- * Returns true if the change occurred
- *
- * @param {String} [color] - Background color
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setupBackgroundColor
- * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.ProgressBar.prototype.setBackgroundColor = function(color, blockRefreshAll = false) {
-    if (this._backgroundColor === color) {
-        return false;
-    }
-
-    const lastColor = this._backgroundColor;
-
-    this.setupBackgroundColor(color);
-
-    if (this._backgroundColor === lastColor) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the progress color
- * Returns true if the change occurred
- *
- * @param {String} [color] - Progress color
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setupProgressColor
- * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.ProgressBar.prototype.setProgressColor = function(color, blockRefreshAll = false) {
-    if (this._progressColor === color) {
-        return false;
-    }
-
-    const lastColor = this._progressColor;
-
-    this.setupProgressColor(color);
-
-    if (this._progressColor === lastColor) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the handler of draw of the graphic
- * Returns true if the change occurred
- *
- * @param {Function} [handler] - Handler of draw of the graphic
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setupDrawGraphicHandler
- * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.ProgressBar.prototype.setDrawGraphicHandler = function(handler, blockRefreshAll = false) {
-    if (this._drawGraphicHandler === handler) {
-        return false;
-    }
-
-    this.setupDrawGraphicHandler(handler);
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the handler of draw of the text
- * Returns true if the change occurred
- *
- * @param {Function} [handler] - Handler of draw of the text
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setupDrawTextHandler
- * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.ProgressBar.prototype.setDrawTextHandler = function(handler, blockRefreshAll = false) {
-    if (this._drawTextHandler === handler) {
-        return false;
-    }
-
-    this.setupDrawTextHandler(handler);
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-// can methods
-
-/**
- * Returns true if the progress bar can clone the fixed bitmap
- *
- * @override
- * @returns {Boolean} Progress bar can clone the fixed bitmap
- */
-DKTools.Sprite.ProgressBar.prototype.canCloneFixedBitmap = function() {
-    return false;
-};
-
-// is methods
-
-/**
- * Returns true if the progress bar is horizontal
- *
- * @returns {Boolean} Progress bar is horizontal
- */
-DKTools.Sprite.ProgressBar.prototype.isHorizontal = function() {
-    return this.width > this.height;
-};
-
-/**
- * Returns true if the progress bar is vertical
- *
- * @see DKTools.Sprite.ProgressBar.prototype.isHorizontal
- *
- * @returns {Boolean} Progress bar is vertical
- */
-DKTools.Sprite.ProgressBar.prototype.isVertical = function() {
-    return !this.isHorizontal();
-};
-
-/**
- * Returns true if the progress bar is empty
- *
- * @returns {Boolean} Progress bar is empty
- */
-DKTools.Sprite.ProgressBar.prototype.isEmpty = function() {
-    return this._value === 0;
-};
-
-/**
- * Returns true if the progress bar is full
- *
- * @returns {Boolean} Progress bar is full
- */
-DKTools.Sprite.ProgressBar.prototype.isFull = function() {
-    return this._value === this._maxValue;
-};
-
-// events methods
-
-/**
- * Updates the events
- *
- * @override
- *
- * @see DKTools.Sprite.prototype.updateEvents
- * @see DKTools.Sprite.ProgressBar.prototype.updateEmptyEvents
- * @see DKTools.Sprite.ProgressBar.prototype.updateFullEvents
- */
-DKTools.Sprite.ProgressBar.prototype.updateEvents = function() {
-    DKTools.Sprite.prototype.updateEvents.call(this);
-    this.updateEmptyEvents();
-    this.updateFullEvents();
-};
-
-/**
- * Updates the events with type: value
- *
- * @see DKTools.Sprite.ProgressBar.prototype.updateEventsContainer
- */
-DKTools.Sprite.ProgressBar.prototype.updateValueEvents = function() {
-    this.updateEventsContainer('value');
-};
-
-/**
- * Updates the events with type: empty
- *
- * @see DKTools.Sprite.ProgressBar.prototype.isEmpty
- * @see DKTools.Sprite.ProgressBar.prototype.updateEventsContainer
- */
-DKTools.Sprite.ProgressBar.prototype.updateEmptyEvents = function() {
-    if (this.isEmpty()) {
-        this.updateEventsContainer('empty');
-    }
-};
-
-/**
- * Updates the events with type: full
- *
- * @see DKTools.Sprite.ProgressBar.prototype.isFull
- * @see DKTools.Sprite.ProgressBar.prototype.updateEventsContainer
- */
-DKTools.Sprite.ProgressBar.prototype.updateFullEvents = function() {
-    if (this.isFull()) {
-        this.updateEventsContainer('full');
-    }
-};
-
-/**
- * Handler of update of animate the value
- *
- * @private
- *
- * @param {Number} value - Value
- * @param {DKTools.Event} event - Event
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setValue
- */
-DKTools.Sprite.ProgressBar.prototype._updateAnimateValue = function(value, event) {
-    const remainingTime = event.remainingTime;
-    const newValue = (this._value * (remainingTime - 1) + value) / remainingTime;
-
-    this.setValue(newValue);
-};
-
-/**
- * Animates the value
- * Returns the update event
- *
- * @param {Number} value - Value
- * @param {Number} duration - Duration of animation
- *
- * @see DKTools.Sprite.ProgressBar.prototype.addEvent
- * @see DKTools.Sprite.ProgressBar.prototype._updateAnimateValue
- *
- * @returns {DKTools.Event} Update event
- */
-DKTools.Sprite.ProgressBar.prototype.animateValue = function(value, duration) {
-    return this.addEvent({
-        type: 'update',
-        repeatTime: duration,
-        repeats: 0,
-        onUpdate: this._updateAnimateValue.bind(this, value)
-    });
-};
-
-/**
- * Animates the empty value
- * Returns the update event
- *
- * @param {Number} duration - Duration of animation
- *
- * @see DKTools.Sprite.ProgressBar.prototype.animateValue
- *
- * @returns {DKTools.Event} Update event
- */
-DKTools.Sprite.ProgressBar.prototype.animateEmpty = function(duration) {
-    return this.animateValue(0, duration);
-};
-
-/**
- * Animates the full value
- * Returns the update event
- *
- * @param {Number} duration - Duration of animation
- *
- * @see DKTools.Sprite.ProgressBar.prototype.animateValue
- *
- * @returns {DKTools.Event} Update event
- */
-DKTools.Sprite.ProgressBar.prototype.aimateFull = function(duration) {
-    return this.animateValue(this._maxValue, duration);
-};
-
-// _draw methods
-
-/**
- * Draws the graphic of progress
- *
- * @private
- *
- * @see DKTools.Sprite.ProgressBar.prototype.hasDrawGraphicHandler
- */
-DKTools.Sprite.ProgressBar.prototype._drawProgressGraphic = function() {
-    if (this.hasDrawGraphicHandler()) {
-        this._drawGraphicHandler(this);
-    }
-};
-
-/**
- * Draws the text of progress
- *
- * @private
- *
- * @see DKTools.Sprite.ProgressBar.prototype.hasDrawTextHandler
- */
-DKTools.Sprite.ProgressBar.prototype._drawProgressText = function() {
-    if (this.hasDrawTextHandler()) {
-        this._drawTextHandler(this);
-    }
-};
-
-// draw methods
-
-/**
- * Draws all
- *
- * @override
- */
-DKTools.Sprite.ProgressBar.prototype.drawAll = function() {
-    DKTools.Sprite.prototype.drawAll.call(this);
-    this.drawProgress();
-};
-
-/**
- * Draws the progress
- *
- * @see DKTools.Sprite.ProgressBar.prototype._drawProgressGraphic
- * @see DKTools.Sprite.ProgressBar.prototype._drawProgressText
- */
-DKTools.Sprite.ProgressBar.prototype.drawProgress = function() {
-    this._drawProgressGraphic();
-    this._drawProgressText();
-};
-
-// has methods
-
-/**
- * Returns true if the progress bar has the handler of draw of the graphic
- *
- * @returns {Boolean} Progress bar has the handler of draw of the graphic
- */
-DKTools.Sprite.ProgressBar.prototype.hasDrawGraphicHandler = function() {
-    return !!this._drawGraphicHandler;
-};
-
-/**
- * Returns true if the progress bar has the handler of draw of the text
- *
- * @returns {Boolean} Progress bar has the handler of draw of the text
- */
-DKTools.Sprite.ProgressBar.prototype.hasDrawTextHandler = function() {
-    return !!this._drawTextHandler;
-};
-
-// get methods
-
-/**
- * Returns the current value in percent
- *
- * @returns {Number} Current value in percent
- */
-DKTools.Sprite.ProgressBar.prototype.getPercents = function() {
-    return Math.ceil(this._value / this._maxValue * 100);
-};
-
-/**
- * Returns the previous value
- *
- * @returns {Number} Previous value
- */
-DKTools.Sprite.ProgressBar.prototype.getPrevValue = function() {
-    return Math.max(0, this._value - this._valueStep);
-};
-
-/**
- * Returns the next value
- *
- * @returns {Number} Next value
- */
-DKTools.Sprite.ProgressBar.prototype.getNextValue = function() {
-    return Math.min(this._value + this._valueStep, this._maxValue);
-};
-
-// value methods
-
-/**
- * Adds the value
- *
- * @param {Number} value - Value
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setValue
- */
-DKTools.Sprite.ProgressBar.prototype.addValue = function(value) {
-    if (value) {
-        this.setValue(this._value + value);
-    }
-};
-
-/**
- * Subtracts the value
- *
- * @param {Number} value - Value
- *
- * @see DKTools.Sprite.ProgressBar.prototype.addValue
- */
-DKTools.Sprite.ProgressBar.prototype.subValue = function(value) {
-    this.addValue(-value);
-};
-
-/**
- * Sets the previous value
- * Returns true if the change occurred
- *
- * @see DKTools.Sprite.ProgressBar.prototype.getPrevValue
- * @see DKTools.Sprite.ProgressBar.prototype.setValue
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.ProgressBar.prototype.prevValue = function() {
-    return this.setValue(this.getPrevValue());
-};
-
-/**
- * Sets the next value
- * Returns true if the change occurred
- *
- * @see DKTools.Sprite.ProgressBar.prototype.getNextValue
- * @see DKTools.Sprite.ProgressBar.prototype.setValue
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.ProgressBar.prototype.nextValue = function() {
-    return this.setValue(this.getNextValue());
-};
-
-/**
- * Makes the progress bar empty
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setValue
- */
-DKTools.Sprite.ProgressBar.prototype.makeEmpty = function() {
-    this.setValue(0);
-};
-
-/**
- * Makes the progress bar full
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setValue
- */
-DKTools.Sprite.ProgressBar.prototype.makeFull = function() {
-    this.setValue(this._maxValue);
-};
-
-
 
 
 
@@ -28072,94 +28046,104 @@ DKTools.Sprite.ProgressBar.prototype.makeFull = function() {
 // DKTools.Sprite.ProgressBar.Rectangle
 //===========================================================================
 
-DKTools.Sprite.ProgressBar.Rectangle.prototype = Object.create(DKTools.Sprite.ProgressBar.prototype);
-DKTools.Sprite.ProgressBar.Rectangle.prototype.constructor = DKTools.Sprite.ProgressBar.Rectangle;
-
-// standard methods
-
 /**
- * Returns the standard handler of draw of the graphic for horizontal progress bar
+ * Progress bar class
  *
- * @returns {Function} Standard handler of draw of the graphic for horizontal progress bar
+ * @class DKTools.Sprite.ProgressBar.Rectangle
+ * @extends DKTools.Sprite.ProgressBar
+ *
+ * @memberof DKTools.Sprite.ProgressBar
+ *
+ * @see DKTools.Sprite.ProgressBar.Rectangle.prototype.initialize
  */
-DKTools.Sprite.ProgressBar.Rectangle.prototype.standardHorizontalDrawGraphicHandler = function() {
-    return () => {
-        this.fillAll(this._backgroundColor);
+DKTools.Sprite.ProgressBar.Rectangle = class extends DKTools.Sprite.ProgressBar {
 
-        if (!this.isEmpty()) {
-            this.fillRect({
-                color: this._progressColor,
-                width: this._value * this.realWidth / this._maxValue
-            });
-        }
-    };
+    // S methods
+
+    /**
+     * Returns the standard handler of draw of the graphic
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.ProgressBar.Rectangle.prototype.isHorizontal
+     * @see DKTools.Sprite.ProgressBar.Rectangle.prototype.standardHorizontalDrawGraphicHandler
+     * @see DKTools.Sprite.ProgressBar.Rectangle.prototype.standardVerticalDrawGraphicHandler
+     *
+     * @returns {Function} Standard handler of draw of the graphic
+     */
+    standardDrawGraphicHandler() {
+        return () => {
+            let handler;
+
+            if (this.isHorizontal()) {
+                handler = this.standardHorizontalDrawGraphicHandler();
+            } else {
+                handler = this.standardVerticalDrawGraphicHandler();
+            }
+
+            if (DKTools.Utils.isFunction(handler)) {
+                handler(this);
+            }
+        };
+    }
+
+    /**
+     * Returns the standard handler of draw of the text
+     *
+     * @override
+     * @returns {Function} Standard handler of draw of the text
+     */
+    standardDrawTextHandler() {
+        return () => {
+            const percents = this.getPercents();
+            const text = `${percents}%`;
+
+            this.drawText(text, { height: this.realHeight });
+        };
+    }
+
+    /**
+     * Returns the standard handler of draw of the graphic for horizontal progress bar
+     *
+     * @returns {Function} Standard handler of draw of the graphic for horizontal progress bar
+     */
+    standardHorizontalDrawGraphicHandler() {
+        return () => {
+            this.fillAll(this._backgroundColor);
+
+            if (!this.isEmpty()) {
+                this.fillRect({
+                    color: this._progressColor,
+                    width: this._value * this.realWidth / this._maxValue
+                });
+            }
+        };
+    }
+
+    /**
+     * Returns the standard handler of draw of the graphic for vertical progress bar
+     *
+     * @returns {Function} Standard handler of draw of the graphic for vertical progress bar
+     */
+    standardVerticalDrawGraphicHandler() {
+        return () => {
+            this.fillAll(this._backgroundColor);
+
+            if (!this.isEmpty()) {
+                const realHeight = this.realHeight;
+                const height = this._value * realHeight / this._maxValue;
+
+                this.fillRect({
+                    color: this._progressColor,
+                    y: realHeight - height,
+                    width: this.realWidth,
+                    height
+                });
+            }
+        };
+    }
+
 };
-
-/**
- * Returns the standard handler of draw of the graphic for vertical progress bar
- *
- * @returns {Function} Standard handler of draw of the graphic for vertical progress bar
- */
-DKTools.Sprite.ProgressBar.Rectangle.prototype.standardVerticalDrawGraphicHandler = function() {
-    return () => {
-        this.fillAll(this._backgroundColor);
-
-        if (!this.isEmpty()) {
-            const realHeight = this.realHeight;
-            const height = this._value * realHeight / this._maxValue;
-
-            this.fillRect({
-                color: this._progressColor,
-                y: realHeight - height,
-                width: this.realWidth,
-                height
-            });
-        }
-    };
-};
-
-/**
- * Returns the standard handler of draw of the graphic
- *
- * @override
- *
- * @see DKTools.Sprite.ProgressBar.Rectangle.prototype.isHorizontal
- * @see DKTools.Sprite.ProgressBar.Rectangle.prototype.standardHorizontalDrawGraphicHandler
- * @see DKTools.Sprite.ProgressBar.Rectangle.prototype.standardVerticalDrawGraphicHandler
- *
- * @returns {Function} Standard handler of draw of the graphic
- */
-DKTools.Sprite.ProgressBar.Rectangle.prototype.standardDrawGraphicHandler = function() {
-    return () => {
-        let handler;
-
-        if (this.isHorizontal()) {
-            handler = this.standardHorizontalDrawGraphicHandler();
-        } else {
-            handler = this.standardVerticalDrawGraphicHandler();
-        }
-
-        if (DKTools.Utils.isFunction(handler)) {
-            handler(this);
-        }
-    };
-};
-
-/**
- * Returns the standard handler of draw of the text
- *
- * @override
- * @returns {Function} Standard handler of draw of the text
- */
-DKTools.Sprite.ProgressBar.Rectangle.prototype.standardDrawTextHandler = function() {
-    return () => {
-        const percents = this.getPercents();
-        const text = `${percents}%`;
-
-        this.drawText(text, { height: this.realHeight });
-    };
-};
-
 
 
 
@@ -28169,8 +28153,187 @@ DKTools.Sprite.ProgressBar.Rectangle.prototype.standardDrawTextHandler = functio
 // DKTools.Sprite.ProgressBar.Circle
 //===========================================================================
 
-DKTools.Sprite.ProgressBar.Circle.prototype = Object.create(DKTools.Sprite.ProgressBar.prototype);
-DKTools.Sprite.ProgressBar.Circle.prototype.constructor = DKTools.Sprite.ProgressBar.Circle;
+/**
+ * Progress bar class
+ *
+ * @class DKTools.Sprite.ProgressBar.Circle
+ * @extends DKTools.Sprite.ProgressBar
+ *
+ * @memberof DKTools.Sprite.ProgressBar
+ *
+ * @see DKTools.Sprite.ProgressBar.Circle.prototype.initialize
+ */
+DKTools.Sprite.ProgressBar.Circle = class extends DKTools.Sprite.ProgressBar {
+
+    // S methods
+
+    /**
+     * Changes all parameters
+     * Returns the number of changed parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     * @param {Boolean} [activate=false] - Activates the progress bar
+     *
+     * @param {Number} [object.lineWidth] - Line width
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setAll
+     * @see DKTools.Sprite.ProgressBar.Circle.prototype.setLineWidth
+     * @see DKTools.Sprite.ProgressBar.Circle.prototype.start
+     * @see DKTools.Sprite.ProgressBar.Circle.prototype.activate
+     *
+     * @returns {Number} Number of changed parameters
+     */
+    setAll(object = {}, blockStart = false, activate = false) {
+        object = object || {};
+        const block = true;
+
+        let changed = DKTools.Sprite.ProgressBar.prototype.setAll.call(this, object, block);
+
+        if (this.setLineWidth(object.lineWidth, block)) {
+            changed++;
+        }
+
+        if (changed > 0) {
+            if (!blockStart) {
+                this.start();
+            }
+
+            if (activate) {
+                this.activate();
+            }
+        }
+
+        return changed;
+    }
+
+    /**
+     * Changes the line width
+     * Returns true if the change occurred
+     *
+     * @param {Number} [width] - Line width
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.ProgressBar.Circle.prototype.setupLineWidth
+     * @see DKTools.Sprite.ProgressBar.Circle.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setLineWidth(width, blockRefreshAll = false) {
+        if (this._lineWidth === width) {
+            return false;
+        }
+
+        const lastWidth = this._lineWidth;
+
+        this.setupLineWidth(width);
+
+        if (this._lineWidth === lastWidth) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Sets all parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     *
+     * @param {Number} [object.lineWidth] - Line width
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setupAll
+     * @see DKTools.Sprite.ProgressBar.Circle.prototype.setupLineWidth
+     */
+    setupAll(object = {}) {
+        object = object || {};
+
+        DKTools.Sprite.ProgressBar.prototype.setupAll.call(this, object);
+
+        this.setupLineWidth(object.lineWidth);
+    }
+
+    /**
+     * Sets the line width
+     *
+     * @param {Number} [width=this.standardLineWidth()] - Line width
+     *
+     * @see DKTools.Sprite.ProgressBar.Circle.prototype.standardLineWidth
+     */
+    setupLineWidth(width) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._lineWidth = width || this.standardLineWidth();
+    }
+
+    /**
+     * Returns the standard handler of draw of the graphic
+     *
+     * @override
+     * @returns {Function} Standard handler of draw of the graphic
+     */
+    standardDrawGraphicHandler() {
+        return () => {
+            const lineWidth = this._lineWidth;
+            const realWidth = this.realWidth;
+            const radius = (realWidth - lineWidth) / 2;
+            const x = radius + lineWidth / 2;
+            const y = x;
+
+            this.strokeArc({
+                x, y,
+                radius,
+                color: this._backgroundColor,
+                lineWidth
+            });
+
+            this.strokeArc({
+                x, y,
+                radius,
+                startAngle: -Math.PI / 2,
+                endAngle: -Math.PI / 2 + Math.PI * 2 * this._value / this._maxValue,
+                color: this._progressColor,
+                lineWidth
+            });
+        };
+    }
+
+    /**
+     * Returns the standard handler of draw of the text
+     *
+     * @override
+     * @returns {Function} Standard handler of draw of the text
+     */
+    standardDrawTextHandler() {
+        return () => {
+            const percents = this.getPercents();
+            const text = `${percents}%`;
+
+            this.drawText(text, { height: this.realHeight });
+        };
+    }
+
+    /**
+     * Returns the standard line width
+     *
+     * @returns {Number} Standard line width
+     */
+    standardLineWidth() {
+        return 10;
+    }
+
+};
 
 // properties
 
@@ -28192,179 +28355,6 @@ Object.defineProperties(DKTools.Sprite.ProgressBar.Circle.prototype, {
 
 });
 
-// standard methods
-
-/**
- * Returns the standard handler of draw of the graphic
- *
- * @override
- * @returns {Function} Standard handler of draw of the graphic
- */
-DKTools.Sprite.ProgressBar.Circle.prototype.standardDrawGraphicHandler = function() {
-    return () => {
-        const lineWidth = this._lineWidth;
-        const realWidth = this.realWidth;
-        const radius = (realWidth - lineWidth) / 2;
-        const x = radius + lineWidth / 2;
-        const y = x;
-
-        this.strokeArc({
-            x, y,
-            radius,
-            color: this._backgroundColor,
-            lineWidth
-        });
-
-        this.strokeArc({
-            x, y,
-            radius,
-            startAngle: -Math.PI / 2,
-            endAngle: -Math.PI / 2 + Math.PI * 2 * this._value / this._maxValue,
-            color: this._progressColor,
-            lineWidth
-        });
-    };
-};
-
-/**
- * Returns the standard handler of draw of the text
- *
- * @override
- * @returns {Function} Standard handler of draw of the text
- */
-DKTools.Sprite.ProgressBar.Circle.prototype.standardDrawTextHandler = function() {
-    return () => {
-        const percents = this.getPercents();
-        const text = `${percents}%`;
-
-        this.drawText(text, { height: this.realHeight });
-    };
-};
-
-/**
- * Returns the standard line width
- *
- * @returns {Number} Standard line width
- */
-DKTools.Sprite.ProgressBar.Circle.prototype.standardLineWidth = function() {
-    return 10;
-};
-
-// setup methods
-
-/**
- * Sets all parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- *
- * @param {Number} [object.lineWidth] - Line width
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setupAll
- * @see DKTools.Sprite.ProgressBar.Circle.prototype.setupLineWidth
- */
-DKTools.Sprite.ProgressBar.Circle.prototype.setupAll = function(object = {}) {
-    object = object || {};
-
-    DKTools.Sprite.ProgressBar.prototype.setupAll.call(this, object);
-
-    this.setupLineWidth(object.lineWidth);
-};
-
-/**
- * Sets the line width
- *
- * @param {Number} [width=this.standardLineWidth()] - Line width
- *
- * @see DKTools.Sprite.ProgressBar.Circle.prototype.standardLineWidth
- */
-DKTools.Sprite.ProgressBar.Circle.prototype.setupLineWidth = function(width) {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._lineWidth = width || this.standardLineWidth();
-};
-
-// set methods
-
-/**
- * Changes all parameters
- * Returns the number of changed parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- * @param {Boolean} [activate=false] - Activates the progress bar
- *
- * @param {Number} [object.lineWidth] - Line width
- *
- * @see DKTools.Sprite.ProgressBar.prototype.setAll
- * @see DKTools.Sprite.ProgressBar.Circle.prototype.setLineWidth
- * @see DKTools.Sprite.ProgressBar.Circle.prototype.start
- * @see DKTools.Sprite.ProgressBar.Circle.prototype.activate
- *
- * @returns {Number} Number of changed parameters
- */
-DKTools.Sprite.ProgressBar.Circle.prototype.setAll = function(object = {}, blockStart = false, activate = false) {
-    object = object || {};
-    const block = true;
-
-    let changed = DKTools.Sprite.ProgressBar.prototype.setAll.call(this, object, block);
-
-    if (this.setLineWidth(object.lineWidth, block)) {
-        changed++;
-    }
-
-    if (changed > 0) {
-        if (!blockStart) {
-            this.start();
-        }
-
-        if (activate) {
-            this.activate();
-        }
-    }
-
-    return changed;
-};
-
-/**
- * Changes the line width
- * Returns true if the change occurred
- *
- * @param {Number} [width] - Line width
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.ProgressBar.Circle.prototype.setupLineWidth
- * @see DKTools.Sprite.ProgressBar.Circle.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.ProgressBar.Circle.prototype.setLineWidth = function(width, blockRefreshAll = false) {
-    if (this._lineWidth === width) {
-        return false;
-    }
-
-    const lastWidth = this._lineWidth;
-
-    this.setupLineWidth(width);
-
-    if (this._lineWidth === lastWidth) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-
 
 
 
@@ -28373,44 +28363,54 @@ DKTools.Sprite.ProgressBar.Circle.prototype.setLineWidth = function(width, block
 // DKTools.Sprite.ProgressBar.SemiCircle
 //===========================================================================
 
-DKTools.Sprite.ProgressBar.SemiCircle.prototype = Object.create(DKTools.Sprite.ProgressBar.Circle.prototype);
-DKTools.Sprite.ProgressBar.SemiCircle.prototype.constructor = DKTools.Sprite.ProgressBar.SemiCircle;
-
-// standard methods
-
 /**
- * Returns the standard handler of draw of the graphic
+ * Progress bar class
  *
- * @override
- * @returns {Function} Standard handler of draw of the graphic
+ * @class DKTools.Sprite.ProgressBar.SemiCircle
+ * @extends DKTools.Sprite.ProgressBar.Circle
+ *
+ * @memberof DKTools.Sprite.ProgressBar
+ *
+ * @see DKTools.Sprite.ProgressBar.SemiCircle.prototype.initialize
  */
-DKTools.Sprite.ProgressBar.SemiCircle.prototype.standardDrawGraphicHandler = function() {
-    return () => {
-        const lineWidth = this._lineWidth;
-        const realWidth = this.realWidth;
-        const radius = (realWidth - lineWidth) / 2;
-        const x = radius + lineWidth / 2;
-        const y = this.realHeight;
+DKTools.Sprite.ProgressBar.SemiCircle = class extends DKTools.Sprite.ProgressBar.Circle {
 
-        this.strokeArc({
-            x, y,
-            radius,
-            startAngle: Math.PI,
-            color: this._backgroundColor,
-            lineWidth
-        });
+    // S methods
 
-        this.strokeArc({
-            x, y,
-            radius,
-            startAngle: Math.PI,
-            endAngle: -Math.PI + Math.PI * this._value / this._maxValue,
-            color: this._progressColor,
-            lineWidth
-        });
-    };
+    /**
+     * Returns the standard handler of draw of the graphic
+     *
+     * @override
+     * @returns {Function} Standard handler of draw of the graphic
+     */
+    standardDrawGraphicHandler() {
+        return () => {
+            const lineWidth = this._lineWidth;
+            const realWidth = this.realWidth;
+            const radius = (realWidth - lineWidth) / 2;
+            const x = radius + lineWidth / 2;
+            const y = this.realHeight;
+
+            this.strokeArc({
+                x, y,
+                radius,
+                startAngle: Math.PI,
+                color: this._backgroundColor,
+                lineWidth
+            });
+
+            this.strokeArc({
+                x, y,
+                radius,
+                startAngle: Math.PI,
+                endAngle: -Math.PI + Math.PI * this._value / this._maxValue,
+                color: this._progressColor,
+                lineWidth
+            });
+        };
+    }
+
 };
-
 
 
 
@@ -28420,8 +28420,452 @@ DKTools.Sprite.ProgressBar.SemiCircle.prototype.standardDrawGraphicHandler = fun
 // DKTools.Sprite.CheckBox
 //===========================================================================
 
-DKTools.Sprite.CheckBox.prototype = Object.create(DKTools.Sprite.Button.prototype);
-DKTools.Sprite.CheckBox.prototype.constructor = DKTools.Sprite.CheckBox;
+/**
+ * Checkbox class
+ *
+ * @class DKTools.Sprite.CheckBox
+ * @extends DKTools.Sprite.Button
+ *
+ * @memberof DKTools.Sprite
+ *
+ * @see DKTools.Sprite.CheckBox.prototype.initialize
+ */
+DKTools.Sprite.CheckBox = class extends DKTools.Sprite.Button {
+
+    // C methods
+
+    /**
+     * Checks the checkbox
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.isChecked
+     * @see DKTools.Sprite.CheckBox.prototype.switch
+     * @see DKTools.Sprite.CheckBox.prototype.updateCheckedEvents
+     */
+    check() {
+        if (!this.isChecked()) {
+            this.switch();
+            this.updateCheckedEvents();
+        }
+    }
+
+    // I methods
+
+    /**
+     * Returns true if the checkbox is checked
+     *
+     * @returns {Boolean} Checkbox is checked
+     */
+    isChecked() {
+        return this._checked;
+    }
+
+    // R methods
+
+    /**
+     * Refreshes the checked graphic
+     *
+     * @private
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.loadBitmap
+     */
+    _refreshCheckedGraphic() {
+        let bitmapObject = null;
+
+        if (DKTools.Utils.isString(this._checkedGraphic)) {
+            bitmapObject = {
+                folder: this._graphicFolder,
+                filename: this._checkedGraphic
+            };
+        } else if (this._checkedGraphic instanceof Object) {
+            bitmapObject = this._checkedGraphic;
+        }
+
+        if (bitmapObject) {
+            this.loadBitmap(bitmapObject);
+        }
+    }
+
+    /**
+     * Refreshes graphic
+     *
+     * @private
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.isChecked
+     * @see DKTools.Sprite.CheckBox.prototype._refreshCheckedGraphic
+     * @see DKTools.Sprite.CheckBox.prototype._refreshUncheckedGraphic
+     */
+    _refreshGraphic() {
+        if (this.isChecked()) {
+            this._refreshCheckedGraphic();
+        } else {
+            this._refreshUncheckedGraphic();
+        }
+    }
+
+    /**
+     * Refreshes the unchecked graphic
+     *
+     * @private
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.loadBitmap
+     */
+    _refreshUncheckedGraphic() {
+        let bitmapObject = null;
+
+        if (DKTools.Utils.isString(this._uncheckedGraphic)) {
+            bitmapObject = {
+                folder: this._graphicFolder,
+                filename: this._uncheckedGraphic
+            };
+        } else if (this._uncheckedGraphic instanceof Object) {
+            bitmapObject = this._uncheckedGraphic;
+        }
+
+        if (bitmapObject) {
+            this.loadBitmap(bitmapObject);
+        }
+    }
+
+    /**
+     * Updates and redraws all
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.CheckBox.prototype._refreshGraphic
+     * @see DKTools.Sprite.Button.prototype.refreshAll
+     */
+    refreshAll() {
+        this._refreshGraphic();
+        DKTools.Sprite.Button.prototype.refreshAll.call(this);
+    }
+
+    // S methods
+
+    /**
+     * Changes all parameters
+     * Returns the number of changed parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     * @param {Boolean} [activate=false] - Activates the check box
+     *
+     * @param {Boolean} [object.checked] - Checked
+     * @param {Bitmap | String | Object} [object.checkedGraphic] - Checked graphic
+     * @param {Bitmap | String | Object} [object.uncheckedGraphic] - Unchecked graphic
+     *
+     * @see DKTools.Sprite.Button.prototype.setAll
+     * @see DKTools.Sprite.CheckBox.prototype.setChecked
+     * @see DKTools.Sprite.CheckBox.prototype.setCheckedGraphic
+     * @see DKTools.Sprite.CheckBox.prototype.setUncheckedGraphic
+     * @see DKTools.Sprite.CheckBox.prototype.start
+     * @see DKTools.Sprite.CheckBox.prototype.activate
+     *
+     * @returns {Number} Number of changed parameters
+     */
+    setAll(object = {}, blockStart = false, activate = false) {
+        object = object || {};
+
+        const block = true;
+        let changed = DKTools.Sprite.Button.prototype.setAll.call(this, object, block);
+
+        if (this.setChecked(object.checked, block)) {
+            changed++;
+        }
+
+        if (this.setCheckedGraphic(object.checkedGraphic, block)) {
+            changed++;
+        }
+
+        if (this.setUncheckedGraphic(object.uncheckedGraphic, block)) {
+            changed++;
+        }
+
+        if (changed > 0) {
+            if (!blockStart) {
+                this.start();
+            }
+
+            if (activate) {
+                this.activate();
+            }
+        }
+
+        return changed;
+    }
+
+    /**
+     * Changes the checked
+     * Returns true if the change occurred
+     *
+     * @param {Boolean} [checked] - Checked
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.setupChecked
+     * @see DKTools.Sprite.CheckBox.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setChecked(checked, blockRefreshAll = false) {
+        if (this._checked === checked) {
+            return false;
+        }
+
+        const lastChecked = this._checked;
+
+        this.setupChecked(checked);
+
+        if (this._checked === lastChecked) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the checked graphic
+     * Returns true if the change occurred
+     *
+     * @param {Bitmap | String | Object} [graphic] - Checked graphic
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.setupCheckedGraphic
+     * @see DKTools.Sprite.CheckBox.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setCheckedGraphic(graphic, blockRefreshAll = false) {
+        const checkedGraphic = this._checkedGraphic;
+
+        if (checkedGraphic == graphic) {
+            return false;
+        }
+
+        if (checkedGraphic instanceof Bitmap) {
+            this.setupCheckedGraphic(graphic);
+        } else if (DKTools.Utils.isString(checkedGraphic) || checkedGraphic instanceof Object) {
+            const lastGraphic = checkedGraphic;
+
+            this.setupCheckedGraphic(graphic);
+
+            if (_.isEqual(this._checkedGraphic, lastGraphic)) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the unchecked graphic
+     * Returns true if the change occurred
+     *
+     * @param {Bitmap | String | Object} [graphic] - Unchecked graphic
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.setupUncheckedGraphic
+     * @see DKTools.Sprite.CheckBox.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setUncheckedGraphic(graphic, blockRefreshAll = false) {
+        const uncheckedGraphic = this._uncheckedGraphic;
+
+        if (uncheckedGraphic == graphic) {
+            return false;
+        }
+
+        if (uncheckedGraphic instanceof Bitmap) {
+            this.setupUncheckedGraphic(graphic);
+        } else if (DKTools.Utils.isString(uncheckedGraphic) || uncheckedGraphic instanceof Object) {
+            const lastGraphic = uncheckedGraphic;
+
+            this.setupUncheckedGraphic(graphic);
+
+            if (_.isEqual(this._uncheckedGraphic, lastGraphic)) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
+     * Sets all parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     *
+     * @param {Boolean} [object.checked] - Checked
+     * @param {Bitmap | String | Object} [object.checkedGraphic] - Checked graphic
+     * @param {Bitmap | String | Object} [object.uncheckedGraphic] - Unchecked graphic
+     *
+     * @see DKTools.Sprite.Button.prototype.setupAll
+     * @see DKTools.Sprite.CheckBox.prototype.setupChecked
+     * @see DKTools.Sprite.CheckBox.prototype.setupCheckedGraphic
+     * @see DKTools.Sprite.CheckBox.prototype.setupUncheckedGraphic
+     */
+    setupAll(object = {}) {
+        object = object || {};
+
+        DKTools.Sprite.Button.prototype.setupAll.call(this, object);
+
+        this.setupChecked(object.checked);
+        this.setupCheckedGraphic(object.checkedGraphic);
+        this.setupUncheckedGraphic(object.uncheckedGraphic);
+    }
+
+    /**
+     * Sets the checked
+     *
+     * @param {Boolean} [checked=this.standardChecked()] - Checked
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.standardChecked
+     */
+    setupChecked(checked) {
+        /**
+         * @private
+         * @readonly
+         * @type {Boolean}
+         */
+        this._checked = _.defaultTo(checked, this.standardChecked());
+    }
+
+    /**
+     * Sets the checked graphic
+     *
+     * @param {Bitmap | String | Object} [graphic=this.standardCheckedGraphic()] - Checked graphic
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.standardCheckedGraphic
+     */
+    setupCheckedGraphic(graphic) {
+        /**
+         * @private
+         * @readonly
+         * @type {Bitmap | String | Object}
+         */
+        this._checkedGraphic = graphic || this.standardCheckedGraphic();
+    }
+
+    /**
+     * Sets the unchecked graphic
+     *
+     * @param {Bitmap | String | Object} [graphic=this.standardUncheckedGraphic()] - Unchecked graphic
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.standardUncheckedGraphic
+     */
+    setupUncheckedGraphic(graphic) {
+        /**
+         * @private
+         * @readonly
+         * @type {Bitmap | String | Object}
+         */
+        this._uncheckedGraphic = graphic || this.standardUncheckedGraphic();
+    }
+
+    /**
+     * Returns the stadnard checked
+     *
+     * @returns {Boolean} Checked
+     */
+    standardChecked() {
+        return false;
+    }
+
+    /**
+     * Returns the stadnard checked graphic
+     *
+     * @returns {null} Checked graphic
+     */
+    standardCheckedGraphic() {
+        return null;
+    }
+
+    /**
+     * Returns the stadnard unchecked graphic
+     *
+     * @returns {null} Unchecked graphic
+     */
+    standardUncheckedGraphic() {
+        return null;
+    }
+
+    /**
+     * Switches the checkbox
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.isChecked
+     * @see DKTools.Sprite.CheckBox.prototype.setChecked
+     */
+    switch() {
+        this.setChecked(!this.isChecked());
+    }
+
+    // U methods
+
+    /**
+     * Unchecks the checkbox
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.isChecked
+     * @see DKTools.Sprite.CheckBox.prototype.switch
+     * @see DKTools.Sprite.CheckBox.prototype.updateUncheckedEvents
+     */
+    uncheck() {
+        if (this.isChecked()) {
+            this.switch();
+            this.updateUncheckedEvents();
+        }
+    }
+
+    /**
+     * Updates the events with type: checked
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.updateEventsContainer
+     */
+    updateCheckedEvents() {
+        this.updateEventsContainer('checked');
+    }
+
+    /**
+     * Updates the events with type: mouse-click-button
+     *
+     * @param {String} button - Mouse button
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.switch
+     * @see DKTools.Sprite.Button.prototype.updateMouseClickEvents
+     */
+    updateMouseClickEvents(button) {
+        this.switch();
+        DKTools.Sprite.Button.prototype.updateMouseClickEvents.call(this, button);
+    }
+
+    /**
+     * Updates the events with type: unchecked
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.updateEventsContainer
+     */
+    updateUncheckedEvents() {
+        this.updateEventsContainer('unchecked');
+    }
+
+};
 
 // properties
 
@@ -28471,446 +28915,6 @@ Object.defineProperties(DKTools.Sprite.CheckBox.prototype, {
 
 });
 
-// standard methods
-
-/**
- * Returns the stadnard checked
- *
- * @returns {Boolean} Checked
- */
-DKTools.Sprite.CheckBox.prototype.standardChecked = function() {
-    return false;
-};
-
-/**
- * Returns the stadnard checked graphic
- *
- * @returns {null} Checked graphic
- */
-DKTools.Sprite.CheckBox.prototype.standardCheckedGraphic = function() {
-    return null;
-};
-
-/**
- * Returns the stadnard unchecked graphic
- *
- * @returns {null} Unchecked graphic
- */
-DKTools.Sprite.CheckBox.prototype.standardUncheckedGraphic = function() {
-    return null;
-};
-
-// setup methods
-
-/**
- * Sets all parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- *
- * @param {Boolean} [object.checked] - Checked
- * @param {Bitmap | String | Object} [object.checkedGraphic] - Checked graphic
- * @param {Bitmap | String | Object} [object.uncheckedGraphic] - Unchecked graphic
- *
- * @see DKTools.Sprite.Button.prototype.setupAll
- * @see DKTools.Sprite.CheckBox.prototype.setupChecked
- * @see DKTools.Sprite.CheckBox.prototype.setupCheckedGraphic
- * @see DKTools.Sprite.CheckBox.prototype.setupUncheckedGraphic
- */
-DKTools.Sprite.CheckBox.prototype.setupAll = function(object = {}) {
-    object = object || {};
-
-    DKTools.Sprite.Button.prototype.setupAll.call(this, object);
-
-    this.setupChecked(object.checked);
-    this.setupCheckedGraphic(object.checkedGraphic);
-    this.setupUncheckedGraphic(object.uncheckedGraphic);
-};
-
-/**
- * Sets the checked
- *
- * @param {Boolean} [checked=this.standardChecked()] - Checked
- *
- * @see DKTools.Sprite.CheckBox.prototype.standardChecked
- */
-DKTools.Sprite.CheckBox.prototype.setupChecked = function(checked) {
-    /**
-     * @private
-     * @readonly
-     * @type {Boolean}
-     */
-    this._checked = _.defaultTo(checked, this.standardChecked());
-};
-
-/**
- * Sets the checked graphic
- *
- * @param {Bitmap | String | Object} [graphic=this.standardCheckedGraphic()] - Checked graphic
- *
- * @see DKTools.Sprite.CheckBox.prototype.standardCheckedGraphic
- */
-DKTools.Sprite.CheckBox.prototype.setupCheckedGraphic = function(graphic) {
-    /**
-     * @private
-     * @readonly
-     * @type {Bitmap | String | Object}
-     */
-    this._checkedGraphic = graphic || this.standardCheckedGraphic();
-};
-
-/**
- * Sets the unchecked graphic
- *
- * @param {Bitmap | String | Object} [graphic=this.standardUncheckedGraphic()] - Unchecked graphic
- *
- * @see DKTools.Sprite.CheckBox.prototype.standardUncheckedGraphic
- */
-DKTools.Sprite.CheckBox.prototype.setupUncheckedGraphic = function(graphic) {
-    /**
-     * @private
-     * @readonly
-     * @type {Bitmap | String | Object}
-     */
-    this._uncheckedGraphic = graphic || this.standardUncheckedGraphic();
-};
-
-// set methods
-
-/**
- * Changes all parameters
- * Returns the number of changed parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- * @param {Boolean} [activate=false] - Activates the check box
- *
- * @param {Boolean} [object.checked] - Checked
- * @param {Bitmap | String | Object} [object.checkedGraphic] - Checked graphic
- * @param {Bitmap | String | Object} [object.uncheckedGraphic] - Unchecked graphic
- *
- * @see DKTools.Sprite.Button.prototype.setAll
- * @see DKTools.Sprite.CheckBox.prototype.setChecked
- * @see DKTools.Sprite.CheckBox.prototype.setCheckedGraphic
- * @see DKTools.Sprite.CheckBox.prototype.setUncheckedGraphic
- * @see DKTools.Sprite.CheckBox.prototype.start
- * @see DKTools.Sprite.CheckBox.prototype.activate
- *
- * @returns {Number} Number of changed parameters
- */
-DKTools.Sprite.CheckBox.prototype.setAll = function(object = {}, blockStart = false, activate = false) {
-    object = object || {};
-
-    const block = true;
-    let changed = DKTools.Sprite.Button.prototype.setAll.call(this, object, block);
-
-    if (this.setChecked(object.checked, block)) {
-        changed++;
-    }
-
-    if (this.setCheckedGraphic(object.checkedGraphic, block)) {
-        changed++;
-    }
-
-    if (this.setUncheckedGraphic(object.uncheckedGraphic, block)) {
-        changed++;
-    }
-
-    if (changed > 0) {
-        if (!blockStart) {
-            this.start();
-        }
-
-        if (activate) {
-            this.activate();
-        }
-    }
-
-    return changed;
-};
-
-/**
- * Changes the checked
- * Returns true if the change occurred
- *
- * @param {Boolean} [checked] - Checked
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.CheckBox.prototype.setupChecked
- * @see DKTools.Sprite.CheckBox.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.CheckBox.prototype.setChecked = function(checked, blockRefreshAll = false) {
-    if (this._checked === checked) {
-        return false;
-    }
-
-    const lastChecked = this._checked;
-
-    this.setupChecked(checked);
-
-    if (this._checked === lastChecked) {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the checked graphic
- * Returns true if the change occurred
- *
- * @param {Bitmap | String | Object} [graphic] - Checked graphic
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.CheckBox.prototype.setupCheckedGraphic
- * @see DKTools.Sprite.CheckBox.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.CheckBox.prototype.setCheckedGraphic = function(graphic, blockRefreshAll = false) {
-    const checkedGraphic = this._checkedGraphic;
-
-    if (checkedGraphic == graphic) {
-        return false;
-    }
-
-    if (checkedGraphic instanceof Bitmap) {
-        this.setupCheckedGraphic(graphic);
-    } else if (DKTools.Utils.isString(checkedGraphic) || checkedGraphic instanceof Object) {
-        const lastGraphic = checkedGraphic;
-
-        this.setupCheckedGraphic(graphic);
-
-        if (_.isEqual(this._checkedGraphic, lastGraphic)) {
-            return false;
-        }
-    } else {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-/**
- * Changes the unchecked graphic
- * Returns true if the change occurred
- *
- * @param {Bitmap | String | Object} [graphic] - Unchecked graphic
- * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
- *
- * @see DKTools.Sprite.CheckBox.prototype.setupUncheckedGraphic
- * @see DKTools.Sprite.CheckBox.prototype.refreshAll
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Sprite.CheckBox.prototype.setUncheckedGraphic = function(graphic, blockRefreshAll = false) {
-    const uncheckedGraphic = this._uncheckedGraphic;
-
-    if (uncheckedGraphic == graphic) {
-        return false;
-    }
-
-    if (uncheckedGraphic instanceof Bitmap) {
-        this.setupUncheckedGraphic(graphic);
-    } else if (DKTools.Utils.isString(uncheckedGraphic) || uncheckedGraphic instanceof Object) {
-        const lastGraphic = uncheckedGraphic;
-
-        this.setupUncheckedGraphic(graphic);
-
-        if (_.isEqual(this._uncheckedGraphic, lastGraphic)) {
-            return false;
-        }
-    } else {
-        return false;
-    }
-
-    if (!blockRefreshAll) {
-        this.refreshAll();
-    }
-
-    return true;
-};
-
-// _refresh methods
-
-/**
- * Refreshes the checked graphic
- *
- * @private
- *
- * @see DKTools.Sprite.CheckBox.prototype.loadBitmap
- */
-DKTools.Sprite.CheckBox.prototype._refreshCheckedGraphic = function() {
-    let bitmapObject = null;
-
-    if (DKTools.Utils.isString(this._checkedGraphic)) {
-        bitmapObject = {
-            folder: this._graphicFolder,
-            filename: this._checkedGraphic
-        };
-    } else if (this._checkedGraphic instanceof Object) {
-        bitmapObject = this._checkedGraphic;
-    }
-
-    if (bitmapObject) {
-        this.loadBitmap(bitmapObject);
-    }
-};
-
-/**
- * Refreshes the unchecked graphic
- *
- * @private
- *
- * @see DKTools.Sprite.CheckBox.prototype.loadBitmap
- */
-DKTools.Sprite.CheckBox.prototype._refreshUncheckedGraphic = function() {
-    let bitmapObject = null;
-
-    if (DKTools.Utils.isString(this._uncheckedGraphic)) {
-        bitmapObject = {
-            folder: this._graphicFolder,
-            filename: this._uncheckedGraphic
-        };
-    } else if (this._uncheckedGraphic instanceof Object) {
-        bitmapObject = this._uncheckedGraphic;
-    }
-
-    if (bitmapObject) {
-        this.loadBitmap(bitmapObject);
-    }
-};
-
-/**
- * Refreshes graphic
- *
- * @private
- *
- * @see DKTools.Sprite.CheckBox.prototype.isChecked
- * @see DKTools.Sprite.CheckBox.prototype._refreshCheckedGraphic
- * @see DKTools.Sprite.CheckBox.prototype._refreshUncheckedGraphic
- */
-DKTools.Sprite.CheckBox.prototype._refreshGraphic = function() {
-    if (this.isChecked()) {
-        this._refreshCheckedGraphic();
-    } else {
-        this._refreshUncheckedGraphic();
-    }
-};
-
-// refresh methods
-
-/**
- * Updates and redraws all
- *
- * @override
- *
- * @see DKTools.Sprite.CheckBox.prototype._refreshGraphic
- * @see DKTools.Sprite.Button.prototype.refreshAll
- */
-DKTools.Sprite.CheckBox.prototype.refreshAll = function() {
-    this._refreshGraphic();
-    DKTools.Sprite.Button.prototype.refreshAll.call(this);
-};
-
-// is methods
-
-/**
- * Returns true if the checkbox is checked
- *
- * @returns {Boolean} Checkbox is checked
- */
-DKTools.Sprite.CheckBox.prototype.isChecked = function() {
-    return this._checked;
-};
-
-// event methods
-
-/**
- * Updates the events with type: mouse-click-button
- *
- * @param {String} button - Mouse button
- *
- * @see DKTools.Sprite.CheckBox.prototype.switch
- * @see DKTools.Sprite.Button.prototype.updateMouseClickEvents
- */
-DKTools.Sprite.CheckBox.prototype.updateMouseClickEvents = function(button) {
-    this.switch();
-    DKTools.Sprite.Button.prototype.updateMouseClickEvents.call(this, button);
-};
-
-/**
- * Updates the events with type: checked
- *
- * @see DKTools.Sprite.CheckBox.prototype.updateEventsContainer
- */
-DKTools.Sprite.CheckBox.prototype.updateCheckedEvents = function() {
-    this.updateEventsContainer('checked');
-};
-
-/**
- * Updates the events with type: unchecked
- *
- * @see DKTools.Sprite.CheckBox.prototype.updateEventsContainer
- */
-DKTools.Sprite.CheckBox.prototype.updateUncheckedEvents = function() {
-    this.updateEventsContainer('unchecked');
-};
-
-// other methods
-
-/**
- * Switches the checkbox
- *
- * @see DKTools.Sprite.CheckBox.prototype.isChecked
- * @see DKTools.Sprite.CheckBox.prototype.setChecked
- */
-DKTools.Sprite.CheckBox.prototype.switch = function() {
-    this.setChecked(!this.isChecked());
-};
-
-/**
- * Checks the checkbox
- *
- * @see DKTools.Sprite.CheckBox.prototype.isChecked
- * @see DKTools.Sprite.CheckBox.prototype.switch
- * @see DKTools.Sprite.CheckBox.prototype.updateCheckedEvents
- */
-DKTools.Sprite.CheckBox.prototype.check = function() {
-    if (!this.isChecked()) {
-        this.switch();
-        this.updateCheckedEvents();
-    }
-};
-
-/**
- * Unchecks the checkbox
- *
- * @see DKTools.Sprite.CheckBox.prototype.isChecked
- * @see DKTools.Sprite.CheckBox.prototype.switch
- * @see DKTools.Sprite.CheckBox.prototype.updateUncheckedEvents
- */
-DKTools.Sprite.CheckBox.prototype.uncheck = function() {
-    if (this.isChecked()) {
-        this.switch();
-        this.updateUncheckedEvents();
-    }
-};
-
-
 
 
 
@@ -28919,8 +28923,176 @@ DKTools.Sprite.CheckBox.prototype.uncheck = function() {
 // DKTools.Viewport
 //===========================================================================
 
-DKTools.Viewport.prototype = Object.create(DKTools.Sprite.prototype);
-DKTools.Viewport.prototype.constructor = DKTools.Viewport;
+/**
+ * Viewport class
+ *
+ * @class DKTools.Viewport
+ * @extends DKTools.Sprite
+ *
+ * @override
+ *
+ * @memberof DKTools
+ *
+ * @see DKTools.Viewport.prototype.initialize
+ */
+DKTools.Viewport = class extends DKTools.Sprite {
+
+    // C methods
+
+    /**
+     * Returns true if the viewport can clone the fixed bitmap
+     *
+     * @override
+     * @returns {Boolean} Viewport can clone the fixed bitmap
+     */
+    canCloneFixedBitmap() {
+        return false;
+    }
+
+    /**
+     * Creates all objects
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.prototype.createAll
+     * @see DKTools.Viewport.prototype.createMask
+     */
+    createAll() {
+        DKTools.Sprite.prototype.createAll.call(this);
+        this.createMask();
+    }
+
+    /**
+     * Creates a mask
+     *
+     * @version 2.0.0
+     * @override
+     *
+     * @see DKTools.Sprite.prototype.createMask
+     */
+    createMask() {
+        DKTools.Sprite.prototype.createMask.call(this, this._maskShape);
+    }
+
+    // S methods
+
+    /**
+     * Changes all parameters
+     * Returns the number of changed parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     * @param {Boolean} [activate=false] - Activates the object
+     *
+     * @param {String} [object.maskShape] - Shape of the mask
+     *
+     * @see DKTools.Sprite.prototype.setAll
+     * @see DKTools.Viewport.prototype.setMaskShape
+     * @see DKTools.Viewport.prototype.start
+     * @see DKTools.Viewport.prototype.activate
+     *
+     * @returns {Number} Number of changed parameters
+     */
+    setAll(object = {}, blockStart = false, activate = false) {
+        object = object || {};
+
+        const block = true;
+        let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
+
+        if (this.setMaskShape(object.maskShape, block)) {
+            changed++;
+        }
+
+        if (changed > 0) {
+            if (!blockStart) {
+                this.start();
+            }
+
+            if (activate) {
+                this.activate();
+            }
+        }
+
+        return changed;
+    }
+
+    /**
+     * Changes the shape of the mask
+     * Returns true if the change occurred
+     *
+     * @param {String} [shape] - Shape of the mask
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setMaskShape(shape, blockStart = false) {
+        if (this._maskShape === shape) {
+            return false;
+        }
+
+        const lastShape = this._maskShape;
+
+        this.setupShape(shape);
+
+        if (this._maskShape === lastShape) {
+            return false;
+        }
+
+        if (!blockStart) {
+            this.start();
+        }
+
+        return true;
+    }
+
+    /**
+     * Sets all parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     *
+     * @param {String} [object.maskShape] - Shape of the mask
+     *
+     * @see DKTools.Sprite.prototype.setupAll
+     * @see DKTools.Viewport.prototype.setupMaskShape
+     */
+    setupAll(object = {}) {
+        object = object || {};
+
+        DKTools.Sprite.prototype.setupAll.call(this, object);
+
+        this.setupMaskShape(object.maskShape);
+    }
+
+    /**
+     * Sets the shape of the mask
+     *
+     * @param {String} [shape] - Shape of the mask
+     *
+     * @see DKTools.Viewport.prototype.standardMaskShape
+     */
+    setupMaskShape(shape) {
+        /**
+         * @private
+         * @readonly
+         * @type {String}
+         */
+        this._maskShape = shape || this.standardMaskShape();
+    }
+
+    /**
+     * Returns the standard mask shape
+     *
+     * @returns {String} Standard mask shape
+     */
+    standardMaskShape() {
+        return 'rect';
+    }
+
+};
 
 // properties
 
@@ -28942,167 +29114,6 @@ Object.defineProperties(DKTools.Viewport.prototype, {
 
 });
 
-// standard methods
-
-/**
- * Returns the standard mask shape
- *
- * @returns {String} Standard mask shape
- */
-DKTools.Viewport.prototype.standardMaskShape = function() {
-    return 'rect';
-};
-
-// setup methods
-
-/**
- * Sets all parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- *
- * @param {String} [object.maskShape] - Shape of the mask
- *
- * @see DKTools.Sprite.prototype.setupAll
- * @see DKTools.Viewport.prototype.setupMaskShape
- */
-DKTools.Viewport.prototype.setupAll = function(object = {}) {
-    object = object || {};
-
-    DKTools.Sprite.prototype.setupAll.call(this, object);
-
-    this.setupMaskShape(object.maskShape);
-};
-
-/**
- * Sets the shape of the mask
- *
- * @param {String} [shape] - Shape of the mask
- *
- * @see DKTools.Viewport.prototype.standardMaskShape
- */
-DKTools.Viewport.prototype.setupMaskShape = function(shape) {
-    /**
-     * @private
-     * @readonly
-     * @type {String}
-     */
-    this._maskShape = shape || this.standardMaskShape();
-};
-
-// set methods
-
-/**
- * Changes all parameters
- * Returns the number of changed parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- * @param {Boolean} [activate=false] - Activates the object
- *
- * @param {String} [object.maskShape] - Shape of the mask
- *
- * @see DKTools.Sprite.prototype.setAll
- * @see DKTools.Viewport.prototype.setMaskShape
- * @see DKTools.Viewport.prototype.start
- * @see DKTools.Viewport.prototype.activate
- *
- * @returns {Number} Number of changed parameters
- */
-DKTools.Viewport.prototype.setAll = function(object = {}, blockStart = false, activate = false) {
-    object = object || {};
-
-    const block = true;
-    let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
-
-    if (this.setMaskShape(object.maskShape, block)) {
-        changed++;
-    }
-
-    if (changed > 0) {
-        if (!blockStart) {
-            this.start();
-        }
-
-        if (activate) {
-            this.activate();
-        }
-    }
-
-    return changed;
-};
-
-/**
- * Changes the shape of the mask
- * Returns true if the change occurred
- *
- * @param {String} [shape] - Shape of the mask
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Viewport.prototype.setMaskShape = function(shape, blockStart = false) {
-    if (this._maskShape === shape) {
-        return false;
-    }
-
-    const lastShape = this._maskShape;
-
-    this.setupShape(shape);
-
-    if (this._maskShape === lastShape) {
-        return false;
-    }
-
-    if (!blockStart) {
-        this.start();
-    }
-
-    return true;
-};
-
-// can methods
-
-/**
- * Returns true if the viewport can clone the fixed bitmap
- *
- * @override
- * @returns {Boolean} Viewport can clone the fixed bitmap
- */
-DKTools.Viewport.prototype.canCloneFixedBitmap = function() {
-    return false;
-};
-
-// create methods
-
-/**
- * Creates all objects
- *
- * @override
- *
- * @see DKTools.Sprite.prototype.createAll
- * @see DKTools.Viewport.prototype.createMask
- */
-DKTools.Viewport.prototype.createAll = function() {
-    DKTools.Sprite.prototype.createAll.call(this);
-    this.createMask();
-};
-
-/**
- * Creates a mask
- *
- * @version 2.0.0
- * @override
- *
- * @see DKTools.Sprite.prototype.createMask
- */
-DKTools.Viewport.prototype.createMask = function() {
-    DKTools.Sprite.prototype.createMask.call(this, this._maskShape);
-};
-
 
 
 
@@ -29111,8 +29122,1599 @@ DKTools.Viewport.prototype.createMask = function() {
 // DKTools.Layout
 //===========================================================================
 
-DKTools.Layout.prototype = Object.create(DKTools.Sprite.prototype);
-DKTools.Layout.prototype.constructor = DKTools.Layout;
+/**
+ * Layout class
+ *
+ * @class DKTools.Layout
+ * @extends DKTools.Sprite
+ *
+ * @override
+ *
+ * @memberof DKTools
+ *
+ * @see DKTools.Layout.prototype.initialize
+ */
+DKTools.Layout = class extends DKTools.Sprite {
+
+    // A methods
+
+    /**
+     * Activates the items
+     *
+     * @param {Boolean} [start=false] - Call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.iterateItems
+     */
+    activateItems(start = false) {
+        const callback = item => {
+            item.activate();
+        };
+
+        this.iterateItems(callback, start);
+    }
+
+    /**
+     * Adds children objects to processing
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.prototype.addAllChildren
+     * @see DKTools.Layout.prototype.addAllItems
+     */
+    addAllChildren() {
+        DKTools.Sprite.prototype.addAllChildren.call(this);
+        this.addAllItems();
+    }
+
+    /**
+     * Adds the itemns to processing
+     *
+     * @see DKTools.Layout.prototype.addChild
+     */
+    addAllItems() {
+        if (this.hasItems()) {
+            this.addChild.apply(this, this._items);
+        }
+    }
+
+    /**
+     * Adds the column
+     *
+     * @see DKTools.Layout.prototype.addCols
+     */
+    addCol() {
+        this.addCols(1);
+    }
+
+    /**
+     * Adds the columns
+     *
+     * @param {Number} cols - Columns
+     *
+     * @see DKTools.Layout.prototype.getMaxCols
+     * @see DKTools.Layout.prototype.setMaxCols
+     */
+    addCols(cols) {
+        this.setMaxCols(this.getMaxCols() + cols);
+    }
+
+    /**
+     * Adds the item
+     * Returns the added item or null
+     *
+     * @version 5.0.0
+     *
+     * @param {DKTools.Sprite | *} item - Item
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.start
+     *
+     * @returns {DKTools.Sprite | * | null} Added item or null
+     */
+    addItem(item, blockStart = false) {
+        if (!(item instanceof DKTools.Sprite)) {
+            return null;
+        }
+
+        this._items.push(item);
+
+        if (!blockStart) {
+            this.start();
+        }
+
+        return item;
+    }
+
+    /**
+     * Adds the items
+     * Returns the added items
+     *
+     * @version 5.0.0
+     *
+     * @param {DKTools.Sprite[] | Array} items - Items
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.addItem
+     * @see DKTools.Layout.prototype.start
+     *
+     * @returns {DKTools.Sprite[] | Array} Added items
+     */
+    addItems(items, blockStart = false) {
+        const addedItems = _.map(items, item => this.addItem(item, true));
+
+        if (addedItems.length > 0 && !blockStart) {
+            this.start();
+        }
+
+        return addedItems;
+    }
+
+    /**
+     * Aligns the column
+     *
+     * @param {Number} col - Column
+     *
+     * @see DKTools.Layout.prototype.getItemsInCol
+     * @see DKTools.Layout.prototype.alignItem
+     */
+    alignCol(col) {
+        _.forEach(this.getItemsInCol(col), this.alignItem.bind(this));
+    }
+
+    /**
+     * Aligns the item
+     *
+     * @param {DKTools.Sprite | * | Number} item - Item or index
+     *
+     * @see DKTools.Layout.prototype.isReady
+     * @see DKTools.Layout.prototype.getItemRow
+     * @see DKTools.Layout.prototype.getItemCol
+     * @see DKTools.Layout.prototype.getRowHeight
+     * @see DKTools.Layout.prototype.getColWidth
+     * @see DKTools.Layout.prototype.getColX
+     * @see DKTools.Layout.prototype.getRowY
+     * @see DKTools.Layout.prototype.addOneTimeEvent
+     */
+    alignItem(item) {
+        if (this.isReady()) {
+            const itemRow = this.getItemRow(item);
+            const itemCol = this.getItemCol(item);
+            const rowHeight = this.getRowHeight(itemRow);
+            const colWidth = this.getColWidth(itemCol);
+            const x = this.getColX(itemCol) + (colWidth - item.width) / 2;
+            const y = this.getRowY(itemRow) + (rowHeight - item.height) / 2;
+
+            item.move(x, y);
+        } else {
+            this.addOneTimeEvent({
+                type: 'ready',
+                onSuccess: this.alignItem.bind(this, item)
+            });
+        }
+    }
+
+    /**
+     * Aligns the items
+     *
+     * @see DKTools.Layout.prototype.addOneTimeEvent
+     * @see DKTools.Layout.prototype.iterateItems
+     * @see DKTools.Layout.prototype.alignItem
+     */
+    alignItems() {
+        this.addOneTimeEvent({
+            type: 'ready',
+            onSuccess: () => {
+                this.iterateItems(this.alignItem.bind(this))
+            }
+        });
+    }
+
+    /**
+     * Aligns the row
+     *
+     * @param {Number} row - Row
+     *
+     * @see DKTools.Layout.prototype.getItemsInRow
+     * @see DKTools.Layout.prototype.alignItem
+     */
+    alignRow(row) {
+        _.forEach(this.getItemsInRow(row), this.alignItem.bind(this));
+    }
+
+    // C methods
+
+    /**
+     * Clears all data
+     *
+     * @private
+     * @override
+     *
+     * @see DKTools.Sprite.prototype._clearAll
+     * @see DKTools.Layout.prototype._clearItems
+     */
+    _clearAll() {
+        DKTools.Sprite.prototype._clearAll.call(this);
+        this._clearItems();
+    }
+
+    /**
+     * Clears items
+     *
+     * @private
+     */
+    _clearItems() {
+        /**
+         * @private
+         * @readonly
+         * @type {Array}
+         */
+        this._items = [];
+    }
+
+    /**
+     * Returns true if the layout can clone the fixed bitmap
+     *
+     * @override
+     * @returns {Boolean} Layout can clone the fixed bitmap
+     */
+    canCloneFixedBitmap() {
+        return false;
+    }
+
+    /**
+     * Clears items
+     *
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.removeAllItems
+     * @see DKTools.Layout.prototype._clearItems
+     * @see DKTools.Layout.prototype.start
+     */
+    clearItems(blockStart = false) {
+        this.removeAllItems();
+        this._clearItems();
+
+        if (!blockStart) {
+            this.start();
+        }
+    }
+
+    // D methods
+
+    /**
+     * Deactivates the items
+     *
+     * @param {Boolean} [start=false] - Call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.iterateItems
+     */
+    deactivateItems(start = false) {
+        const callback = item => {
+            item.deactivate();
+        };
+
+        this.iterateItems(callback, start);
+    }
+
+    // G methods
+
+    /**
+     * Returns the height of the bitmap
+     *
+     * @since 2.0.0
+     * @private
+     * @override
+     *
+     * @see DKTools.Layout.prototype.getMaxRows
+     * @see DKTools.Layout.prototype.getRowHeight
+     *
+     * @returns {Number} Height of the bitmap
+     */
+    _getBitmapHeight() {
+        let height = 0;
+        const maxRows = this.getMaxRows();
+
+        for (let i = 1; i <= maxRows; i++) {
+            height += this.getRowHeight(i) + this._verticalSpacing;
+        }
+
+        return height - this._verticalSpacing;
+    }
+
+    /**
+     * Returns the width of the bitmap
+     *
+     * @since 2.0.0
+     * @private
+     * @override
+     *
+     * @see DKTools.Layout.prototype.getMaxCols
+     * @see DKTools.Layout.prototype.getColWidth
+     *
+     * @returns {Number} Width of the bitmap
+     */
+    _getBitmapWidth() {
+        let width = 0;
+        const maxCols = this.getMaxCols();
+
+        for (let i = 1; i <= maxCols; i++) {
+            width += this.getColWidth(i) + this._horizontalSpacing;
+        }
+
+        return width - this._horizontalSpacing;
+    }
+
+    /**
+     * Returns the cell by row and column
+     *
+     * @param {Number} row - Row
+     * @param {Number} col - Col
+     *
+     * @see DKTools.Layout.prototype.getMaxCols
+     * @see DKTools.Layout.prototype.getColX
+     * @see DKTools.Layout.prototype.getRowY
+     * @see DKTools.Layout.prototype.getColWidth
+     * @see DKTools.Layout.prototype.getRowHeight
+     *
+     * @returns {{ item: (DKTools.Sprite | * | undefined), x: Number, y: Number, width: Number, height: Number }}
+     */
+    getCell(row, col) {
+        const index = this.getMaxCols() * (row - 1) + (col - 1);
+
+        return {
+            item: this.getItem(index),
+            x: this.getColX(col),
+            y: this.getRowY(row),
+            width: this.getColWidth(col),
+            height: this.getRowHeight(row)
+        };
+    }
+
+    /**
+     * Returns the width of the column
+     *
+     * @param {Number} col - Column
+     * @returns {Number} Width of the column
+     */
+    getColWidth(col) {
+        if (DKTools.Utils.isFunction(this._colWidth)) {
+            return this._colWidth(col, this);
+        }
+
+        return this._colWidth;
+    }
+
+    /**
+     * Returns the X coordinate of the column
+     *
+     * @param {Number} col - Column
+     *
+     * @see DKTools.Layout.prototype.getColWidth
+     *
+     * @returns {Number} The X coordinate of the column
+     */
+    getColX(col) {
+        let x = 0;
+
+        for (let i = 1; i < col; i++) {
+            x += this.getColWidth(i) + this._horizontalSpacing;
+        }
+
+        return x;
+    }
+
+    /**
+     * Returns the item by index
+     *
+     * @param {Number} index - Index
+     *
+     * @see DKTools.Layout.prototype.getItems
+     *
+     * @returns {DKTools.Sprite | * | undefined} Item by index or undefined
+     */
+    getItem(index) {
+        return this.getItems()[index];
+    }
+
+    /**
+     * Returns the column of the item
+     *
+     * @param {DKTools.Sprite | *} item - Item
+     *
+     * @see DKTools.Layout.prototype.getItemIndex
+     * @see DKTools.Layout.prototype.getMaxCols
+     *
+     * @returns {Number} Column of the item or -1
+     */
+    getItemCol(item) {
+        const index = this.getItemIndex(item);
+
+        if (index >= 0) {
+            return (index % this.getMaxCols()) + 1;
+        }
+
+        return -1;
+    }
+
+    /**
+     * Returns the index of the item
+     *
+     * @param {DKTools.Sprite | *} item - Item
+     *
+     * @see DKTools.Layout.prototype.getItems
+     *
+     * @returns {Number} Index of the item
+     */
+    getItemIndex(item) {
+        return _.indexOf(this.getItems(), item);
+    }
+
+    /**
+     * Returns the row of the item
+     *
+     * @param {DKTools.Sprite | *} item - Item
+     *
+     * @see DKTools.Layout.prototype.getItemIndex
+     * @see DKTools.Layout.prototype.getMaxCols
+     *
+     * @returns {Number} Row of the item or -1
+     */
+    getItemRow(item) {
+        const index = this.getItemIndex(item);
+
+        if (index >= 0) {
+            return Math.floor(index / this.getMaxCols()) + 1;
+        }
+
+        return -1;
+    }
+
+    /**
+     * Returns the items
+     *
+     * @see DKTools.Layout.prototype.isInverted
+     *
+     * @returns {DKTools.Sprite[] | *} Items
+     */
+    getItems() {
+        if (this.isInverted()) {
+            return _.reverse(_.clone(this._items));
+        }
+
+        return this._items;
+    }
+
+    /**
+     * Returns the items in the column
+     *
+     * @param {Number} col - Column
+     *
+     * @see DKTools.Layout.prototype.getMaxRows
+     * @see DKTools.Layout.prototype.getMaxCols
+     * @see DKTools.Layout.prototype.getItem
+     *
+     * @returns {DKTools.Sprite[] | *} Items in the column
+     */
+    getItemsInCol(col) {
+        const items = [];
+        const maxRows = this.getMaxRows();
+        const maxCols = this.getMaxCols();
+
+        if (col < 1 || col > maxCols) {
+            return items;
+        }
+
+        const startIndex = col - 1;
+
+        for (let i = 0; i < maxRows; i++) {
+            items.push(this.getItem(startIndex + maxCols * i));
+        }
+
+        return items;
+    }
+
+    /**
+     * Returns the items in the row
+     *
+     * @param {Number} row - Row
+     *
+     * @see DKTools.Layout.prototype.getMaxCols
+     * @see DKTools.Layout.prototype.getMaxRows
+     * @see DKTools.Layout.prototype.getItem
+     *
+     * @returns {DKTools.Sprite[] | *} Items in the row
+     */
+    getItemsInRow(row) {
+        const items = [];
+        const maxCols = this.getMaxCols();
+
+        if (row < 1 || row > this.getMaxRows()) {
+            return items;
+        }
+
+        const startIndex = maxCols * (row - 1);
+
+        for (let i = 0; i < maxCols; i++) {
+            items.push(this.getItem(startIndex + i));
+        }
+
+        return items;
+    }
+
+    /**
+     * Returns the maximum number of columns
+     *
+     * @returns {Number} Maximum number of columns
+     */
+    getMaxCols() {
+        return this._maxCols;
+    }
+
+    /**
+     * Returns the number of the items
+     *
+     * @return {Number} Number of the items
+     */
+    getMaxItems() {
+        return this._items.length;
+    }
+
+    /**
+     * Returns the maximum number of rows
+     *
+     * @see DKTools.Layout.prototype.getMaxItems
+     * @see DKTools.Layout.prototype.getMaxCols
+     *
+     * @returns {Number} Maximum number of rows
+     */
+    getMaxRows() {
+        return Math.max(1, Math.ceil(this.getMaxItems() / this.getMaxCols()));
+    }
+
+    /**
+     * Returns the height of the row
+     *
+     * @param {Number} row - Row
+     * @returns {Number} Height of the row
+     */
+    getRowHeight(row) {
+        if (DKTools.Utils.isFunction(this._rowHeight)) {
+            return this._rowHeight(row, this);
+        }
+
+        return this._rowHeight;
+    }
+
+    /**
+     * Returns the Y coordinate of the row
+     *
+     * @param {Number} row - Row
+     *
+     * @see DKTools.Layout.prototype.getRowHeight
+     *
+     * @returns {Number} The Y coordinate of the row
+     */
+    getRowY(row) {
+        let y = 0;
+
+        for (let i = 1; i < row; i++) {
+            y += this.getRowHeight(i) + this._verticalSpacing;
+        }
+
+        return y;
+    }
+
+    // H methods
+
+    /**
+     * Returns true if the layout has the item
+     *
+     * @param {DKTools.Sprite | *} item - Item
+     *
+     * @see DKTools.Layout.prototype.getItemIndex
+     *
+     * @returns {Boolean} Layout has the item
+     */
+    hasItem(item) {
+        return this.getItemIndex(item) >= 0;
+    }
+
+    /**
+     * Returns true if the layout has the items
+     *
+     * @see DKTools.Layout.prototype.isEmpty
+     *
+     * @returns {Boolean} Layout has the items
+     */
+    hasItems() {
+        return !this.isEmpty();
+    }
+
+    /**
+     * Hides the items
+     *
+     * @param {Boolean} [blockDeactivate=false] - Block deactivation of the items
+     * @param {Boolean} [start=false] - Call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.iterateItems
+     */
+    hideItems(blockDeactivate = false, start = false) {
+        const callback = item => {
+            item.hide(blockDeactivate);
+        };
+
+        this.iterateItems(callback, start);
+    }
+
+    // I methods
+
+    /**
+     * Inserts the item
+     * Returns inserted item or null
+     *
+     * @since 5.0.0
+     *
+     * @param {DKTools.Sprite | *} item - Item
+     * @param {Number} [index=0] - Index
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @returns {DKTools.Sprite | * | null} Inserted item or null
+     */
+    insertItem(item, index, blockStart = false) {
+        if (!(item instanceof DKTools.Sprite)) {
+            return null;
+        }
+
+        DKTools.Utils.Array.insert(this._items, item, index);
+
+        if (!blockStart) {
+            this.start();
+        }
+
+        return item;
+    }
+
+    /**
+     * Inserts the items
+     * Returns inserted items
+     *
+     * @since 5.0.0
+     *
+     * @param {DKTools.Sprite[] | Array} items - Items
+     * @param {Number} [index=0] - Index
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @returns {DKTools.Sprite[] | Array} Inserted items
+     */
+    insertItems(items, index, blockStart = false) {
+        index = index || 0;
+
+        const insertedItems = _.map(items, (item, i) => this.insertItem(item, index + i, true));
+
+        if (insertedItems.length > 0 && !blockStart) {
+            this.start();
+        }
+
+        return insertedItems;
+    }
+
+    /**
+     * Inverts the layout
+     *
+     * @see DKTools.Layout.prototype.isInverted
+     * @see DKTools.Layout.prototype.setInverted
+     */
+    invert() {
+        this.setInverted(!this.isInverted());
+    }
+
+    /**
+     * Returns true if the layout is empty
+     *
+     * @see DKTools.Layout.prototype.getMaxItems
+     *
+     * @returns {Boolean} Layout is empty
+     */
+    isEmpty() {
+        return this.getMaxItems() === 0;
+    }
+
+    /**
+     * Returns true if the layout is horizontal
+     *
+     * @see DKTools.Layout.prototype.getMaxRows
+     *
+     * @returns {boolean} Layout is horizontal
+     */
+    isHorizontal() {
+        return this.getMaxRows() === 1;
+    }
+
+    /**
+     * Returns true if the layout is inverted
+     *
+     * @returns {Boolean} Layout is inverted
+     */
+    isInverted() {
+        return this._inverted;
+    }
+
+    /**
+     * Returns true if the layout is ready
+     *
+     * @override
+     *
+     * @see DKTools.Layout.prototype.isEmpty
+     *
+     * @returns {Boolean} Layout is ready
+     */
+    isReady() {
+        return this.isEmpty() || _.every(this._items, item => item.isReady());
+    }
+
+    /**
+     * Returns true if the layout is vertical
+     *
+     * @see DKTools.Layout.prototype.getMaxCols
+     *
+     * @returns {boolean} Layout is vertical
+     */
+    isVertical() {
+        return this.getMaxCols() === 1;
+    }
+
+    /**
+     * Calls the callback function for the items
+     *
+     * @param {Function} callback - Function for the items
+     * @param {Boolean} [start=false] - Call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.getItems
+     * @see DKTools.Layout.prototype.start
+     */
+    iterateItems(callback, start = false) {
+        _.forEach(this.getItems(), callback);
+
+        if (start) {
+            this.start();
+        }
+    }
+
+    // M methods
+
+    /**
+     * Moves the item
+     *
+     * @param {Number} index - Index
+     * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - The X coordinate or Point or object with parameters
+     * @param {Number} [y] - The Y coordinate (if object is Number)
+     *
+     * @param {Number} [object.x] - The X coordinate
+     * @param {Number} [object.y] - The Y coordinate
+     *
+     * @see DKTools.Layout.prototype.getItem
+     */
+    moveItem(index, object, y) {
+        const item = this.getItem(index);
+
+        if (item) {
+            item.move(object, y);
+        }
+    }
+
+    // R methods
+
+    /**
+     * Removes children objects from processing
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.prototype.removeAllChildren
+     * @see DKTools.Layout.prototype.removeAllItems
+     */
+    removeAllChildren() {
+        DKTools.Sprite.prototype.removeAllChildren.call(this);
+        this.removeAllItems();
+    }
+
+    /**
+     * Removes items from processing
+     *
+     * @see DKTools.Layout.prototype.removeChild
+     */
+    removeAllItems() {
+        if (this.hasItems()) {
+            this.removeChild.apply(this, this._items);
+        }
+    }
+
+    /**
+     * Removes the column
+     *
+     * @see DKTools.Layout.prototype.removeCols
+     */
+    removeCol() {
+        this.removeCols(1);
+    }
+
+    /**
+     * Removes the columns
+     *
+     * @param {Number} cols - Columns
+     *
+     * @see DKTools.Layout.prototype.getMaxCols
+     * @see DKTools.Layout.prototype.addCols
+     */
+    removeCols(cols) {
+        if (this.getMaxCols() - cols >= 1) {
+            this.addCols(-cols);
+        }
+    }
+
+    /**
+     * Removes the item
+     * Returns the removed item or null
+     *
+     * @version 6.0.0
+     *
+     * @param {DKTools.Sprite | Number} item - Item or Index
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.getItem
+     * @see DKTools.Layout.prototype.hasItem
+     * @see DKTools.Layout.prototype.removeChild
+     * @see DKTools.Layout.prototype.start
+     *
+     * @returns {DKTools.Sprite | null} Removed item or null
+     */
+    removeItem(item, blockStart = false) {
+        if (Number.isFinite(item)) {
+            item = this.getItem(item);
+        }
+
+        if (!this.hasItem(item)) {
+            return null;
+        }
+
+        this.removeChild(item);
+
+        DKTools.Utils.Array.remove(this._items, item);
+
+        if (!blockStart) {
+            this.start();
+        }
+
+        return item;
+    }
+
+    /**
+     * Removes the items
+     * Returns the removed items
+     *
+     * @version 6.0.0
+     *
+     * @param {DKTools.Sprite[] | Number[]} items - Items or Indexes
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.removeItem
+     * @see DKTools.Layout.prototype.start
+     *
+     * @returns {DKTools.Sprite[]} Removed items
+     */
+    removeItems(items, blockStart = false) {
+        const removedItems = _.map(items, item => this.removeItem(item, true));
+
+        if (removedItems.length > 0 && !blockStart) {
+            this.start();
+        }
+
+        return removedItems;
+    }
+
+    /**
+     * Resizes the item
+     *
+     * @version 6.0.0
+     *
+     * @param {DKTools.Sprite | Number} item - Item or Index
+     * @param {Number} [width] - Width of the item
+     * @param {Number} [height] - Height of the item
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.getItem
+     * @see DKTools.Layout.prototype.hasItem
+     * @see DKTools.Layout.prototype.start
+     */
+    resizeItem(item, width, height, blockStart = false) {
+        if (Number.isFinite(item)) {
+            item = this.getItem(item);
+        }
+
+        if (this.hasItem(item) && item.resize(width, height)) {
+            if (!blockStart) {
+                this.start();
+            }
+        }
+    }
+
+    /**
+     * Resizes the items
+     *
+     * @param {Number} [width] - Width of the item
+     * @param {Number} [height] - Height of the item
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.resizeItem
+     * @see DKTools.Layout.prototype.iterateItems
+     */
+    resizeItems(width, height, blockStart = false) {
+        const callback = item => {
+            this.resizeItem(item, width, height, true);
+        };
+
+        this.iterateItems(callback, !blockStart);
+    }
+
+    // S methods
+
+    /**
+     * Changes all parameters
+     * Returns the number of changed parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     * @param {Boolean} [activate=false] - Activates the layout
+     *
+     * @param {Number} [object.maxCols] - Columns
+     * @param {Number} [object.horizontalSpacing] - Horizontal spacing
+     * @param {Number} [object.verticalSpacing] - Vertical spacing
+     * @param {Array} [object.items] - Items
+     * @param {Function | Number} [object.rowHeight] - Height of the row
+     * @param {Function | Number} [object.colWidth] - Width of the column
+     * @param {Boolean} [object.inverted] - Value of the invert
+     *
+     * @see DKTools.Sprite.prototype.setupAll
+     * @see DKTools.Layout.prototype.setMaxCols
+     * @see DKTools.Layout.prototype.setSpacing
+     * @see DKTools.Layout.prototype.setItems
+     * @see DKTools.Layout.prototype.setRowHeight
+     * @see DKTools.Layout.prototype.setColWidth
+     * @see DKTools.Layout.prototype.setInverted
+     * @see DKTools.Layout.prototype.start
+     * @see DKTools.Layout.prototype.activate
+     *
+     * @returns {Number} Number of changed parameters
+     */
+    setAll(object, blockStart = false, activate = false) {
+        object = object || {};
+        const block = true;
+
+        let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
+
+        if (this.setMaxCols(object.maxCols, block)) {
+            changed++;
+        }
+
+        changed += this.setSpacing(object.horizontalSpacing, object.verticalSpacing, block);
+
+        if (this.setItems(object.items, block)) {
+            changed++;
+        }
+
+        if (this.setRowHeight(object.rowHeight, block)) {
+            changed++;
+        }
+
+        if (this.setColWidth(object.colWidth, block)) {
+            changed++;
+        }
+
+        if (this.setInverted(object.reversed, block)) {
+            changed++;
+        }
+
+        if (changed > 0) {
+            if (!blockStart) {
+                this.start();
+            }
+
+            if (activate) {
+                this.activate();
+            }
+        }
+
+        return changed;
+    }
+
+    /**
+     * Changes the width of the column
+     * Returns true if the change occurred
+     *
+     * @param {Function | Number} [colWidth] - Width of the column
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.setupColWidth
+     * @see DKTools.Layout.prototype.start
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setColWidth(colWidth, blockStart = false) {
+        if (this._colWidth === colWidth) {
+            return false;
+        }
+
+        const lastWidth = this._colWidth;
+
+        this.setupColWidth(colWidth);
+
+        if (this._colWidth === lastWidth) {
+            return false;
+        }
+
+        if (!blockStart) {
+            this.start();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the horizontal spacing
+     * Returns true if the change occurred
+     *
+     * @param {Number} [scacing] - Horizontal spacing
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.setupHorizontalSpacing
+     * @see DKTools.Layout.prototype.start
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setHorizontalSpacing(scacing, blockStart = false) {
+        if (this._horizontalSpacing === scacing) {
+            return false;
+        }
+
+        const lastSpacing = this._horizontalSpacing;
+
+        this.setupHorizontalSpacing(scacing);
+
+        if (this._horizontalSpacing === lastSpacing) {
+            return false;
+        }
+
+        if (!blockStart) {
+            this.start();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the value of the invert
+     * Returns true if the change occurred
+     *
+     * @param {Boolean} [inverted] - Value of the invert
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.setupInverted
+     * @see DKTools.Layout.prototype.start
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setInverted(inverted, blockStart = false) {
+        if (this._inverted === inverted) {
+            return false;
+        }
+
+        const lastReversed = this._inverted;
+
+        this.setupInverted(inverted);
+
+        if (this._inverted === lastReversed) {
+            return false;
+        }
+
+        if (!blockStart) {
+            this.start();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the items
+     * Returns true if the change occurred
+     *
+     * @param {DKTools.Sprite[] | *} [items] - Items
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.removeAllItems
+     * @see DKTools.Layout.prototype.setupItems
+     * @see DKTools.Layout.prototype.start
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setItems(items, blockStart = false) {
+        if (this._items == items) {
+            return false;
+        }
+
+        this.removeAllItems();
+        this.setupItems(items);
+
+        if (!blockStart) {
+            this.start();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the number of the columns
+     * Returns true if the change occurred
+     *
+     * @param {Number} [cols] - Columns
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.setupMaxCols
+     * @see DKTools.Layout.prototype.start
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setMaxCols(cols, blockStart = false) {
+        if (this._maxCols === cols) {
+            return false;
+        }
+
+        const lastCols = this._maxCols;
+
+        this.setupMaxCols(cols);
+
+        if (this._maxCols === lastCols) {
+            return false;
+        }
+
+        if (!blockStart) {
+            this.start();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the height of the row
+     * Returns true if the change occurred
+     *
+     * @param {Function | Number} [rowHeight] - Height of the row
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.setupRowHeight
+     * @see DKTools.Layout.prototype.start
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setRowHeight(rowHeight, blockStart = false) {
+        if (this._rowHeight === rowHeight) {
+            return false;
+        }
+
+        const lastHeight = this._rowHeight;
+
+        this.setupRowHeight(rowHeight);
+
+        if (this._rowHeight === lastHeight) {
+            return false;
+        }
+
+        if (!blockStart) {
+            this.start();
+        }
+
+        return true;
+    }
+
+    /**
+     * Changes the horizontal and vertical spacing
+     * Returns the number of changed parameters
+     *
+     * @param {Number} [horizontalSpacing] - Horizontal spacing
+     * @param {Number} [verticalSpacing] - Vertical spacing
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.setHorizontalSpacing
+     * @see DKTools.Layout.prototype.setVerticalSpacing
+     * @see DKTools.Layout.prototype.start
+     *
+     * @returns {Number} Number of changed parameters
+     */
+    setSpacing(horizontalSpacing, verticalSpacing, blockStart = false) {
+        const block = true;
+        let changed = 0;
+
+        if (this.setHorizontalSpacing(horizontalSpacing, block)) {
+            changed++;
+        }
+
+        if (this.setVerticalSpacing(verticalSpacing, block)) {
+            changed++;
+        }
+
+        if (changed > 0 && !blockStart) {
+            this.start();
+        }
+
+        return changed;
+    }
+
+    /**
+     * Changes the vertical spacing
+     * Returns true if the change occurred
+     *
+     * @param {Number} [scacing] - Vertical spacing
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.setupVerticalSpacing
+     * @see DKTools.Layout.prototype.start
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setVerticalSpacing(scacing, blockStart = false) {
+        if (this._verticalSpacing === scacing) {
+            return false;
+        }
+
+        const lastSpacing = this._verticalSpacing;
+
+        this.setupVerticalSpacing(scacing);
+
+        if (this._verticalSpacing === lastSpacing) {
+            return false;
+        }
+
+        if (!blockStart) {
+            this.start();
+        }
+
+        return true;
+    }
+
+    /**
+     * Sets all parameters
+     *
+     * @override
+     *
+     * @param {Object} [object={}] - Parameters
+     *
+     * @param {Number} [object.maxCols] - Columns
+     * @param {Number} [object.horizontalSpacing] - Horizontal spacing
+     * @param {Number} [object.verticalSpacing] - Vertical spacing
+     * @param {Array} [object.items] - Items
+     * @param {Function | Number} [object.rowHeight] - Height of the row
+     * @param {Function | Number} [object.colWidth] - Width of the column
+     * @param {Boolean} [object.inverted] - Value of the invert
+     *
+     * @see DKTools.Sprite.prototype.setupAll
+     * @see DKTools.Layout.prototype.setupMaxCols
+     * @see DKTools.Layout.prototype.setupSpacing
+     * @see DKTools.Layout.prototype.setupItems
+     * @see DKTools.Layout.prototype.setupRowHeight
+     * @see DKTools.Layout.prototype.setupColWidth
+     * @see DKTools.Layout.prototype.setupInverted
+     */
+    setupAll(object = {}) {
+        object = object || {};
+
+        DKTools.Sprite.prototype.setupAll.call(this, object);
+
+        this.setupMaxCols(object.maxCols);
+        this.setupSpacing(object.horizontalSpacing, object.verticalSpacing);
+        this.setupItems(object.items);
+        this.setupRowHeight(object.rowHeight);
+        this.setupColWidth(object.colWidth);
+        this.setupInverted(object.inverted);
+    }
+
+    /**
+     * Sets the width of the column
+     *
+     * @param {Function | Number} [colWidth=this.standardColWidth()] - Width of the column
+     *
+     * @see DKTools.Layout.prototype.standardColWidth
+     */
+    setupColWidth(colWidth) {
+        /**
+         * @private
+         * @readonly
+         * @type {Function | Number}
+         */
+        this._colWidth = colWidth || this.standardColWidth();
+    }
+
+    /**
+     * Sets the horizontal spacing
+     *
+     * @param {Number} [spacing=this.standardHorizontalSpacing()] - Horizontal spacing
+     *
+     * @see DKTools.Layout.prototype.standardHorizontalSpacing
+     */
+    setupHorizontalSpacing(spacing) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._horizontalSpacing = _.defaultTo(spacing, this.standardHorizontalSpacing());
+    }
+
+    /**
+     * Sets the value of the invert
+     *
+     * @param {Boolean} [inverted=this.standardInverted()] - Value of the ivnert
+     *
+     * @see DKTools.Layout.prototype.standardInverted
+     */
+    setupInverted(inverted) {
+        /**
+         * @private
+         * @readonly
+         * @type {Boolean}
+         */
+        this._inverted = _.defaultTo(inverted, this.standardInverted());
+    }
+
+    /**
+     * Sets the items
+     *
+     * @param {DKTools.Sprite[] | *} [items=this.standardItems()] - Items
+     *
+     * @see DKTools.Layout.prototype.standardItems
+     */
+    setupItems(items) {
+        this._items = _.clone(items || this.standardItems());
+    }
+
+    /**
+     * Sets the number of the columns
+     *
+     * @param {Number} [cols=this.standardMaxCols()] - Columns
+     *
+     * @see DKTools.Layout.prototype.standardMaxCols
+     */
+    setupMaxCols(cols) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._maxCols = _.defaultTo(cols, this.standardMaxCols());
+    }
+
+    /**
+     * Sets the height of the row
+     *
+     * @param {Function | Number} [rowHeight=this.standardRowHeight()] - Height of the row
+     *
+     * @see DKTools.Layout.prototype.standardRowHeight
+     */
+    setupRowHeight(rowHeight) {
+        /**
+         * @private
+         * @readonly
+         * @type {Function | Number}
+         */
+        this._rowHeight = rowHeight || this.standardRowHeight();
+    }
+
+    /**
+     * Sets the horizontal and vertical spacing
+     *
+     * @param {Number} [horizontalSpacing] - Horizontal spacing
+     * @param {Number} [verticalSpacing] - Vertical spacing
+     *
+     * @see DKTools.Layout.prototype.setupHorizontalSpacing
+     * @see DKTools.Layout.prototype.setupVerticalSpacing
+     */
+    setupSpacing(horizontalSpacing, verticalSpacing) {
+        this.setupHorizontalSpacing(horizontalSpacing);
+        this.setupVerticalSpacing(verticalSpacing);
+    }
+
+    /**
+     * Sets the vertical spacing
+     *
+     * @param {Number} [spacing=this.standardVerticalSpacing()] - Vertical spacing
+     *
+     * @see DKTools.Layout.prototype.standardVerticalSpacing
+     */
+    setupVerticalSpacing(spacing) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._verticalSpacing = _.defaultTo(spacing, this.standardVerticalSpacing());
+    }
+
+    /**
+     * Shows the items
+     *
+     * @param {Boolean} [activate=false] - Activates the items
+     * @param {Boolean} [start=false] - Call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.iterateItems
+     */
+    showItems(activate = false, start = false) {
+        const callback = item => {
+            item.show(activate);
+        };
+
+        this.iterateItems(callback, start);
+    }
+
+    /**
+     * Returns the standard activity of the layout
+     *
+     * @override
+     * @returns {Boolean} Standard activity of the layout
+     */
+    standardActive() {
+        return false;
+    }
+
+    /**
+     * Returns the standard width of the column
+     *
+     * @returns {Function} Standard width of the column
+     */
+    standardColWidth() {
+        return col => {
+            const items = this.getItemsInCol(col);
+
+            return _.max(_.map(items, 'width'));
+        };
+    }
+
+    /**
+     * Returns the standard horizontal spacing
+     *
+     * @returns {Number} Standard horizontal spacing
+     */
+    standardHorizontalSpacing() {
+        return 12;
+    }
+
+    /**
+     * Returns the standard value of the invert
+     *
+     * @returns {Boolean} Standard value of the invert
+     */
+    standardInverted() {
+        return false;
+    }
+
+    /**
+     * Returns the standard list of the items
+     *
+     * @returns {Array} Standard list of the items
+     */
+    standardItems() {
+        return [];
+    }
+
+    /**
+     * Returns the standard number of the columns
+     *
+     * @returns {Number} Standard number of columns
+     */
+    standardMaxCols() {
+        return 1;
+    }
+
+    /**
+     * Returns the standard height of the row
+     *
+     * @returns {Function} Standard height of the row
+     */
+    standardRowHeight() {
+        return row => {
+            const items = this.getItemsInRow(row);
+
+            return _.max(_.map(items, 'height'));
+        };
+    }
+
+    /**
+     * Returns the standard vertical spacing
+     *
+     * @returns {Number} Standard vertical spacing
+     */
+    standardVerticalSpacing() {
+        return this.getLineHeight() / 2;
+    }
+
+    /**
+     * Starts the layout
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.prototype.start
+     * @see DKTools.Layout.prototype.isReady
+     * @see DKTools.Layout.prototype.addOneTimeEvent
+     */
+    start() {
+        this._started = true;
+
+        if (this.isReady()) {
+            DKTools.Sprite.prototype.start.call(this);
+        } else {
+            this.addOneTimeEvent({
+                type: 'ready',
+                onSuccess: this.start.bind(this)
+            });
+        }
+    }
+
+    /**
+     * Starts the items
+     *
+     * @param {Boolean} [activate=false] - Activates the item
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     *
+     * @see DKTools.Layout.prototype.iterateItems
+     */
+    startItems(activate = false, blockStart = false) {
+        const callback = item => {
+            item.start(activate);
+        };
+
+        this.iterateItems(callback, !blockStart);
+    }
+
+    // U methods
+
+    /**
+     * Updates all
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.prototype.updateAll
+     * @see DKTools.Layout.prototype.updateLayout
+     */
+    updateAll() {
+        DKTools.Sprite.prototype.updateAll.call(this);
+        this.updateLayout();
+    }
+
+    /**
+     * Updates the layout
+     *
+     * @see DKTools.Layout.prototype.getMaxItems
+     * @see DKTools.Layout.prototype.getMaxRows
+     * @see DKTools.Layout.prototype.getMaxCols
+     * @see DKTools.Layout.prototype.getColX
+     * @see DKTools.Layout.prototype.getRowY
+     * @see DKTools.Layout.prototype.moveItem
+     */
+    updateLayout() {
+        const maxItems = this.getMaxItems();
+        const maxRows = this.getMaxRows();
+        const maxCols = this.getMaxCols();
+        let index = 0;
+
+        for (let i = 1; i <= maxRows && index < maxItems; i++) {
+            for (let j = 1; j <= maxCols && index < maxItems; j++) {
+                const x = this.getColX(j);
+                const y = this.getRowY(i);
+
+                this.moveItem(index++, x, y);
+            }
+        }
+    }
+
+};
 
 // properties
 
@@ -29217,1601 +30819,6 @@ Object.defineProperties(DKTools.Layout.prototype, {
     }
 
 });
-
-// _clear methods
-
-/**
- * Clears all data
- *
- * @private
- * @override
- *
- * @see DKTools.Sprite.prototype._clearAll
- * @see DKTools.Layout.prototype._clearItems
- */
-DKTools.Layout.prototype._clearAll = function() {
-    DKTools.Sprite.prototype._clearAll.call(this);
-    this._clearItems();
-};
-
-/**
- * Clears items
- *
- * @private
- */
-DKTools.Layout.prototype._clearItems = function() {
-    /**
-     * @private
-     * @readonly
-     * @type {Array}
-     */
-    this._items = [];
-};
-
-// clear methods
-
-/**
- * Clears items
- *
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.removeAllItems
- * @see DKTools.Layout.prototype._clearItems
- * @see DKTools.Layout.prototype.start
- */
-DKTools.Layout.prototype.clearItems = function(blockStart = false) {
-    this.removeAllItems();
-    this._clearItems();
-
-    if (!blockStart) {
-        this.start();
-    }
-};
-
-// standard methods
-
-/**
- * Returns the standard activity of the layout
- *
- * @override
- * @returns {Boolean} Standard activity of the layout
- */
-DKTools.Layout.prototype.standardActive = function() {
-    return false;
-};
-
-/**
- * Returns the standard number of the columns
- *
- * @returns {Number} Standard number of columns
- */
-DKTools.Layout.prototype.standardMaxCols = function() {
-    return 1;
-};
-
-/**
- * Returns the standard horizontal spacing
- *
- * @returns {Number} Standard horizontal spacing
- */
-DKTools.Layout.prototype.standardHorizontalSpacing = function() {
-    return 12;
-};
-
-/**
- * Returns the standard vertical spacing
- *
- * @returns {Number} Standard vertical spacing
- */
-DKTools.Layout.prototype.standardVerticalSpacing = function() {
-    return this.getLineHeight() / 2;
-};
-
-/**
- * Returns the standard list of the items
- *
- * @returns {Array} Standard list of the items
- */
-DKTools.Layout.prototype.standardItems = function() {
-    return [];
-};
-
-/**
- * Returns the standard height of the row
- *
- * @returns {Function} Standard height of the row
- */
-DKTools.Layout.prototype.standardRowHeight = function() {
-    return row => {
-        const items = this.getItemsInRow(row);
-
-        return _.max(_.map(items, 'height'));
-    };
-};
-
-/**
- * Returns the standard width of the column
- *
- * @returns {Function} Standard width of the column
- */
-DKTools.Layout.prototype.standardColWidth = function() {
-    return col => {
-        const items = this.getItemsInCol(col);
-
-        return _.max(_.map(items, 'width'));
-    };
-};
-
-/**
- * Returns the standard value of the invert
- *
- * @returns {Boolean} Standard value of the invert
- */
-DKTools.Layout.prototype.standardInverted = function() {
-    return false;
-};
-
-// setup methods
-
-/**
- * Sets all parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- *
- * @param {Number} [object.maxCols] - Columns
- * @param {Number} [object.horizontalSpacing] - Horizontal spacing
- * @param {Number} [object.verticalSpacing] - Vertical spacing
- * @param {Array} [object.items] - Items
- * @param {Function | Number} [object.rowHeight] - Height of the row
- * @param {Function | Number} [object.colWidth] - Width of the column
- * @param {Boolean} [object.inverted] - Value of the invert
- *
- * @see DKTools.Sprite.prototype.setupAll
- * @see DKTools.Layout.prototype.setupMaxCols
- * @see DKTools.Layout.prototype.setupSpacing
- * @see DKTools.Layout.prototype.setupItems
- * @see DKTools.Layout.prototype.setupRowHeight
- * @see DKTools.Layout.prototype.setupColWidth
- * @see DKTools.Layout.prototype.setupInverted
- */
-DKTools.Layout.prototype.setupAll = function(object = {}) {
-    object = object || {};
-
-    DKTools.Sprite.prototype.setupAll.call(this, object);
-
-    this.setupMaxCols(object.maxCols);
-    this.setupSpacing(object.horizontalSpacing, object.verticalSpacing);
-    this.setupItems(object.items);
-    this.setupRowHeight(object.rowHeight);
-    this.setupColWidth(object.colWidth);
-    this.setupInverted(object.inverted);
-};
-
-/**
- * Sets the number of the columns
- *
- * @param {Number} [cols=this.standardMaxCols()] - Columns
- *
- * @see DKTools.Layout.prototype.standardMaxCols
- */
-DKTools.Layout.prototype.setupMaxCols = function(cols) {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._maxCols = _.defaultTo(cols, this.standardMaxCols());
-};
-
-/**
- * Sets the horizontal spacing
- *
- * @param {Number} [spacing=this.standardHorizontalSpacing()] - Horizontal spacing
- *
- * @see DKTools.Layout.prototype.standardHorizontalSpacing
- */
-DKTools.Layout.prototype.setupHorizontalSpacing = function(spacing) {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._horizontalSpacing = _.defaultTo(spacing, this.standardHorizontalSpacing());
-};
-
-/**
- * Sets the vertical spacing
- *
- * @param {Number} [spacing=this.standardVerticalSpacing()] - Vertical spacing
- *
- * @see DKTools.Layout.prototype.standardVerticalSpacing
- */
-DKTools.Layout.prototype.setupVerticalSpacing = function(spacing) {
-    /**
-     * @private
-     * @readonly
-     * @type {Number}
-     */
-    this._verticalSpacing = _.defaultTo(spacing, this.standardVerticalSpacing());
-};
-
-/**
- * Sets the horizontal and vertical spacing
- *
- * @param {Number} [horizontalSpacing] - Horizontal spacing
- * @param {Number} [verticalSpacing] - Vertical spacing
- *
- * @see DKTools.Layout.prototype.setupHorizontalSpacing
- * @see DKTools.Layout.prototype.setupVerticalSpacing
- */
-DKTools.Layout.prototype.setupSpacing = function(horizontalSpacing, verticalSpacing) {
-    this.setupHorizontalSpacing(horizontalSpacing);
-    this.setupVerticalSpacing(verticalSpacing);
-};
-
-/**
- * Sets the items
- *
- * @param {DKTools.Sprite[] | *} [items=this.standardItems()] - Items
- *
- * @see DKTools.Layout.prototype.standardItems
- */
-DKTools.Layout.prototype.setupItems = function(items) {
-    this._items = _.clone(items || this.standardItems());
-};
-
-/**
- * Sets the height of the row
- *
- * @param {Function | Number} [rowHeight=this.standardRowHeight()] - Height of the row
- *
- * @see DKTools.Layout.prototype.standardRowHeight
- */
-DKTools.Layout.prototype.setupRowHeight = function(rowHeight) {
-    /**
-     * @private
-     * @readonly
-     * @type {Function | Number}
-     */
-    this._rowHeight = rowHeight || this.standardRowHeight();
-};
-
-/**
- * Sets the width of the column
- *
- * @param {Function | Number} [colWidth=this.standardColWidth()] - Width of the column
- *
- * @see DKTools.Layout.prototype.standardColWidth
- */
-DKTools.Layout.prototype.setupColWidth = function(colWidth) {
-    /**
-     * @private
-     * @readonly
-     * @type {Function | Number}
-     */
-    this._colWidth = colWidth || this.standardColWidth();
-};
-
-/**
- * Sets the value of the invert
- *
- * @param {Boolean} [inverted=this.standardInverted()] - Value of the ivnert
- *
- * @see DKTools.Layout.prototype.standardInverted
- */
-DKTools.Layout.prototype.setupInverted = function(inverted) {
-    /**
-     * @private
-     * @readonly
-     * @type {Boolean}
-     */
-    this._inverted = _.defaultTo(inverted, this.standardInverted());
-};
-
-// set methods
-
-/**
- * Changes all parameters
- * Returns the number of changed parameters
- *
- * @override
- *
- * @param {Object} [object={}] - Parameters
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- * @param {Boolean} [activate=false] - Activates the layout
- *
- * @param {Number} [object.maxCols] - Columns
- * @param {Number} [object.horizontalSpacing] - Horizontal spacing
- * @param {Number} [object.verticalSpacing] - Vertical spacing
- * @param {Array} [object.items] - Items
- * @param {Function | Number} [object.rowHeight] - Height of the row
- * @param {Function | Number} [object.colWidth] - Width of the column
- * @param {Boolean} [object.inverted] - Value of the invert
- *
- * @see DKTools.Sprite.prototype.setupAll
- * @see DKTools.Layout.prototype.setMaxCols
- * @see DKTools.Layout.prototype.setSpacing
- * @see DKTools.Layout.prototype.setItems
- * @see DKTools.Layout.prototype.setRowHeight
- * @see DKTools.Layout.prototype.setColWidth
- * @see DKTools.Layout.prototype.setInverted
- * @see DKTools.Layout.prototype.start
- * @see DKTools.Layout.prototype.activate
- *
- * @returns {Number} Number of changed parameters
- */
-DKTools.Layout.prototype.setAll = function(object, blockStart = false, activate = false) {
-    object = object || {};
-    const block = true;
-
-    let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
-
-    if (this.setMaxCols(object.maxCols, block)) {
-        changed++;
-    }
-
-    changed += this.setSpacing(object.horizontalSpacing, object.verticalSpacing, block);
-
-    if (this.setItems(object.items, block)) {
-        changed++;
-    }
-
-    if (this.setRowHeight(object.rowHeight, block)) {
-        changed++;
-    }
-
-    if (this.setColWidth(object.colWidth, block)) {
-        changed++;
-    }
-
-    if (this.setInverted(object.reversed, block)) {
-        changed++;
-    }
-
-    if (changed > 0) {
-        if (!blockStart) {
-            this.start();
-        }
-
-        if (activate) {
-            this.activate();
-        }
-    }
-
-	return changed;
-};
-
-/**
- * Changes the number of the columns
- * Returns true if the change occurred
- *
- * @param {Number} [cols] - Columns
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.setupMaxCols
- * @see DKTools.Layout.prototype.start
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Layout.prototype.setMaxCols = function(cols, blockStart = false) {
-    if (this._maxCols === cols) {
-        return false;
-    }
-
-    const lastCols = this._maxCols;
-
-    this.setupMaxCols(cols);
-
-    if (this._maxCols === lastCols) {
-        return false;
-    }
-
-    if (!blockStart) {
-        this.start();
-    }
-
-    return true;
-};
-
-/**
- * Changes the horizontal spacing
- * Returns true if the change occurred
- *
- * @param {Number} [scacing] - Horizontal spacing
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.setupHorizontalSpacing
- * @see DKTools.Layout.prototype.start
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Layout.prototype.setHorizontalSpacing = function(scacing, blockStart = false) {
-    if (this._horizontalSpacing === scacing) {
-        return false;
-    }
-
-    const lastSpacing = this._horizontalSpacing;
-
-    this.setupHorizontalSpacing(scacing);
-
-    if (this._horizontalSpacing === lastSpacing) {
-        return false;
-    }
-
-    if (!blockStart) {
-        this.start();
-    }
-
-    return true;
-};
-
-/**
- * Changes the vertical spacing
- * Returns true if the change occurred
- *
- * @param {Number} [scacing] - Vertical spacing
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.setupVerticalSpacing
- * @see DKTools.Layout.prototype.start
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Layout.prototype.setVerticalSpacing = function(scacing, blockStart = false) {
-    if (this._verticalSpacing === scacing) {
-        return false;
-    }
-
-    const lastSpacing = this._verticalSpacing;
-
-    this.setupVerticalSpacing(scacing);
-
-    if (this._verticalSpacing === lastSpacing) {
-        return false;
-    }
-
-    if (!blockStart) {
-        this.start();
-    }
-
-    return true;
-};
-
-/**
- * Changes the horizontal and vertical spacing
- * Returns the number of changed parameters
- *
- * @param {Number} [horizontalSpacing] - Horizontal spacing
- * @param {Number} [verticalSpacing] - Vertical spacing
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.setHorizontalSpacing
- * @see DKTools.Layout.prototype.setVerticalSpacing
- * @see DKTools.Layout.prototype.start
- *
- * @returns {Number} Number of changed parameters
- */
-DKTools.Layout.prototype.setSpacing = function(horizontalSpacing, verticalSpacing, blockStart = false) {
-    const block = true;
-    let changed = 0;
-
-    if (this.setHorizontalSpacing(horizontalSpacing, block)) {
-        changed++;
-    }
-
-    if (this.setVerticalSpacing(verticalSpacing, block)) {
-        changed++;
-    }
-
-    if (changed > 0 && !blockStart) {
-        this.start();
-    }
-
-    return changed;
-};
-
-/**
- * Changes the items
- * Returns true if the change occurred
- *
- * @param {DKTools.Sprite[] | *} [items] - Items
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.removeAllItems
- * @see DKTools.Layout.prototype.setupItems
- * @see DKTools.Layout.prototype.start
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Layout.prototype.setItems = function(items, blockStart = false) {
-    if (this._items == items) {
-        return false;
-    }
-
-    this.removeAllItems();
-    this.setupItems(items);
-
-    if (!blockStart) {
-        this.start();
-    }
-
-    return true;
-};
-
-/**
- * Changes the height of the row
- * Returns true if the change occurred
- *
- * @param {Function | Number} [rowHeight] - Height of the row
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.setupRowHeight
- * @see DKTools.Layout.prototype.start
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Layout.prototype.setRowHeight = function(rowHeight, blockStart = false) {
-    if (this._rowHeight === rowHeight) {
-        return false;
-    }
-
-    const lastHeight = this._rowHeight;
-
-    this.setupRowHeight(rowHeight);
-
-    if (this._rowHeight === lastHeight) {
-        return false;
-    }
-
-    if (!blockStart) {
-        this.start();
-    }
-
-    return true;
-};
-
-/**
- * Changes the width of the column
- * Returns true if the change occurred
- *
- * @param {Function | Number} [colWidth] - Width of the column
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.setupColWidth
- * @see DKTools.Layout.prototype.start
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Layout.prototype.setColWidth = function(colWidth, blockStart = false) {
-    if (this._colWidth === colWidth) {
-        return false;
-    }
-
-    const lastWidth = this._colWidth;
-
-    this.setupColWidth(colWidth);
-
-    if (this._colWidth === lastWidth) {
-        return false;
-    }
-
-    if (!blockStart) {
-        this.start();
-    }
-
-    return true;
-};
-
-/**
- * Changes the value of the invert
- * Returns true if the change occurred
- *
- * @param {Boolean} [inverted] - Value of the invert
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.setupInverted
- * @see DKTools.Layout.prototype.start
- *
- * @returns {Boolean} Change occurred
- */
-DKTools.Layout.prototype.setInverted = function(inverted, blockStart = false) {
-    if (this._inverted === inverted) {
-        return false;
-    }
-
-    const lastReversed = this._inverted;
-
-    this.setupInverted(inverted);
-
-    if (this._inverted === lastReversed) {
-        return false;
-    }
-
-    if (!blockStart) {
-        this.start();
-    }
-
-    return true;
-};
-
-// start methods
-
-/**
- * Starts the layout
- *
- * @override
- *
- * @see DKTools.Sprite.prototype.start
- * @see DKTools.Layout.prototype.isReady
- * @see DKTools.Layout.prototype.addOneTimeEvent
- */
-DKTools.Layout.prototype.start = function() {
-    this._started = true;
-
-    if (this.isReady()) {
-        DKTools.Sprite.prototype.start.call(this);
-    } else {
-        this.addOneTimeEvent({
-            type: 'ready',
-            onSuccess: this.start.bind(this)
-        });
-    }
-};
-
-// remove methods
-
-/**
- * Removes children objects from processing
- *
- * @override
- *
- * @see DKTools.Sprite.prototype.removeAllChildren
- * @see DKTools.Layout.prototype.removeAllItems
- */
-DKTools.Layout.prototype.removeAllChildren = function() {
-    DKTools.Sprite.prototype.removeAllChildren.call(this);
-    this.removeAllItems();
-};
-
-/**
- * Removes items from processing
- *
- * @see DKTools.Layout.prototype.removeChild
- */
-DKTools.Layout.prototype.removeAllItems = function() {
-    if (this.hasItems()) {
-        this.removeChild.apply(this, this._items);
-    }
-};
-
-/**
- * Removes the item
- * Returns the removed item or null
- *
- * @version 6.0.0
- *
- * @param {DKTools.Sprite | Number} item - Item or Index
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.getItem
- * @see DKTools.Layout.prototype.hasItem
- * @see DKTools.Layout.prototype.removeChild
- * @see DKTools.Layout.prototype.start
- *
- * @returns {DKTools.Sprite | null} Removed item or null
- */
-DKTools.Layout.prototype.removeItem = function(item, blockStart = false) {
-    if (Number.isFinite(item)) {
-        item = this.getItem(item);
-    }
-
-    if (!this.hasItem(item)) {
-        return null;
-    }
-
-    this.removeChild(item);
-
-    DKTools.Utils.Array.remove(this._items, item);
-
-    if (!blockStart) {
-        this.start();
-    }
-
-    return item;
-};
-
-/**
- * Removes the items
- * Returns the removed items
- *
- * @version 6.0.0
- *
- * @param {DKTools.Sprite[] | Number[]} items - Items or Indexes
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.removeItem
- * @see DKTools.Layout.prototype.start
- *
- * @returns {DKTools.Sprite[]} Removed items
- */
-DKTools.Layout.prototype.removeItems = function(items, blockStart = false) {
-    const removedItems = _.map(items, item => this.removeItem(item, true));
-
-    if (removedItems.length > 0 && !blockStart) {
-        this.start();
-    }
-
-    return removedItems;
-};
-
-/**
- * Removes the columns
- *
- * @param {Number} cols - Columns
- *
- * @see DKTools.Layout.prototype.getMaxCols
- * @see DKTools.Layout.prototype.addCols
- */
-DKTools.Layout.prototype.removeCols = function(cols) {
-    if (this.getMaxCols() - cols >= 1) {
-        this.addCols(-cols);
-    }
-};
-
-/**
- * Removes the column
- *
- * @see DKTools.Layout.prototype.removeCols
- */
-DKTools.Layout.prototype.removeCol = function() {
-    this.removeCols(1);
-};
-
-// add methods
-
-/**
- * Adds children objects to processing
- *
- * @override
- *
- * @see DKTools.Sprite.prototype.addAllChildren
- * @see DKTools.Layout.prototype.addAllItems
- */
-DKTools.Layout.prototype.addAllChildren = function() {
-    DKTools.Sprite.prototype.addAllChildren.call(this);
-    this.addAllItems();
-};
-
-/**
- * Adds the itemns to processing
- *
- * @see DKTools.Layout.prototype.addChild
- */
-DKTools.Layout.prototype.addAllItems = function() {
-    if (this.hasItems()) {
-        this.addChild.apply(this, this._items);
-    }
-};
-
-/**
- * Adds the item
- * Returns the added item or null
- *
- * @version 5.0.0
- *
- * @param {DKTools.Sprite | *} item - Item
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.start
- *
- * @returns {DKTools.Sprite | * | null} Added item or null
- */
-DKTools.Layout.prototype.addItem = function(item, blockStart = false) {
-    if (!(item instanceof DKTools.Sprite)) {
-        return null;
-    }
-
-    this._items.push(item);
-
-    if (!blockStart) {
-        this.start();
-    }
-
-    return item;
-};
-
-/**
- * Adds the items
- * Returns the added items
- *
- * @version 5.0.0
- *
- * @param {DKTools.Sprite[] | Array} items - Items
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.addItem
- * @see DKTools.Layout.prototype.start
- *
- * @returns {DKTools.Sprite[] | Array} Added items
- */
-DKTools.Layout.prototype.addItems = function(items, blockStart = false) {
-    const addedItems = _.map(items, item => this.addItem(item, true));
-
-    if (addedItems.length > 0 && !blockStart) {
-        this.start();
-    }
-
-    return addedItems;
-};
-
-/**
- * Adds the columns
- *
- * @param {Number} cols - Columns
- *
- * @see DKTools.Layout.prototype.getMaxCols
- * @see DKTools.Layout.prototype.setMaxCols
- */
-DKTools.Layout.prototype.addCols = function(cols) {
-    this.setMaxCols(this.getMaxCols() + cols);
-};
-
-/**
- * Adds the column
- *
- * @see DKTools.Layout.prototype.addCols
- */
-DKTools.Layout.prototype.addCol = function() {
-    this.addCols(1);
-};
-
-// can methods
-
-/**
- * Returns true if the layout can clone the fixed bitmap
- *
- * @override
- * @returns {Boolean} Layout can clone the fixed bitmap
- */
-DKTools.Layout.prototype.canCloneFixedBitmap = function() {
-    return false;
-};
-
-// _get methods
-
-/**
- * Returns the width of the bitmap
- *
- * @since 2.0.0
- * @private
- * @override
- *
- * @see DKTools.Layout.prototype.getMaxCols
- * @see DKTools.Layout.prototype.getColWidth
- *
- * @returns {Number} Width of the bitmap
- */
-DKTools.Layout.prototype._getBitmapWidth = function() {
-    let width = 0;
-    const maxCols = this.getMaxCols();
-
-    for (let i = 1; i <= maxCols; i++) {
-        width += this.getColWidth(i) + this._horizontalSpacing;
-    }
-
-    return width - this._horizontalSpacing;
-};
-
-/**
- * Returns the height of the bitmap
- *
- * @since 2.0.0
- * @private
- * @override
- *
- * @see DKTools.Layout.prototype.getMaxRows
- * @see DKTools.Layout.prototype.getRowHeight
- *
- * @returns {Number} Height of the bitmap
- */
-DKTools.Layout.prototype._getBitmapHeight = function() {
-    let height = 0;
-    const maxRows = this.getMaxRows();
-
-    for (let i = 1; i <= maxRows; i++) {
-        height += this.getRowHeight(i) + this._verticalSpacing;
-    }
-
-    return height - this._verticalSpacing;
-};
-
-// get methods
-
-/**
- * Returns the maximum number of rows
- *
- * @see DKTools.Layout.prototype.getMaxItems
- * @see DKTools.Layout.prototype.getMaxCols
- *
- * @returns {Number} Maximum number of rows
- */
-DKTools.Layout.prototype.getMaxRows = function() {
-    return Math.max(1, Math.ceil(this.getMaxItems() / this.getMaxCols()));
-};
-
-/**
- * Returns the maximum number of columns
- *
- * @returns {Number} Maximum number of columns
- */
-DKTools.Layout.prototype.getMaxCols = function() {
-    return this._maxCols;
-};
-
-/**
- * Returns the items
- *
- * @see DKTools.Layout.prototype.isInverted
- *
- * @returns {DKTools.Sprite[] | *} Items
- */
-DKTools.Layout.prototype.getItems = function() {
-    if (this.isInverted()) {
-        return _.reverse(_.clone(this._items));
-    }
-
-    return this._items;
-};
-
-/**
- * Returns the number of the items
- *
- * @return {Number} Number of the items
- */
-DKTools.Layout.prototype.getMaxItems = function() {
-    return this._items.length;
-};
-
-/**
- * Returns the index of the item
- *
- * @param {DKTools.Sprite | *} item - Item
- *
- * @see DKTools.Layout.prototype.getItems
- *
- * @returns {Number} Index of the item
- */
-DKTools.Layout.prototype.getItemIndex = function(item) {
-    return _.indexOf(this.getItems(), item);
-};
-
-/**
- * Returns the item by index
- *
- * @param {Number} index - Index
- *
- * @see DKTools.Layout.prototype.getItems
- *
- * @returns {DKTools.Sprite | * | undefined} Item by index or undefined
- */
-DKTools.Layout.prototype.getItem = function(index) {
-    return this.getItems()[index];
-};
-
-/**
- * Returns the items in the row
- *
- * @param {Number} row - Row
- *
- * @see DKTools.Layout.prototype.getMaxCols
- * @see DKTools.Layout.prototype.getMaxRows
- * @see DKTools.Layout.prototype.getItem
- *
- * @returns {DKTools.Sprite[] | *} Items in the row
- */
-DKTools.Layout.prototype.getItemsInRow = function(row) {
-    const items = [];
-    const maxCols = this.getMaxCols();
-
-    if (row < 1 || row > this.getMaxRows()) {
-        return items;
-    }
-
-    const startIndex = maxCols * (row - 1);
-
-    for (let i = 0; i < maxCols; i++) {
-        items.push(this.getItem(startIndex + i));
-    }
-
-    return items;
-};
-
-/**
- * Returns the items in the column
- *
- * @param {Number} col - Column
- *
- * @see DKTools.Layout.prototype.getMaxRows
- * @see DKTools.Layout.prototype.getMaxCols
- * @see DKTools.Layout.prototype.getItem
- *
- * @returns {DKTools.Sprite[] | *} Items in the column
- */
-DKTools.Layout.prototype.getItemsInCol = function(col) {
-    const items = [];
-    const maxRows = this.getMaxRows();
-    const maxCols = this.getMaxCols();
-
-    if (col < 1 || col > maxCols) {
-        return items;
-    }
-
-    const startIndex = col - 1;
-
-    for (let i = 0; i < maxRows; i++) {
-        items.push(this.getItem(startIndex + maxCols * i));
-    }
-
-    return items;
-};
-
-/**
- * Returns the height of the row
- *
- * @param {Number} row - Row
- * @returns {Number} Height of the row
- */
-DKTools.Layout.prototype.getRowHeight = function(row) {
-    if (DKTools.Utils.isFunction(this._rowHeight)) {
-        return this._rowHeight(row, this);
-    }
-
-    return this._rowHeight;
-};
-
-/**
- * Returns the width of the column
- *
- * @param {Number} col - Column
- * @returns {Number} Width of the column
- */
-DKTools.Layout.prototype.getColWidth = function(col) {
-    if (DKTools.Utils.isFunction(this._colWidth)) {
-        return this._colWidth(col, this);
-    }
-
-    return this._colWidth;
-};
-
-/**
- * Returns the Y coordinate of the row
- *
- * @param {Number} row - Row
- *
- * @see DKTools.Layout.prototype.getRowHeight
- *
- * @returns {Number} The Y coordinate of the row
- */
-DKTools.Layout.prototype.getRowY = function(row) {
-    let y = 0;
-
-    for (let i = 1; i < row; i++) {
-        y += this.getRowHeight(i) + this._verticalSpacing;
-    }
-
-    return y;
-};
-
-/**
- * Returns the X coordinate of the column
- *
- * @param {Number} col - Column
- *
- * @see DKTools.Layout.prototype.getColWidth
- *
- * @returns {Number} The X coordinate of the column
- */
-DKTools.Layout.prototype.getColX = function(col) {
-    let x = 0;
-
-    for (let i = 1; i < col; i++) {
-        x += this.getColWidth(i) + this._horizontalSpacing;
-    }
-
-    return x;
-};
-
-/**
- * Returns the row of the item
- *
- * @param {DKTools.Sprite | *} item - Item
- *
- * @see DKTools.Layout.prototype.getItemIndex
- * @see DKTools.Layout.prototype.getMaxCols
- *
- * @returns {Number} Row of the item or -1
- */
-DKTools.Layout.prototype.getItemRow = function(item) {
-    const index = this.getItemIndex(item);
-
-    if (index >= 0) {
-        return Math.floor(index / this.getMaxCols()) + 1;
-    }
-
-    return -1;
-};
-
-/**
- * Returns the column of the item
- *
- * @param {DKTools.Sprite | *} item - Item
- *
- * @see DKTools.Layout.prototype.getItemIndex
- * @see DKTools.Layout.prototype.getMaxCols
- *
- * @returns {Number} Column of the item or -1
- */
-DKTools.Layout.prototype.getItemCol = function(item) {
-    const index = this.getItemIndex(item);
-
-    if (index >= 0) {
-        return (index % this.getMaxCols()) + 1;
-    }
-
-    return -1;
-};
-
-/**
- * Returns the cell by row and column
- *
- * @param {Number} row - Row
- * @param {Number} col - Col
- *
- * @see DKTools.Layout.prototype.getMaxCols
- * @see DKTools.Layout.prototype.getColX
- * @see DKTools.Layout.prototype.getRowY
- * @see DKTools.Layout.prototype.getColWidth
- * @see DKTools.Layout.prototype.getRowHeight
- *
- * @returns {{ item: (DKTools.Sprite | * | undefined), x: Number, y: Number, width: Number, height: Number }}
- */
-DKTools.Layout.prototype.getCell = function(row, col) {
-    const index = this.getMaxCols() * (row - 1) + (col - 1);
-
-    return {
-        item: this.getItem(index),
-        x: this.getColX(col),
-        y: this.getRowY(row),
-        width: this.getColWidth(col),
-        height: this.getRowHeight(row)
-    };
-};
-
-// move methods
-
-/**
- * Moves the item
- *
- * @param {Number} index - Index
- * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - The X coordinate or Point or object with parameters
- * @param {Number} [y] - The Y coordinate (if object is Number)
- *
- * @param {Number} [object.x] - The X coordinate
- * @param {Number} [object.y] - The Y coordinate
- *
- * @see DKTools.Layout.prototype.getItem
- */
-DKTools.Layout.prototype.moveItem = function(index, object, y) {
-    const item = this.getItem(index);
-
-    if (item) {
-        item.move(object, y);
-    }
-};
-
-// invert methods
-
-/**
- * Inverts the layout
- *
- * @see DKTools.Layout.prototype.isInverted
- * @see DKTools.Layout.prototype.setInverted
- */
-DKTools.Layout.prototype.invert = function() {
-    this.setInverted(!this.isInverted());
-};
-
-// is methods
-
-/**
- * Returns true if the layout is empty
- *
- * @see DKTools.Layout.prototype.getMaxItems
- *
- * @returns {Boolean} Layout is empty
- */
-DKTools.Layout.prototype.isEmpty = function() {
-    return this.getMaxItems() === 0;
-};
-
-/**
- * Returns true if the layout is ready
- *
- * @override
- *
- * @see DKTools.Layout.prototype.isEmpty
- *
- * @returns {Boolean} Layout is ready
- */
-DKTools.Layout.prototype.isReady = function() {
-    return this.isEmpty() || _.every(this._items, item => item.isReady());
-};
-
-/**
- * Returns true if the layout is inverted
- *
- * @returns {Boolean} Layout is inverted
- */
-DKTools.Layout.prototype.isInverted = function() {
-    return this._inverted;
-};
-
-/**
- * Returns true if the layout is horizontal
- *
- * @see DKTools.Layout.prototype.getMaxRows
- *
- * @returns {boolean} Layout is horizontal
- */
-DKTools.Layout.prototype.isHorizontal = function() {
-    return this.getMaxRows() === 1;
-};
-
-/**
- * Returns true if the layout is vertical
- *
- * @see DKTools.Layout.prototype.getMaxCols
- *
- * @returns {boolean} Layout is vertical
- */
-DKTools.Layout.prototype.isVertical = function() {
-    return this.getMaxCols() === 1;
-};
-
-// has methods
-
-/**
- * Returns true if the layout has the items
- *
- * @see DKTools.Layout.prototype.isEmpty
- *
- * @returns {Boolean} Layout has the items
- */
-DKTools.Layout.prototype.hasItems = function() {
-    return !this.isEmpty();
-};
-
-/**
- * Returns true if the layout has the item
- *
- * @param {DKTools.Sprite | *} item - Item
- *
- * @see DKTools.Layout.prototype.getItemIndex
- *
- * @returns {Boolean} Layout has the item
- */
-DKTools.Layout.prototype.hasItem = function(item) {
-    return this.getItemIndex(item) >= 0;
-};
-
-// items methods
-
-/**
- * Calls the callback function for the items
- *
- * @param {Function} callback - Function for the items
- * @param {Boolean} [start=false] - Call of the "start" function
- *
- * @see DKTools.Layout.prototype.getItems
- * @see DKTools.Layout.prototype.start
- */
-DKTools.Layout.prototype.iterateItems = function(callback, start = false) {
-    _.forEach(this.getItems(), callback);
-
-    if (start) {
-        this.start();
-    }
-};
-
-/**
- * Starts the items
- *
- * @param {Boolean} [activate=false] - Activates the item
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.iterateItems
- */
-DKTools.Layout.prototype.startItems = function(activate = false, blockStart = false) {
-    const callback = item => {
-        item.start(activate);
-    };
-
-	this.iterateItems(callback, !blockStart);
-};
-
-/**
- * Resizes the item
- *
- * @version 6.0.0
- *
- * @param {DKTools.Sprite | Number} item - Item or Index
- * @param {Number} [width] - Width of the item
- * @param {Number} [height] - Height of the item
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.getItem
- * @see DKTools.Layout.prototype.hasItem
- * @see DKTools.Layout.prototype.start
- */
-DKTools.Layout.prototype.resizeItem = function(item, width, height, blockStart = false) {
-    if (Number.isFinite(item)) {
-        item = this.getItem(item);
-    }
-
-    if (this.hasItem(item) && item.resize(width, height)) {
-        if (!blockStart) {
-            this.start();
-        }
-    }
-};
-
-/**
- * Resizes the items
- *
- * @param {Number} [width] - Width of the item
- * @param {Number} [height] - Height of the item
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @see DKTools.Layout.prototype.resizeItem
- * @see DKTools.Layout.prototype.iterateItems
- */
-DKTools.Layout.prototype.resizeItems = function(width, height, blockStart = false) {
-    const callback = item => {
-        this.resizeItem(item, width, height, true);
-    };
-
-	this.iterateItems(callback, !blockStart);
-};
-
-/**
- * Activates the items
- *
- * @param {Boolean} [start=false] - Call of the "start" function
- *
- * @see DKTools.Layout.prototype.iterateItems
- */
-DKTools.Layout.prototype.activateItems = function(start = false) {
-    const callback = item => {
-        item.activate();
-    };
-
-    this.iterateItems(callback, start);
-};
-
-/**
- * Deactivates the items
- *
- * @param {Boolean} [start=false] - Call of the "start" function
- *
- * @see DKTools.Layout.prototype.iterateItems
- */
-DKTools.Layout.prototype.deactivateItems = function(start = false) {
-    const callback = item => {
-        item.deactivate();
-    };
-
-    this.iterateItems(callback, start);
-};
-
-/**
- * Shows the items
- *
- * @param {Boolean} [activate=false] - Activates the items
- * @param {Boolean} [start=false] - Call of the "start" function
- *
- * @see DKTools.Layout.prototype.iterateItems
- */
-DKTools.Layout.prototype.showItems = function(activate = false, start = false) {
-    const callback = item => {
-        item.show(activate);
-    };
-
-    this.iterateItems(callback, start);
-};
-
-/**
- * Hides the items
- *
- * @param {Boolean} [blockDeactivate=false] - Block deactivation of the items
- * @param {Boolean} [start=false] - Call of the "start" function
- *
- * @see DKTools.Layout.prototype.iterateItems
- */
-DKTools.Layout.prototype.hideItems = function(blockDeactivate = false, start = false) {
-    const callback = item => {
-        item.hide(blockDeactivate);
-    };
-
-    this.iterateItems(callback, start);
-};
-
-/**
- * Inserts the item
- * Returns inserted item or null
- *
- * @since 5.0.0
- *
- * @param {DKTools.Sprite | *} item - Item
- * @param {Number} [index=0] - Index
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @returns {DKTools.Sprite | * | null} Inserted item or null
- */
-DKTools.Layout.prototype.insertItem = function(item, index, blockStart = false) {
-    if (!(item instanceof DKTools.Sprite)) {
-        return null;
-    }
-
-    DKTools.Utils.Array.insert(this._items, item, index);
-
-    if (!blockStart) {
-        this.start();
-    }
-
-    return item;
-};
-
-/**
- * Inserts the items
- * Returns inserted items
- *
- * @since 5.0.0
- *
- * @param {DKTools.Sprite[] | Array} items - Items
- * @param {Number} [index=0] - Index
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- *
- * @returns {DKTools.Sprite[] | Array} Inserted items
- */
-DKTools.Layout.prototype.insertItems = function(items, index, blockStart = false) {
-    index = index || 0;
-
-    const insertedItems = _.map(items, (item, i) => this.insertItem(item, index + i, true));
-
-    if (insertedItems.length > 0 && !blockStart) {
-        this.start();
-    }
-
-    return insertedItems;
-};
-
-// align methods
-
-/**
- * Aligns the item
- *
- * @param {DKTools.Sprite | * | Number} item - Item or index
- *
- * @see DKTools.Layout.prototype.isReady
- * @see DKTools.Layout.prototype.getItemRow
- * @see DKTools.Layout.prototype.getItemCol
- * @see DKTools.Layout.prototype.getRowHeight
- * @see DKTools.Layout.prototype.getColWidth
- * @see DKTools.Layout.prototype.getColX
- * @see DKTools.Layout.prototype.getRowY
- * @see DKTools.Layout.prototype.addOneTimeEvent
- */
-DKTools.Layout.prototype.alignItem = function(item) {
-    if (this.isReady()) {
-        const itemRow = this.getItemRow(item);
-        const itemCol = this.getItemCol(item);
-        const rowHeight = this.getRowHeight(itemRow);
-        const colWidth = this.getColWidth(itemCol);
-        const x = this.getColX(itemCol) + (colWidth - item.width) / 2;
-        const y = this.getRowY(itemRow) + (rowHeight - item.height) / 2;
-
-        item.move(x, y);
-    } else {
-        this.addOneTimeEvent({
-            type: 'ready',
-            onSuccess: this.alignItem.bind(this, item)
-        });
-    }
-};
-
-/**
- * Aligns the row
- *
- * @param {Number} row - Row
- *
- * @see DKTools.Layout.prototype.getItemsInRow
- * @see DKTools.Layout.prototype.alignItem
- */
-DKTools.Layout.prototype.alignRow = function(row) {
-    _.forEach(this.getItemsInRow(row), this.alignItem.bind(this));
-};
-
-/**
- * Aligns the column
- *
- * @param {Number} col - Column
- *
- * @see DKTools.Layout.prototype.getItemsInCol
- * @see DKTools.Layout.prototype.alignItem
- */
-DKTools.Layout.prototype.alignCol = function(col) {
-    _.forEach(this.getItemsInCol(col), this.alignItem.bind(this));
-};
-
-/**
- * Aligns the items
- *
- * @see DKTools.Layout.prototype.addOneTimeEvent
- * @see DKTools.Layout.prototype.iterateItems
- * @see DKTools.Layout.prototype.alignItem
- */
-DKTools.Layout.prototype.alignItems = function() {
-    this.addOneTimeEvent({
-        type: 'ready',
-        onSuccess: () => {
-            this.iterateItems(this.alignItem.bind(this))
-        }
-    });
-};
-
-// update methods
-
-/**
- * Updates all
- *
- * @override
- *
- * @see DKTools.Sprite.prototype.updateAll
- * @see DKTools.Layout.prototype.updateLayout
- */
-DKTools.Layout.prototype.updateAll = function() {
-    DKTools.Sprite.prototype.updateAll.call(this);
-    this.updateLayout();
-};
-
-/**
- * Updates the layout
- *
- * @see DKTools.Layout.prototype.getMaxItems
- * @see DKTools.Layout.prototype.getMaxRows
- * @see DKTools.Layout.prototype.getMaxCols
- * @see DKTools.Layout.prototype.getColX
- * @see DKTools.Layout.prototype.getRowY
- * @see DKTools.Layout.prototype.moveItem
- */
-DKTools.Layout.prototype.updateLayout = function() {
-    const maxItems = this.getMaxItems();
-    const maxRows = this.getMaxRows();
-    const maxCols = this.getMaxCols();
-    let index = 0;
-
-    for (let i = 1; i <= maxRows && index < maxItems; i++) {
-        for (let j = 1; j <= maxCols && index < maxItems; j++) {
-            const x = this.getColX(j);
-            const y = this.getRowY(i);
-
-            this.moveItem(index++, x, y);
-        }
-    }
-};
-
 
 
 
@@ -33636,253 +33643,258 @@ DKTools.Window.prototype.update = function() {
 // DKTools.Window.Selectable
 //===========================================================================
 
-DKTools.Window.Selectable.prototype = Object.create(DKTools.Window.prototype);
-DKTools.Window.Selectable.prototype.constructor = DKTools.Window.Selectable;
-
-// standard methods
-
 /**
- * Returns the standard sprite of the contents
+ * Window selectable class
  *
- * @override
+ * @class DKTools.Window.Selectable
+ * @extends DKTools.Window
  *
- * @see DKTools.Sprite.Selectable
+ * @memberof DKTools.Window
  *
- * @returns {DKTools.Sprite.Selectable} Standard sprite of the contents
+ * @see DKTools.Window.Selectable.prototype.initialize
  */
-DKTools.Window.Selectable.prototype.standardContentsSprite = function() {
-    return new DKTools.Sprite.Selectable();
-};
+DKTools.Window.Selectable = class extends DKTools.Window {
 
-// needs create methods
+    // N methods
 
-/**
- * Returns true if needs to create the sprites of the arrows
- *
- * @override
- *
- * @returns {Boolean} Needs to create the sprites of the arrows
- */
-DKTools.Window.Selectable.prototype.needsCreateArrowsSprites = function() {
-    return true;
-};
+    /**
+     * Returns true if needs to create the sprites of the arrows
+     *
+     * @override
+     *
+     * @returns {Boolean} Needs to create the sprites of the arrows
+     */
+    needsCreateArrowsSprites() {
+        return true;
+    }
 
-// arrow methods
+    // O methods
 
-/**
- * Callback function that will be processing update of the arrow of up
- *
- * @param {DKTools.Event} event - Event
- *
- * @see DKTools.Window.prototype.createArrows
- */
-DKTools.Window.Selectable.prototype.onUpArrowUpdate = function(event) {
-    const arrow = event.target;
+    /**
+     * Callback function that will be processing update of the arrow of up
+     *
+     * @param {DKTools.Event} event - Event
+     *
+     * @see DKTools.Window.prototype.createArrows
+     */
+    onUpArrowUpdate(event) {
+        const arrow = event.target;
 
-    arrow.hide();
+        arrow.hide();
 
-    if (this.hasContentsSprite()) {
-        const contentsSprite = this._windowContentsSprite;
+        if (this.hasContentsSprite()) {
+            const contentsSprite = this._windowContentsSprite;
 
-        if (this.isChild(contentsSprite) &&
-            contentsSprite.isVisible() &&
-            contentsSprite.isSelectable() &&
-            contentsSprite.isVertical()) {
+            if (this.isChild(contentsSprite) &&
+                contentsSprite.isVisible() &&
+                contentsSprite.isSelectable() &&
+                contentsSprite.isVertical()) {
+
                 if (contentsSprite.getTopRow() > 0) {
                     arrow.show(this.isVisibleAndActive() && contentsSprite.isActive());
                 }
+            }
         }
     }
-};
 
-/**
- * Callback function that will be processing update of the arrow of down
- *
- * @param {DKTools.Event} event - Event
- *
- * @see DKTools.Window.prototype.createArrows
- */
-DKTools.Window.Selectable.prototype.onDownArrowUpdate = function(event) {
-    const arrow = event.target;
+    /**
+     * Callback function that will be processing update of the arrow of down
+     *
+     * @param {DKTools.Event} event - Event
+     *
+     * @see DKTools.Window.prototype.createArrows
+     */
+    onDownArrowUpdate(event) {
+        const arrow = event.target;
 
-    arrow.hide();
+        arrow.hide();
 
-    if (this.hasContentsSprite()) {
-        const contentsSprite = this._windowContentsSprite;
+        if (this.hasContentsSprite()) {
+            const contentsSprite = this._windowContentsSprite;
 
-        if (this.isChild(contentsSprite) &&
-            contentsSprite.isVisible() &&
-            contentsSprite.isSelectable() &&
-            contentsSprite.isVertical()) {
-                const topRow = contentsSprite.getTopRow();
-                const maxTopRow = contentsSprite.getMaxTopRow();
+            if (this.isChild(contentsSprite) && contentsSprite.isVisible() &&
+                contentsSprite.isSelectable() && contentsSprite.isVertical()) {
+                    const topRow = contentsSprite.getTopRow();
+                    const maxTopRow = contentsSprite.getMaxTopRow();
 
-                if (maxTopRow > 0 && topRow < maxTopRow) {
-                    arrow.show(this.isVisibleAndActive() && contentsSprite.isActive());
-                }
+                    if (maxTopRow > 0 && topRow < maxTopRow) {
+                        arrow.show(this.isVisibleAndActive() && contentsSprite.isActive());
+                    }
+            }
         }
     }
-};
 
-/**
- * Callback function that will be processing update of the arrow of left
- *
- * @param {DKTools.Event} event - Event
- *
- * @see DKTools.Window.prototype.createArrows
- */
-DKTools.Window.Selectable.prototype.onLeftArrowUpdate = function(event) {
-    const arrow = event.target;
+    /**
+     * Callback function that will be processing update of the arrow of left
+     *
+     * @param {DKTools.Event} event - Event
+     *
+     * @see DKTools.Window.prototype.createArrows
+     */
+    onLeftArrowUpdate(event) {
+        const arrow = event.target;
 
-    arrow.hide();
+        arrow.hide();
 
-    if (this.hasContentsSprite()) {
-        const contentsSprite = this._windowContentsSprite;
+        if (this.hasContentsSprite()) {
+            const contentsSprite = this._windowContentsSprite;
 
-        if (this.isChild(contentsSprite) &&
-            contentsSprite.isVisible() &&
-            contentsSprite.isSelectable() &&
-            contentsSprite.isHorizontal()) {
-                if (contentsSprite.getTopCol() > 0) {
-                    arrow.show(this.isVisibleAndActive() && contentsSprite.isActive());
-                }
+            if (this.isChild(contentsSprite) && contentsSprite.isVisible() &&
+                contentsSprite.isSelectable() && contentsSprite.isHorizontal()) {
+                    if (contentsSprite.getTopCol() > 0) {
+                        arrow.show(this.isVisibleAndActive() && contentsSprite.isActive());
+                    }
+            }
         }
     }
-};
 
-/**
- * Callback function that will be processing update of the arrow of right
- *
- * @param {DKTools.Event} event - Event
- *
- * @see DKTools.Window.prototype.createArrows
- */
-DKTools.Window.Selectable.prototype.onRightArrowUpdate = function(event) {
-    const arrow = event.target;
+    /**
+     * Callback function that will be processing update of the arrow of right
+     *
+     * @param {DKTools.Event} event - Event
+     *
+     * @see DKTools.Window.prototype.createArrows
+     */
+    onRightArrowUpdate(event) {
+        const arrow = event.target;
 
-    arrow.hide();
+        arrow.hide();
 
-    if (this.hasContentsSprite()) {
-        const contentsSprite = this._windowContentsSprite;
+        if (this.hasContentsSprite()) {
+            const contentsSprite = this._windowContentsSprite;
 
-        if (this.isChild(contentsSprite) &&
-            contentsSprite.isVisible() &&
-            contentsSprite.isSelectable() &&
-            contentsSprite.isHorizontal()) {
-                const topCol = contentsSprite.getTopCol();
-                const maxTopCol = contentsSprite.getMaxTopCol();
+            if (this.isChild(contentsSprite) && contentsSprite.isVisible() &&
+                contentsSprite.isSelectable() && contentsSprite.isHorizontal()) {
+                    const topCol = contentsSprite.getTopCol();
+                    const maxTopCol = contentsSprite.getMaxTopCol();
 
-                if (maxTopCol > 0 && topCol < maxTopCol) {
-                    arrow.show(this.isVisibleAndActive() && contentsSprite.isActive());
-                }
+                    if (maxTopCol > 0 && topCol < maxTopCol) {
+                        arrow.show(this.isVisibleAndActive() && contentsSprite.isActive());
+                    }
+            }
         }
     }
-};
 
-/**
- * Callback function that will be processing click of the arrow of up
- *
- * @param {DKTools.Event} event - Event
- *
- * @see DKTools.Window.prototype.createArrows
- */
-DKTools.Window.Selectable.prototype.onUpArrowMouseClick = function(event) {
-    const arrow = event.target;
+    /**
+     * Callback function that will be processing click of the arrow of up
+     *
+     * @param {DKTools.Event} event - Event
+     *
+     * @see DKTools.Window.prototype.createArrows
+     */
+    onUpArrowMouseClick(event) {
+        const arrow = event.target;
 
-    if (arrow.isVisibleAndActive()) {
-        this._windowContentsSprite.selectPrevItem();
+        if (arrow.isVisibleAndActive()) {
+            this._windowContentsSprite.selectPrevItem();
+        }
     }
-};
 
-/**
- * Callback function that will be processing click of the arrow of down
- *
- * @param {DKTools.Event} event - Event
- *
- * @see DKTools.Window.prototype.createArrows
- */
-DKTools.Window.Selectable.prototype.onDownArrowMouseClick = function(event) {
-    const arrow = event.target;
+    /**
+     * Callback function that will be processing click of the arrow of down
+     *
+     * @param {DKTools.Event} event - Event
+     *
+     * @see DKTools.Window.prototype.createArrows
+     */
+    onDownArrowMouseClick(event) {
+        const arrow = event.target;
 
-    if (arrow.isVisibleAndActive()) {
-        this._windowContentsSprite.selectNextItem();
+        if (arrow.isVisibleAndActive()) {
+            this._windowContentsSprite.selectNextItem();
+        }
     }
-};
 
-/**
- * Callback function that will be processing click of the arrow of left
- *
- * @param {DKTools.Event} event - Event
- *
- * @see DKTools.Window.prototype.createArrows
- */
-DKTools.Window.Selectable.prototype.onLeftArrowMouseClick = function(event) {
-    const arrow = event.target;
+    /**
+     * Callback function that will be processing click of the arrow of left
+     *
+     * @param {DKTools.Event} event - Event
+     *
+     * @see DKTools.Window.prototype.createArrows
+     */
+    onLeftArrowMouseClick(event) {
+        const arrow = event.target;
 
-    if (arrow.isVisibleAndActive()) {
-        this._windowContentsSprite.selectPrevItem();
+        if (arrow.isVisibleAndActive()) {
+            this._windowContentsSprite.selectPrevItem();
+        }
     }
-};
 
-/**
- * Callback function that will be processing click of the arrow of right
- *
- * @param {DKTools.Event} event - Event
- *
- * @see DKTools.Window.prototype.createArrows
- */
-DKTools.Window.Selectable.prototype.onRightArrowMouseClick = function(event) {
-    const arrow = event.target;
+    /**
+     * Callback function that will be processing click of the arrow of right
+     *
+     * @param {DKTools.Event} event - Event
+     *
+     * @see DKTools.Window.prototype.createArrows
+     */
+    onRightArrowMouseClick(event) {
+        const arrow = event.target;
 
-    if (arrow.isVisibleAndActive()) {
-        this._windowContentsSprite.selectNextItem();
+        if (arrow.isVisibleAndActive()) {
+            this._windowContentsSprite.selectNextItem();
+        }
     }
-};
 
-/**
- * Callback function that will be processing long press of the arrow of up
- *
- * @param {DKTools.Event} event - Event
- *
- * @see DKTools.Window.prototype.createArrows
- */
-DKTools.Window.Selectable.prototype.onUpArrowMouseLongPress = function(event) {
-   this.onUpArrowMouseClick(event);
-};
+    /**
+     * Callback function that will be processing long press of the arrow of up
+     *
+     * @param {DKTools.Event} event - Event
+     *
+     * @see DKTools.Window.prototype.createArrows
+     */
+    onUpArrowMouseLongPress(event) {
+        this.onUpArrowMouseClick(event);
+    }
 
-/**
- * Callback function that will be processing long press of the arrow of down
- *
- * @param {DKTools.Event} event - Event
- *
- * @see DKTools.Window.prototype.createArrows
- */
-DKTools.Window.Selectable.prototype.onDownArrowMouseLongPress = function(event) {
-    this.onDownArrowMouseClick(event);
-};
+    /**
+     * Callback function that will be processing long press of the arrow of down
+     *
+     * @param {DKTools.Event} event - Event
+     *
+     * @see DKTools.Window.prototype.createArrows
+     */
+    onDownArrowMouseLongPress(event) {
+        this.onDownArrowMouseClick(event);
+    }
 
-/**
- * Callback function that will be processing long press of the arrow of left
- *
- * @param {DKTools.Event} event - Event
- *
- * @see DKTools.Window.prototype.createArrows
- */
-DKTools.Window.Selectable.prototype.onLeftArrowMouseLongPress = function(event) {
-    this.onLeftArrowMouseClick(event);
-};
+    /**
+     * Callback function that will be processing long press of the arrow of left
+     *
+     * @param {DKTools.Event} event - Event
+     *
+     * @see DKTools.Window.prototype.createArrows
+     */
+    onLeftArrowMouseLongPress(event) {
+        this.onLeftArrowMouseClick(event);
+    }
 
-/**
- * Callback function that will be processing long press of the arrow of right
- *
- * @param {DKTools.Event} event - Event
- *
- * @see DKTools.Window.prototype.createArrows
- */
-DKTools.Window.Selectable.prototype.onRightArrowMouseLongPress = function(event) {
-    this.onRightArrowMouseClick(event);
-};
+    /**
+     * Callback function that will be processing long press of the arrow of right
+     *
+     * @param {DKTools.Event} event - Event
+     *
+     * @see DKTools.Window.prototype.createArrows
+     */
+    onRightArrowMouseLongPress(event) {
+        this.onRightArrowMouseClick(event);
+    }
 
+    // S methods
+
+    /**
+     * Returns the standard sprite of the contents
+     *
+     * @override
+     *
+     * @see DKTools.Sprite.Selectable
+     *
+     * @returns {DKTools.Sprite.Selectable} Standard sprite of the contents
+     */
+    standardContentsSprite() {
+        return new DKTools.Sprite.Selectable();
+    }
+
+};
 
 
 
@@ -35081,11 +35093,11 @@ ImageCache.prototype._truncateCache = function() {
         .filter(item => !this._mustBeHeld(item))
         .sort((a, b) => b.touch - a.touch)
         .forEach(item => {
-            if (sizeLeft > 0) {
+            if (sizeLeft > 0 && !DKTools.PreloadManager.isImageCachedByKey(item.key)) {
                 const bitmap = item.bitmap;
 
                 sizeLeft -= bitmap.width * bitmap.height;
-            } else{
+            } else {
                 delete items[item.key];
             }
         });
@@ -35158,6 +35170,21 @@ Graphics._createFPSMeter = function() {
 //===========================================================================
 // TouchInput
 //===========================================================================
+
+const DKTools_TouchInput_initialize = TouchInput.initialize;
+TouchInput.initialize = function() {
+    DKTools_TouchInput_initialize.call(this);
+
+    const param = DKToolsParam.get('Cursor Graphic');
+
+    if (param.Enabled) {
+        const graphicName = param.Graphic;
+
+        if (graphicName) {
+            document.body.style.cursor = `url('img/system/${graphicName}.png'), default`;
+        }
+    }
+};
 
 const DKTools_TouchInput_clear = TouchInput.clear;
 TouchInput.clear = function() {

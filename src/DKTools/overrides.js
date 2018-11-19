@@ -31,11 +31,11 @@ ImageCache.prototype._truncateCache = function() {
         .filter(item => !this._mustBeHeld(item))
         .sort((a, b) => b.touch - a.touch)
         .forEach(item => {
-            if (sizeLeft > 0) {
+            if (sizeLeft > 0 && !DKTools.PreloadManager.isImageCachedByKey(item.key)) {
                 const bitmap = item.bitmap;
 
                 sizeLeft -= bitmap.width * bitmap.height;
-            } else{
+            } else {
                 delete items[item.key];
             }
         });
@@ -108,6 +108,21 @@ Graphics._createFPSMeter = function() {
 //===========================================================================
 // TouchInput
 //===========================================================================
+
+const DKTools_TouchInput_initialize = TouchInput.initialize;
+TouchInput.initialize = function() {
+    DKTools_TouchInput_initialize.call(this);
+
+    const param = DKToolsParam.get('Cursor Graphic');
+
+    if (param.Enabled) {
+        const graphicName = param.Graphic;
+
+        if (graphicName) {
+            document.body.style.cursor = `url('img/system/${graphicName}.png'), default`;
+        }
+    }
+};
 
 const DKTools_TouchInput_clear = TouchInput.clear;
 TouchInput.clear = function() {

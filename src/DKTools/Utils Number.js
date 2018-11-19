@@ -65,32 +65,6 @@ DKTools.Utils.Number = class {
         return _.inRange(value, start, end);
     }
 
-    /**
-     * Returns true if the value is finite
-     *
-     * @static
-     *
-     * @param {Number} value - Value
-     *
-     * @returns {Boolean} Value is finite
-     */
-    static isFinite(value) {
-        return Number.isFinite(value);
-    }
-
-    /**
-     * Returns true if the value is NaN
-     *
-     * @static
-     *
-     * @param {Number} value - Value
-     *
-     * @returns {Boolean} Value is NaN
-     */
-    static isNaN(value) {
-        return Number.isNaN(value);
-    }
-
 };
 
 
