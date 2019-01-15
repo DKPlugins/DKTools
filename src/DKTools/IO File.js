@@ -61,7 +61,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     /**
      * Returns true if the entity exists
      *
-     * @version 5.0.0
+     * @version 6.2.1
      * @override
      *
      * @returns {Boolean} Entity exists
@@ -69,7 +69,9 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     exists() {
         if (DKTools.IO.isLocalMode()) {
             if (Decrypter.hasEncryptedAudio && this.isAudio() || Decrypter.hasEncryptedImages && this.isImage()) {
-                return DKTools.IO.pathExists(Decrypter.extToEncryptExt(this.getFullName()));
+                const path = DKTools.IO.normalizePath(this.getPath() + '/' + Decrypter.extToEncryptExt(this.getFullName()));
+
+                return DKTools.IO.pathExists(path);
             }
         }
 
@@ -134,13 +136,13 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     }
 
     /**
-     * Returns true if an extension of the file is equal to .png or .rpgmvp
+     * Returns true if an extension of the file is equal to .png, .rpgmvp or .webp
      *
-     * @version 3.0.0
-     * @returns {Boolean} Extension of the file is equal to .png or .rpgmvp
+     * @version 6.2.1
+     * @returns {Boolean} Extension of the file is equal to .png, .rpgmvp or .webp
      */
     isImage() {
-        return this._extension === '.png' || this._extension === '.rpgmvp';
+        return this._extension === '.png' || this._extension === '.rpgmvp' || this._extension === '.webp';
     }
 
     /**

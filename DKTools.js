@@ -3,8 +3,8 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 6.2.0
-Release: 01.11.2018
+Version: 6.2.1
+Release: 24.12.2018
 First release: 13.01.2016
 Supported languages: Russian, English
 */
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 6.2.0
-Релиз: 01.11.2018
+Версия: 6.2.1
+Релиз: 24.12.2018
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.6.2.0 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.6.2.1 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 6.2.0
- Release: 01.11.2018
+ Version: 6.2.1
+ Release: 24.12.2018
  First release: 13.01.2016
  Supported languages: Russian, English
  Thank you for your support: https://dk-plugins.ru/donate
@@ -217,7 +217,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.6.2.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.6.2.1 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -225,8 +225,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 6.2.0
- Релиз: 01.11.2018
+ Версия: 6.2.1
+ Релиз: 24.12.2018
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
  Спасибо за Вашу поддержку: https://dk-plugins.ru/donate
@@ -1137,7 +1137,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 window.Imported = window.Imported || {};
-window.Imported.DKTools = '6.2.0';
+window.Imported.DKTools = '6.2.1';
 
 
 
@@ -4963,7 +4963,7 @@ DKTools.IO.Entity = class {
     /**
      * Returns true if the entity is a file
      *
-     * @version 5.0.0
+     * @version 6.2.1
      * @since 2.0.0
      *
      * @returns {Boolean} Entity is a file
@@ -4971,6 +4971,12 @@ DKTools.IO.Entity = class {
     isFile() {
         if (this instanceof DKTools.IO.File) {
             if (DKTools.IO.isLocalMode()) {
+                if (Decrypter.hasEncryptedAudio && this.isAudio() || Decrypter.hasEncryptedImages && this.isImage()) {
+                    const path = DKTools.IO.normalizePath(this.getPath() + '/' + Decrypter.extToEncryptExt(this.getFullName()));
+
+                    return DKTools.IO.isFile(path);
+                }
+
                 return DKTools.IO.isFile(this.getFullPath());
             } else {
                 return !!this.hasExtension();
@@ -5267,7 +5273,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     /**
      * Returns true if the entity exists
      *
-     * @version 5.0.0
+     * @version 6.2.1
      * @override
      *
      * @returns {Boolean} Entity exists
@@ -5275,7 +5281,9 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     exists() {
         if (DKTools.IO.isLocalMode()) {
             if (Decrypter.hasEncryptedAudio && this.isAudio() || Decrypter.hasEncryptedImages && this.isImage()) {
-                return DKTools.IO.pathExists(Decrypter.extToEncryptExt(this.getFullName()));
+                const path = DKTools.IO.normalizePath(this.getPath() + '/' + Decrypter.extToEncryptExt(this.getFullName()));
+
+                return DKTools.IO.pathExists(path);
             }
         }
 
@@ -5340,13 +5348,13 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     }
 
     /**
-     * Returns true if an extension of the file is equal to .png or .rpgmvp
+     * Returns true if an extension of the file is equal to .png, .rpgmvp or .webp
      *
-     * @version 3.0.0
-     * @returns {Boolean} Extension of the file is equal to .png or .rpgmvp
+     * @version 6.2.1
+     * @returns {Boolean} Extension of the file is equal to .png, .rpgmvp or .webp
      */
     isImage() {
-        return this._extension === '.png' || this._extension === '.rpgmvp';
+        return this._extension === '.png' || this._extension === '.rpgmvp' || this._extension === '.webp';
     }
 
     /**
@@ -6219,7 +6227,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * @example
      * var directory = new DKTools.IO.Directory('img/');
-     * var directories = directory.findFiles({ sync: true, cyclic: true, template: 'Window.png' });
+     * var directories = directory.findFiles({ sync: true, template: 'Window.png' });
      *
      * @see DKTools.IO.Directory.prototype.getAll
      *
@@ -35706,10 +35714,15 @@ SceneManager.updateScene = function() {
             this.onSceneCreate();
         }
 
-        if (!this._sceneStarted && this._scene.isReady()) {
-            this._scene.start();
-            this._sceneStarted = true;
-            this.onSceneStart();
+        if (this._sceneCreated && !this._sceneStarted) {
+            try {
+                if (this._scene.isReady()) {
+                    this._scene.start();
+                    this._sceneStarted = true;
+                    this.onSceneStart();
+                }
+            } catch (e) { // eslint-disable-line no-empty
+            }
         }
 
         if (this.isCurrentSceneStarted()) {

@@ -117,7 +117,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * @example
      * var directory = new DKTools.IO.Directory('img/');
-     * var directories = directory.findFiles({ sync: true, cyclic: true, template: 'Window.png' });
+     * var directories = directory.findFiles({ sync: true, template: 'Window.png' });
      *
      * @see DKTools.IO.Directory.prototype.getAll
      *

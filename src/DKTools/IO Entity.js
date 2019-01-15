@@ -264,7 +264,7 @@ DKTools.IO.Entity = class {
     /**
      * Returns true if the entity is a file
      *
-     * @version 5.0.0
+     * @version 6.2.1
      * @since 2.0.0
      *
      * @returns {Boolean} Entity is a file
@@ -272,6 +272,12 @@ DKTools.IO.Entity = class {
     isFile() {
         if (this instanceof DKTools.IO.File) {
             if (DKTools.IO.isLocalMode()) {
+                if (Decrypter.hasEncryptedAudio && this.isAudio() || Decrypter.hasEncryptedImages && this.isImage()) {
+                    const path = DKTools.IO.normalizePath(this.getPath() + '/' + Decrypter.extToEncryptExt(this.getFullName()));
+
+                    return DKTools.IO.isFile(path);
+                }
+
                 return DKTools.IO.isFile(this.getFullPath());
             } else {
                 return !!this.hasExtension();

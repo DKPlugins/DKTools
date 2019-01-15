@@ -644,10 +644,15 @@ SceneManager.updateScene = function() {
             this.onSceneCreate();
         }
 
-        if (!this._sceneStarted && this._scene.isReady()) {
-            this._scene.start();
-            this._sceneStarted = true;
-            this.onSceneStart();
+        if (this._sceneCreated && !this._sceneStarted) {
+            try {
+                if (this._scene.isReady()) {
+                    this._scene.start();
+                    this._sceneStarted = true;
+                    this.onSceneStart();
+                }
+            } catch (e) { // eslint-disable-line no-empty
+            }
         }
 
         if (this.isCurrentSceneStarted()) {
