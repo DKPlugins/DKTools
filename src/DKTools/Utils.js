@@ -91,19 +91,6 @@ DKTools.Utils = class {
     // C methods
 
     /**
-     * Checks the minimal version of RPG Maker
-     *
-     * @since 6.1.0
-     * @private
-     * @static
-     */
-    static _checkRPGMakerVersion() {
-        if (Utils.RPGMAKER_VERSION < '1.6.0') {
-            throw Error('Required to update RPG Maker MV to minimal version 1.6.0 (Installed: %1)'.format(Utils.RPGMAKER_VERSION));
-        }
-    }
-
-    /**
      * Checks the updates
      *
      * @version 6.0.0

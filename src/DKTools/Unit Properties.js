@@ -9,7 +9,7 @@
  * @extends DKTools.Unit
  *
  * @since 2.0.0
- * @memberof DKTools
+ * @memberof DKTools.Unit
  *
  * @example
  * var object = { width: 100, height: 50 };
@@ -20,8 +20,10 @@
  * });
  *
  * unit.getValue(); // => { width: 50, height: 25 }
+ * unit.getValue('width'); // => 50
+ * unit.getValue('height'); // => 25
  *
- * @see DKTools.Unit.Properties.initialize
+ * @see DKTools.Unit.Properties.prototype.initialize
  */
 DKTools.Unit.Properties = class extends DKTools.Unit {
 
@@ -52,10 +54,13 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
      * Adds the unit (parameter) to this unit
      * Returns this unit
      *
+     * @version 6.3.0
+     *
      * @override
      *
      * @param {DKTools.Unit | Object | Number} unit - Unit
      *
+     * @see DKTools.Unit.Properties.prototype._getProperties
      * @see DKTools.Unit.Properties.prototype._getValueFromUnit
      *
      * @returns {DKTools.Properties} This unit
@@ -65,11 +70,7 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
             return this;
         }
 
-        let properties = this._properties;
-
-        if (DKTools.Utils.isFunction(properties)) {
-            properties = properties(this);
-        }
+        const properties = this._getProperties();
 
         _.forEach(properties, property => {
             let value = this._getValueFromUnit(unit);
@@ -110,10 +111,13 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
      * Divides the unit (parameter) to this unit
      * Returns this unit
      *
+     * @version 6.3.0
+     *
      * @override
      *
      * @param {DKTools.Unit | Object | Number} unit - Unit
      *
+     * @see DKTools.Unit.Properties.prototype._getProperties
      * @see DKTools.Unit.Properties.prototype._getValueFromUnit
      *
      * @returns {DKTools.Properties} This unit
@@ -123,11 +127,7 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
             return this;
         }
 
-        let properties = this._properties;
-
-        if (DKTools.Utils.isFunction(properties)) {
-            properties = properties(this);
-        }
+        const properties = this._getProperties();
 
         _.forEach(properties, property => {
             let value = this._getValueFromUnit(unit);
@@ -156,13 +156,21 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
     /**
      * Returns true if the unit equals unit (parameter)
      *
+     * @version 6.3.0
+     *
      * @override
+     *
      * @param {DKTools.Unit} unit - Unit to compare
+     *
      * @returns {Boolean} Unit equals unit (parameter)
      */
     equals(unit) {
         if (!unit) {
             return false;
+        }
+
+        if (this === unit) {
+            return true;
         }
 
         return _.isEqual(this._source, unit.source) &&
@@ -173,42 +181,76 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
     // G methods
 
     /**
+     * Returns the properties
+     *
+     * @since 6.3.0
+     *
+     * @private
+     *
+     * @returns {String[]} Properties
+     */
+    _getProperties() {
+        let properties = this._properties;
+
+        if (DKTools.Utils.isFunction(properties)) {
+            properties = properties(this);
+        }
+
+        return Array.isArray(properties) ? properties : [];
+    }
+
+    /**
      * Returns the percents
      *
+     * @version 6.3.0
+     *
      * @override
+     *
      * @param {String} [property] - Property
-     * @returns {Number}
+     *
+     * @returns {Number} Percents
      */
     getPercents(property) {
+        if (Number.isFinite(this._percents)) {
+            return this._percents;
+        }
+
         if (DKTools.Utils.isFunction(this._percents)) {
-            return this._percents(property, this) || 100;
+            const percents = this._percents(property, this);
+
+            return Number.isFinite(percents) ? percents : 100;
         }
 
         if (this._percents instanceof Object) {
             if (DKTools.Utils.isFunction(this._percents[property])) {
-                return this._percents[property](this) || 100;
+                const percents = this._percents[property](this);
+
+                return Number.isFinite(percents) ? percents : 100;
             }
 
-            return this._percents[property] || 100;
+            return Number.isFinite(this._percents[property]) ? this._percents[property] : 100;
         }
 
-        return this._percents || 100;
+        return 100;
     }
 
     /**
      * Returns the value of the unit
      *
+     * @version 6.3.0
+     *
      * @override
      *
      * @param {String} [property] - Property
      *
+     * @see DKTools.Unit.Properties.prototype.hasGetValueHandler
      * @see DKTools.Unit.Properties.prototype.getValueBase
      * @see DKTools.Utils.isFunction
      *
      * @returns {Number} Value of the unit
      */
     getValue(property) {
-        if (DKTools.Utils.isFunction(this._getValueHandler)) {
+        if (this.hasGetValueHandler()) {
             return this._getValueHandler(property, this);
         }
 
@@ -218,19 +260,32 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
     /**
      * Returns the value of the unit
      *
+     * @version 6.3.0
+     *
      * @override
+     *
      * @param {String} [property] - Property
+     *
      * @returns {Object | Number} Value of the unit
      */
     getValueBase(property) {
         const handler = property => {
-            const percents = this.getPercents(property);
-
-            if (this._source[property] instanceof DKTools.Unit) {
-                return this._source[property].getValue(property) * percents / 100;
+            if (!this.hasSource()) {
+                return Number.NaN;
             }
 
-            const unit = new DKTools.Unit.Property({ source: this._source, property, percents });
+            const source = this._source;
+            const percents = this.getPercents(property);
+
+            if (percents === 0) {
+                return 0;
+            }
+
+            if (source[property] instanceof DKTools.Unit) {
+                return source[property].getValue(property) * percents / 100;
+            }
+
+            const unit = new DKTools.Unit.Property({ source, percents, property });
 
             return unit.getValue();
         };
@@ -239,11 +294,52 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
             return handler(property);
         }
 
-        return _.reduce(this._properties, (acc, property) => {
+        const properties = this._getProperties();
+
+        return _.reduce(properties, (acc, property) => {
             acc[property] = handler(property);
 
             return acc;
         }, {});
+    }
+
+    // H methods
+
+    /**
+     * Returns true if the unit has the property
+     *
+     * @since 6.3.0
+     *
+     * @param {String} property - Property
+     *
+     * @returns {Boolean} Unit has the property
+     */
+    hasProperty(property) {
+        return DKTools.Utils.Array.contains(this._getProperties(), property);
+    }
+
+    /**
+     * Returns true if the unit has the properties
+     *
+     * @since 6.3.0
+     *
+     * @returns {Boolean} Unit has the properties
+     */
+    hasProperties() {
+        return DKTools.Utils.isFunction(this._properties) || Array.isArray(this._properties) && this._properties.length > 0;
+    }
+
+    /**
+     * Returns true if the unit has the source
+     *
+     * @since 6.3.0
+     *
+     * @override
+     *
+     * @returns {Boolean} Unit has the source
+     */
+    hasSource() {
+        return this._source instanceof Object;
     }
 
     // M methods
@@ -252,10 +348,13 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
      * Multiplies the unit (parameter) to this unit
      * Returns this unit
      *
+     * @version 6.3.0
+     *
      * @override
      *
      * @param {DKTools.Unit | Object | Number} unit - Unit
      *
+     * @see DKTools.Unit.Properties.prototype._getProperties
      * @see DKTools.Unit.Properties.prototype._getValueFromUnit
      *
      * @returns {DKTools.Properties} This unit
@@ -265,11 +364,7 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
             return this;
         }
 
-        let properties = this._properties;
-
-        if (DKTools.Utils.isFunction(properties)) {
-            properties = properties(this);
-        }
+        const properties = this._getProperties();
 
         _.forEach(properties, property => {
             let value = this._getValueFromUnit(unit);
@@ -326,10 +421,13 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
      * Subtracts the unit (parameter) to this unit
      * Returns this unit
      *
+     * @version 6.3.0
+     *
      * @override
      *
      * @param {DKTools.Unit | Object | Number} unit - Unit
      *
+     * @see DKTools.Unit.Properties.prototype._getProperties
      * @see DKTools.Unit.Properties.prototype._getValueFromUnit
      *
      * @returns {DKTools.Properties} This unit
@@ -339,11 +437,7 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
             return this;
         }
 
-        let properties = this._properties;
-
-        if (DKTools.Utils.isFunction(properties)) {
-            properties = properties(this);
-        }
+        const properties = this._getProperties();
 
         _.forEach(properties, property => {
             let value = this._getValueFromUnit(unit);

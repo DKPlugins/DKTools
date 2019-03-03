@@ -61,41 +61,36 @@ DKTools.Sprite.ProgressBar.Rectangle = class extends DKTools.Sprite.ProgressBar 
     /**
      * Returns the standard handler of draw of the graphic for horizontal progress bar
      *
+     * @version 6.3.0
+     *
      * @returns {Function} Standard handler of draw of the graphic for horizontal progress bar
      */
     standardHorizontalDrawGraphicHandler() {
         return () => {
-            this.fillAll(this._backgroundColor);
-
-            if (!this.isEmpty()) {
-                this.fillRect({
-                    color: this._progressColor,
-                    width: this._value * this.realWidth / this._maxValue
-                });
-            }
+            this.drawGauge({
+                backgroundColor: this._backgroundColor,
+                color: this._progressColor,
+                rate: this._value / this._maxValue
+            });
         };
     }
 
     /**
      * Returns the standard handler of draw of the graphic for vertical progress bar
      *
+     * @version 6.3.0
+     *
      * @returns {Function} Standard handler of draw of the graphic for vertical progress bar
      */
     standardVerticalDrawGraphicHandler() {
         return () => {
-            this.fillAll(this._backgroundColor);
-
-            if (!this.isEmpty()) {
-                const realHeight = this.realHeight;
-                const height = this._value * realHeight / this._maxValue;
-
-                this.fillRect({
-                    color: this._progressColor,
-                    y: realHeight - height,
-                    width: this.realWidth,
-                    height
-                });
-            }
+            this.drawGauge({
+                backgroundColor: this._backgroundColor,
+                color: this._progressColor,
+                rate: this._value / this._maxValue,
+                type: 'vertical',
+                reversed: true
+            });
         };
     }
 

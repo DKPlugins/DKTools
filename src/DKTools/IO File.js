@@ -19,12 +19,12 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     /**
      * Initializes the file
      *
-     * @version 5.0.0
+     * @version 6.3.0
      * @override
      *
      * @param {String} fullPath - Path to file
      */
-    initialize(fullPath) {
+    initialize(fullPath = '') {
         DKTools.IO.Entity.prototype.initialize.call(this, fullPath);
 
         this._detectExtension();

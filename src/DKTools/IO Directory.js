@@ -26,7 +26,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_DIRECTORY_ALREADY_EXISTS
      *
      * @example
-     * var directory = new DKTools.IO.Directory('/saves/');
+     * var directory = new DKTools.IO.Directory('saves/');
      * directory.create();
      *
      * @see FileSystem.mkdirSync
@@ -83,6 +83,51 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 }
             });
         });
+    }
+
+    /**
+     * Creates the new directory
+     * Returns a code of the result of an operation
+     *
+     * @since 6.3.0
+     *
+     * @param {String} name - Name of the directory
+     *
+     * @see DKTools.IO.Directory.prototype.create
+     *
+     * @returns {Number} Code of the result of an operation
+     */
+    createDirectory(name) {
+        const fullPath = DKTools.IO.normalizePath(this.getFullPath() + '/' + name);
+        const directory = new DKTools.IO.Directory(fullPath);
+
+        return directory.create();
+    }
+
+    /**
+     * Creates the new directory
+     * Asynchronous version of DKTools.IO.Directory.prototype.createDirectory
+     * Promise resolves a code of the result of an operation
+     *
+     * Possible results:
+     * DKTools.IO.OK
+     * DKTools.IO.ERROR_NOT_LOCAL_MODE
+     * DKTools.IO.ERROR_DIRECTORY_ALREADY_EXISTS
+     *
+     * @since 6.3.0
+     * @async
+     *
+     * @param {String} name - Name of the directory
+     *
+     * @see DKTools.IO.Directory.prototype.createAsync
+     *
+     * @returns {Promise}
+     */
+    async createDirectoryAsync(name) {
+        const fullPath = DKTools.IO.normalizePath(this.getFullPath() + '/' + name);
+        const directory = new DKTools.IO.Directory(fullPath);
+
+        return directory.createAsync();
     }
 
     // F methods
@@ -1090,6 +1135,19 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 resolve(result);
             }
         });
+    }
+
+    /**
+     * Returns the root directory
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.IO.Directory.prototype.getPath
+     *
+     * @returns {DKTools.IO.Directory} Root directory
+     */
+    getRootDirectory() {
+        return new DKTools.IO.Directory(this.getPath());
     }
 
     // I methods

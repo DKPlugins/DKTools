@@ -553,6 +553,19 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     }
 
     /**
+     * Returns the name of the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemName
+     *
+     * @returns {String | undefined} Name of the last selected item or undefined
+     */
+    getLastItemName() {
+        return this.getItemName(this._lastIndex);
+    }
+
+    /**
      * Returns the rectangle of the item
      *
      * @version 6.0.0
@@ -588,6 +601,19 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     }
 
     /**
+     * Returns the rectangle of the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemRect
+     *
+     * @returns {Rectangle} Rectangle of the last selected item
+     */
+    getLastItemRect() {
+        return this.getItemRect(this._lastIndex);
+    }
+
+    /**
      * Returns the rectangle of text of the item
      *
      * @version 6.0.0
@@ -605,6 +631,32 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
         rect.width -= this._textPadding * 2;
 
         return rect;
+    }
+
+    /**
+     * Returns the rectangle of text of the current item (selected item)
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemRectForText
+     *
+     * @returns {Rectangle} Rectangle of text of the current item (selected item)
+     */
+    getCurrentItemRectForText() {
+        return this.getItemRectForText(this._index);
+    }
+
+    /**
+     * Returns the rectangle of text of the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemRectForText
+     *
+     * @returns {Rectangle} Rectangle of text of the last selected item
+     */
+    getLastItemRectForText() {
+        return this.getItemRectForText(this._lastIndex);
     }
 
     /**
@@ -749,11 +801,12 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     /**
      * Returns the full info of the item
      *
+     * @version 6.3.0
      * @since 6.0.0
      *
      * @param {Number} index - Index
      *
-     * @returns {{ index: Number, item: Object, name: String, enabled: Boolean, rect: Rectangle, rectForText: Rectangle, font: Object, textColor: String, paintOpacity: Number, align: String }} Full info of the item
+     * @returns {{ index: Number, item: Object, name: String, enabled: Boolean, handled: Boolean, selected: Boolean, rect: Rectangle, rectForText: Rectangle, font: Object, textColor: String, paintOpacity: Number, align: String }} Full info of the item
      */
     getItemFullInfo(index) {
         const item = this.getItem(index);
@@ -765,6 +818,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
             name: this.getItemName(index),
             enabled: this.isItemEnabled(index),
             handled: this.isItemHandled(index),
+            selected: this.isItemSelected(index),
             rect: this.getItemRect(index),
             rectForText: this.getItemRectForText(index),
             font: this.getItemFont(index),
@@ -772,6 +826,32 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
             paintOpacity: this.getItemPaintOpacity(index),
             align: this.getItemAlign(index)
         };
+    }
+
+    /**
+     * Returns the full info of the current item (selected item)
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.prototype.getItemFullInfo
+     *
+     * @returns {{ index: Number, item: Object, name: String, enabled: Boolean, handled: Boolean, selected: Boolean, rect: Rectangle, rectForText: Rectangle, font: Object, textColor: String, paintOpacity: Number, align: String }} Full info
+     */
+    getCurrentItemFullInfo() {
+        return this.getItemFullInfo(this._index);
+    }
+
+    /**
+     * Returns the full info of the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.prototype.getItemFullInfo
+     *
+     * @returns {{ index: Number, item: Object, name: String, enabled: Boolean, handled: Boolean, selected: Boolean, rect: Rectangle, rectForText: Rectangle, font: Object, textColor: String, paintOpacity: Number, align: String }} Full info
+     */
+    getLastItemFullInfo() {
+        return this.getItemFullInfo(this._lastIndex);
     }
 
     /**
@@ -846,6 +926,19 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     }
 
     /**
+     * Returns the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {Object | null} Last selected item or null
+     */
+    getLastItem() {
+        return this.getItem(this._lastIndex);
+    }
+
+    /**
      * Returns the visible items
      *
      * @returns {Object[]} Visible items
@@ -899,6 +992,19 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     }
 
     /**
+     * Returns the symbol of the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemSymbol
+     *
+     * @returns {String | null} Symbol of the last selected item or null
+     */
+    getLastItemSymbol() {
+        return this.getItemSymbol(this._lastIndex);
+    }
+
+    /**
      * Returns the ext of the current item (selected item)
      *
      * @see DKTools.Sprite.Selectable.prototype.getItemExt
@@ -907,6 +1013,19 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      */
     getCurrentItemExt() {
         return this.getItemExt(this._index);
+    }
+
+    /**
+     * Returns the ext of the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemExt
+     *
+     * @returns {* | null} Ext of the last selected item or null
+     */
+    getLastItemExt() {
+        return this.getItemExt(this._lastIndex);
     }
 
     /**

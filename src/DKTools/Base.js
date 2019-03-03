@@ -89,7 +89,7 @@ DKTools.Base = class {
      * @private
      */
     _addAllChildren() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -502,7 +502,7 @@ DKTools.Base = class {
      * Checks the size of the object
      */
     checkSize() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -749,7 +749,7 @@ DKTools.Base = class {
      * Draws all
      */
     drawAll() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -791,7 +791,7 @@ DKTools.Base = class {
      * Draws a bitmap
      * Returns true if successfully completed
      *
-     * @version 6.1.0
+     * @version 6.3.0
      *
      * @param {Bitmap | Object} object - Bitmap or object with parameters
      * @param {Object} [options={}] - Options for drawing
@@ -855,6 +855,8 @@ DKTools.Base = class {
             return false;
         }
 
+        let result = true;
+
         bitmap.addLoadListener(() => {
             const isFunction = DKTools.Utils.isFunction;
             const isString = DKTools.Utils.isString;
@@ -888,6 +890,12 @@ DKTools.Base = class {
             let dy   =  _.defaultTo(destination.y, 0);
             let dh   =  _.defaultTo(destination.height, sh);
 
+            if (sw === 0 || sh === 0 || dw === 0 || dh === 0) {
+                result = false;
+
+                return;
+            }
+
             if (isString(sy)) { // line number
                 sy = lineHeight * parseFloat(sy);
             }
@@ -915,7 +923,7 @@ DKTools.Base = class {
             }
         });
 
-        return true;
+        return result;
     }
 
     /**
@@ -1020,7 +1028,7 @@ DKTools.Base = class {
      * Draws a circle
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 6.3.0
      *
      * @param {Object} [options={}] - Options for drawing
      *
@@ -1048,6 +1056,10 @@ DKTools.Base = class {
 
         const { pos, radius, color, paintOpacity, resetPaintOpacity} = options;
         let { x, y } = options;
+
+        if (radius === 0) {
+            return false;
+        }
 
         if (pos instanceof Object) {
             x = pos.x;
@@ -1141,6 +1153,123 @@ DKTools.Base = class {
         y = Math.floor((y || 0) + Math.max(height - ph, 0) / 2);
 
         return this.drawBitmap(bitmap, { ...options, source, destination: { x, y } });
+    }
+
+    /**
+     * Draws a gauge
+     * Returns true if successfully completed
+     *
+     * @since 6.3.0
+     *
+     * @param {Object} [options={}] - Options for drawing
+     *
+     * @param {Number} [options.x] - The X coordinate
+     * @param {Number | String} [options.y] - The Y coordinate or line number (String)
+     * @param {Number} [options.width] - Width of the rectangle
+     * @param {Number | String} [options.height] - Height of the rectangle or number of lines (String)
+     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
+     * @param {PIXI.Rectangle | Rectangle | Object} [options.rect] - Rectangle for drawing (ignores other parameters of position: x, y, width, height, pos)
+     * @param {Number} [options.rate] - Gauge width rate
+     * @param {String} [options.type] - Gauge type (horizontal or vertical)
+     * @param {Boolean} [options.reversed] - Reversed gauge
+     * @param {String} [options.gradient] - Gradient type (horizontal or vertical)
+     * @param {String} [options.backgroundColor] - Background fill color
+     * @param {String} [options.color] - Fill color
+     * @param {String} [options.color1] - First gradient color (ignores other parameters: color)
+     * @param {String} [options.color2] - Second gradient color (ignores other parameters: color)
+     * @param {Number} [options.paintOpacity] - Change paint opacity
+     * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
+     *
+     * @param {Number} [options.pos.x] - The X coordinate
+     * @param {Number | String} [options.pos.y] - The Y coordinate or line number (String)
+     *
+     * @param {Number} [options.rect.x] - The X coordinate
+     * @param {Number | String} [options.rect.y] - The Y coordinate or line number (String)
+     * @param {Number} [options.rect.width] - Width of the rectangle
+     * @param {Number | String} [options.rect.height] - Height of the rectangle or number of lines (String)
+     *
+     * @see DKTools.Base.prototype.hasBitmap
+     * @see DKTools.Base.prototype.standardDrawingWidth
+     * @see DKTools.Base.prototype.standardDrawingHeight
+     * @see DKTools.Base.prototype.fillRect
+     * @see DKTools.Base.prototype.gradientFillRect
+     *
+     * @returns {Boolean} Successfully completed
+     */
+    drawGauge(options = {}) {
+        if (!this.hasBitmap()) {
+            return false;
+        }
+
+        const { pos, rect, reversed, gradient, paintOpacity, resetPaintOpacity } = options;
+        let { x, y, width, height, type, rate, backgroundColor, color, color1, color2 } = options;
+
+        if (pos instanceof Object) {
+            x = pos.x;
+            y = pos.y;
+        }
+
+        if (rect instanceof Object) {
+            x = rect.x;
+            y = rect.y;
+            width = rect.width;
+            height = rect.height;
+        }
+
+        if (DKTools.Utils.isString(y)) { // line number
+            y = this.getLineHeight() * parseFloat(y);
+        }
+
+        if (DKTools.Utils.isString(height)) { // number of lines
+            height = this.getLineHeight() * parseFloat(height);
+        }
+
+        if (width === 0 || height === 0) {
+            return false;
+        }
+
+        x = x || 0;
+        y = y || 0;
+        width = width || this.standardDrawingWidth();
+        height = height || this.standardDrawingHeight();
+        backgroundColor = _.defaultTo(backgroundColor, 'black');
+        color = _.defaultTo(color, 'white');
+        color1 = _.defaultTo(color1, color);
+        color2 = _.defaultTo(color2, color);
+        type = _.defaultTo(type, 'horizontal');
+        rate = _.defaultTo(rate, 1);
+
+        const gradientRect = { x, y, width, height };
+
+        if (type === 'horizontal') {
+            gradientRect.width *= rate;
+
+            if (reversed) {
+                gradientRect.x += width - gradientRect.width;
+            }
+        } else if (type === 'vertical') {
+            gradientRect.height *= rate;
+
+            if (reversed) {
+                gradientRect.y += height - gradientRect.height;
+            }
+        } else {
+            return false;
+        }
+
+        if (Number.isFinite(paintOpacity)) {
+            this.changePaintOpacity(paintOpacity);
+        }
+
+        this.fillRect({ x, y, width, height, color: backgroundColor });
+
+        this.gradientFillRect({ rect: gradientRect, color1, color2, vertical: gradient === 'vertical' });
+
+        if (resetPaintOpacity) {
+            this.resetPaintOpacity();
+        }
+
+        return true;
     }
 
     /**
@@ -1242,14 +1371,14 @@ DKTools.Base = class {
             y = this.getLineHeight() * parseFloat(y);
         }
 
-        if (Number.isFinite(paintOpacity)) {
-            this.changePaintOpacity(paintOpacity);
-        }
-
         x = x || 0;
         y = y || 0;
         iconX = _.defaultTo(iconX, x + 2);
         iconY = _.defaultTo(iconY, y + 2);
+
+        if (Number.isFinite(paintOpacity)) {
+            this.changePaintOpacity(paintOpacity);
+        }
 
         this.drawIcon(item.iconIndex, { x: iconX, y: iconY });
 
@@ -1276,7 +1405,7 @@ DKTools.Base = class {
      * Draws a line
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 6.3.0
      *
      * @param {Object} [options=0] - Options for drawing
      *
@@ -1310,6 +1439,10 @@ DKTools.Base = class {
 
         const { pos1, pos2, color, lineWidth, paintOpacity, resetPaintOpacity } = options;
         let { x1, y1, x2, y2 } = options;
+
+        if (lineWidth === 0) {
+            return false;
+        }
 
         if (pos1 instanceof Object) {
             x1 = pos1.x;
@@ -1346,7 +1479,7 @@ DKTools.Base = class {
      * Draws a polygon
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 6.3.0
      * @since 5.0.0
      *
      * @param {Object} options - Options for drawing
@@ -1372,6 +1505,10 @@ DKTools.Base = class {
         options = options || {};
 
         const { points, paintOpacity, resetPaintOpacity } = options;
+
+        if (!Array.isArray(points) || points.length === 0) {
+            return false;
+        }
 
         if (Number.isFinite(paintOpacity)) {
             this.changePaintOpacity(paintOpacity);
@@ -1519,6 +1656,10 @@ DKTools.Base = class {
             height = rect.height;
         }
 
+        if (width === 0 || height === 0) {
+            return false;
+        }
+
         try {
             tone = tone || $gameSystem.windowTone();
         } catch (e) { // eslint-disable-line no-empty
@@ -1626,6 +1767,10 @@ DKTools.Base = class {
         const { pos, radius, color, lineWidth, anticlockwise, paintOpacity, resetPaintOpacity } = options;
         let { x, y, startAngle, endAngle } = options;
 
+        if (Number.isFinite(startAngle) && Number.isFinite(endAngle) && startAngle === endAngle) {
+            return false;
+        }
+
         if (pos instanceof Object) {
             x = pos.x;
             y = pos.y;
@@ -1635,14 +1780,14 @@ DKTools.Base = class {
             y = this.getLineHeight() * parseFloat(y);
         }
 
-        if (Number.isFinite(paintOpacity)) {
-            this.changePaintOpacity(paintOpacity);
-        }
-
         x = x || 0;
         y = y || 0;
         startAngle = startAngle || 0;
         endAngle = _.defaultTo(endAngle, Math.PI * 2);
+
+        if (Number.isFinite(paintOpacity)) {
+            this.changePaintOpacity(paintOpacity);
+        }
 
         DKTools.Utils.Bitmap.fillArc(this.bitmap, x, y, radius, startAngle, endAngle, color, anticlockwise);
 
@@ -1657,7 +1802,7 @@ DKTools.Base = class {
      * Fills a rectangle with color
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 6.3.0
      *
      * @param {Object} [options={}] - Parameters for drawing
      *
@@ -1715,8 +1860,8 @@ DKTools.Base = class {
             height = this.getLineHeight() * parseFloat(height);
         }
 
-        if (Number.isFinite(paintOpacity)) {
-            this.changePaintOpacity(paintOpacity);
+        if (width === 0 || height === 0) {
+            return false;
         }
 
         x = x || 0;
@@ -1724,6 +1869,10 @@ DKTools.Base = class {
         width = width || this.standardDrawingWidth();
         height = height || this.standardDrawingHeight();
         color = color || 'white';
+
+        if (Number.isFinite(paintOpacity)) {
+            this.changePaintOpacity(paintOpacity);
+        }
 
         this.bitmap.fillRect(x, y, width, height, color);
 
@@ -2171,7 +2320,7 @@ DKTools.Base = class {
      * Fills a rectangle with a gradient
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 6.3.0
      *
      * @param {Object} [options={}] - Parameters for drawing
      *
@@ -2220,6 +2369,10 @@ DKTools.Base = class {
 
         if (DKTools.Utils.isString(height)) { // number of lines
             height = this.getLineHeight() * parseFloat(height);
+        }
+
+        if (width === 0 || height === 0) {
+            return false;
         }
 
         x = x || 0;
@@ -3015,7 +3168,7 @@ DKTools.Base = class {
      * Redraws all
      */
     redrawAll() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -3172,7 +3325,7 @@ DKTools.Base = class {
      * @private
      */
     _setupAnimations() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -3181,7 +3334,7 @@ DKTools.Base = class {
      * @private
      */
     _setupEvents() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -3190,7 +3343,7 @@ DKTools.Base = class {
      * @private
      */
     _setupOptions() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -3421,7 +3574,7 @@ DKTools.Base = class {
      * @param {Number} [object.height] - Height of the object
      */
     setupSize(object, height) {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -3977,7 +4130,7 @@ DKTools.Base = class {
      * Terminates the object
      */
     terminate() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -4292,7 +4445,7 @@ DKTools.Base = class {
      * Updates the opacity of the object
      */
     updateOpacity() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**

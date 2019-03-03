@@ -125,12 +125,19 @@ DKTools.Unit = class {
     /**
      * Returns true if the unit equals unit (parameter)
      *
+     * @version 6.3.0
+     *
      * @param {DKTools.Unit} unit - Unit to compare
+     *
      * @returns {Boolean} Unit equals unit (parameter)
      */
     equals(unit) {
         if (!unit) {
             return false;
+        }
+
+        if (this === unit) {
+            return true;
         }
 
         return this._source === unit.source &&
@@ -159,19 +166,32 @@ DKTools.Unit = class {
     }
 
     /**
-     * @returns {Number}
+     * Returns the percents
+     *
+     * @version 6.3.0
+     *
+     * @returns {Number} Percents
      */
     getPercents() {
-        if (DKTools.Utils.isFunction(this._percents)) {
-            return this._percents(this) || 100;
+        if (Number.isFinite(this._percents)) {
+            return this._percents;
         }
 
-        return this._percents || 100;
+        if (DKTools.Utils.isFunction(this._percents)) {
+            const percents = this._percents(this);
+
+            return Number.isFinite(percents) ? percents : 100;
+        }
+
+        return 100;
     }
 
     /**
      * Returns the value of the unit
      *
+     * @version 6.3.0
+     *
+     * @see DKTools.Unit.prototype.hasGetValueHandler
      * @see DKTools.Unit.prototype.getValueBase
      * @see DKTools.Utils.isFunction
      *
@@ -180,7 +200,7 @@ DKTools.Unit = class {
     getValue() {
         let value;
 
-        if (DKTools.Utils.isFunction(this._getValueHandler)) {
+        if (this.hasGetValueHandler()) {
             value = this._getValueHandler(this);
         } else {
             value = this.getValueBase();
@@ -192,20 +212,63 @@ DKTools.Unit = class {
     /**
      * Returns the value of the unit
      *
+     * @version 6.3.0
+     *
      * @see DKTools.Unit.prototype.getPercents
      *
      * @returns {Number} Value of the unit
      */
     getValueBase() {
+        if (!this.hasSource()) {
+            return Number.NaN;
+        }
+
         const percents = this.getPercents() / 100;
+
+        if (percents === 0) {
+            return 0;
+        }
 
         if (this._source instanceof DKTools.Unit) {
             return this._source.getValue() * percents;
-        } else if (Number.isFinite(this._source)) {
-            return this._source * percents;
         }
 
-        return 0;
+        return this._source * percents;
+    }
+
+    // H methods
+
+    /**
+     * Returns true if the unit has the getValue handler
+     *
+     * @since 6.3.0
+     *
+     * @returns {Boolean} Unit has the getValue handler
+     */
+    hasGetValueHandler() {
+        return DKTools.Utils.isFunction(this._getValueHandler);
+    }
+
+    /**
+     * Returns true if the unit has the percents
+     *
+     * @since 6.3.0
+     *
+     * @returns {Boolean} Unit has the percents
+     */
+    hasPercents() {
+        return DKTools.Utils.isFunction(this._percents) || Number.isFinite(this._percents);
+    }
+
+    /**
+     * Returns true if the unit has the source
+     *
+     * @since 6.3.0
+     *
+     * @returns {Boolean} Unit has the source
+     */
+    hasSource() {
+        return this._source instanceof DKTools.Unit || Number.isFinite(this._source);
     }
 
     // M methods
@@ -259,7 +322,7 @@ DKTools.Unit = class {
     /**
      * Sets the percents
      *
-     * @param {Function | Number} percents - Percents
+     * @param {Function | Number} [percents=100] - Percents
      */
     setPercents(percents = 100) {
         /**

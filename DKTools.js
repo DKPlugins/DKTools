@@ -3,8 +3,8 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 6.2.1
-Release: 24.12.2018
+Version: 6.3.0
+Release: 02.03.2019
 First release: 13.01.2016
 Supported languages: Russian, English
 */
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 6.2.1
-Релиз: 24.12.2018
+Версия: 6.3.0
+Релиз: 02.03.2019
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.6.2.1 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.6.3.0 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 6.2.1
- Release: 24.12.2018
+ Version: 6.3.0
+ Release: 02.03.2019
  First release: 13.01.2016
  Supported languages: Russian, English
  Thank you for your support: https://dk-plugins.ru/donate
@@ -217,7 +217,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.6.2.1 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.6.3.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -225,8 +225,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 6.2.1
- Релиз: 24.12.2018
+ Версия: 6.3.0
+ Релиз: 02.03.2019
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
  Спасибо за Вашу поддержку: https://dk-plugins.ru/donate
@@ -1137,7 +1137,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 window.Imported = window.Imported || {};
-window.Imported.DKTools = '6.2.1';
+window.Imported.DKTools = '6.3.0';
 
 
 
@@ -1474,19 +1474,6 @@ DKTools.Utils = class {
     }
 
     // C methods
-
-    /**
-     * Checks the minimal version of RPG Maker
-     *
-     * @since 6.1.0
-     * @private
-     * @static
-     */
-    static _checkRPGMakerVersion() {
-        if (Utils.RPGMAKER_VERSION < '1.6.0') {
-            throw Error('Required to update RPG Maker MV to minimal version 1.6.0 (Installed: %1)'.format(Utils.RPGMAKER_VERSION));
-        }
-    }
 
     /**
      * Checks the updates
@@ -4724,12 +4711,12 @@ DKTools.IO.Entity = class {
     /**
      * Initializes the entity
      *
-     * @version 5.0.0
+     * @version 6.3.0
      * @since 3.0.0
      *
      * @param {String} fullPath - Path to entity
      */
-    initialize(fullPath) {
+    initialize(fullPath = '') {
         const data = DKTools.IO.parsePath(fullPath);
 
         /**
@@ -5231,12 +5218,12 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     /**
      * Initializes the file
      *
-     * @version 5.0.0
+     * @version 6.3.0
      * @override
      *
      * @param {String} fullPath - Path to file
      */
-    initialize(fullPath) {
+    initialize(fullPath = '') {
         DKTools.IO.Entity.prototype.initialize.call(this, fullPath);
 
         this._detectExtension();
@@ -6136,7 +6123,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_DIRECTORY_ALREADY_EXISTS
      *
      * @example
-     * var directory = new DKTools.IO.Directory('/saves/');
+     * var directory = new DKTools.IO.Directory('saves/');
      * directory.create();
      *
      * @see FileSystem.mkdirSync
@@ -6193,6 +6180,51 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 }
             });
         });
+    }
+
+    /**
+     * Creates the new directory
+     * Returns a code of the result of an operation
+     *
+     * @since 6.3.0
+     *
+     * @param {String} name - Name of the directory
+     *
+     * @see DKTools.IO.Directory.prototype.create
+     *
+     * @returns {Number} Code of the result of an operation
+     */
+    createDirectory(name) {
+        const fullPath = DKTools.IO.normalizePath(this.getFullPath() + '/' + name);
+        const directory = new DKTools.IO.Directory(fullPath);
+
+        return directory.create();
+    }
+
+    /**
+     * Creates the new directory
+     * Asynchronous version of DKTools.IO.Directory.prototype.createDirectory
+     * Promise resolves a code of the result of an operation
+     *
+     * Possible results:
+     * DKTools.IO.OK
+     * DKTools.IO.ERROR_NOT_LOCAL_MODE
+     * DKTools.IO.ERROR_DIRECTORY_ALREADY_EXISTS
+     *
+     * @since 6.3.0
+     * @async
+     *
+     * @param {String} name - Name of the directory
+     *
+     * @see DKTools.IO.Directory.prototype.createAsync
+     *
+     * @returns {Promise}
+     */
+    async createDirectoryAsync(name) {
+        const fullPath = DKTools.IO.normalizePath(this.getFullPath() + '/' + name);
+        const directory = new DKTools.IO.Directory(fullPath);
+
+        return directory.createAsync();
     }
 
     // F methods
@@ -7200,6 +7232,19 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 resolve(result);
             }
         });
+    }
+
+    /**
+     * Returns the root directory
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.IO.Directory.prototype.getPath
+     *
+     * @returns {DKTools.IO.Directory} Root directory
+     */
+    getRootDirectory() {
+        return new DKTools.IO.Directory(this.getPath());
     }
 
     // I methods
@@ -8951,6 +8996,79 @@ Object.defineProperties(DKTools.PreloadManager, {
     }
 
 });
+
+
+
+
+
+//===========================================================================
+// DKTools.StartupManager
+//===========================================================================
+
+/**
+ * Startup manager class
+ *
+ * @class DKTools.StartupManager
+ *
+ * @since 6.3.0
+ * @memberof DKTools
+ */
+DKTools.StartupManager = class {
+
+    /**
+     * Initializes the manager
+     *
+     * @static
+     */
+    static initialize() {
+        this.checkErrors();
+        this.initializeModules();
+    }
+
+    /**
+     * Checks the minimal version of RPG Maker
+     *
+     * @private
+     * @static
+     */
+    static _checkRPGMakerVersion() {
+        if (Utils.RPGMAKER_VERSION < '1.6.0') {
+            throw new Error('Required to update RPG Maker MV to minimal version 1.6.0 (Installed: %1)'.format(Utils.RPGMAKER_VERSION));
+        }
+    }
+
+    /**
+     * Checks whether the browser can use the "localStorage API"
+     *
+     * @private
+     * @static
+     */
+    static _checkWebStorage() {
+        if (!DKTools.IO.isLocalMode() && !window.hasOwnProperty('localStorage')) {
+            throw new Error('Your browser does not support localStorage API');
+        }
+    }
+
+    /**
+     * Checks the possible errors
+     *
+     * @static
+     */
+    static checkErrors() {
+        this._checkRPGMakerVersion();
+        this._checkWebStorage();
+    }
+
+    /**
+     * Initializes modules
+     *
+     * @static
+     */
+    static initializeModules() {
+        // to be overridden by plugins
+    }
+
+};
 
 
 
@@ -12400,12 +12518,19 @@ DKTools.Unit = class {
     /**
      * Returns true if the unit equals unit (parameter)
      *
+     * @version 6.3.0
+     *
      * @param {DKTools.Unit} unit - Unit to compare
+     *
      * @returns {Boolean} Unit equals unit (parameter)
      */
     equals(unit) {
         if (!unit) {
             return false;
+        }
+
+        if (this === unit) {
+            return true;
         }
 
         return this._source === unit.source &&
@@ -12434,19 +12559,32 @@ DKTools.Unit = class {
     }
 
     /**
-     * @returns {Number}
+     * Returns the percents
+     *
+     * @version 6.3.0
+     *
+     * @returns {Number} Percents
      */
     getPercents() {
-        if (DKTools.Utils.isFunction(this._percents)) {
-            return this._percents(this) || 100;
+        if (Number.isFinite(this._percents)) {
+            return this._percents;
         }
 
-        return this._percents || 100;
+        if (DKTools.Utils.isFunction(this._percents)) {
+            const percents = this._percents(this);
+
+            return Number.isFinite(percents) ? percents : 100;
+        }
+
+        return 100;
     }
 
     /**
      * Returns the value of the unit
      *
+     * @version 6.3.0
+     *
+     * @see DKTools.Unit.prototype.hasGetValueHandler
      * @see DKTools.Unit.prototype.getValueBase
      * @see DKTools.Utils.isFunction
      *
@@ -12455,7 +12593,7 @@ DKTools.Unit = class {
     getValue() {
         let value;
 
-        if (DKTools.Utils.isFunction(this._getValueHandler)) {
+        if (this.hasGetValueHandler()) {
             value = this._getValueHandler(this);
         } else {
             value = this.getValueBase();
@@ -12467,20 +12605,63 @@ DKTools.Unit = class {
     /**
      * Returns the value of the unit
      *
+     * @version 6.3.0
+     *
      * @see DKTools.Unit.prototype.getPercents
      *
      * @returns {Number} Value of the unit
      */
     getValueBase() {
+        if (!this.hasSource()) {
+            return Number.NaN;
+        }
+
         const percents = this.getPercents() / 100;
+
+        if (percents === 0) {
+            return 0;
+        }
 
         if (this._source instanceof DKTools.Unit) {
             return this._source.getValue() * percents;
-        } else if (Number.isFinite(this._source)) {
-            return this._source * percents;
         }
 
-        return 0;
+        return this._source * percents;
+    }
+
+    // H methods
+
+    /**
+     * Returns true if the unit has the getValue handler
+     *
+     * @since 6.3.0
+     *
+     * @returns {Boolean} Unit has the getValue handler
+     */
+    hasGetValueHandler() {
+        return DKTools.Utils.isFunction(this._getValueHandler);
+    }
+
+    /**
+     * Returns true if the unit has the percents
+     *
+     * @since 6.3.0
+     *
+     * @returns {Boolean} Unit has the percents
+     */
+    hasPercents() {
+        return DKTools.Utils.isFunction(this._percents) || Number.isFinite(this._percents);
+    }
+
+    /**
+     * Returns true if the unit has the source
+     *
+     * @since 6.3.0
+     *
+     * @returns {Boolean} Unit has the source
+     */
+    hasSource() {
+        return this._source instanceof DKTools.Unit || Number.isFinite(this._source);
     }
 
     // M methods
@@ -12534,7 +12715,7 @@ DKTools.Unit = class {
     /**
      * Sets the percents
      *
-     * @param {Function | Number} percents - Percents
+     * @param {Function | Number} [percents=100] - Percents
      */
     setPercents(percents = 100) {
         /**
@@ -12655,7 +12836,7 @@ Object.defineProperties(DKTools.Unit.prototype, {
  * @extends DKTools.Unit
  *
  * @since 2.0.0
- * @memberof DKTools
+ * @memberof DKTools.Unit
  *
  * @example
  * var object = { width: 100 };
@@ -12667,7 +12848,7 @@ Object.defineProperties(DKTools.Unit.prototype, {
  *
  * unit.getValue(); // => 30
  *
- * @see DKTools.Unit.Property.prototype.initialize
+ * @see DKTools.Unit.Property.prototype.prototype.initialize
  */
 DKTools.Unit.Property = class extends DKTools.Unit {
 
@@ -12777,13 +12958,21 @@ DKTools.Unit.Property = class extends DKTools.Unit {
     /**
      * Returns true if the unit equals unit (parameter)
      *
+     * @version 6.3.0
+     *
      * @override
+     *
      * @param {DKTools.Unit} unit - Unit to compare
+     *
      * @returns {Boolean} Unit equals unit (parameter)
      */
     equals(unit) {
         if (!unit) {
             return false;
+        }
+
+        if (this === unit) {
+            return true;
         }
 
         return _.isEqual(this._source, unit.source) &&
@@ -12796,15 +12985,18 @@ DKTools.Unit.Property = class extends DKTools.Unit {
     /**
      * Returns the value of the unit
      *
+     * @version 6.3.0
+     *
      * @override
      *
+     * @see DKTools.Unit.Property.prototype.hasSource
      * @see DKTools.Unit.Property.prototype.getPercents
      *
      * @returns {Number} Value of the unit
      */
     getValueBase() {
-        if (!(this._source instanceof Object)) {
-            return 0;
+        if (!this.hasSource() || !this.hasProperty()) {
+            return Number.NaN;
         }
 
         const unit = new DKTools.Unit({
@@ -12813,6 +13005,32 @@ DKTools.Unit.Property = class extends DKTools.Unit {
         });
 
         return unit.getValue();
+    }
+
+    // H methods
+
+    /**
+     * Returns true if the unit has the property
+     *
+     * @since 6.3.0
+     *
+     * @returns {Boolean} Unit has the property
+     */
+    hasProperty() {
+        return !!this._property;
+    }
+
+    /**
+     * Returns true if the unit has the source
+     *
+     * @since 6.3.0
+     *
+     * @override
+     *
+     * @returns {Boolean} Unit has the source
+     */
+    hasSource() {
+        return this._source instanceof Object;
     }
 
     // M methods
@@ -12947,7 +13165,7 @@ Object.defineProperties(DKTools.Unit.Property.prototype, {
  * @extends DKTools.Unit
  *
  * @since 2.0.0
- * @memberof DKTools
+ * @memberof DKTools.Unit
  *
  * @example
  * var object = { width: 100, height: 50 };
@@ -12958,8 +13176,10 @@ Object.defineProperties(DKTools.Unit.Property.prototype, {
  * });
  *
  * unit.getValue(); // => { width: 50, height: 25 }
+ * unit.getValue('width'); // => 50
+ * unit.getValue('height'); // => 25
  *
- * @see DKTools.Unit.Properties.initialize
+ * @see DKTools.Unit.Properties.prototype.initialize
  */
 DKTools.Unit.Properties = class extends DKTools.Unit {
 
@@ -12990,10 +13210,13 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
      * Adds the unit (parameter) to this unit
      * Returns this unit
      *
+     * @version 6.3.0
+     *
      * @override
      *
      * @param {DKTools.Unit | Object | Number} unit - Unit
      *
+     * @see DKTools.Unit.Properties.prototype._getProperties
      * @see DKTools.Unit.Properties.prototype._getValueFromUnit
      *
      * @returns {DKTools.Properties} This unit
@@ -13003,11 +13226,7 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
             return this;
         }
 
-        let properties = this._properties;
-
-        if (DKTools.Utils.isFunction(properties)) {
-            properties = properties(this);
-        }
+        const properties = this._getProperties();
 
         _.forEach(properties, property => {
             let value = this._getValueFromUnit(unit);
@@ -13048,10 +13267,13 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
      * Divides the unit (parameter) to this unit
      * Returns this unit
      *
+     * @version 6.3.0
+     *
      * @override
      *
      * @param {DKTools.Unit | Object | Number} unit - Unit
      *
+     * @see DKTools.Unit.Properties.prototype._getProperties
      * @see DKTools.Unit.Properties.prototype._getValueFromUnit
      *
      * @returns {DKTools.Properties} This unit
@@ -13061,11 +13283,7 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
             return this;
         }
 
-        let properties = this._properties;
-
-        if (DKTools.Utils.isFunction(properties)) {
-            properties = properties(this);
-        }
+        const properties = this._getProperties();
 
         _.forEach(properties, property => {
             let value = this._getValueFromUnit(unit);
@@ -13094,13 +13312,21 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
     /**
      * Returns true if the unit equals unit (parameter)
      *
+     * @version 6.3.0
+     *
      * @override
+     *
      * @param {DKTools.Unit} unit - Unit to compare
+     *
      * @returns {Boolean} Unit equals unit (parameter)
      */
     equals(unit) {
         if (!unit) {
             return false;
+        }
+
+        if (this === unit) {
+            return true;
         }
 
         return _.isEqual(this._source, unit.source) &&
@@ -13111,42 +13337,76 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
     // G methods
 
     /**
+     * Returns the properties
+     *
+     * @since 6.3.0
+     *
+     * @private
+     *
+     * @returns {String[]} Properties
+     */
+    _getProperties() {
+        let properties = this._properties;
+
+        if (DKTools.Utils.isFunction(properties)) {
+            properties = properties(this);
+        }
+
+        return Array.isArray(properties) ? properties : [];
+    }
+
+    /**
      * Returns the percents
      *
+     * @version 6.3.0
+     *
      * @override
+     *
      * @param {String} [property] - Property
-     * @returns {Number}
+     *
+     * @returns {Number} Percents
      */
     getPercents(property) {
+        if (Number.isFinite(this._percents)) {
+            return this._percents;
+        }
+
         if (DKTools.Utils.isFunction(this._percents)) {
-            return this._percents(property, this) || 100;
+            const percents = this._percents(property, this);
+
+            return Number.isFinite(percents) ? percents : 100;
         }
 
         if (this._percents instanceof Object) {
             if (DKTools.Utils.isFunction(this._percents[property])) {
-                return this._percents[property](this) || 100;
+                const percents = this._percents[property](this);
+
+                return Number.isFinite(percents) ? percents : 100;
             }
 
-            return this._percents[property] || 100;
+            return Number.isFinite(this._percents[property]) ? this._percents[property] : 100;
         }
 
-        return this._percents || 100;
+        return 100;
     }
 
     /**
      * Returns the value of the unit
      *
+     * @version 6.3.0
+     *
      * @override
      *
      * @param {String} [property] - Property
      *
+     * @see DKTools.Unit.Properties.prototype.hasGetValueHandler
      * @see DKTools.Unit.Properties.prototype.getValueBase
      * @see DKTools.Utils.isFunction
      *
      * @returns {Number} Value of the unit
      */
     getValue(property) {
-        if (DKTools.Utils.isFunction(this._getValueHandler)) {
+        if (this.hasGetValueHandler()) {
             return this._getValueHandler(property, this);
         }
 
@@ -13156,19 +13416,32 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
     /**
      * Returns the value of the unit
      *
+     * @version 6.3.0
+     *
      * @override
+     *
      * @param {String} [property] - Property
+     *
      * @returns {Object | Number} Value of the unit
      */
     getValueBase(property) {
         const handler = property => {
-            const percents = this.getPercents(property);
-
-            if (this._source[property] instanceof DKTools.Unit) {
-                return this._source[property].getValue(property) * percents / 100;
+            if (!this.hasSource()) {
+                return Number.NaN;
             }
 
-            const unit = new DKTools.Unit.Property({ source: this._source, property, percents });
+            const source = this._source;
+            const percents = this.getPercents(property);
+
+            if (percents === 0) {
+                return 0;
+            }
+
+            if (source[property] instanceof DKTools.Unit) {
+                return source[property].getValue(property) * percents / 100;
+            }
+
+            const unit = new DKTools.Unit.Property({ source, percents, property });
 
             return unit.getValue();
         };
@@ -13177,11 +13450,52 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
             return handler(property);
         }
 
-        return _.reduce(this._properties, (acc, property) => {
+        const properties = this._getProperties();
+
+        return _.reduce(properties, (acc, property) => {
             acc[property] = handler(property);
 
             return acc;
         }, {});
+    }
+
+    // H methods
+
+    /**
+     * Returns true if the unit has the property
+     *
+     * @since 6.3.0
+     *
+     * @param {String} property - Property
+     *
+     * @returns {Boolean} Unit has the property
+     */
+    hasProperty(property) {
+        return DKTools.Utils.Array.contains(this._getProperties(), property);
+    }
+
+    /**
+     * Returns true if the unit has the properties
+     *
+     * @since 6.3.0
+     *
+     * @returns {Boolean} Unit has the properties
+     */
+    hasProperties() {
+        return DKTools.Utils.isFunction(this._properties) || Array.isArray(this._properties) && this._properties.length > 0;
+    }
+
+    /**
+     * Returns true if the unit has the source
+     *
+     * @since 6.3.0
+     *
+     * @override
+     *
+     * @returns {Boolean} Unit has the source
+     */
+    hasSource() {
+        return this._source instanceof Object;
     }
 
     // M methods
@@ -13190,10 +13504,13 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
      * Multiplies the unit (parameter) to this unit
      * Returns this unit
      *
+     * @version 6.3.0
+     *
      * @override
      *
      * @param {DKTools.Unit | Object | Number} unit - Unit
      *
+     * @see DKTools.Unit.Properties.prototype._getProperties
      * @see DKTools.Unit.Properties.prototype._getValueFromUnit
      *
      * @returns {DKTools.Properties} This unit
@@ -13203,11 +13520,7 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
             return this;
         }
 
-        let properties = this._properties;
-
-        if (DKTools.Utils.isFunction(properties)) {
-            properties = properties(this);
-        }
+        const properties = this._getProperties();
 
         _.forEach(properties, property => {
             let value = this._getValueFromUnit(unit);
@@ -13264,10 +13577,13 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
      * Subtracts the unit (parameter) to this unit
      * Returns this unit
      *
+     * @version 6.3.0
+     *
      * @override
      *
      * @param {DKTools.Unit | Object | Number} unit - Unit
      *
+     * @see DKTools.Unit.Properties.prototype._getProperties
      * @see DKTools.Unit.Properties.prototype._getValueFromUnit
      *
      * @returns {DKTools.Properties} This unit
@@ -13277,11 +13593,7 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
             return this;
         }
 
-        let properties = this._properties;
-
-        if (DKTools.Utils.isFunction(properties)) {
-            properties = properties(this);
-        }
+        const properties = this._getProperties();
 
         _.forEach(properties, property => {
             let value = this._getValueFromUnit(unit);
@@ -13343,7 +13655,7 @@ Object.defineProperties(DKTools.Unit.Properties.prototype, {
  * @extends DKTools.Unit
  *
  * @since 2.0.0
- * @memberof DKTools
+ * @memberof DKTools.Unit
  *
  * @example
  * var func = function() {
@@ -13357,7 +13669,7 @@ Object.defineProperties(DKTools.Unit.Properties.prototype, {
  *
  * unit.getValue(); // => 200
  *
- * @see DKTools.Unit.Function.initialize
+ * @see DKTools.Unit.Function.prototype.initialize
  */
 DKTools.Unit.Function = class extends DKTools.Unit {
 
@@ -13390,6 +13702,8 @@ DKTools.Unit.Function = class extends DKTools.Unit {
     /**
      * Returns the value of the unit
      *
+     * @version 6.3.0
+     *
      * @override
      *
      * @see DKTools.Unit.Function.prototype.getPercents
@@ -13397,7 +13711,32 @@ DKTools.Unit.Function = class extends DKTools.Unit {
      * @returns {Number} Value of the unit
      */
     getValueBase() {
-        return this._source(this) * this.getPercents() / 100;
+        if (!this.hasSource()) {
+            return Number.NaN;
+        }
+
+        const percents = this.getPercents() / 100;
+
+        if (percents === 0) {
+            return 0;
+        }
+
+        return this._source(this) * percents;
+    }
+
+    // H methods
+
+    /**
+     * Returns true if the unit has the source
+     *
+     * @since 6.3.0
+     *
+     * @override
+     *
+     * @returns {Boolean} Unit has the source
+     */
+    hasSource() {
+        return DKTools.Utils.isFunction(this._source);
     }
 
     // M methods
@@ -13522,7 +13861,7 @@ DKTools.Base = class {
      * @private
      */
     _addAllChildren() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -13935,7 +14274,7 @@ DKTools.Base = class {
      * Checks the size of the object
      */
     checkSize() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -14182,7 +14521,7 @@ DKTools.Base = class {
      * Draws all
      */
     drawAll() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -14224,7 +14563,7 @@ DKTools.Base = class {
      * Draws a bitmap
      * Returns true if successfully completed
      *
-     * @version 6.1.0
+     * @version 6.3.0
      *
      * @param {Bitmap | Object} object - Bitmap or object with parameters
      * @param {Object} [options={}] - Options for drawing
@@ -14288,6 +14627,8 @@ DKTools.Base = class {
             return false;
         }
 
+        let result = true;
+
         bitmap.addLoadListener(() => {
             const isFunction = DKTools.Utils.isFunction;
             const isString = DKTools.Utils.isString;
@@ -14321,6 +14662,12 @@ DKTools.Base = class {
             let dy   =  _.defaultTo(destination.y, 0);
             let dh   =  _.defaultTo(destination.height, sh);
 
+            if (sw === 0 || sh === 0 || dw === 0 || dh === 0) {
+                result = false;
+
+                return;
+            }
+
             if (isString(sy)) { // line number
                 sy = lineHeight * parseFloat(sy);
             }
@@ -14348,7 +14695,7 @@ DKTools.Base = class {
             }
         });
 
-        return true;
+        return result;
     }
 
     /**
@@ -14453,7 +14800,7 @@ DKTools.Base = class {
      * Draws a circle
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 6.3.0
      *
      * @param {Object} [options={}] - Options for drawing
      *
@@ -14481,6 +14828,10 @@ DKTools.Base = class {
 
         const { pos, radius, color, paintOpacity, resetPaintOpacity} = options;
         let { x, y } = options;
+
+        if (radius === 0) {
+            return false;
+        }
 
         if (pos instanceof Object) {
             x = pos.x;
@@ -14574,6 +14925,123 @@ DKTools.Base = class {
         y = Math.floor((y || 0) + Math.max(height - ph, 0) / 2);
 
         return this.drawBitmap(bitmap, { ...options, source, destination: { x, y } });
+    }
+
+    /**
+     * Draws a gauge
+     * Returns true if successfully completed
+     *
+     * @since 6.3.0
+     *
+     * @param {Object} [options={}] - Options for drawing
+     *
+     * @param {Number} [options.x] - The X coordinate
+     * @param {Number | String} [options.y] - The Y coordinate or line number (String)
+     * @param {Number} [options.width] - Width of the rectangle
+     * @param {Number | String} [options.height] - Height of the rectangle or number of lines (String)
+     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
+     * @param {PIXI.Rectangle | Rectangle | Object} [options.rect] - Rectangle for drawing (ignores other parameters of position: x, y, width, height, pos)
+     * @param {Number} [options.rate] - Gauge width rate
+     * @param {String} [options.type] - Gauge type (horizontal or vertical)
+     * @param {Boolean} [options.reversed] - Reversed gauge
+     * @param {String} [options.gradient] - Gradient type (horizontal or vertical)
+     * @param {String} [options.backgroundColor] - Background fill color
+     * @param {String} [options.color] - Fill color
+     * @param {String} [options.color1] - First gradient color (ignores other parameters: color)
+     * @param {String} [options.color2] - Second gradient color (ignores other parameters: color)
+     * @param {Number} [options.paintOpacity] - Change paint opacity
+     * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
+     *
+     * @param {Number} [options.pos.x] - The X coordinate
+     * @param {Number | String} [options.pos.y] - The Y coordinate or line number (String)
+     *
+     * @param {Number} [options.rect.x] - The X coordinate
+     * @param {Number | String} [options.rect.y] - The Y coordinate or line number (String)
+     * @param {Number} [options.rect.width] - Width of the rectangle
+     * @param {Number | String} [options.rect.height] - Height of the rectangle or number of lines (String)
+     *
+     * @see DKTools.Base.prototype.hasBitmap
+     * @see DKTools.Base.prototype.standardDrawingWidth
+     * @see DKTools.Base.prototype.standardDrawingHeight
+     * @see DKTools.Base.prototype.fillRect
+     * @see DKTools.Base.prototype.gradientFillRect
+     *
+     * @returns {Boolean} Successfully completed
+     */
+    drawGauge(options = {}) {
+        if (!this.hasBitmap()) {
+            return false;
+        }
+
+        const { pos, rect, reversed, gradient, paintOpacity, resetPaintOpacity } = options;
+        let { x, y, width, height, type, rate, backgroundColor, color, color1, color2 } = options;
+
+        if (pos instanceof Object) {
+            x = pos.x;
+            y = pos.y;
+        }
+
+        if (rect instanceof Object) {
+            x = rect.x;
+            y = rect.y;
+            width = rect.width;
+            height = rect.height;
+        }
+
+        if (DKTools.Utils.isString(y)) { // line number
+            y = this.getLineHeight() * parseFloat(y);
+        }
+
+        if (DKTools.Utils.isString(height)) { // number of lines
+            height = this.getLineHeight() * parseFloat(height);
+        }
+
+        if (width === 0 || height === 0) {
+            return false;
+        }
+
+        x = x || 0;
+        y = y || 0;
+        width = width || this.standardDrawingWidth();
+        height = height || this.standardDrawingHeight();
+        backgroundColor = _.defaultTo(backgroundColor, 'black');
+        color = _.defaultTo(color, 'white');
+        color1 = _.defaultTo(color1, color);
+        color2 = _.defaultTo(color2, color);
+        type = _.defaultTo(type, 'horizontal');
+        rate = _.defaultTo(rate, 1);
+
+        const gradientRect = { x, y, width, height };
+
+        if (type === 'horizontal') {
+            gradientRect.width *= rate;
+
+            if (reversed) {
+                gradientRect.x += width - gradientRect.width;
+            }
+        } else if (type === 'vertical') {
+            gradientRect.height *= rate;
+
+            if (reversed) {
+                gradientRect.y += height - gradientRect.height;
+            }
+        } else {
+            return false;
+        }
+
+        if (Number.isFinite(paintOpacity)) {
+            this.changePaintOpacity(paintOpacity);
+        }
+
+        this.fillRect({ x, y, width, height, color: backgroundColor });
+
+        this.gradientFillRect({ rect: gradientRect, color1, color2, vertical: gradient === 'vertical' });
+
+        if (resetPaintOpacity) {
+            this.resetPaintOpacity();
+        }
+
+        return true;
     }
 
     /**
@@ -14675,14 +15143,14 @@ DKTools.Base = class {
             y = this.getLineHeight() * parseFloat(y);
         }
 
-        if (Number.isFinite(paintOpacity)) {
-            this.changePaintOpacity(paintOpacity);
-        }
-
         x = x || 0;
         y = y || 0;
         iconX = _.defaultTo(iconX, x + 2);
         iconY = _.defaultTo(iconY, y + 2);
+
+        if (Number.isFinite(paintOpacity)) {
+            this.changePaintOpacity(paintOpacity);
+        }
 
         this.drawIcon(item.iconIndex, { x: iconX, y: iconY });
 
@@ -14709,7 +15177,7 @@ DKTools.Base = class {
      * Draws a line
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 6.3.0
      *
      * @param {Object} [options=0] - Options for drawing
      *
@@ -14743,6 +15211,10 @@ DKTools.Base = class {
 
         const { pos1, pos2, color, lineWidth, paintOpacity, resetPaintOpacity } = options;
         let { x1, y1, x2, y2 } = options;
+
+        if (lineWidth === 0) {
+            return false;
+        }
 
         if (pos1 instanceof Object) {
             x1 = pos1.x;
@@ -14779,7 +15251,7 @@ DKTools.Base = class {
      * Draws a polygon
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 6.3.0
      * @since 5.0.0
      *
      * @param {Object} options - Options for drawing
@@ -14805,6 +15277,10 @@ DKTools.Base = class {
         options = options || {};
 
         const { points, paintOpacity, resetPaintOpacity } = options;
+
+        if (!Array.isArray(points) || points.length === 0) {
+            return false;
+        }
 
         if (Number.isFinite(paintOpacity)) {
             this.changePaintOpacity(paintOpacity);
@@ -14952,6 +15428,10 @@ DKTools.Base = class {
             height = rect.height;
         }
 
+        if (width === 0 || height === 0) {
+            return false;
+        }
+
         try {
             tone = tone || $gameSystem.windowTone();
         } catch (e) { // eslint-disable-line no-empty
@@ -15059,6 +15539,10 @@ DKTools.Base = class {
         const { pos, radius, color, lineWidth, anticlockwise, paintOpacity, resetPaintOpacity } = options;
         let { x, y, startAngle, endAngle } = options;
 
+        if (Number.isFinite(startAngle) && Number.isFinite(endAngle) && startAngle === endAngle) {
+            return false;
+        }
+
         if (pos instanceof Object) {
             x = pos.x;
             y = pos.y;
@@ -15068,14 +15552,14 @@ DKTools.Base = class {
             y = this.getLineHeight() * parseFloat(y);
         }
 
-        if (Number.isFinite(paintOpacity)) {
-            this.changePaintOpacity(paintOpacity);
-        }
-
         x = x || 0;
         y = y || 0;
         startAngle = startAngle || 0;
         endAngle = _.defaultTo(endAngle, Math.PI * 2);
+
+        if (Number.isFinite(paintOpacity)) {
+            this.changePaintOpacity(paintOpacity);
+        }
 
         DKTools.Utils.Bitmap.fillArc(this.bitmap, x, y, radius, startAngle, endAngle, color, anticlockwise);
 
@@ -15090,7 +15574,7 @@ DKTools.Base = class {
      * Fills a rectangle with color
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 6.3.0
      *
      * @param {Object} [options={}] - Parameters for drawing
      *
@@ -15148,8 +15632,8 @@ DKTools.Base = class {
             height = this.getLineHeight() * parseFloat(height);
         }
 
-        if (Number.isFinite(paintOpacity)) {
-            this.changePaintOpacity(paintOpacity);
+        if (width === 0 || height === 0) {
+            return false;
         }
 
         x = x || 0;
@@ -15157,6 +15641,10 @@ DKTools.Base = class {
         width = width || this.standardDrawingWidth();
         height = height || this.standardDrawingHeight();
         color = color || 'white';
+
+        if (Number.isFinite(paintOpacity)) {
+            this.changePaintOpacity(paintOpacity);
+        }
 
         this.bitmap.fillRect(x, y, width, height, color);
 
@@ -15604,7 +16092,7 @@ DKTools.Base = class {
      * Fills a rectangle with a gradient
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 6.3.0
      *
      * @param {Object} [options={}] - Parameters for drawing
      *
@@ -15653,6 +16141,10 @@ DKTools.Base = class {
 
         if (DKTools.Utils.isString(height)) { // number of lines
             height = this.getLineHeight() * parseFloat(height);
+        }
+
+        if (width === 0 || height === 0) {
+            return false;
         }
 
         x = x || 0;
@@ -16448,7 +16940,7 @@ DKTools.Base = class {
      * Redraws all
      */
     redrawAll() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -16605,7 +17097,7 @@ DKTools.Base = class {
      * @private
      */
     _setupAnimations() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -16614,7 +17106,7 @@ DKTools.Base = class {
      * @private
      */
     _setupEvents() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -16623,7 +17115,7 @@ DKTools.Base = class {
      * @private
      */
     _setupOptions() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -16854,7 +17346,7 @@ DKTools.Base = class {
      * @param {Number} [object.height] - Height of the object
      */
     setupSize(object, height) {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -17410,7 +17902,7 @@ DKTools.Base = class {
      * Terminates the object
      */
     terminate() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -17725,7 +18217,7 @@ DKTools.Base = class {
      * Updates the opacity of the object
      */
     updateOpacity() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     /**
@@ -18626,6 +19118,8 @@ DKTools.Sprite.prototype.drawAllTexts = function() {
  * Draws a text
  * Returns true if successfully completed
  *
+ * @version 6.3.0
+ *
  * @param {String} text - Text
  * @param {Object} [options={}] - Options for drawing
  *
@@ -18701,6 +19195,10 @@ DKTools.Sprite.prototype.drawText = function(text, options = {}) {
 
     if (DKTools.Utils.isString(height)) { // number of lines
         height = this.getLineHeight() * parseFloat(height);
+    }
+
+    if (width === 0 || height === 0) {
+        return false;
     }
 
     x = x || 0;
@@ -22955,6 +23453,19 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     }
 
     /**
+     * Returns the name of the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemName
+     *
+     * @returns {String | undefined} Name of the last selected item or undefined
+     */
+    getLastItemName() {
+        return this.getItemName(this._lastIndex);
+    }
+
+    /**
      * Returns the rectangle of the item
      *
      * @version 6.0.0
@@ -22990,6 +23501,19 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     }
 
     /**
+     * Returns the rectangle of the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemRect
+     *
+     * @returns {Rectangle} Rectangle of the last selected item
+     */
+    getLastItemRect() {
+        return this.getItemRect(this._lastIndex);
+    }
+
+    /**
      * Returns the rectangle of text of the item
      *
      * @version 6.0.0
@@ -23007,6 +23531,32 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
         rect.width -= this._textPadding * 2;
 
         return rect;
+    }
+
+    /**
+     * Returns the rectangle of text of the current item (selected item)
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemRectForText
+     *
+     * @returns {Rectangle} Rectangle of text of the current item (selected item)
+     */
+    getCurrentItemRectForText() {
+        return this.getItemRectForText(this._index);
+    }
+
+    /**
+     * Returns the rectangle of text of the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemRectForText
+     *
+     * @returns {Rectangle} Rectangle of text of the last selected item
+     */
+    getLastItemRectForText() {
+        return this.getItemRectForText(this._lastIndex);
     }
 
     /**
@@ -23151,11 +23701,12 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     /**
      * Returns the full info of the item
      *
+     * @version 6.3.0
      * @since 6.0.0
      *
      * @param {Number} index - Index
      *
-     * @returns {{ index: Number, item: Object, name: String, enabled: Boolean, rect: Rectangle, rectForText: Rectangle, font: Object, textColor: String, paintOpacity: Number, align: String }} Full info of the item
+     * @returns {{ index: Number, item: Object, name: String, enabled: Boolean, handled: Boolean, selected: Boolean, rect: Rectangle, rectForText: Rectangle, font: Object, textColor: String, paintOpacity: Number, align: String }} Full info of the item
      */
     getItemFullInfo(index) {
         const item = this.getItem(index);
@@ -23167,6 +23718,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
             name: this.getItemName(index),
             enabled: this.isItemEnabled(index),
             handled: this.isItemHandled(index),
+            selected: this.isItemSelected(index),
             rect: this.getItemRect(index),
             rectForText: this.getItemRectForText(index),
             font: this.getItemFont(index),
@@ -23174,6 +23726,32 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
             paintOpacity: this.getItemPaintOpacity(index),
             align: this.getItemAlign(index)
         };
+    }
+
+    /**
+     * Returns the full info of the current item (selected item)
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.prototype.getItemFullInfo
+     *
+     * @returns {{ index: Number, item: Object, name: String, enabled: Boolean, handled: Boolean, selected: Boolean, rect: Rectangle, rectForText: Rectangle, font: Object, textColor: String, paintOpacity: Number, align: String }} Full info
+     */
+    getCurrentItemFullInfo() {
+        return this.getItemFullInfo(this._index);
+    }
+
+    /**
+     * Returns the full info of the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.prototype.getItemFullInfo
+     *
+     * @returns {{ index: Number, item: Object, name: String, enabled: Boolean, handled: Boolean, selected: Boolean, rect: Rectangle, rectForText: Rectangle, font: Object, textColor: String, paintOpacity: Number, align: String }} Full info
+     */
+    getLastItemFullInfo() {
+        return this.getItemFullInfo(this._lastIndex);
     }
 
     /**
@@ -23248,6 +23826,19 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     }
 
     /**
+     * Returns the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItem
+     *
+     * @returns {Object | null} Last selected item or null
+     */
+    getLastItem() {
+        return this.getItem(this._lastIndex);
+    }
+
+    /**
      * Returns the visible items
      *
      * @returns {Object[]} Visible items
@@ -23301,6 +23892,19 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     }
 
     /**
+     * Returns the symbol of the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemSymbol
+     *
+     * @returns {String | null} Symbol of the last selected item or null
+     */
+    getLastItemSymbol() {
+        return this.getItemSymbol(this._lastIndex);
+    }
+
+    /**
      * Returns the ext of the current item (selected item)
      *
      * @see DKTools.Sprite.Selectable.prototype.getItemExt
@@ -23309,6 +23913,19 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      */
     getCurrentItemExt() {
         return this.getItemExt(this._index);
+    }
+
+    /**
+     * Returns the ext of the last selected item
+     *
+     * @since 6.3.0
+     *
+     * @see DKTools.Sprite.Selectable.prototype.getItemExt
+     *
+     * @returns {* | null} Ext of the last selected item or null
+     */
+    getLastItemExt() {
+        return this.getItemExt(this._lastIndex);
     }
 
     /**
@@ -28113,41 +28730,36 @@ DKTools.Sprite.ProgressBar.Rectangle = class extends DKTools.Sprite.ProgressBar 
     /**
      * Returns the standard handler of draw of the graphic for horizontal progress bar
      *
+     * @version 6.3.0
+     *
      * @returns {Function} Standard handler of draw of the graphic for horizontal progress bar
      */
     standardHorizontalDrawGraphicHandler() {
         return () => {
-            this.fillAll(this._backgroundColor);
-
-            if (!this.isEmpty()) {
-                this.fillRect({
-                    color: this._progressColor,
-                    width: this._value * this.realWidth / this._maxValue
-                });
-            }
+            this.drawGauge({
+                backgroundColor: this._backgroundColor,
+                color: this._progressColor,
+                rate: this._value / this._maxValue
+            });
         };
     }
 
     /**
      * Returns the standard handler of draw of the graphic for vertical progress bar
      *
+     * @version 6.3.0
+     *
      * @returns {Function} Standard handler of draw of the graphic for vertical progress bar
      */
     standardVerticalDrawGraphicHandler() {
         return () => {
-            this.fillAll(this._backgroundColor);
-
-            if (!this.isEmpty()) {
-                const realHeight = this.realHeight;
-                const height = this._value * realHeight / this._maxValue;
-
-                this.fillRect({
-                    color: this._progressColor,
-                    y: realHeight - height,
-                    width: this.realWidth,
-                    height
-                });
-            }
+            this.drawGauge({
+                backgroundColor: this._backgroundColor,
+                color: this._progressColor,
+                rate: this._value / this._maxValue,
+                type: 'vertical',
+                reversed: true
+            });
         };
     }
 
@@ -32178,7 +32790,7 @@ DKTools.Window.prototype.needsCreatePauseSignSprite = function() {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onUpArrowUpdate = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -32189,7 +32801,7 @@ DKTools.Window.prototype.onUpArrowUpdate = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onDownArrowUpdate = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -32200,7 +32812,7 @@ DKTools.Window.prototype.onDownArrowUpdate = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onLeftArrowUpdate = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -32211,7 +32823,7 @@ DKTools.Window.prototype.onLeftArrowUpdate = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onRightArrowUpdate = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -32222,7 +32834,7 @@ DKTools.Window.prototype.onRightArrowUpdate = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onUpArrowMouseClick = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -32233,7 +32845,7 @@ DKTools.Window.prototype.onUpArrowMouseClick = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onDownArrowMouseClick = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -32244,7 +32856,7 @@ DKTools.Window.prototype.onDownArrowMouseClick = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onLeftArrowMouseClick = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -32255,7 +32867,7 @@ DKTools.Window.prototype.onLeftArrowMouseClick = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onRightArrowMouseClick = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -32266,7 +32878,7 @@ DKTools.Window.prototype.onRightArrowMouseClick = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onUpArrowMouseLongPress = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -32277,7 +32889,7 @@ DKTools.Window.prototype.onUpArrowMouseLongPress = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onDownArrowMouseLongPress = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -32288,7 +32900,7 @@ DKTools.Window.prototype.onDownArrowMouseLongPress = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onLeftArrowMouseLongPress = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -32299,7 +32911,7 @@ DKTools.Window.prototype.onLeftArrowMouseLongPress = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onRightArrowMouseLongPress = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // R methods
@@ -33944,7 +34556,7 @@ DKTools.Scene.prototype.initialize = function() {
  * @private
  */
 DKTools.Scene.prototype._clearAll = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // _create methods
@@ -34020,7 +34632,7 @@ DKTools.Scene.prototype._setupAll = function() {
  * @private
  */
 DKTools.Scene.prototype._setupOptions = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -34030,7 +34642,7 @@ DKTools.Scene.prototype._setupOptions = function() {
  * @private
  */
 DKTools.Scene.prototype._setupEvents = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -34040,7 +34652,7 @@ DKTools.Scene.prototype._setupEvents = function() {
  * @private
  */
 DKTools.Scene.prototype._setupAnimations = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // _add methods
@@ -34051,7 +34663,7 @@ DKTools.Scene.prototype._setupAnimations = function() {
  * @private
  */
 DKTools.Scene.prototype._addAllChildren = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // create methods
@@ -34081,28 +34693,28 @@ DKTools.Scene.prototype.create = function() {
  * Creates the background
  */
 DKTools.Scene.prototype.createBackground = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
  * Creates all sprites
  */
 DKTools.Scene.prototype.createAllSprites = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
  * Creates all windows
  */
 DKTools.Scene.prototype.createAllWindows = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
  * Creates the foreground
  */
 DKTools.Scene.prototype.createForeground = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // start methods
@@ -34122,14 +34734,14 @@ DKTools.Scene.prototype.start = function() {
  * Starts all sprites
  */
 DKTools.Scene.prototype.startAllSprites = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
  * Starts all windows
  */
 DKTools.Scene.prototype.startAllWindows = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // remove methods
@@ -34192,7 +34804,7 @@ DKTools.Scene.prototype.stop = function() {
  * Stops all
  */
 DKTools.Scene.prototype.stopAll = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // terminate methods
@@ -34214,7 +34826,7 @@ DKTools.Scene.prototype.terminate = function() {
  * Terminates all
  */
 DKTools.Scene.prototype.terminateAll = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // option methods
@@ -35542,13 +36154,23 @@ WebAudio.prototype._onLoad = function() {
 // DataManager
 //===========================================================================
 
-const DKTools_DataManager_onLoad = DataManager.onLoad;
-DataManager.onLoad = function(object) {
-    DKTools_DataManager_onLoad.call(this, object);
-
-    if (object === $dataSystem) {
-        DKTools.PreloadManager.initialize();
+const DKTools_DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+DataManager.isDatabaseLoaded = function() {
+    if (!DKTools_DataManager_isDatabaseLoaded.call(this)) {
+        return false;
     }
+
+    if (!this.__isDatabaseLoaded) {
+        this.__isDatabaseLoaded = true;
+
+        this.onDatabaseLoad();
+    }
+
+    return true;
+};
+
+DataManager.onDatabaseLoad = function() {
+    DKTools.PreloadManager.initialize();
 };
 
 
@@ -35582,7 +36204,7 @@ AudioManager.createBuffer = function(folder, name) {
 const DKTools_SceneManager_initialize = SceneManager.initialize;
 SceneManager.initialize = function() {
     DKTools_SceneManager_initialize.call(this);
-    DKTools.Utils._checkRPGMakerVersion();
+    DKTools.StartupManager.initialize();
 };
 
 const DKTools_SceneManager_initGraphics = SceneManager.initGraphics;
@@ -35721,7 +36343,10 @@ SceneManager.updateScene = function() {
                     this._sceneStarted = true;
                     this.onSceneStart();
                 }
-            } catch (e) { // eslint-disable-line no-empty
+            } catch (e) {
+                this._scene.start();
+                this._sceneStarted = true;
+                this.onSceneStart();
             }
         }
 
@@ -35788,7 +36413,7 @@ Scene_Base.prototype.isReady = function() {
  * this._preloader.add(bitmap);
  */
 Scene_Base.prototype.setupPreloading = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**

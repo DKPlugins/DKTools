@@ -1344,7 +1344,7 @@ DKTools.Window.prototype.needsCreatePauseSignSprite = function() {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onUpArrowUpdate = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -1355,7 +1355,7 @@ DKTools.Window.prototype.onUpArrowUpdate = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onDownArrowUpdate = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -1366,7 +1366,7 @@ DKTools.Window.prototype.onDownArrowUpdate = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onLeftArrowUpdate = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -1377,7 +1377,7 @@ DKTools.Window.prototype.onLeftArrowUpdate = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onRightArrowUpdate = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -1388,7 +1388,7 @@ DKTools.Window.prototype.onRightArrowUpdate = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onUpArrowMouseClick = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -1399,7 +1399,7 @@ DKTools.Window.prototype.onUpArrowMouseClick = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onDownArrowMouseClick = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -1410,7 +1410,7 @@ DKTools.Window.prototype.onDownArrowMouseClick = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onLeftArrowMouseClick = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -1421,7 +1421,7 @@ DKTools.Window.prototype.onLeftArrowMouseClick = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onRightArrowMouseClick = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -1432,7 +1432,7 @@ DKTools.Window.prototype.onRightArrowMouseClick = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onUpArrowMouseLongPress = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -1443,7 +1443,7 @@ DKTools.Window.prototype.onUpArrowMouseLongPress = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onDownArrowMouseLongPress = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -1454,7 +1454,7 @@ DKTools.Window.prototype.onDownArrowMouseLongPress = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onLeftArrowMouseLongPress = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -1465,7 +1465,7 @@ DKTools.Window.prototype.onLeftArrowMouseLongPress = function(event) {
  * @see DKTools.Window.prototype.createArrows
  */
 DKTools.Window.prototype.onRightArrowMouseLongPress = function(event) {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // R methods

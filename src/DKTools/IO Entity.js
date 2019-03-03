@@ -25,12 +25,12 @@ DKTools.IO.Entity = class {
     /**
      * Initializes the entity
      *
-     * @version 5.0.0
+     * @version 6.3.0
      * @since 3.0.0
      *
      * @param {String} fullPath - Path to entity
      */
-    initialize(fullPath) {
+    initialize(fullPath = '') {
         const data = DKTools.IO.parsePath(fullPath);
 
         /**

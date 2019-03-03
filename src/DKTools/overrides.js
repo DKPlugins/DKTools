@@ -472,13 +472,23 @@ WebAudio.prototype._onLoad = function() {
 // DataManager
 //===========================================================================
 
-const DKTools_DataManager_onLoad = DataManager.onLoad;
-DataManager.onLoad = function(object) {
-    DKTools_DataManager_onLoad.call(this, object);
-
-    if (object === $dataSystem) {
-        DKTools.PreloadManager.initialize();
+const DKTools_DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+DataManager.isDatabaseLoaded = function() {
+    if (!DKTools_DataManager_isDatabaseLoaded.call(this)) {
+        return false;
     }
+
+    if (!this.__isDatabaseLoaded) {
+        this.__isDatabaseLoaded = true;
+
+        this.onDatabaseLoad();
+    }
+
+    return true;
+};
+
+DataManager.onDatabaseLoad = function() {
+    DKTools.PreloadManager.initialize();
 };
 
 
@@ -512,7 +522,7 @@ AudioManager.createBuffer = function(folder, name) {
 const DKTools_SceneManager_initialize = SceneManager.initialize;
 SceneManager.initialize = function() {
     DKTools_SceneManager_initialize.call(this);
-    DKTools.Utils._checkRPGMakerVersion();
+    DKTools.StartupManager.initialize();
 };
 
 const DKTools_SceneManager_initGraphics = SceneManager.initGraphics;
@@ -651,7 +661,10 @@ SceneManager.updateScene = function() {
                     this._sceneStarted = true;
                     this.onSceneStart();
                 }
-            } catch (e) { // eslint-disable-line no-empty
+            } catch (e) {
+                this._scene.start();
+                this._sceneStarted = true;
+                this.onSceneStart();
             }
         }
 
@@ -718,7 +731,7 @@ Scene_Base.prototype.isReady = function() {
  * this._preloader.add(bitmap);
  */
 Scene_Base.prototype.setupPreloading = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**

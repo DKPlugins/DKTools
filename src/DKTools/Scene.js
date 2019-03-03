@@ -34,7 +34,7 @@ DKTools.Scene.prototype.initialize = function() {
  * @private
  */
 DKTools.Scene.prototype._clearAll = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // _create methods
@@ -110,7 +110,7 @@ DKTools.Scene.prototype._setupAll = function() {
  * @private
  */
 DKTools.Scene.prototype._setupOptions = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -120,7 +120,7 @@ DKTools.Scene.prototype._setupOptions = function() {
  * @private
  */
 DKTools.Scene.prototype._setupEvents = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
@@ -130,7 +130,7 @@ DKTools.Scene.prototype._setupEvents = function() {
  * @private
  */
 DKTools.Scene.prototype._setupAnimations = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // _add methods
@@ -141,7 +141,7 @@ DKTools.Scene.prototype._setupAnimations = function() {
  * @private
  */
 DKTools.Scene.prototype._addAllChildren = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // create methods
@@ -171,28 +171,28 @@ DKTools.Scene.prototype.create = function() {
  * Creates the background
  */
 DKTools.Scene.prototype.createBackground = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
  * Creates all sprites
  */
 DKTools.Scene.prototype.createAllSprites = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
  * Creates all windows
  */
 DKTools.Scene.prototype.createAllWindows = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
  * Creates the foreground
  */
 DKTools.Scene.prototype.createForeground = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // start methods
@@ -212,14 +212,14 @@ DKTools.Scene.prototype.start = function() {
  * Starts all sprites
  */
 DKTools.Scene.prototype.startAllSprites = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 /**
  * Starts all windows
  */
 DKTools.Scene.prototype.startAllWindows = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // remove methods
@@ -282,7 +282,7 @@ DKTools.Scene.prototype.stop = function() {
  * Stops all
  */
 DKTools.Scene.prototype.stopAll = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // terminate methods
@@ -304,7 +304,7 @@ DKTools.Scene.prototype.terminate = function() {
  * Terminates all
  */
 DKTools.Scene.prototype.terminateAll = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 // option methods

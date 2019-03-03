@@ -9,7 +9,7 @@
  * @extends DKTools.Unit
  *
  * @since 2.0.0
- * @memberof DKTools
+ * @memberof DKTools.Unit
  *
  * @example
  * var object = { width: 100 };
@@ -21,7 +21,7 @@
  *
  * unit.getValue(); // => 30
  *
- * @see DKTools.Unit.Property.prototype.initialize
+ * @see DKTools.Unit.Property.prototype.prototype.initialize
  */
 DKTools.Unit.Property = class extends DKTools.Unit {
 
@@ -131,13 +131,21 @@ DKTools.Unit.Property = class extends DKTools.Unit {
     /**
      * Returns true if the unit equals unit (parameter)
      *
+     * @version 6.3.0
+     *
      * @override
+     *
      * @param {DKTools.Unit} unit - Unit to compare
+     *
      * @returns {Boolean} Unit equals unit (parameter)
      */
     equals(unit) {
         if (!unit) {
             return false;
+        }
+
+        if (this === unit) {
+            return true;
         }
 
         return _.isEqual(this._source, unit.source) &&
@@ -150,15 +158,18 @@ DKTools.Unit.Property = class extends DKTools.Unit {
     /**
      * Returns the value of the unit
      *
+     * @version 6.3.0
+     *
      * @override
      *
+     * @see DKTools.Unit.Property.prototype.hasSource
      * @see DKTools.Unit.Property.prototype.getPercents
      *
      * @returns {Number} Value of the unit
      */
     getValueBase() {
-        if (!(this._source instanceof Object)) {
-            return 0;
+        if (!this.hasSource() || !this.hasProperty()) {
+            return Number.NaN;
         }
 
         const unit = new DKTools.Unit({
@@ -167,6 +178,32 @@ DKTools.Unit.Property = class extends DKTools.Unit {
         });
 
         return unit.getValue();
+    }
+
+    // H methods
+
+    /**
+     * Returns true if the unit has the property
+     *
+     * @since 6.3.0
+     *
+     * @returns {Boolean} Unit has the property
+     */
+    hasProperty() {
+        return !!this._property;
+    }
+
+    /**
+     * Returns true if the unit has the source
+     *
+     * @since 6.3.0
+     *
+     * @override
+     *
+     * @returns {Boolean} Unit has the source
+     */
+    hasSource() {
+        return this._source instanceof Object;
     }
 
     // M methods

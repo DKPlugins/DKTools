@@ -645,6 +645,8 @@ DKTools.Sprite.prototype.drawAllTexts = function() {
  * Draws a text
  * Returns true if successfully completed
  *
+ * @version 6.3.0
+ *
  * @param {String} text - Text
  * @param {Object} [options={}] - Options for drawing
  *
@@ -720,6 +722,10 @@ DKTools.Sprite.prototype.drawText = function(text, options = {}) {
 
     if (DKTools.Utils.isString(height)) { // number of lines
         height = this.getLineHeight() * parseFloat(height);
+    }
+
+    if (width === 0 || height === 0) {
+        return false;
     }
 
     x = x || 0;
