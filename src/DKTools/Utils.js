@@ -295,15 +295,22 @@ DKTools.Utils = class {
     /**
      * Logs the error to file
      *
-     * @version 4.0.0
+     * @version 7.0.0
      * @since 3.1.0
      * @static
      * @async
      *
-     * @param {Object | String} e - Error
+     * @param {Error | Object | String} error - Error
+     *
+     * @param {String} error.name
+     * @param {String} error.message
+     * @param {String} [error.filename]
+     * @param {String} [error.lineNumber]
+     * @param {String} [error.columnNumber]
+     * @param {String} [error.stack]
      */
-    static async logError(e) {
-        if (!e || !this.isNwjs()) {
+    static async logError(error) {
+        if (!error || !this.isNwjs()) {
             return;
         }
 
@@ -328,38 +335,45 @@ DKTools.Utils = class {
         const filename = param['Filename'];
         const file = new DKTools.IO.File(filename);
         const stats = await file.getStatsAsync().then(result => result.data);
-        let fileDescriptor = await fs.openSync(filename, 'a');
 
         if (stats && stats.size > fileSize) {
-            await fs.closeSync(fileDescriptor);
-            await file.removeAsync();
+            const newFilename = DKTools.IO.parsePath(filename).name;
+            const now = new Date();
+            const day = String(now.getDate()).padZero(2);
+            const month = String(now.getMonth() + 1).padZero(2);
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padZero(2);
+            const minutes = String(now.getMinutes()).padZero(2);
+            const seconds = String(now.getSeconds()).padZero(2);
 
-            fileDescriptor = await fs.openSync(filename, 'a');
+            await file.renameAsync(`${day}.${month}.${year}_${hours}.${minutes}.${seconds}_${newFilename}`);
         }
 
-        if (e instanceof Object) {
+        const fileDescriptor = await fs.openSync(filename, 'a');
+
+        if (error instanceof Object) {
             let data = `Date: ${new Date().toString()}` + os.EOL +
-                `Name: ${e.name}` + os.EOL +
-                `Message: ${e.message}` + os.EOL;
+                `Name: ${error.name}` + os.EOL +
+                `Message: ${error.message}` + os.EOL;
 
-            if (e.filename !== undefined) {
-                data += `Filename: ${e.filename}` + os.EOL;
+            if (error.filename !== undefined) {
+                data += `Filename: ${error.filename}` + os.EOL;
             }
 
-            if (e.lineNumber !== undefined) {
-                data += `Line: ${e.lineNumber}` + os.EOL;
+            if (error.lineNumber !== undefined) {
+                data += `Line: ${error.lineNumber}` + os.EOL;
             }
 
-            if (e.columnNumber !== undefined) {
-                data += `Column: ${e.columnNumber}` + os.EOL;
+            if (error.columnNumber !== undefined) {
+                data += `Column: ${error.columnNumber}` + os.EOL;
             }
 
-            data += `Stack: ${e.stack}` + os.EOL + os.EOL;
+            data += `Stack: ${error.stack}` + os.EOL + os.EOL;
 
             await fs.writeSync(fileDescriptor, data);
         } else {
             const data = `Date: ${new Date().toString()}` + os.EOL +
-                `Error: ${e}` + os.EOL + os.EOL;
+                `Error: ${error}` + os.EOL + os.EOL;
 
             await fs.writeSync(fileDescriptor, data);
         }

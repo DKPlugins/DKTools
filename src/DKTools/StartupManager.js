@@ -12,15 +12,42 @@
  */
 DKTools.StartupManager = class {
 
+    // initialize methods
+
     /**
      * Initializes the manager
      *
+     * @version 7.0.0
      * @static
+     * @async
      */
-    static initialize() {
-        this.checkErrors();
-        this.initializeModules();
+    static async initialize() {
+
+        /**
+         * @private
+         * @readonly
+         * @type {Boolean}
+         */
+        this._isReady = false;
+
+        await this.checkErrors();
+        await this.initializeModules();
+
+        this._isReady = true;
     }
+
+    /**
+     * Initializes modules
+     *
+     * @version 7.0.0
+     * @static
+     * @async
+     */
+    static async initializeModules() {
+        // to be overridden by plugins
+    }
+
+    // C methods
 
     /**
      * Checks the minimal version of RPG Maker
@@ -49,20 +76,28 @@ DKTools.StartupManager = class {
     /**
      * Checks the possible errors
      *
+     * @version 7.0.0
      * @static
+     * @async
      */
-    static checkErrors() {
-        this._checkRPGMakerVersion();
-        this._checkWebStorage();
+    static async checkErrors() {
+        await this._checkRPGMakerVersion();
+        await this._checkWebStorage();
     }
 
+    // I methods
+
     /**
-     * Initializes modules
+     * Returns true if the manager is ready
      *
+     * @since 7.0.0
      * @static
+     * @async
+     *
+     * @returns {Boolean} Manager is ready
      */
-    static initializeModules() {
-        // to be overridden by plugins
+    static isReady() {
+        return this._isReady;
     }
 
 };

@@ -520,9 +520,9 @@ AudioManager.createBuffer = function(folder, name) {
 //===========================================================================
 
 const DKTools_SceneManager_initialize = SceneManager.initialize;
-SceneManager.initialize = function() {
-    DKTools_SceneManager_initialize.call(this);
-    DKTools.StartupManager.initialize();
+SceneManager.initialize = async function() {
+    await DKTools_SceneManager_initialize.call(this);
+    await DKTools.StartupManager.initialize();
 };
 
 const DKTools_SceneManager_initGraphics = SceneManager.initGraphics;
@@ -755,7 +755,9 @@ Scene_Base.prototype.startPreloading = function() {
 
 const DKTools_Scene_Boot_isReady = Scene_Boot.prototype.isReady;
 Scene_Boot.prototype.isReady = function() {
-    return DKTools_Scene_Boot_isReady.call(this) && DKTools.PreloadManager.isReady();
+    return DKTools_Scene_Boot_isReady.call(this)
+        && DKTools.StartupManager.isReady()
+        && DKTools.PreloadManager.isReady();
 };
 
 const DKTools_Scene_Boot_start = Scene_Boot.prototype.start;

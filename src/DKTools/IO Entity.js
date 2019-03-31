@@ -148,18 +148,18 @@ DKTools.IO.Entity = class {
      *
      * Returns an object with 2 properties:
      * status - Result of an operation
-     * data - Loaded data (only if the status is equal to DKTools.IO.OK)
+     * data - Loaded data
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      *
-     * @version 6.1.0
+     * @version 7.0.0
      * @since 2.0.0
      *
      * @param {Object} object - Options of an operation
@@ -175,7 +175,11 @@ DKTools.IO.Entity = class {
      */
     getStats(object) {
         if (!object) {
-            return { data: null, status: DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE };
+            return { data: null, status: DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE };
+        }
+
+        if (!object.sync && !DKTools.Utils.isFunction(object.onSuccess)) {
+            return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
         if (!DKTools.IO.isLocalMode()) {
@@ -190,14 +194,14 @@ DKTools.IO.Entity = class {
         const absolutePath = this.getAbsolutePath();
 
         if (object.sync) {
-            const data = fs.statSync(absolutePath);
+            try {
+                const data = fs.statSync(absolutePath);
 
-            return { data, status: DKTools.IO.OK };
-        } else {
-            if (!DKTools.Utils.isFunction(object.onSuccess)) {
-                return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
+                return { data, status: DKTools.IO.OK };
+            } catch (error) {
+                this.__processError(error, object.onError);
             }
-
+        } else {
             fs.stat(absolutePath, (error, data) => {
                 if (error) {
                     this.__processError(error, object.onError);
@@ -206,7 +210,7 @@ DKTools.IO.Entity = class {
                 }
             });
 
-            return { data: null, status: DKTools.IO.WAIT_FOR_ASYNC_OPERATION };
+            return { data: null, status: DKTools.IO.EXPECT_CALLBACK };
         }
     }
 
@@ -216,10 +220,10 @@ DKTools.IO.Entity = class {
      *
      * Promise resolves an object with 2 properties:
      * status - Result of an operation
-     * data - Loaded data (only if the status is equal to DKTools.IO.OK)
+     * data - Loaded data
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
@@ -240,7 +244,7 @@ DKTools.IO.Entity = class {
                 onError: reject
             });
 
-            if (result.status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (result.status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(result);
             }
         });
@@ -328,22 +332,22 @@ DKTools.IO.Entity = class {
 
     /**
      * Renames the entity (file or directory)
+     * Returns a code of the result of an operation
      *
      * Possible results:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
-     * DKTools.IO.ERROR_NEW_NAME_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OVERWRITING_IS_NOT_AVAILABLE
      *
-     * @version 6.1.0
+     * @version 7.0.0
      *
-     * @param {Object} object - Options of an operation
+     * @param {String} newName - New name of entity (file or directory) without the extension
+     * @param {Object} [object={}] - Options of an operation
      *
-     * @param {String} object.newName - New name of entity without the extension
      * @param {Boolean} [object.sync] - Use synchronous version of rename
-     * @param {String | Object} [object.options] - Options for FileSystem.rename or FileSystem.renameSync
+     * @param {Boolean} [object.overwrite] - Overwrite existing entity
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
@@ -352,17 +356,11 @@ DKTools.IO.Entity = class {
      *
      * @returns {Number} Code of the result of an operation
      */
-    rename(object) {
-        if (!object) {
-            return DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE;
-        }
+    rename(newName, object = {}) {
+        object = object || {};
 
         if (!DKTools.IO.isLocalMode()) {
             return DKTools.IO.ERROR_NOT_LOCAL_MODE;
-        }
-
-        if (!object.newName) {
-            return DKTools.IO.ERROR_NEW_NAME_IS_NOT_AVAILABLE;
         }
 
         if (!this.exists()) {
@@ -370,21 +368,24 @@ DKTools.IO.Entity = class {
         }
 
         const fs = DKTools.IO.fs;
-        const newName = object.newName;
         const oldAbsolutePath = this.getAbsolutePath();
-        const newPath = DKTools.IO.normalizePath(this._path + '/' + newName + '.' + this._extension);
+        const newPath = DKTools.IO.normalizePath(this._path + '/' + newName + this._extension);
         const newAbsolutePath = DKTools.IO.getAbsolutePath(newPath);
 
-        if (!DKTools.IO.absolutePathExists(newAbsolutePath)) {
-            return DKTools.IO.ERROR_NEW_NAME_IS_NOT_AVAILABLE;
+        if (!object.overwrite && DKTools.IO.absolutePathExists(newAbsolutePath)) {
+            return DKTools.IO.ERROR_OVERWRITING_IS_NOT_AVAILABLE;
         }
 
         if (object.sync) {
-            fs.renameSync(oldAbsolutePath, newAbsolutePath);
+            try {
+                fs.renameSync(oldAbsolutePath, newAbsolutePath);
 
-            this._name = newName;
+                this._name = newName;
 
-            return DKTools.IO.OK;
+                return DKTools.IO.OK;
+            } catch (error) {
+                this.__processError(error, object.onError);
+            }
         } else {
             fs.rename(oldAbsolutePath, newAbsolutePath, (error) => {
                 if (error) {
@@ -398,43 +399,44 @@ DKTools.IO.Entity = class {
                 }
             });
 
-            return DKTools.IO.WAIT_FOR_ASYNC_OPERATION;
+            return DKTools.IO.EXPECT_CALLBACK;
         }
     }
 
     /**
      * Renames the entity (file or directory)
      * Asynchronous version of DKTools.IO.Entity.prototype.rename
+     * Promise resolves a code of the result of an operation
      *
      * Possible results:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
-     * DKTools.IO.ERROR_NEW_NAME_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OVERWRITING_IS_NOT_AVAILABLE
      *
-     * @version 6.1.0
+     * @version 7.0.0
      * @since 4.0.0
      * @async
      *
-     * @param {Object} object - Options of an operation
+     * @param {String} newName - New name of entity without the extension
+     * @param {Object} [object={}] - Options of an operation
      *
-     * @param {String} object.newName - New name of entity without the extension
-     * @param {String | Object} [object.options] - Options for FileSystem.rename
+     * @param {Boolean} [object.overwrite] - Overwrite existing entity
      *
      * @see DKTools.IO.Entity.prototype.rename
      *
      * @returns {Promise} Code of the result of an operation
      */
-    async renameAsync(object) {
+    async renameAsync(newName, object = {}) {
         return new Promise((resolve, reject) => {
-            const status = this.rename({
+            const status = this.rename(newName, {
                 ...object,
                 sync: false,
                 onSuccess: resolve,
                 onError: reject
             });
 
-            if (status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(status);
             }
         });

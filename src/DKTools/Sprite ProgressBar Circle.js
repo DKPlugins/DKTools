@@ -37,8 +37,8 @@ DKTools.Sprite.ProgressBar.Circle = class extends DKTools.Sprite.ProgressBar {
      */
     setAll(object = {}, blockStart = false, activate = false) {
         object = object || {};
-        const block = true;
 
+        const block = true;
         let changed = DKTools.Sprite.ProgressBar.prototype.setAll.call(this, object, block);
 
         if (this.setLineWidth(object.lineWidth, block)) {

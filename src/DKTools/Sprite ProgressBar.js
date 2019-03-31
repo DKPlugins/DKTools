@@ -313,8 +313,8 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      */
     setAll(object = {}, blockStart = false, activate = false) {
         object = object || {};
-        const block = true;
 
+        const block = true;
         let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
 
         if (this.setValueStep(object.valueStep, block)) {

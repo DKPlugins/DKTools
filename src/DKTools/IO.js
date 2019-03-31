@@ -88,7 +88,7 @@ DKTools.IO = class {
      * @returns {DKTools.IO.Directory} Project directory
      */
     static getRootDirectory() {
-        return new DKTools.IO.Directory('/');
+        return new DKTools.IO.Directory();
     }
 
     /**
@@ -429,6 +429,22 @@ Object.defineProperties(DKTools.IO, {
     },
 
     /**
+     * Provides the platform-specific path segment separator
+     * For mobile phones and browsers always returns '/'
+     *
+     * @since 7.0.0
+     * @readonly
+     * @type {String}
+     * @memberof DKTools.IO
+     */
+    sep: {
+        get: function() {
+            return this.isLocalMode() ? this._path.sep : '/';
+        },
+        configurable: true
+    },
+
+    /**
      * Path to the project folder
      *
      * @readonly
@@ -452,13 +468,14 @@ Object.defineProperties(DKTools.IO, {
     OK: { value: 0 },
 
     /**
-     * Wait until the asynchronous operation calls the callback function
+     * Expect until an asynchronous operation calls the callback function
      *
+     * @since 7.0.0
      * @constant
      * @type {Number}
      * @memberof DKTools.IO
      */
-    WAIT_FOR_ASYNC_OPERATION: { value: 1 },
+    EXPECT_CALLBACK: { value: 1 },
 
     /**
      * Platform is not equal to NW.js
@@ -506,31 +523,44 @@ Object.defineProperties(DKTools.IO, {
     ERROR_DIRECTORY_IS_NOT_EMPTY: { value: 6 },
 
     /**
-     * A new name is missing or a file with this name already exists
+     * Overwriting is not available
      *
+     * @since 7.0.0
      * @constant
      * @type {Number}
      * @memberof DKTools.IO
      */
-    ERROR_NEW_NAME_IS_NOT_AVAILABLE: { value: 7 },
+    ERROR_OVERWRITING_IS_NOT_AVAILABLE: { value: 7 },
 
     /**
-     * A key is missing
+     * The options are not available for an operation
      *
+     * @since 7.0.0
      * @constant
      * @type {Number}
      * @memberof DKTools.IO
      */
-    ERROR_KEY_IS_NOT_AVAILABLE: { value: 8 },
+    ERROR_OPTIONS_ARE_NOT_AVAILABLE: { value: 8 },
 
     /**
-     * The options is not available for an operation
+     * Failed decompressing data
      *
+     * @since 7.0.0
      * @constant
      * @type {Number}
      * @memberof DKTools.IO
      */
-    ERROR_OPTIONS_IS_NOT_AVAILABLE: { value: 9 }
+    ERROR_DECOMPRESSING_DATA: { value: 9 },
+
+    /**
+     * Failed parsing data
+     *
+     * @since 7.0.0
+     * @constant
+     * @type {Number}
+     * @memberof DKTools.IO
+     */
+    ERROR_PARSING_DATA: { value: 10 },
 
 });
 

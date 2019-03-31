@@ -1,0 +1,61 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+  "plugins": ["lodash"],
+  "extends": ["eslint:recommended"],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "commonjs": true
+  },
+  "settings": {
+    "lodash/pragma": "_"
+  },
+  "rules": {
+    "no-undef": "off",
+    "no-unused-vars": "off",
+    "no-useless-escape": "off",
+    "no-console": "off",
+    "no-control-regex": "off",
+    "no-irregular-whitespace": ["error", { "skipComments": true }],
+    "no-template-curly-in-string": "error",
+    "require-atomic-updates": "error",
+    "curly": "error",
+    "no-extend-native": "warn",
+    "no-floating-decimal": "error",
+    "no-undef-init": "error",
+    "array-bracket-spacing": "error",
+    "brace-style": "error",
+    "comma-spacing": "error",
+    "comma-style": "error",
+    "computed-property-spacing": "error",
+    "no-trailing-spaces": ["error", { "skipBlankLines": true }],
+    "no-unneeded-ternary": "error",
+    "no-whitespace-before-property": "error",
+    "padding-line-between-statements": [
+      "error",
+      { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*" },
+      { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var", "block-like"] },
+      { "blankLine": "always", "prev": ["for", "do", "while"], "next": "*" },
+      { "blankLine": "always", "prev": "*", "next": ["for", "do", "while"] },
+      { "blankLine": "always", "prev": "if", "next": "*" },
+      { "blankLine": "always", "prev": "*", "next": "if" },
+      { "blankLine": "always", "prev": "switch", "next": "*" },
+      { "blankLine": "always", "prev": "*", "next": "switch" },
+      { "blankLine": "always", "prev": "try", "next": "*" },
+      { "blankLine": "always", "prev": "*", "next": "try" },
+      { "blankLine": "always", "prev": "*", "next": "return" },
+      { "blankLine": "always", "prev": "expression", "next": ["const", "let", "var"] }
+    ],
+    "semi-spacing": "error",
+    "semi-style": "error",
+    "space-before-blocks": "error",
+    "spaced-comment": "off",
+    "no-confusing-arrow": "error",
+    "no-duplicate-imports": "error",
+    "prefer-const": "error",
+    "max-len": ["error", { "code": 130, "tabWidth": 4, "ignoreComments": true, "ignoreStrings": true }]
+  }
+}

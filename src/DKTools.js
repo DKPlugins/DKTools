@@ -3,8 +3,8 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 6.3.0
-Release: 02.03.2019
+Version: 7.0.0
+Release: 29.03.2019
 First release: 13.01.2016
 Supported languages: Russian, English
 */
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 6.3.0
-Релиз: 02.03.2019
+Версия: 7.0.0
+Релиз: 29.03.2019
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.6.3.0 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.7.0.0 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 6.3.0
- Release: 02.03.2019
+ Version: 7.0.0
+ Release: 29.03.2019
  First release: 13.01.2016
  Supported languages: Russian, English
  Thank you for your support: https://dk-plugins.ru/donate
@@ -49,7 +49,8 @@ E-mail: kuznetsovdenis96@gmail.com
 
  ### Instructions ###
 
- ### 1 ### Templates for the filename of the screenshot ###
+ ### 1 ### Screenshots ###
+ Templates for the filename of the screenshot:
  %year - Year
  %month - Month
  %day - Day
@@ -57,14 +58,20 @@ E-mail: kuznetsovdenis96@gmail.com
  %minutes - Minutes
  %seconds - Seconds
 
- ### 2 ### Grid ###
- Available grid sizes: 64, 48, 32, 16
+ ### 2 ### Errors logging ###
+ If the file size limit is exceeded, the old logs will be renamed
+ according to the template: day.month.year_hours.minutes.seconds_filename.
 
- ### 2.1 ### Using the ruler ###
- Move the mouse while holding down the middle key
+ ### 3 ### Grid ###
+ Available grid sizes: 64, 48, 32, 16.
+ Switching the grid size is done by pressing the key responsible for the function.
 
- ### 2.2 ### Color of the ruler ###
- If the color of the ruler is not specified, random color will be selected automatically
+ ### 3.1 ### Using the ruler ###
+ Move the mouse while holding down the middle key.
+
+ ### 3.2 ### Color of the ruler ###
+ If the color of the ruler is not specified,
+ random color will be selected automatically.
 
  ### Plugin commands ###
  1. Checks for plugins updates from DKPlugins
@@ -92,6 +99,7 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.PluginManager
  DKTools.PluginCommandManager
  DKTools.PreloadManager
+ DKTools.StartupManager
  DKTools.Audio
  DKTools.Event
  DKTools.Animation
@@ -217,7 +225,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.6.3.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.7.0.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -225,8 +233,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 6.3.0
- Релиз: 02.03.2019
+ Версия: 7.0.0
+ Релиз: 29.03.2019
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
  Спасибо за Вашу поддержку: https://dk-plugins.ru/donate
@@ -245,7 +253,8 @@ E-mail: kuznetsovdenis96@gmail.com
 
  ### Инструкции ###
 
- ### 1 ### Шаблоны для названия файла скриншота ###
+ ### 1 ### Скриншоты ###
+ Шаблоны для названия файла скриншота:
  %year - Год
  %month - Месяц
  %day - День
@@ -253,14 +262,20 @@ E-mail: kuznetsovdenis96@gmail.com
  %minutes - Минуты
  %seconds - Секунды
 
- ### 2 ### Сетка ###
+ ### 2 ### Логирование ошибок ###
+ При превышении лимита размера файла старые логи будут переименованы
+ по шаблону: day.month.year_hours.minutes.seconds_filename.
+
+ ### 3 ### Сетка ###
  Доступные размеры сетки: 64, 48, 32, 16
+ Переключение размера сетки происходит нажатием клавиши,
+ отвечающей за работу функцию.
 
- ### 2.1 ### Использование линейки ###
- Перемещайте мышь, удерживая среднюю клавишу
+ ### 3.1 ### Использование линейки ###
+ Перемещайте мышь, удерживая среднюю клавишу.
 
- ### 2.2 ### Цвет линейки ###
- Если не указан цвет линейки, то автоматически будет выбран случайный цвет
+ ### 3.2 ### Цвет линейки ###
+ Если не указан цвет линейки, то автоматически будет выбран случайный цвет.
 
  ### Команды плагина ###
  1. Проверить обновления плагинов от DKPlugins
@@ -288,6 +303,7 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.PluginManager
  DKTools.PluginCommandManager
  DKTools.PreloadManager
+ DKTools.StartupManager
  DKTools.Audio
  DKTools.Event
  DKTools.Animation
@@ -925,7 +941,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default errors_log.txt
 
  * @param File Size
- * @desc Maximum file size in megabytes. If this value is exceeded, the old logs will be deleted.
+ * @desc Maximum file size in megabytes. Details in the help (2).
  * @default 10
 
  */
@@ -953,7 +969,7 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param File Size
  * @text Размер файла
- * @desc Максимальный размер файла в мегабайтах. При превышении этого значения старые логи будут удалены.
+ * @desc Максимальный размер файла в мегабайтах. Подробности в справке (2).
  * @default 10
 
  */
@@ -1013,7 +1029,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default 1
 
  * @param Ruler Color
- * @desc Ruler color in Web format. Details in the help (2.2)
+ * @desc Ruler color in Web format. Details in the help (3.2)
  * @default
 
  * @param Ruler Width
@@ -1052,7 +1068,7 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Ruler Color
  * @text Цвет линейки
- * @desc Цвет линейки в Web формате. Подробности в справке (2.2)
+ * @desc Цвет линейки в Web формате. Подробности в справке (3.2)
  * @default
 
  * @param Ruler Width

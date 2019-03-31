@@ -30,6 +30,138 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
         this._detectExtension();
     }
 
+    // C methods
+
+    /**
+     * Copies file
+     * Returns a code of the result of an operation
+     *
+     * Possible results:
+     * DKTools.IO.OK
+     * DKTools.IO.EXPECT_CALLBACK
+     * DKTools.IO.ERROR_NOT_LOCAL_MODE
+     * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
+     *
+     * @since 7.0.0
+     *
+     * @param {String} destination - Destination filename of the copy operation
+     * @param {Object} object - Options of an operation
+     *
+     * @param {Boolean} [object.sync] - Use synchronous version of FileSystem.copyFile
+     * @param {Boolean | Object} [object.createDirectory] - Create a directory for the file
+     * @param {Number} [object.flags] - Modifiers for copy operation
+     * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
+     * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
+     *
+     * @param {Object} [object.createDirectory.options] - Options for FileSystem.mkdir or FileSystem.mkdirSync
+     *
+     * @param {Boolean} [object.createDirectory.options.recursive] - Parent folders should be created
+     * @param {Number | String} [object.createDirectory.options.mode] - Directory permission
+     *
+     * @see DKTools.IO.isLocalMode
+     * @see DKTools.IO.File.prototype.exists
+     * @see DKTools.IO.Directory.prototype.create
+     * @see FileSystem.copyFile
+     * @see FileSystem.copyFileSync
+     *
+     * @returns {Number} Code of the result of an operation
+     */
+    copy(destination, object = {}) {
+        if (!object) {
+            return DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE;
+        }
+
+        if (!DKTools.IO.isLocalMode()) {
+            return DKTools.IO.ERROR_NOT_LOCAL_MODE;
+        }
+
+        if (!this.exists()) {
+            return DKTools.IO.ERROR_PATH_DOES_NOT_EXIST;
+        }
+
+        const fs = DKTools.IO.fs;
+        const absolutePath = this.getAbsolutePath();
+        const file = new DKTools.IO.File(destination);
+        const directory = file.getDirectory();
+
+        if (object.createDirectory && !directory.exists()) {
+            const options = (object.createDirectory instanceof Object ? object.createDirectory : null);
+            const status = directory.create({ sync: true, options });
+
+            if (status !== DKTools.IO.OK) {
+                this.__processError(new Error(`Failed to create directory: ${directory.getFullPath()}`), object.onError);
+            }
+        }
+
+        if (!directory.exists()) {
+            return DKTools.IO.ERROR_PATH_DOES_NOT_EXIST;
+        }
+
+        if (object.sync) {
+            try {
+                fs.copyFileSync(absolutePath, destination, object.flags);
+
+                return DKTools.IO.OK;
+            } catch (error) {
+                this.__processError(error, object.onError);
+            }
+        } else {
+            fs.copyFile(absolutePath, destination, object.flags, (error) => {
+                if (error) {
+                    this.__processError(error, object.onError);
+                } else if (DKTools.Utils.isFunction(object.onSuccess)) {
+                    object.onSuccess(DKTools.IO.OK, this);
+                }
+            });
+
+            return DKTools.IO.EXPECT_CALLBACK;
+        }
+    }
+
+    /**
+     * Copies file
+     * Asynchronous version of DKTools.IO.File.prototype.copy
+     * Promise resolves a code of the result of an operation
+     *
+     * Possible results:
+     * DKTools.IO.OK
+     * DKTools.IO.ERROR_NOT_LOCAL_MODE
+     * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     *
+     * @since 7.0.0
+     * @async
+     *
+     * @param {String} destination - Destination filename of the copy operation
+     * @param {Object} [object={}] - Options of an operation
+     *
+     * @param {Boolean | Object} [object.createDirectory] - Create a directory for the file
+     * @param {Number} [object.flags] - Modifiers for copy operation
+     *
+     * @param {Object} [object.createDirectory.options] - Options for FileSystem.mkdir or FileSystem.mkdirSync
+     *
+     * @param {Boolean} [object.createDirectory.options.recursive] - Parent folders should be created
+     * @param {Number | String} [object.createDirectory.options.mode] - Directory permission
+     *
+     * @see DKTools.IO.File.prototype.copy
+     *
+     * @returns {Promise} Code of the result of an operation
+     */
+    async copyAsync(destination, object = {}) {
+        return new Promise((resolve, reject) => {
+            const status = this.copy(destination, {
+                ...object,
+                sync: false,
+                onSuccess: resolve,
+                onError: reject
+            });
+
+            if (status !== DKTools.IO.EXPECT_CALLBACK) {
+                resolve(status);
+            }
+        });
+    }
+
     // D methods
 
     /**
@@ -59,12 +191,12 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     // E methods
 
     /**
-     * Returns true if the entity exists
+     * Returns true if the file exists
      *
      * @version 6.2.1
      * @override
      *
-     * @returns {Boolean} Entity exists
+     * @returns {Boolean} File exists
      */
     exists() {
         if (DKTools.IO.isLocalMode()) {
@@ -177,19 +309,22 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     /**
      * Loads and returns a data
      *
-     * Returns an object with 2 properties:
+     * Returns an object with 3 properties:
      * status - Result of an operation
-     * data - Loaded data (only if the status is equal to DKTools.IO.OK)
+     * data - Loaded data
+     * error - Error of an operation
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
+     * DKTools.IO.ERROR_DECOMPRESSING_DATA
+     * DKTools.IO.ERROR_PARSING_DATA
      *
-     * @version 6.1.0
+     * @version 7.0.0
      *
      * @param {Object} object - Options of an operation
      *
@@ -200,33 +335,63 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {Boolean} [object.decompress] - Use LZString.decompressFromBase64 for a data
      * @param {Boolean | Object} [object.parse] - Use JSON.parse for a data
      *
+     * @param {String} [object.options.encoding] - Encoding
+     * @param {String} [object.options.flag] - File system flag
+     *
      * @param {Function} [object.parse.reviver] - A function that transforms the results
+     *
+     * @example
+     * const file = new DKTools.IO.File('data/System.json');
+     * const result = file.load({ sync: true, parse: true });
+     *
+     * if (result.status === DKTools.IO.OK) {
+     *     console.log(result.data); // data loaded synchronously
+     * }
+     *
+     * @example
+     * const file = new DKTools.IO.File('data/System.json');
+     *
+     * file.load({
+     *      sync: false,
+     *      parse: true,
+     *      onSuccess: function(result, file) {
+     *          if (result.status === DKTools.IO.OK) {
+     *              console.log(result.data); // data loaded asynchronously
+     *          }
+     *      }
+     * });
      *
      * @see FileSystem.readFile
      * @see FileSystem.readFileSync
      *
-     * @returns {{ data: Object, status: Number }} Loaded data
+     * @returns {{ data: String | Buffer | Object | null, status: Number, error: Error | undefined }} Loaded data
      */
     load(object) {
         if (!object) {
-            return { data: null, status: DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE };
+            return { data: null, status: DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE };
         }
 
         if (!object.sync && !DKTools.Utils.isFunction(object.onSuccess)) {
-            return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE};
+            return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
         const absolutePath = this.getAbsolutePath();
         const processData = (data) => {
             if (data) {
                 if (object.decompress) {
-                    data = LZString.decompressFromBase64(data);
+                    try {
+                        data = LZString.decompressFromBase64(data);
+                    } catch (error) {
+                        return { data: null, status: DKTools.IO.ERROR_DECOMPRESSING_DATA, error };
+                    }
                 }
 
-                if (object.parse instanceof Object) {
-                    data = JSON.parse(data, object.parse.reviver);
-                } else if (object.parse) {
-                    data = JSON.parse(data);
+                if (object.parse) {
+                    try {
+                        data = JSON.parse(data, object.parse.reviver);
+                    } catch (error) {
+                        return { data: null, status: DKTools.IO.ERROR_PARSING_DATA, error };
+                    }
                 }
             }
 
@@ -242,9 +407,13 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
             const options = object.options || { encoding: 'utf8' };
 
             if (object.sync) {
-                const data = fs.readFileSync(absolutePath, options);
+                try {
+                    const data = fs.readFileSync(absolutePath, options);
 
-                return processData(data);
+                    return processData(data);
+                } catch (error) {
+                    this.__processError(error, object.onError);
+                }
             } else {
                 fs.readFile(absolutePath, options, (error, data) => {
                     if (error) {
@@ -280,7 +449,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
             }
         }
 
-        return { data: null, status: DKTools.IO.WAIT_FOR_ASYNC_OPERATION };
+        return { data: null, status: DKTools.IO.EXPECT_CALLBACK };
     }
 
     /**
@@ -288,16 +457,19 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * Asynchronous version of DKTools.IO.File.prototype.load
      * Promise resolves a loaded data or null
      *
-     * Promise resolves an object with 2 properties:
+     * Promise resolves an object with 3 properties:
      * status - Result of an operation
-     * data - Loaded data (only if the status is equal to DKTools.IO.OK)
+     * data - Loaded data
+     * error - Error of an operation
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_DECOMPRESSING_DATA
+     * DKTools.IO.ERROR_PARSING_DATA
      *
-     * @version 6.1.0
+     * @version 7.0.0
      * @since 4.0.0
      * @async
      *
@@ -306,6 +478,9 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {String | Object} [object.options] - Options for FileSystem.readFile
      * @param {Boolean} [object.decompress] - Use LZString.decompressFromBase64 for a data
      * @param {Boolean | Object} [object.parse] - Use JSON.parse for a data
+     *
+     * @param {String} [object.options.encoding] - Encoding
+     * @param {String} [object.options.flag] - File system flag
      *
      * @param {Function} [object.parse.reviver] - A function that transforms the results
      *
@@ -322,7 +497,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
                 onError: reject
             });
 
-            if (result.status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (result.status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(result);
             }
         });
@@ -361,21 +536,25 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     /**
      * Loads the JSON data
      *
-     * Returns an object with 2 properties:
+     * Returns an object with 3 properties:
      * status - Result of an operation
-     * data - Loaded data (only if the status is equal to DKTools.IO.OK)
+     * data - Loaded data
+     * error - Error of an operation
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
+     * DKTools.IO.ERROR_DECOMPRESSING_DATA
+     * DKTools.IO.ERROR_PARSING_DATA
      *
-     * @version 6.1.0
+     * @version 7.0.0
      * @since 3.0.0
      *
-     * @param {Object} [object={}] - Options of an operation
+     * @param {Object} object - Options of an operation
      *
      * @param {Boolean} [object.sync] - Use synchronous version of FileSystem.readFile
      * @param {String | Object} [object.options] - Options for FileSystem.readFile or FileSystem.readFileSync
@@ -384,14 +563,39 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {Boolean} [object.decompress] - Use LZString.decompressFromBase64 for a data
      * @param {Boolean | Object} [object.parse] - Use JSON.parse for a data
      *
+     * @param {String} [object.options.encoding] - Encoding
+     * @param {String} [object.options.flag] - File system flag
+     *
      * @param {Function} [object.parse.reviver] - A function that transforms the results
+     *
+     * @example
+     * const file = new DKTools.IO.File('data/System.json');
+     * const result = file.loadJson({ sync: true });
+     *
+     * if (result.status === DKTools.IO.OK) {
+     *     console.log(result.data); // data loaded synchronously
+     * }
+     *
+     * @example
+     * const file = new DKTools.IO.File('data/System.json');
+     *
+     * file.loadJson({
+     *      sync: false,
+     *      onSuccess: function(result, file) {
+     *          if (result.status === DKTools.IO.OK) {
+     *              console.log(result.data); // data loaded asynchronously
+     *          }
+     *      }
+     * });
      *
      * @see DKTools.IO.File.prototype.load
      *
-     * @returns {{ data: Object, status: Number }} Loaded data
+     * @returns {{ data: Object | null, status: Number, error: Error | undefined }} Loaded data
      */
-    loadJson(object = {}) {
-        object = object || {};
+    loadJson(object) {
+        if (!object) {
+            return { data: null, status: DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE };
+        }
 
         if (!object.parse) {
             object.parse = true;
@@ -404,16 +608,19 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * Loads the JSON data
      * Asynchronous version of DKTools.IO.File.prototype.loadJson
      *
-     * Promise resolves an object with 2 properties:
+     * Promise resolves an object with 3 properties:
      * status - Result of an operation
-     * data - Loaded data (only if the status is equal to DKTools.IO.OK)
+     * data - Loaded data
+     * error - Error of an operation
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_DECOMPRESSING_DATA
+     * DKTools.IO.ERROR_PARSING_DATA
      *
-     * @version 6.1.0
+     * @version 7.0.0
      * @since 4.0.0
      * @async
      *
@@ -423,7 +630,14 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {Boolean} [object.decompress] - Use LZString.decompressFromBase64 for a data
      * @param {Boolean | Object} [object.parse] - Use JSON.parse for a data
      *
+     * @param {String} [object.options.encoding] - Encoding
+     * @param {String} [object.options.flag] - File system flag
+     *
      * @param {Function} [object.parse.reviver] - A function that transforms the results
+     *
+     * @example
+     * const file = new DKTools.IO.File('data/System.json');
+     * const data = await file.loadJsonAsync();
      *
      * @see DKTools.IO.File.prototype.loadJson
      *
@@ -438,7 +652,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
                 onError: reject
             });
 
-            if (result.status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (result.status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(result);
             }
         });
@@ -456,6 +670,10 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {Function} [object.listener] - Function of processing after loading a bitmap
      * @param {Number} [object.hue] - Hue of bitmap
      * @param {Boolean} [object.smooth] - Smooth of bitmap
+     *
+     * @example
+     * const file = new DKTools.IO.File('img/system/Window.png');
+     * const bitmap = file.loadBitmap();
      *
      * @see DKTools.IO.File.prototype.isImage
      * @see DKTools.IO.File.prototype.exists
@@ -498,6 +716,10 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {Number} [object.hue] - Hue of bitmap
      * @param {Boolean} [object.smooth] - Smooth of bitmap
      *
+     * @example
+     * const file = new DKTools.IO.File('img/system/Window.png');
+     * const bitmap = await file.loadBitmapAsync();
+     *
      * @see DKTools.IO.File.prototype.loadBitmap
      * @see DKTools.Utils.Bitmap.loadAsync
      *
@@ -515,16 +737,15 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      *
      * Possible results:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      *
-     * @version 6.1.0
+     * @version 7.0.0
      *
      * @param {Object} [object={}] - Options of an operation
      *
      * @param {Boolean} [object.sync] - Use synchronous version of FileSystem.unlink
-     * @param {String | Object} [object.options] - Options for FileSystem.unlink or FileSystem.unlinkSync
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
@@ -534,6 +755,8 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @returns {Number} Code of the result of an operation
      */
     remove(object = {}) {
+        object = object || {};
+
         if (!DKTools.IO.isLocalMode()) {
             return DKTools.IO.ERROR_NOT_LOCAL_MODE;
         }
@@ -546,9 +769,13 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
         const absolutePath = this.getAbsolutePath();
 
         if (object.sync) {
-            fs.unlinkSync(absolutePath);
+            try {
+                fs.unlinkSync(absolutePath);
 
-            return DKTools.IO.OK;
+                return DKTools.IO.OK;
+            } catch (error) {
+                this.__processError(error, object.onError);
+            }
         } else {
             fs.unlink(absolutePath, (error) => {
                 if (error) {
@@ -558,7 +785,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
                 }
             });
 
-            return DKTools.IO.WAIT_FOR_ASYNC_OPERATION;
+            return DKTools.IO.EXPECT_CALLBACK;
         }
     }
 
@@ -572,28 +799,23 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      *
-     * @version 6.1.0
+     * @version 7.0.0
      * @since 4.0.0
      * @async
-     *
-     * @param {Object} [object={}] - Options of an operation
-     *
-     * @param {String | Object} [object.options] - Options for FileSystem.unlink
      *
      * @see DKTools.IO.File.prototype.remove
      *
      * @returns {Promise} Code of the result of an operation
      */
-    async removeAsync(object = {}) {
+    async removeAsync() {
         return new Promise((resolve, reject) => {
             const status = this.remove({
-                ...object,
                 sync: false,
                 onSuccess: resolve,
                 onError: reject
             });
 
-            if (status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(status);
             }
         });
@@ -691,18 +913,18 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      *
      * Possible results:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      *
-     * @version 6.1.0
+     * @version 7.0.0
      *
      * @param {*} data - Data to save
      * @param {Object} [object={}] - Options of an operation
      *
      * @param {Boolean | Object} [object.stringify] - Use JSON.stringify for the data
      * @param {Boolean} [object.compress] - Use LZString.compressToBase64 for the data
-     * @param {Boolean} [object.createDirectory] - Create a directory for the file
+     * @param {Boolean | Object} [object.createDirectory] - Create a directory for the file
      * @param {Boolean} [object.sync] - Use synchronous version of FileSystem.writeFile
      * @param {String | Object} [object.options] - Options for FileSystem.writeFile or FileSystem.writeFileSync
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
@@ -711,6 +933,32 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {Function | Array} [object.stringify.replacer] - A function that transforms the results
      * @param {Number | String} [object.stringify.space] - Insert white space into the output JSON string for readability purposes
      *
+     * @param {Object} [object.createDirectory.options] - Options for FileSystem.mkdir or FileSystem.mkdirSync
+     *
+     * @param {Boolean} [object.createDirectory.options.recursive] - Parent folders should be created
+     * @param {Number | String} [object.createDirectory.options.mode] - Directory permission
+     *
+     * @example
+     * const file = new DKTools.IO.File('test.txt');
+     * const status = file.save('Hello world!', { sync: true });
+     *
+     * if (status === DKTools.IO.OK) {
+     *     console.log('saved!'); // data saved synchronously
+     * }
+     *
+     * @example
+     * const file = new DKTools.IO.File('test.txt');
+     *
+     * file.save('Hello world!', {
+     *      sync: false,
+     *      onSuccess: function(status, file) {
+     *          if (status === DKTools.IO.OK) {
+     *              console.log('saved!'); // data saved asynchronously
+     *          }
+     *      }
+     * });
+     *
+     * @see DKTools.IO.Directory.create
      * @see FileSystem.writeFile
      * @see FileSystem.writeFileSync
      * @see JSON.stringify
@@ -729,17 +977,20 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
         object = object || {};
 
         if (object.createDirectory && !directory.exists()) {
-            directory.create();
+            const options = (object.createDirectory instanceof Object ? object.createDirectory : null);
+            const status = directory.create({ sync: true, options });
+
+            if (status !== DKTools.IO.OK) {
+                this.__processError(new Error(`Failed to create directory: ${directory.getFullPath()}`), object.onError);
+            }
         }
 
         if (!directory.exists()) {
             return DKTools.IO.ERROR_PATH_DOES_NOT_EXIST;
         }
 
-        if (object.stringify instanceof Object) {
+        if (object.stringify) {
             data = JSON.stringify(data, object.stringify.replacer, object.stringify.space);
-        } else if (object.stringify) {
-            data = JSON.stringify(data);
         }
 
         if (object.compress) {
@@ -747,9 +998,13 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
         }
 
         if (object.sync) {
-            fs.writeFileSync(absolutePath, data, object.options);
+            try {
+                fs.writeFileSync(absolutePath, data, object.options);
 
-            return DKTools.IO.OK;
+                return DKTools.IO.OK;
+            } catch (error) {
+                this.__processError(error, object.onError);
+            }
         } else {
             fs.writeFile(absolutePath, data, object.options, (error) => {
                 if (error) {
@@ -759,7 +1014,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
                 }
             });
 
-            return DKTools.IO.WAIT_FOR_ASYNC_OPERATION;
+            return DKTools.IO.EXPECT_CALLBACK;
         }
     }
 
@@ -801,7 +1056,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
                 onError: reject
             });
 
-            if (status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(status);
             }
         });
@@ -813,7 +1068,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      *
      * Possible results:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      *
@@ -832,6 +1087,28 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      *
      * @param {Function | Array} [object.stringify.replacer] - A function that transforms the results
      * @param {Number | String} [object.stringify.space] - Insert white space into the output JSON string for readability purposes
+     *
+     * @example
+     * const data = { message: 'Hello world' };
+     * const file = new DKTools.IO.File('test.json');
+     * const status = file.saveJson(data, { sync: true });
+     *
+     * if (status === DKTools.IO.OK) {
+     *     console.log('saved!'); // data saved synchronously
+     * }
+     *
+     * @example
+     * const data = { message: 'Hello world' };
+     * const file = new DKTools.IO.File('test.json');
+     *
+     * file.saveJson(data, {
+     *      sync: false,
+     *      onSuccess: function(status, file) {
+     *          if (status === DKTools.IO.OK) {
+     *              console.log('saved!'); // data saved asynchronously
+     *          }
+     *      }
+     * });
      *
      * @see DKTools.IO.File.prototype.save
      *
@@ -884,7 +1161,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
                 onError: reject
             });
 
-            if (status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(status);
             }
         });

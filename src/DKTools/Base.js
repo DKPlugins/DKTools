@@ -44,15 +44,15 @@ DKTools.Base = class {
      * @param {Number} [object.height] - The height of the object
      *
      * @example
-     * var sprite = new DKTools.Sprite(0, 0, 100, 100);
+     * const sprite = new DKTools.Sprite(0, 0, 100, 100);
      * => x = 0; y = 0; width = 100; height = 100;
      *
      * @example
-     * var sprite = new DKTools.Sprite(Graphics);
+     * const sprite = new DKTools.Sprite(Graphics);
      * => x = 0; y = 0; width = Graphics.boxWidth; height = Graphic.boxHeight;
      *
      * @example
-     * var sprite = new DKTools.Sprite({ x: 0, y: 0, width: 100, height: 100 });
+     * const sprite = new DKTools.Sprite({ x: 0, y: 0, width: 100, height: 100 });
      * => x = 0; y = 0; width = 100; height = 100;
      *
      * @see DKTools.Base.prototype.setupAll
@@ -822,7 +822,7 @@ DKTools.Base = class {
      * @example
      * Drawing half of the bitmap
      *
-     * var sprite = new DKTools.Sprite(0, 0, 200, 200);
+     * const sprite = new DKTools.Sprite(0, 0, 200, 200);
      *
      * sprite.start();
      *
@@ -2893,16 +2893,19 @@ DKTools.Base = class {
      * @param {Number | String} [object.y] - The Y coordinate or line number (String)
      *
      * @example
-     * var pos = new Point(100, 100);
-     * var sprite = new DKTools.Sprite();
+     * const pos = new Point(100, 100);
+     * const sprite = new DKTools.Sprite();
+     *
      * sprite.move(pos);
      *
      * @example
-     * var sprite = new DKTools.Sprite();
+     * const sprite = new DKTools.Sprite();
+     *
      * sprite.move(100, 100);
      *
      * @example
-     * var sprite = new DKTools.Sprite();
+     * const sprite = new DKTools.Sprite();
+     *
      * sprite.move(100, '2');
      *
      * @see DKTools.Base.prototype.getLineHeight

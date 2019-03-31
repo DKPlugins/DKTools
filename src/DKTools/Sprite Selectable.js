@@ -975,7 +975,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @returns {* | null} Ext of the item by index or null
      */
     getItemExt(index) {
-        var item = this.getItem(index);
+        const item = this.getItem(index);
 
         return item ? item.ext : null;
     }

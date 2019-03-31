@@ -11,6 +11,24 @@ DKTools.Sprite.prototype.constructor = DKTools.Sprite;
 Object.defineProperties(DKTools.Sprite.prototype, {
 
     /**
+     * Bitmap of the sprite
+     * To support functions from DKTools.Base
+     *
+     * @since 7.0.0
+     * @type {Bitmap | null}
+     * @memberof DKTools.Sprite.prototype
+     */
+    contents: {
+        get: function() {
+            return this.bitmap;
+        },
+        set: function(value) {
+            this.bitmap = value;
+        },
+        configurable: true
+    },
+
+    /**
      * Window skin
      *
      * @readonly
@@ -2592,10 +2610,10 @@ DKTools.Sprite.prototype.reserveBattleback2 = function(object, listener, hue, sm
  */
 DKTools.Sprite.prototype.reserveBitmap = function(object, filename, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap(object.folder, object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(object.folder, object.filename, object.listener, object.hue, object.smooth, object.reservationId); // eslint-disable-line max-len
     }
 
-    // object - String
+    // object - String (folder)
     const bitmap = DKTools.Utils.Bitmap.reserve(object, filename, null, hue, smooth, reservationId);
 
     if (this.setBitmap(bitmap)) {
@@ -2977,10 +2995,10 @@ DKTools.Sprite.prototype.reserveTitle2 = function(object, listener, hue, smooth,
  */
 DKTools.Sprite.prototype.reserveWindowskin = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveSystem(object.filename || this.standardWindowskin(), object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveSystem(object.filename || this.standardWindowskin(), object.listener, object.hue, object.smooth, object.reservationId); // eslint-disable-line max-len
     }
 
-    // object - String
+    // object - String (filename)
     return this.reserveSystem(object || this.standardWindowskin(), listener, hue, smooth, reservationId);
 };
 

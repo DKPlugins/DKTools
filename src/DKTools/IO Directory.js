@@ -22,18 +22,46 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Possible results:
      * DKTools.IO.OK
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
+     * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
      * DKTools.IO.ERROR_DIRECTORY_ALREADY_EXISTS
      *
-     * @example
-     * var directory = new DKTools.IO.Directory('saves/');
-     * directory.create();
+     * @version 7.0.0
      *
+     * @param {Object} object - Options of an operation
+     *
+     * @param {Boolean} [object.sync] - Use synchronous version of FileSystem.mkdir
+     * @param {Object} [object.options] - Options for FileSystem.mkdir or FileSystem.mkdirSync
+     * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
+     * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
+     *
+     * @param {Boolean} [object.options.recursive] - Parent folders should be created
+     * @param {Number | String} [object.options.mode] - Directory permission
+     *
+     * @example
+     * const directory = new DKTools.IO.Directory('test/');
+     * const status = directory.create({ sync: true });
+     *
+     * if (status === DKTools.IO.OK) {
+     *      console.log('created!');
+     * }
+     *
+     * @see FileSystem.mkdir
      * @see FileSystem.mkdirSync
      *
      * @returns {Number} Code of the result of an operation
      */
-    create() {
+    create(object) {
+        if (!object) {
+            return DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE;
+        }
+
+        if (!object.sync && !DKTools.Utils.isFunction(object.onSuccess)) {
+            return DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE;
+        }
+
         if (!DKTools.IO.isLocalMode()) {
             return DKTools.IO.ERROR_NOT_LOCAL_MODE;
         }
@@ -42,9 +70,28 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return DKTools.IO.ERROR_DIRECTORY_ALREADY_EXISTS;
         }
 
-        DKTools.IO.fs.mkdirSync(this.getAbsolutePath());
+        const fs = DKTools.IO.fs;
+        const absolutePath = this.getAbsolutePath();
 
-        return DKTools.IO.OK;
+        if (object.sync) {
+            try {
+                fs.mkdirSync(absolutePath, object.options);
+
+                return DKTools.IO.OK;
+            } catch (error) {
+                this.__processError(error, object.onError);
+            }
+        } else {
+            fs.mkdir(absolutePath, object.options, (error) => {
+                if (error) {
+                    this.__processError(error, object.onError);
+                } else {
+                    object.onSuccess(DKTools.IO.OK, this);
+                }
+            });
+
+            return DKTools.IO.EXPECT_CALLBACK;
+        }
     }
 
     /**
@@ -57,31 +104,41 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_DIRECTORY_ALREADY_EXISTS
      *
+     * @version 7.0.0
      * @since 4.0.0
      * @async
      *
+     * @param {Object} [object={}] - Options of an operation
+     *
+     * @param {String | Object} [object.options] - Options for FileSystem.mkdir or FileSystem.mkdirSync
+     *
+     * @param {Boolean} [object.options.recursive] - Parent folders should be created
+     * @param {Number | String} [object.options.mode] - Directory permission
+     *
+     * @example
+     * const directory = new DKTools.IO.Directory('test/');
+     * const status = await directory.createAsync();
+     *
+     * if (status === DKTools.IO.OK) {
+     *      console.log('created!');
+     * }
+     *
      * @see DKTools.IO.Directory.prototype.create
-     * @see FileSystem.mkdir
      *
      * @returns {Promise} Code of the result of an operation
      */
-    async createAsync() {
+    async createAsync(object = {}) {
         return new Promise((resolve, reject) => {
-            if (!DKTools.IO.isLocalMode()) {
-                resolve(DKTools.IO.ERROR_NOT_LOCAL_MODE);
-            }
-
-            if (this.exists()) {
-                resolve(DKTools.IO.ERROR_DIRECTORY_ALREADY_EXISTS);
-            }
-
-            DKTools.IO.fs.mkdir(this.getAbsolutePath(), (error) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(DKTools.IO.OK);
-                }
+            const status = this.create({
+                ...object,
+                sync: false,
+                onSuccess: resolve,
+                onError: reject
             });
+
+            if (status !== DKTools.IO.EXPECT_CALLBACK) {
+                resolve(status);
+            }
         });
     }
 
@@ -89,19 +146,43 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * Creates the new directory
      * Returns a code of the result of an operation
      *
+     * Possible results:
+     * DKTools.IO.OK
+     * DKTools.IO.ERROR_NOT_LOCAL_MODE
+     * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_DIRECTORY_ALREADY_EXISTS
+     *
+     * @version 7.0.0
      * @since 6.3.0
      *
      * @param {String} name - Name of the directory
+     * @param {Object} object - Options of an operation
+     *
+     * @param {Boolean} [object.sync] - Use synchronous version of FileSystem.mkdir
+     * @param {Object} [object.options] - Options for FileSystem.mkdir or FileSystem.mkdirSync
+     * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
+     * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
+     *
+     * @param {Boolean} [object.options.recursive] - Parent folders should be created
+     * @param {Number | String} [object.options.mode] - Directory permission
+     *
+     * @example
+     * const directory = new DKTools.IO.Directory('save/');
+     * const status = directory.createDirectory('backup', { sync: true });
+     *
+     * if (status === DKTools.IO.OK) {
+     *      console.log('created!');
+     * }
      *
      * @see DKTools.IO.Directory.prototype.create
      *
      * @returns {Number} Code of the result of an operation
      */
-    createDirectory(name) {
+    createDirectory(name, object) {
         const fullPath = DKTools.IO.normalizePath(this.getFullPath() + '/' + name);
         const directory = new DKTools.IO.Directory(fullPath);
 
-        return directory.create();
+        return directory.create(object);
     }
 
     /**
@@ -114,20 +195,35 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_DIRECTORY_ALREADY_EXISTS
      *
+     * @version 7.0.0
      * @since 6.3.0
      * @async
      *
      * @param {String} name - Name of the directory
+     * @param {Object} [object={}] - Options of an operation
+     *
+     * @param {String | Object} [object.options] - Options for FileSystem.mkdir or FileSystem.mkdirSync
+     *
+     * @param {Boolean} [object.options.recursive] - Parent folders should be created
+     * @param {Number | String} [object.options.mode] - Directory permission
+     *
+     * @example
+     * const directory = new DKTools.IO.Directory('save/');
+     * const status = await directory.createDirectoryAsync('backup');
+     *
+     * if (status === DKTools.IO.OK) {
+     *      console.log('created!');
+     * }
      *
      * @see DKTools.IO.Directory.prototype.createAsync
      *
      * @returns {Promise}
      */
-    async createDirectoryAsync(name) {
+    async createDirectoryAsync(name, object = {}) {
         const fullPath = DKTools.IO.normalizePath(this.getFullPath() + '/' + name);
         const directory = new DKTools.IO.Directory(fullPath);
 
-        return directory.createAsync();
+        return directory.createAsync(object);
     }
 
     // F methods
@@ -137,18 +233,18 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Returns an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
-     * @version 6.1.0
+     * @version 7.0.0
      * @since 4.0.0
      *
      * @param {Object} object - Options of an operation
@@ -161,24 +257,28 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Number} [object.searchLimit] - Search limit
      *
      * @example
-     * var directory = new DKTools.IO.Directory('img/');
-     * var directories = directory.findFiles({ sync: true, template: 'Window.png' });
+     * const directory = new DKTools.IO.Directory('img/');
+     * const result = directory.findFiles({ sync: true, template: 'Window.png' });
+     *
+     * if (result.status === DKTools.IO.OK) {
+     *     console.log(result.data);
+     * }
      *
      * @see DKTools.IO.Directory.prototype.getAll
      *
-     * @returns {{ data: Object, status: Number }} All files
+     * @returns {{ data: Object | null, status: Number }} All files
      */
     findFiles(object) {
         if (!object) {
-            return { data: null, status: DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE };
-        }
-
-        if (!DKTools.IO.isLocalMode()) {
-            return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
+            return { data: null, status: DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE };
         }
 
         if (!object.sync && !DKTools.Utils.isFunction(object.onSuccess)) {
             return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
+        }
+
+        if (!DKTools.IO.isLocalMode()) {
+            return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
 
         if (!this.exists()) {
@@ -209,10 +309,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
 
         const processDirectory = (directory) => {
             if (object.sync) {
-                const data = directory.getAll({
-                    sync: true,
-                    options: object.options
-                }).data;
+                const data = directory.getAll({ sync: true, options: object.options }).data;
 
                 processData(data);
             } else {
@@ -238,7 +335,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
         if (object.sync) {
             return { data: files, status: DKTools.IO.OK };
         } else {
-            return { data: null, status: DKTools.IO.WAIT_FOR_ASYNC_OPERATION };
+            return { data: null, status: DKTools.IO.EXPECT_CALLBACK };
         }
     }
 
@@ -248,10 +345,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Promise resolves an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
@@ -279,7 +376,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 onError: reject
             });
 
-            if (result.status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (result.status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(result);
             }
         });
@@ -290,17 +387,18 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Returns an object with 2 properties:
      * status - Result of an operation
-     * data - Array with directories (only if the status is equal to DKTools.IO.OK)
+     * data - Array with directories
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
+     * @version 7.0.0
      * @since 4.0.0
      *
      * @param {Object} object - Options of an operation
@@ -313,24 +411,28 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Number} [object.searchLimit] - Search limit
      *
      * @example
-     * var directory = new DKTools.IO.Directory('img/');
-     * var directories = directory.findDirectories({ sync: true, template: 'system' });
+     * const directory = new DKTools.IO.Directory('img/');
+     * const result = directory.findDirectories({ sync: true, template: 'system' });
+     *
+     * if (result.status === DKTools.IO.OK) {
+     *     console.log(result.data);
+     * }
      *
      * @see DKTools.IO.Directory.prototype.getDirectories
      *
-     * @returns {{ data: Object, status: Number }} All directories
+     * @returns {{ data: Object | null, status: Number }} All directories
      */
     findDirectories(object) {
         if (!object) {
-            return { data: null, status: DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE };
-        }
-
-        if (!DKTools.IO.isLocalMode()) {
-            return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
+            return { data: null, status: DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE };
         }
 
         if (!object.sync && !DKTools.Utils.isFunction(object.onSuccess)) {
             return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
+        }
+
+        if (!DKTools.IO.isLocalMode()) {
+            return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
 
         if (!this.exists()) {
@@ -390,7 +492,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
         if (object.sync) {
             return { data: directories, status: DKTools.IO.OK };
         } else {
-            return { data: null, status: DKTools.IO.WAIT_FOR_ASYNC_OPERATION };
+            return { data: null, status: DKTools.IO.EXPECT_CALLBACK };
         }
     }
 
@@ -400,10 +502,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Promise resolves an object with 2 properties:
      * status - Result of an operation
-     * data - Array with directories (only if the status is equal to DKTools.IO.OK)
+     * data - Array with directories
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
@@ -431,7 +533,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 onError: reject
             });
 
-            if (result.status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (result.status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(result);
             }
         });
@@ -444,18 +546,18 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Returns an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files and directories (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files and directories
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
-     * @version 6.1.0
+     * @version 7.0.0
      *
      * @param {Object} object - Options of an operation
      *
@@ -468,11 +570,15 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @see FileSystem.readdir
      * @see FileSystem.readdirSync
      *
-     * @returns {{ data: Object, status: Number }} All files and directories
+     * @returns {{ data: Array | null, status: Number }} All files and directories
      */
     getAll(object) {
         if (!object) {
-            return { data: null, status: DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE };
+            return { data: null, status: DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE };
+        }
+
+        if (!object.sync && !DKTools.Utils.isFunction(object.onSuccess)) {
+            return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
         if (!DKTools.IO.isLocalMode()) {
@@ -509,14 +615,14 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
         };
 
         if (object.sync) {
-            const names = fs.readdirSync(absolutePath, object.options);
+            try {
+                const names = fs.readdirSync(absolutePath, object.options);
 
-            return processData(names);
-        } else {
-            if (!DKTools.Utils.isFunction(object.onSuccess)) {
-                return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
+                return processData(names);
+            } catch (error) {
+                this.__processError(error, object.onError);
             }
-
+        } else {
             fs.readdir(absolutePath, object.options, (error, names) => {
                 if (error) {
                     this.__processError(error, object.onError);
@@ -525,7 +631,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 }
             });
 
-            return { data: null, status: DKTools.IO.WAIT_FOR_ASYNC_OPERATION };
+            return { data: null, status: DKTools.IO.EXPECT_CALLBACK };
         }
     }
 
@@ -535,10 +641,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Promise resolves an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files and directories (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files and directories
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
@@ -565,7 +671,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 onError: reject
             });
 
-            if (result.status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (result.status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(result);
             }
         });
@@ -576,18 +682,18 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Returns an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
-     * @version 6.1.0
+     * @version 7.0.0
      *
      * @param {Object} object - Options of an operation
      *
@@ -601,10 +707,16 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @see FileSystem.readdir
      * @see FileSystem.readdirSync
      *
-     * @returns {{ data: Object, status: Number }} All files
+     * @returns {{ data: DKTools.IO.File[] | null, status: Number }} All files
      */
     getFiles(object) {
-        object = object || {};
+        if (!object) {
+            return { data: null, status: DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE };
+        }
+
+        if (!object.sync && !DKTools.Utils.isFunction(object.onSuccess)) {
+            return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
+        }
 
         const processData = (entities) => _.filter(entities, entity => entity.isFile());
 
@@ -617,14 +729,14 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
 
             return result;
         } else {
-            if (!DKTools.Utils.isFunction(object.onSuccess)) {
-                return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
-            }
-
             const onSuccess = object.onSuccess;
 
             object.onSuccess = (result, directory) => {
-                onSuccess({ ...result, data: processData(result.data) }, directory);
+                if (result.status === DKTools.IO.OK) {
+                    onSuccess({ ...result, data: processData(result.data) }, directory);
+                } else {
+                    onSuccess(result, directory);
+                }
             };
 
             return this.getAll(object);
@@ -637,10 +749,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Promise resolves an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
@@ -659,7 +771,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @returns {Promise} All files
      */
     async getFilesAsync(object = {}) {
-        return this.getAllAsync(object).then(result => {
+        return this.getAllAsync(object).then((result) => {
             if (result.status === DKTools.IO.OK) {
                 const data = _.filter(result.data, entity => entity.isFile());
 
@@ -675,18 +787,18 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Returns an object with 2 properties:
      * status - Result of an operation
-     * data - Array with directories (only if the status is equal to DKTools.IO.OK)
+     * data - Array with directories
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
-     * @version 6.1.0
+     * @version 7.0.0
      *
      * @param {Object} object - Options of an operation
      *
@@ -700,9 +812,17 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @see FileSystem.readdir
      * @see FileSystem.readdirSync
      *
-     * @returns {{ data: Object, status: Number }} All directories
+     * @returns {{ data: DKTools.IO.Directory[] | null, status: Number }} All directories
      */
     getDirectories(object) {
+        if (!object) {
+            return { data: null, status: DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE };
+        }
+
+        if (!object.sync && !DKTools.Utils.isFunction(object.onSuccess)) {
+            return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
+        }
+
         const processData = (entities) => _.filter(entities, entity => entity.isDirectory());
 
         if (object.sync) {
@@ -714,14 +834,14 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
 
             return result;
         } else {
-            if (!DKTools.Utils.isFunction(object.onSuccess)) {
-                return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
-            }
-
             const onSuccess = object.onSuccess;
 
             object.onSuccess = (result, directory) => {
-                onSuccess({ ...result, data: processData(result.data) }, directory);
+                if (result.status === DKTools.IO.OK) {
+                    onSuccess({ ...result, data: processData(result.data) }, directory);
+                } else {
+                    onSuccess(result, directory);
+                }
             };
 
             return this.getAll(object);
@@ -734,10 +854,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Promise resolves an object with 2 properties:
      * status - Result of an operation
-     * data - Array with directories (only if the status is equal to DKTools.IO.OK)
+     * data - Array with directories
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
@@ -756,7 +876,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @returns {Promise} All directories
      */
     async getDirectoriesAsync(object = {}) {
-        return this.getAllAsync(object).then(result => {
+        return this.getAllAsync(object).then((result) => {
             if (result.status === DKTools.IO.OK) {
                 const data = _.filter(result.data, entity => entity.isDirectory());
 
@@ -772,18 +892,18 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Returns an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
-     * @version 5.0.0
+     * @version 7.0.0
      * @since 3.0.0
      *
      * @param {Object} object - Options of an operation
@@ -795,7 +915,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * @see DKTools.IO.Directory.prototype.getFiles
      *
-     * @returns {{ data: Object, status: Number }} All audio files
+     * @returns {{ data: DKTools.IO.File[] | null, status: Number }} All audio files
      */
     getAudioFiles(object) {
         return this.getFiles({ ...object, template: /(.ogg|.rpgmvo)/ });
@@ -807,10 +927,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Promise resolves an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
@@ -836,7 +956,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 onError: reject
             });
 
-            if (result.status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (result.status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(result);
             }
         });
@@ -847,18 +967,18 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Returns an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
-     * @version 4.0.0
+     * @version 7.0.0
      * @since 3.0.0
      *
      * @param {Object} object - Options of an operation
@@ -870,7 +990,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * @see DKTools.IO.Directory.prototype.getFiles
      *
-     * @returns {{ data: Object, status: Number }} All JSON files
+     * @returns {{ data: DKTools.IO.File[] | null, status: Number }} All JSON files
      */
     getJsonFiles(object) {
         return this.getFiles({ ...object, template: /(.json)/ });
@@ -882,10 +1002,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Promise resolves an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
@@ -910,7 +1030,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 onError: reject
             });
 
-            if (result.status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (result.status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(result);
             }
         });
@@ -921,17 +1041,18 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Returns an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
+     * @version 7.0.0
      * @since 5.0.0
      *
      * @param {Object} object - Options of an operation
@@ -943,7 +1064,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * @see DKTools.IO.Directory.prototype.getFiles
      *
-     * @returns {{ data: Object, status: Number }} All txt files
+     * @returns {{ data: DKTools.IO.File[] | null, status: Number }} All txt files
      */
     getTxtFiles(object) {
         return this.getFiles({ ...object, template: /(.txt)/ });
@@ -955,10 +1076,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Promise resolves an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
@@ -983,7 +1104,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 onError: reject
             });
 
-            if (result.status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (result.status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(result);
             }
         });
@@ -994,18 +1115,18 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Returns an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
-     * @version 5.0.0
+     * @version 7.0.0
      * @since 3.0.0
      *
      * @param {Object} object - Options of an operation
@@ -1017,10 +1138,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * @see DKTools.IO.Directory.prototype.getFiles
      *
-     * @returns {{ data: Object, status: Number }} All image files
+     * @returns {{ data: DKTools.IO.File[] | null, status: Number }} All image files
      */
     getImageFiles(object) {
-        return this.getFiles({ ...object, template: /(.png|.rpgmvp)/ });
+        return this.getFiles({ ...object, template: /(.png|.webp|.rpgmvp)/ });
     }
 
     /**
@@ -1029,10 +1150,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Promise resolves an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
@@ -1057,7 +1178,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 onError: reject
             });
 
-            if (result.status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (result.status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(result);
             }
         });
@@ -1068,18 +1189,18 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Returns an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_OPTIONS_IS_NOT_AVAILABLE
      *
-     * @version 5.0.0
+     * @version 7.0.0
      * @since 3.0.0
      *
      * @param {Object} object - Options of an operation
@@ -1091,10 +1212,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * @see DKTools.IO.Directory.prototype.getFiles
      *
-     * @returns {{ data: Object, status: Number }} All video files
+     * @returns {{ data: DKTools.IO.File[] | null, status: Number }} All video files
      */
     getVideoFiles(object) {
-        return this.getFiles({ ...object, template: /(.webm)/ });
+        return this.getFiles({ ...object, template: /(.webm|.mp4)/ });
     }
 
     /**
@@ -1103,10 +1224,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Promise resolves an object with 2 properties:
      * status - Result of an operation
-     * data - Array with files (only if the status is equal to DKTools.IO.OK)
+     * data - Array with files
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
@@ -1131,7 +1252,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 onError: reject
             });
 
-            if (result.status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (result.status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(result);
             }
         });
@@ -1187,7 +1308,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
     /**
      * Loads and returns an audio files
      * Asynchronous version of DKTools.IO.Directory.prototype.loadAudioFiles
-     * Promise resolves a loaded audio files
+     * Promise resolves a loaded audio files (WebAudio[])
      *
      * @version 5.0.0
      * @since 4.0.0
@@ -1240,7 +1361,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
     /**
      * Loads and returns a bitmaps
      * Asynchronous version of DKTools.IO.Directory.prototype.loadBitmaps
-     * Promise resolves a loaded bitmaps
+     * Promise resolves a loaded bitmaps (Bitmap[])
      *
      * @since 4.0.0
      * @async
@@ -1278,12 +1399,12 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * Possible results:
      * DKTools.IO.OK
-     * DKTools.IO.WAIT_FOR_ASYNC_OPERATION
+     * DKTools.IO.EXPECT_CALLBACK
      * DKTools.IO.ERROR_NOT_LOCAL_MODE
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_DIRECTORY_IS_NOT_EMPTY
      *
-     * @version 6.1.0
+     * @version 7.0.0
      *
      * @param {Object} [object={}] - Options of an operation
      *
@@ -1291,6 +1412,9 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
+     * @see DKTools.IO.isLocalMode
+     * @see DKTools.IO.Directory.prototype.exists
+     * @see DKTools.IO.Directory.prototype.isEmpty
      * @see FileSystem.rmdir
      * @see FileSystem.rmdirSync
      *
@@ -1313,9 +1437,13 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
         const absolutePath = this.getAbsolutePath();
 
         if (object.sync) {
-            fs.rmdirSync(absolutePath);
+            try {
+                fs.rmdirSync(absolutePath);
 
-            return DKTools.IO.OK;
+                return DKTools.IO.OK;
+            } catch (error) {
+                this.__processError(error, object.onError);
+            }
         } else {
             fs.rmdir(absolutePath, (error) => {
                 if (error) {
@@ -1325,7 +1453,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 }
             });
 
-            return DKTools.IO.WAIT_FOR_ASYNC_OPERATION;
+            return DKTools.IO.EXPECT_CALLBACK;
         }
     }
 
@@ -1355,7 +1483,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                 onError: reject
             });
 
-            if (status !== DKTools.IO.WAIT_FOR_ASYNC_OPERATION) {
+            if (status !== DKTools.IO.EXPECT_CALLBACK) {
                 resolve(status);
             }
         });
@@ -1394,7 +1522,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
     /**
      * Loads, reserves and returns a bitmaps
      * Asynchronous version of DKTools.IO.Directory.prototype.reserveBitmaps
-     * Promise resolves a loaded bitmaps
+     * Promise resolves a loaded bitmaps (Bitmap[])
      *
      * @since 4.0.0
      * @async

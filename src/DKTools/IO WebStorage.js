@@ -28,39 +28,53 @@ DKTools.IO.WebStorage = class {
     /**
      * Loads a data
      *
-     * Returns an object with 2 properties:
+     * Returns an object with 3 properties:
      * status - Result of an operation
-     * data - Loaded data (only if the status is equal to DKTools.IO.OK)
+     * data - Loaded data
+     * error - Error
      * if the status is not equal to DKTools.IO.OK then data will be null
      *
-     * Possible results:
+     * Possible statuses:
      * DKTools.IO.OK
-     * DKTools.IO.ERROR_KEY_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_DECOMPRESSING_DATA
+     * DKTools.IO.ERROR_PARSING_DATA
      *
+     * @version 7.0.0
      * @static
      *
      * @param {String} key - Key
-     * @param {Object} [options={}] - Options of an operation
+     * @param {Object} [object={}] - Options of an operation
      *
-     * @param {Boolean} [options.decompress] - Use LZString.decompressFromBase64 for a data
-     * @param {Boolean} [options.parse] - Use JSON.parse for a data
+     * @param {Boolean} [object.decompress] - Use LZString.decompressFromBase64 for a data
+     * @param {Boolean | Object} [object.parse] - Use JSON.parse for a data
      *
-     * @returns {{ data: Object, status: Number }} Loded data
+     * @param {Function} [object.parse.reviver] - A function that transforms the results
+     *
+     * @returns {{ data: String | Object | null, status: Number, error: Error | undefined }} Loaded data
      */
-    static load(key, options = {}) {
+    static load(key, object = {}) {
         if (!this.exists(key)) {
-            return { data: null, status: DKTools.IO.ERROR_KEY_IS_NOT_AVAILABLE };
+            return { data: null, status: DKTools.IO.ERROR_PATH_DOES_NOT_EXIST };
         }
 
         let data = localStorage.getItem(key);
 
         if (data) {
-            if (options.decompress) {
-                data = LZString.decompressFromBase64(data);
+            if (object.decompress) {
+                try {
+                    data = LZString.decompressFromBase64(data);
+                } catch (error) {
+                    return { data: null, status: DKTools.IO.ERROR_DECOMPRESSING_DATA, error };
+                }
             }
 
-            if (options.parse) {
-                data = JSON.parse(data);
+            if (object.parse) {
+                try {
+                    data = JSON.parse(data, object.parse.reviver);
+                } catch (error) {
+                    return { data: null, status: DKTools.IO.ERROR_PARSING_DATA, error };
+                }
             }
         }
 
@@ -75,7 +89,7 @@ DKTools.IO.WebStorage = class {
      *
      * Possible results:
      * DKTools.IO.OK
-     * DKTools.IO.ERROR_KEY_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      *
      * @static
      * @param {String} key - Key
@@ -83,7 +97,7 @@ DKTools.IO.WebStorage = class {
      */
     static remove(key) {
         if (!this.exists(key)) {
-            return DKTools.IO.ERROR_KEY_IS_NOT_AVAILABLE;
+            return DKTools.IO.ERROR_PATH_DOES_NOT_EXIST;
         }
 
         localStorage.removeItem(key);
@@ -97,21 +111,27 @@ DKTools.IO.WebStorage = class {
      *
      * Possible results:
      * DKTools.IO.OK
-     * DKTools.IO.ERROR_KEY_IS_NOT_AVAILABLE
-     * DKTools.IO.ERROR_NEW_NAME_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
+     * DKTools.IO.ERROR_OVERWRITING_IS_NOT_AVAILABLE
      *
+     * @version 7.0.0
      * @static
+     *
      * @param {String} oldKey - Old key
      * @param {String} newKey - New key
+     * @param {Boolean} [overwrite=false] - Overwrite the data
+     *
+     * @see DKTools.IO.WebStorage.exists
+     *
      * @returns {Number} Code of the result of an operation
      */
-    static rename(oldKey, newKey) {
+    static rename(oldKey, newKey, overwrite = false) {
         if (!this.exists(oldKey)) {
-            return DKTools.IO.ERROR_KEY_IS_NOT_AVAILABLE;
+            return DKTools.IO.ERROR_PATH_DOES_NOT_EXIST;
         }
 
-        if (this.exists(newKey) || newKey == null) {
-            return DKTools.IO.ERROR_NEW_NAME_IS_NOT_AVAILABLE;
+        if (!overwrite && this.exists(newKey)) {
+            return DKTools.IO.ERROR_OVERWRITING_IS_NOT_AVAILABLE;
         }
 
         const data = localStorage.getItem(oldKey);
@@ -130,30 +150,35 @@ DKTools.IO.WebStorage = class {
      *
      * Possible results:
      * DKTools.IO.OK
-     * DKTools.IO.ERROR_KEY_IS_NOT_AVAILABLE
+     * DKTools.IO.ERROR_OVERWRITING_IS_NOT_AVAILABLE
      *
-     * @version 3.0.0
+     * @version 7.0.0
      * @static
      *
      * @param {String} key - Key
      * @param {*} data - Data to save
-     * @param {Object} [options={}] - Options of an operation
+     * @param {Object} [object={}] - Options of an operation
      *
-     * @param {Boolean} [options.stringify] - Use JSON.stringify for the data
-     * @param {Boolean} [options.compress] - Use LZString.compressToBase64 for the data
+     * @param {Boolean} [object.overwrite=true] - Overwrite the data
+     * @param {Boolean} [object.stringify] - Use JSON.stringify for the data
+     * @param {Boolean} [object.compress] - Use LZString.compressToBase64 for the data
      *
      * @returns {Number} Code of the result of an operation
      */
-    static save(key, data, options = {}) {
-        if (key == null || key === '') {
-            return DKTools.IO.ERROR_KEY_IS_NOT_AVAILABLE;
+    static save(key, data, object = {}) {
+        object = object || {};
+
+        const overwrite = _.defaultTo(object.overwrite, true);
+
+        if (!overwrite && this.exists(key)) {
+            return DKTools.IO.ERROR_OVERWRITING_IS_NOT_AVAILABLE;
         }
 
-        if (options.stringify) {
-            data = JSON.stringify(data);
+        if (object.stringify) {
+            data = JSON.stringify(data, object.stringify.replacer, object.stringify.space);
         }
 
-        if (options.compress) {
+        if (object.compress) {
             data = LZString.compressToBase64(data);
         }
 

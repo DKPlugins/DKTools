@@ -204,7 +204,7 @@ Object.defineProperties(DKTools.Window.prototype, {
      * Bitmap of the contents sprite
      * To support functions from DKTools.Base
      *
-     * @type {Bitmap}
+     * @type {Bitmap | null}
      * @memberof DKTools.Window.prototype
      */
     bitmap: {
@@ -2292,8 +2292,8 @@ DKTools.Window.prototype.setupTone = function(tone) {
  */
 DKTools.Window.prototype.setAll = function(object = {}, blockStart = false, activate = false) {
 	object = object || {};
-    const block = true;
 
+    const block = true;
     let changed = DKTools.Base.prototype.setAll.call(this, object, block);
 
     if (this.setPadding(object.padding, block)) {
