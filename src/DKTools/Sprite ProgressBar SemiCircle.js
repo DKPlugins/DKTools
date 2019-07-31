@@ -19,16 +19,18 @@ DKTools.Sprite.ProgressBar.SemiCircle = class extends DKTools.Sprite.ProgressBar
     /**
      * Returns the standard handler of draw of the graphic
      *
+     * @version 8.0.0
+     *
      * @override
+     *
      * @returns {Function} Standard handler of draw of the graphic
      */
     standardDrawGraphicHandler() {
         return () => {
             const lineWidth = this._lineWidth;
-            const realWidth = this.realWidth;
-            const radius = (realWidth - lineWidth) / 2;
+            const radius = (this.width - lineWidth) / 2;
             const x = radius + lineWidth / 2;
-            const y = this.realHeight;
+            const y = this.height;
 
             this.strokeArc({
                 x, y,

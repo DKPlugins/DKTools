@@ -87,6 +87,8 @@ DKTools.Sprite.Cursor = class extends DKTools.Sprite {
     /**
      * Updates the cursor
      *
+     * @version 8.0.0
+     *
      * @see DKTools.Sprite.Cursor.prototype.move
      * @see DKTools.Sprite.Cursor.prototype.setupBitmap
      */
@@ -99,8 +101,8 @@ DKTools.Sprite.Cursor = class extends DKTools.Sprite {
         const m = 4;
         const ox = 0;
         const oy = 0;
-        const w2 = Math.min(w, parent.realWidth - x);
-        const h2 = Math.min(h, parent.realHeight - y);
+        const w2 = Math.min(w, parent.width - x);
+        const h2 = Math.min(h, parent.height - y);
 
         this.move(x, y);
 

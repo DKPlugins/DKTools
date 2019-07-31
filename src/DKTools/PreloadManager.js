@@ -628,10 +628,10 @@ DKTools.PreloadManager = class {
             return;
         }
 
-        const audioPromises = Promise.all(this._processLoadAudioFiles());
-        const imagePromises = Promise.all(this._processLoadImageFiles());
+        const audioPromise = Promise.all(this._processLoadAudioFiles());
+        const imagePromise = Promise.all(this._processLoadImageFiles());
 
-        Promise.all([audioPromises, imagePromises]).then(() => this._finish());
+        Promise.all([audioPromise, imagePromise]).then(() => this._finish());
     }
 
 };

@@ -32,7 +32,7 @@ DKTools.Network = class {
      * @returns {Promise} ArrayBuffer
      */
     static async fetchFile(url, options = {}) {
-        return fetch(url, options).then(response => {
+        return fetch(url, options).then((response) => {
             if (response.ok) {
                 return this._toFile(response);
             }
@@ -62,7 +62,7 @@ DKTools.Network = class {
 
         options.headers.Accept = 'application/json';
 
-        return fetch(url, options).then(response => {
+        return fetch(url, options).then((response) => {
             if (response.ok) {
                 return this._toJson(response);
             }

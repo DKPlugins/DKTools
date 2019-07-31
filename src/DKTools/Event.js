@@ -602,11 +602,18 @@ DKTools.Event = class {
 
     /**
      * Removes the event
+     * Returns true if the event was removed
+     *
+     * @version 8.0.0
+     *
+     * @returns {Boolean} Event was removed
      */
     remove() {
         if (this.hasTarget()) {
-            this._target.removeEvent(this);
+            return this._target.removeEvent(this);
         }
+
+        return true;
     }
 
     /**

@@ -129,14 +129,16 @@ DKTools.Sprite.ProgressBar.Circle = class extends DKTools.Sprite.ProgressBar {
     /**
      * Returns the standard handler of draw of the graphic
      *
+     * @version 8.0.0
+     *
      * @override
+     *
      * @returns {Function} Standard handler of draw of the graphic
      */
     standardDrawGraphicHandler() {
         return () => {
             const lineWidth = this._lineWidth;
-            const realWidth = this.realWidth;
-            const radius = (realWidth - lineWidth) / 2;
+            const radius = (this.width - lineWidth) / 2;
             const x = radius + lineWidth / 2;
             const y = x;
 
@@ -169,7 +171,7 @@ DKTools.Sprite.ProgressBar.Circle = class extends DKTools.Sprite.ProgressBar {
             const percents = this.getPercents();
             const text = `${percents}%`;
 
-            this.drawText(text, { height: this.realHeight });
+            this.drawText(text, { height: this.height });
         };
     }
 

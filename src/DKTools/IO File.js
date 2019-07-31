@@ -193,13 +193,13 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     /**
      * Returns true if the file exists
      *
-     * @version 6.2.1
+     * @version 8.0.0
      * @override
      *
      * @returns {Boolean} File exists
      */
     exists() {
-        if (DKTools.IO.isLocalMode()) {
+        if (DKTools.IO.isLocalMode() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
             if (Decrypter.hasEncryptedAudio && this.isAudio() || Decrypter.hasEncryptedImages && this.isImage()) {
                 const path = DKTools.IO.normalizePath(this.getPath() + '/' + Decrypter.extToEncryptExt(this.getFullName()));
 
@@ -324,7 +324,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_DECOMPRESSING_DATA
      * DKTools.IO.ERROR_PARSING_DATA
      *
-     * @version 7.0.0
+     * @version 8.0.0
      *
      * @param {Object} object - Options of an operation
      *
@@ -424,6 +424,10 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
                 });
             }
         } else {
+            if (DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP && this.getFullName() !== 'Stamp.json' && !this.exists()) {
+                return { data: null, status: DKTools.IO.ERROR_PATH_DOES_NOT_EXIST };
+            }
+
             const xhr = new XMLHttpRequest();
 
             xhr.open('GET', absolutePath, !object.sync);

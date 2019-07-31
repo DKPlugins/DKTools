@@ -190,7 +190,7 @@ DKTools.Utils.Bitmap = class {
      * @returns {Promise} Loaded bitmap or null
      */
     static async loadAsync(object, filename, listener, hue, smooth) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             const bitmap = this.load(object, filename, listener, hue, smooth);
 
             if (bitmap) {

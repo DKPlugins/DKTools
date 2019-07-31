@@ -11,13 +11,52 @@ DKTools.Window.prototype.constructor = DKTools.Window;
 Object.defineProperties(DKTools.Window.prototype, {
 
     /**
-     * Real width of the window (not including scaling)
+     * Real width of the window
      *
-     * @readonly
+     * @deprecated 8.0.0
+     * @version 8.0.0
+     *
      * @type {Number}
      * @memberof DKTools.Window.prototype
      */
     realWidth: {
+        get: function() {
+            return this.width;
+        },
+        set: function(value) {
+            this.width = value;
+        },
+        configurable: true
+    },
+
+    /**
+     * Real height of the window
+     *
+     * @deprecated 8.0.0
+     * @version 8.0.0
+     *
+     * @type {Number}
+     * @memberof DKTools.Window.prototype
+     */
+    realHeight: {
+        get: function() {
+            return this.height;
+        },
+        set: function(value) {
+            this.height = value;
+        },
+        configurable: true
+    },
+
+    /**
+     * Width of the window
+     *
+     * @version 8.0.0
+     *
+     * @type {Number}
+     * @memberof DKTools.Window.prototype
+     */
+    width: {
         get: function() {
             return this._width;
         },
@@ -30,54 +69,19 @@ Object.defineProperties(DKTools.Window.prototype, {
     },
 
     /**
-     * Real height of the window (not including scaling)
+     * Height of the window
      *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Window.prototype
-     */
-    realHeight: {
-        get: function() {
-            return this._height;
-        },
-        set: function(value) {
-            this._height = value;
-
-            this._refreshAllParts();
-        },
-        configurable: true
-    },
-
-    /**
-     * Width of the window (taking into account scaling)
-     *
-     * @type {Number}
-     * @memberof DKTools.Window.prototype
-     */
-    width: {
-        get: function() {
-            return this.realWidth * this.scale.x;
-        },
-        set: function(value) {
-            this._width = Math.floor(value / this.scale.x);
-
-            this._refreshAllParts();
-        },
-        configurable: true
-    },
-
-    /**
-     * Height of the window (taking into account scaling)
+     * @version 8.0.0
      *
      * @type {Number}
      * @memberof DKTools.Window.prototype
      */
     height: {
         get: function() {
-            return this.realHeight * this.scale.y;
+            return this._height;
         },
         set: function(value) {
-            this._height = Math.floor(value / this.scale.y);
+            this._height = value;
 
             this._refreshAllParts();
         },
@@ -938,6 +942,23 @@ DKTools.Window.prototype.deactivate = function() {
 };
 
 /**
+ * Destroys the window
+ *
+ * @version 8.0.0
+ *
+ * @override
+ *
+ * @param {Object | Boolean} [options] - Destroy options
+ *
+ * @see DKTools.Base.prototype.destroy
+ * @see Window_Base.prototype.destroy
+ */
+DKTools.Window.prototype.destroy = function(options) {
+    DKTools.Base.prototype.destroy.call(this, options);
+    Window_Base.prototype.destroy.call(this, options);
+};
+
+/**
  * Draws the text
  * Returns true if successfully completed
  *
@@ -1240,24 +1261,6 @@ DKTools.Window.prototype.isOpenAndVisible = function() {
  */
 DKTools.Window.prototype.isOpenAndActive = function() {
     return this.isOpen() && this.isActive();
-};
-
-/**
- * Returns true if the coordinates is inside the window
- *
- * @override
- *
- * @param {Number} x - The X coordinate
- * @param {Number} y - The Y coordinate
- *
- * @returns {Boolean} Coordinates is inside the window
- */
-DKTools.Window.prototype.isInside = function(x, y) {
-    const localX = this.canvasToLocalX(x);
-    const localY = this.canvasToLocalY(y);
-    const frame = new Rectangle(0, 0, this.width, this.height);
-
-    return frame.contains(localX, localY);
 };
 
 // N methods
@@ -2066,16 +2069,20 @@ DKTools.Window.prototype.setupAll = function(object = {}) {
 /**
  * Sets the width of the window
  *
+ * @version 8.0.0
+ *
  * @param {Number} [width] - Width of the window
  *
  * @see DKTools.Window.prototype._checkWidth
  */
 DKTools.Window.prototype.setupWidth = function(width) {
-    this.realWidth = this._checkWidth(width);
+    this.width = this._checkWidth(width);
 };
 
 /**
  * Sets the height of the window
+ *
+ * @version 8.0.0
  *
  * @param {Number | String} [height] - Height of the window of number of lines (String)
  *
@@ -2086,7 +2093,7 @@ DKTools.Window.prototype.setupHeight = function(height) {
         height = this.getLineHeight() * parseFloat(height);
     }
 
-    this.realHeight = this._checkHeight(height);
+    this.height = this._checkHeight(height);
 };
 
 /**

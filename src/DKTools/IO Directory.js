@@ -557,7 +557,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
      *
-     * @version 7.0.0
+     * @version 8.0.0
      *
      * @param {Object} object - Options of an operation
      *
@@ -581,7 +581,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
-        if (!DKTools.IO.isLocalMode()) {
+        if (!DKTools.IO.isLocalMode() && DKTools.IO.mode === DKTools.IO.MODE_NWJS) {
             return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
 
@@ -589,9 +589,6 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return { data: null, status: DKTools.IO.ERROR_PATH_DOES_NOT_EXIST };
         }
 
-        const fs = DKTools.IO.fs;
-        const path = this.getFullPath();
-        const absolutePath = this.getAbsolutePath();
         const processData = (names) => {
             if (object.template instanceof RegExp) {
                 names = _.filter(names, name => object.template.test(name));
@@ -613,6 +610,24 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
 
             return { data, status: DKTools.IO.OK };
         };
+
+        if (!DKTools.IO.isLocalMode() && DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
+            const parts = this.getFullPath().split('\\');
+            const temp = _.get(DKTools.IO.stamp, parts, {});
+            const names = Object.keys(temp);
+
+            if (object.sync) {
+                return processData(names);
+            } else {
+                object.onSuccess(processData(names), this);
+
+                return { data: null, status: DKTools.IO.EXPECT_CALLBACK };
+            }
+        }
+
+        const fs = DKTools.IO.fs;
+        const path = this.getFullPath();
+        const absolutePath = this.getAbsolutePath();
 
         if (object.sync) {
             try {

@@ -30,7 +30,7 @@ ImageCache.prototype._truncateCache = function() {
     Object.keys(items).map(key => items[key])
         .filter(item => !this._mustBeHeld(item))
         .sort((a, b) => b.touch - a.touch)
-        .forEach(item => {
+        .forEach((item) => {
             if (sizeLeft > 0 && !DKTools.PreloadManager.isImageCachedByKey(item.key)) {
                 const bitmap = item.bitmap;
 
@@ -92,13 +92,135 @@ Graphics._createFPSMeter = function() {
     const param = DKToolsParam.get('FPS Meter');
 
     if (param.Enabled) {
-        const options = { toggleOn: null, graph: 1, decimals: 0, theme: param.Theme, history: param.History };
+        this._fpsMeter = new FPSMeter({
+            theme: param.Theme,
+            history: param.History,
+            toggleOn: null,
+            graph: 1,
+            decimals: 0
+        });
 
-        this._fpsMeter = new FPSMeter(options);
         this._fpsMeter.hide();
     } else {
         DKTools_Graphics_createFPSMeter.call(this);
     }
+};
+
+Graphics.printDetailedError = function(error) {
+    if (!this._errorPrinter) {
+        return;
+    }
+
+    const stack = error.stack.split(/(?:\r\n|\r|\n)/).map((value) => {
+        return value.replace(/[\(](.*[\/])/, '(');
+    });
+
+    this._errorPrinter.innerHTML = this._makeDetailedErrorHtml(error.name, error.message, stack);
+
+    this._applyCanvasFilter();
+    this._clearUpperCanvas();
+};
+
+Graphics._getErrorReferenceInfo = function() {
+    const scene = SceneManager._scene;
+    const data = {};
+
+    if (scene && scene.constructor.name) {
+        data['Scene'] = scene.constructor.name;
+
+        if (SceneManager.isCurrentScene(Scene_Map)) {
+            const interpreter = $gameMap._interpreter;
+
+            if (interpreter) {
+                if (interpreter._mapId > 0) {
+                    data['Map ID'] = interpreter._mapId;
+                }
+
+                if (interpreter._eventId > 0) {
+                    data['Event ID'] = interpreter._eventId;
+
+                    const event = $gameMap.event(interpreter._eventId);
+
+                    if (event) {
+                        data['Event Page'] = event._pageIndex + 1;
+                    }
+                }
+
+                if (interpreter._list && interpreter._list.length > 0) {
+                    let command = interpreter._list[interpreter._index];
+
+                    if (command && command.code === 0 && interpreter._index > 0) {
+                        command = interpreter._list[interpreter._index - 1];
+                    }
+
+                    if (command && command.code > 0) {
+                        data['Last Event Command'] = command.code;
+                    }
+                }
+
+                if (interpreter._params && interpreter._params.length > 0) {
+                    data['Params'] = JSON.stringify(interpreter._params);
+                }
+            }
+        }
+    }
+
+    return data;
+};
+
+Graphics._getErrorMessageForErrorPrint = function() {
+    return DKToolsParam.get('Print Detailed Error', 'Error Message');
+};
+
+Graphics._getRestartMessageForErrorPrint = function() {
+    return DKToolsParam.get('Print Detailed Error', 'Restart Message');
+};
+
+Graphics._makeDetailedErrorHtml = function(name, message, stack) {
+    const errorMessage = this._getErrorMessageForErrorPrint();
+    const restartMessage = this._getRestartMessageForErrorPrint();
+    const referenceInfo = this._getErrorReferenceInfo();
+    let text = '';
+
+    if (errorMessage) {
+        text = '<font color="yellow"><b>' + errorMessage + '<br>' + '</b></font><br>';
+    }
+
+    if (Object.keys(referenceInfo).length > 0) {
+        text += '<font color="yellow"><b>' + 'Reference Information' + '</b></font><br>';
+
+        _.forEach(referenceInfo, (value, key) => {
+            text += '<font color="white">' + key + ': ' + value + '</font><br>';
+        });
+
+        text += '<br>';
+    }
+
+    text += '<font color="yellow"><b>' + message + '</b></font><br>';
+
+    _.forEach(stack, (value) => {
+        text += '<font color="white">' + value + '</font><br>';
+    });
+
+    if (restartMessage) {
+        text += '<br><font color="yellow"><b>' + restartMessage + '</b></font><br><br>';
+    }
+
+    return text;
+};
+
+const DKTools_Graphics_updateErrorPrinter = Graphics._updateErrorPrinter;
+Graphics._updateErrorPrinter = function() {
+    DKTools_Graphics_updateErrorPrinter.call(this);
+
+    if (!this._errorPrinter || !DKToolsParam.get('Print Detailed Error', 'Enabled')) {
+        return;
+    }
+
+    this._errorPrinter.style.textAlign = 'left';
+    this._errorPrinter.height = this._height * 0.8;
+
+    this._centerElement(this._errorPrinter);
 };
 
 
@@ -362,6 +484,8 @@ TouchInput._onMouseMove = function(event) {
 
     if (this._mouseX !== x || this._mouseY !== y) {
         this._events.mouseMoved = true;
+
+        this._date = Date.now();
         this._mouseX = x;
         this._mouseY = y;
     }
@@ -422,6 +546,7 @@ Object.defineProperties(TouchInput, {
     }
 
 });
+
 
 
 
@@ -528,10 +653,11 @@ SceneManager.initialize = async function() {
 const DKTools_SceneManager_initGraphics = SceneManager.initGraphics;
 SceneManager.initGraphics = function() {
     const param = DKToolsParam.get('Screen Resolution');
-    const width = param.Width;
-    const height = param.Height;
 
     if (param.Enabled) {
+        const width = param.Width;
+        const height = param.Height;
+
         this._boxWidth = width;
         this._screenWidth = width;
         this._boxHeight = height;
@@ -551,7 +677,7 @@ SceneManager.updateResolution = function() {
     const resizeWidth = this._screenWidth - window.innerWidth;
     const resizeHeight = this._screenHeight - window.innerHeight;
 
-    if (!Imported.ScreenResolution && resizeWidth > 0 && resizeHeight > 0) {
+    if (resizeWidth > 0 && resizeHeight > 0) {
         window.moveBy(-1 * resizeWidth / 2, -1 * resizeHeight / 2);
         window.resizeBy(resizeWidth, resizeHeight);
     }
@@ -594,10 +720,14 @@ SceneManager.onKeyDown = function(event) {
 };
 
 const DKTools_SceneManager_catchException = SceneManager.catchException;
-SceneManager.catchException = function(e) {
-    DKTools_SceneManager_catchException.call(this, e);
+SceneManager.catchException = function(error) {
+    DKTools_SceneManager_catchException.call(this, error);
 
-    DKTools.Utils.logError(e);
+    if (error instanceof Error && DKToolsParam.get('Print Detailed Error', 'Enabled')) {
+        Graphics.printDetailedError(error);
+    }
+
+    DKTools.Utils.logError(error);
 
     if (DKToolsParam.get('Debugging Console', 'Open On Error')) {
         DKTools.Utils.openConsole();
@@ -620,6 +750,7 @@ SceneManager.changeScene = function() {
         if (this._scene) {
             this._scene.terminate();
             this._scene.detachReservation();
+
             this._previousClass = this._scene.constructor;
         }
 
@@ -636,6 +767,7 @@ SceneManager.changeScene = function() {
             if (this._scene.isPreloaded()) {
                 this._scene.create();
                 this._sceneCreated = true;
+
                 this.onSceneCreate();
             }
         }
@@ -651,6 +783,7 @@ SceneManager.updateScene = function() {
         if (!this._sceneCreated && this._scene.isPreloaded()) {
             this._scene.create();
             this._sceneCreated = true;
+
             this.onSceneCreate();
         }
 
@@ -659,11 +792,17 @@ SceneManager.updateScene = function() {
                 if (this._scene.isReady()) {
                     this._scene.start();
                     this._sceneStarted = true;
+
                     this.onSceneStart();
                 }
             } catch (e) {
+                console.error(e);
+
+                DKTools.Utils.logError(e);
+
                 this._scene.start();
                 this._sceneStarted = true;
+
                 this.onSceneStart();
             }
         }
@@ -675,12 +814,13 @@ SceneManager.updateScene = function() {
 };
 
 /**
+ * @version 8.0.0
  * @since 6.1.0
  *
  * @returns {Boolean}
  */
 SceneManager.isCurrentScene = function(sceneClass) {
-    return this._scene instanceof sceneClass;
+    return !!this._scene && this._scene.constructor === sceneClass;
 };
 
 const DKTools_SceneManager_goto = SceneManager.goto;
@@ -701,7 +841,30 @@ const DKTools_Scene_Base_initialize = Scene_Base.prototype.initialize;
 Scene_Base.prototype.initialize = function() {
     DKTools_Scene_Base_initialize.call(this);
 
+    /**
+     * @private
+     * @readonly
+     * @type {DKTools.Scene.Preloader}
+     */
     this._preloader = new DKTools.Scene.Preloader();
+};
+
+/**
+ * Activates the scene
+ *
+ * @since 8.0.0
+ */
+Scene_Base.prototype.activate = function() {
+    this._active = true;
+};
+
+/**
+ * Deactivates the scene
+ *
+ * @since 8.0.0
+ */
+Scene_Base.prototype.deactivate = function() {
+    this._active = false;
 };
 
 /**
@@ -743,6 +906,13 @@ Scene_Base.prototype.startPreloading = function() {
     this.setupPreloading();
 
     this._preloader.start();
+};
+
+const DKTools_Scene_Base_terminate = Scene_Base.prototype.terminate;
+Scene_Base.prototype.terminate = function() {
+    DKTools_Scene_Base_terminate.call(this);
+
+    this._preloader.finish();
 };
 
 

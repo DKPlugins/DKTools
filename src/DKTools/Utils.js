@@ -145,6 +145,66 @@ DKTools.Utils = class {
         });
     }
 
+    // G methods
+
+    /**
+     * Returns the data for error logging
+     *
+     * @since 8.0.0
+     * @private
+     * @static
+     *
+     * @see DKTools.Utils.logError
+     *
+     * @returns {Object} Data for error logging
+     */
+    static _getErrorLogData() {
+        const scene = SceneManager._scene;
+        const data = {};
+
+        if (scene && scene.constructor.name) {
+            data['Scene'] = scene.constructor.name;
+
+            if (SceneManager.isCurrentScene(Scene_Map)) {
+                const interpreter = $gameMap._interpreter;
+
+                if (interpreter) {
+                    if (interpreter._mapId > 0) {
+                        data['Map ID'] = interpreter._mapId;
+                    }
+
+                    if (interpreter._eventId > 0) {
+                        data['Event ID'] = interpreter._eventId;
+
+                        const event = $gameMap.event(interpreter._eventId);
+
+                        if (event) {
+                            data['Event Page'] = event._pageIndex + 1;
+                        }
+                    }
+
+                    if (interpreter._list && interpreter._list.length > 0) {
+                        let command = interpreter._list[interpreter._index];
+
+                        if (command && command.code === 0 && interpreter._index > 0) {
+                            command = interpreter._list[interpreter._index - 1];
+                        }
+
+                        if (command && command.code > 0) {
+                            data['Last Event Command'] = command.code;
+                        }
+                    }
+
+                    if (interpreter._params && interpreter._params.length > 0) {
+                        data['Params'] = JSON.stringify(interpreter._params);
+                    }
+                }
+            }
+        }
+
+        return data;
+    }
+
     // H methods
 
     /**
@@ -295,7 +355,7 @@ DKTools.Utils = class {
     /**
      * Logs the error to file
      *
-     * @version 7.0.0
+     * @version 8.0.0
      * @since 3.1.0
      * @static
      * @async
@@ -308,6 +368,8 @@ DKTools.Utils = class {
      * @param {String} [error.lineNumber]
      * @param {String} [error.columnNumber]
      * @param {String} [error.stack]
+     *
+     * @see DKTools.Utils._getErrorLogData
      */
     static async logError(error) {
         if (!error || !this.isNwjs()) {
@@ -350,11 +412,16 @@ DKTools.Utils = class {
         }
 
         const fileDescriptor = await fs.openSync(filename, 'a');
+        const errorData = this._getErrorLogData();
+        let data = `Date: ${new Date().toString()}` + os.EOL;
+
+        _.forEach(errorData, (value, key) => {
+            data += key + ': ' + value + os.EOL;
+        });
 
         if (error instanceof Object) {
-            let data = `Date: ${new Date().toString()}` + os.EOL +
-                `Name: ${error.name}` + os.EOL +
-                `Message: ${error.message}` + os.EOL;
+            data += `Name: ${error.name}` + os.EOL;
+            data += `Message: ${error.message}` + os.EOL;
 
             if (error.filename !== undefined) {
                 data += `Filename: ${error.filename}` + os.EOL;
@@ -369,15 +436,11 @@ DKTools.Utils = class {
             }
 
             data += `Stack: ${error.stack}` + os.EOL + os.EOL;
-
-            await fs.writeSync(fileDescriptor, data);
         } else {
-            const data = `Date: ${new Date().toString()}` + os.EOL +
-                `Error: ${error}` + os.EOL + os.EOL;
-
-            await fs.writeSync(fileDescriptor, data);
+            data += `Error: ${error}` + os.EOL + os.EOL;
         }
 
+        await fs.writeSync(fileDescriptor, data);
         await fs.closeSync(fileDescriptor);
     }
 

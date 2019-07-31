@@ -3,8 +3,8 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 7.0.0
-Release: 29.03.2019
+Version: 8.0.0
+Release: 30.07.2019
 First release: 13.01.2016
 Supported languages: Russian, English
 */
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 7.0.0
-Релиз: 29.03.2019
+Версия: 8.0.0
+Релиз: 30.07.2019
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.7.0.0 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.8.0.0 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 7.0.0
- Release: 29.03.2019
+ Version: 8.0.0
+ Release: 30.07.2019
  First release: 13.01.2016
  Supported languages: Russian, English
  Thank you for your support: https://dk-plugins.ru/donate
@@ -48,6 +48,31 @@ E-mail: kuznetsovdenis96@gmail.com
  Version of RPG Maker 1.6+
 
  ### Instructions ###
+
+ ## Parameters ##
+
+ ### 1 ### File system ###
+ File system modes:
+ Nwjs + Stamp - Advanced file system mode (all Platforms)
+ Nwjs - standard file system mode (PC only)
+
+ In the Nwjs + Stamp mode, each time you start a game test, the plugin scans
+ project files and saves data to the file "data/stamp.json"
+
+ Data can also be updated using the plugin command UpdateFileSystemStamp
+
+ Q. Why do I need Nwjs + Stamp file system mode ?
+ A. Browsers and old mobile devices do not provide the ability to check for specific files.
+ in a particular directory, and also do not provide a list of files and directories.
+
+ Q. Which mode should I choose ?
+ A. Nwjs + Stamp, if your project is designed for all platforms (including browsers and mobile devices).
+
+ ### 1.1 ### Ignored directories ###
+ Only applicable for Nwjs + Stamp mode.
+ Ignores specified (and nested) directories when scanning project files.
+
+ ## Functions ##
 
  ### 1 ### Screenshots ###
  Templates for the filename of the screenshot:
@@ -76,6 +101,9 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Plugin commands ###
  1. Checks for plugins updates from DKPlugins
  DKPluginsCheckUpdates
+
+ 2. Update file system stamp
+ UpdateFileSystemStamp
 
  ### Elements ###
  DKTools.Utils
@@ -140,6 +168,24 @@ E-mail: kuznetsovdenis96@gmail.com
 
  You can't:
  -Delete or change any information about the plugin (Title, authorship, contact information, version and release)
+
+ * @param Parameters
+ * @default ---------------------------------
+
+ * @param File System
+ * @parent Parameters
+ * @desc File system parameters. Details in the help (1)
+ * @type struct<FileSystem>
+ * @default {"Mode":"0","Stamp":"---------------------------------","Ignored Directories":"[\"node_modules\"]"}
+
+ * @param New Functions
+ * @default ---------------------------------
+
+ * @param Print Detailed Error
+ * @parent New Functions
+ * @desc Detailed error display
+ * @type struct<PrintDetailedError>
+ * @default {"Enabled":"false","Error Message":"Game has encountered a bug. Please report it.","Restart Message":"Press F5 to restart the game."}
 
  * @param Functions
  * @default ---------------------------------
@@ -225,7 +271,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.7.0.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.8.0.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -233,8 +279,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 7.0.0
- Релиз: 29.03.2019
+ Версия: 8.0.0
+ Релиз: 30.07.2019
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
  Спасибо за Вашу поддержку: https://dk-plugins.ru/donate
@@ -252,6 +298,31 @@ E-mail: kuznetsovdenis96@gmail.com
  Версия мейкера 1.6+
 
  ### Инструкции ###
+
+ ## Параметры ##
+
+ ### 1 ### Файловая система ###
+ Режимы работы файловой системы:
+ Nwjs + Stamp - Расширенный режим работы файловой системы (все платформы)
+ Nwjs - стандартный режим работы файловой системы (только PC)
+
+ В режиме Nwjs + Stamp каждый раз при запуске теста игры плагин сканирует
+ файлы проекта и сохраняет данные в файл "data/Stamp.json"
+
+ Данные также могут быть обновлены с помощью команды плагина UpdateFileSystemStamp
+
+ Q. Зачем нужен режим работы Nwjs + Stamp ?
+ A. Браузеры и старые мобильные устройства не предоставляют возможность проверять наличие конкретных файлов
+ в той или иной директории, а также не предоставляют список файлов и директорий.
+
+ Q. Какой режим выбрать мне ?
+ A. Nwjs + Stamp, если Ваш проект расчитан на все платформы (включая браузеры и мобильные устройства).
+
+ ### 1.1 ### Игнорируемые директории ###
+ Применяется только для режима Nwjs + Stamp.
+ Игнорирует указанные (и вложенные) директории при сканировании файлов проекта.
+
+ ## Функции ##
 
  ### 1 ### Скриншоты ###
  Шаблоны для названия файла скриншота:
@@ -280,6 +351,9 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Команды плагина ###
  1. Проверить обновления плагинов от DKPlugins
  DKPluginsCheckUpdates
+
+ 2. Обновить штамп файловой системы
+ UpdateFileSystemStamp
 
  ### Элементы ###
  DKTools.Utils
@@ -344,6 +418,28 @@ E-mail: kuznetsovdenis96@gmail.com
 
  Вы не можете:
  -Убирать или изменять любую информацию о плагине (Название, авторство, контактная информация, версия и дата релиза)
+
+ * @param Parameters
+ * @text Параметры
+ * @default ---------------------------------
+
+ * @param File System
+ * @text Файловая система
+ * @parent Parameters
+ * @desc Параметры файловой системы. Подробности в справке (1)
+ * @type struct<FileSystem>
+ * @default {"Mode":"0","Stamp":"---------------------------------","Ignored Directories":"[\"node_modules\"]"}
+
+ * @param New Functions
+ * @text Новые функции
+ * @default ---------------------------------
+
+ * @param Print Detailed Error
+ * @text Детальное отображение ошибок
+ * @parent New Functions
+ * @desc Детальное отображение ошибок
+ * @type struct<PrintDetailedError>
+ * @default {"Enabled":"false","Error Message":"В игре обнаружена ошибка. Пожалуйста, сообщите об этом.","Restart Message":"Нажмите F5, чтобы перезапустить игру."}
 
  * @param Functions
  * @text Функции
@@ -439,6 +535,53 @@ E-mail: kuznetsovdenis96@gmail.com
  * @desc Графика курсора
  * @type struct<CursorGraphic>
  * @default {"Enabled":"false","Graphic": ""}
+
+*/
+
+/*~struct~FileSystem:
+
+ * @param Mode
+ * @desc File system mode. Details in the help (1)
+ * @type select
+ * @option Nwjs + Stamp
+ * @value 0
+ * @option Nwjs
+ * @value 1
+ * @default 0
+
+ * @param Stamp
+ * @default ---------------------------------
+
+ * @param Ignored Directories
+ * @parent Stamp
+ * @desc Ignored directories. Details in the help (1.1)
+ * @type string[]
+ * @default ["node_modules"]
+
+*/
+
+/*~struct~FileSystem:ru
+
+ * @param Mode
+ * @text Режим работы файловой систмы
+ * @desc Режим работы файловой системы. Подробности в справке (1)
+ * @type select
+ * @option Nwjs + Stamp
+ * @value 0
+ * @option Nwjs
+ * @value 1
+ * @default 0
+
+ * @param Stamp
+ * @text Штамп файловой системы
+ * @default ---------------------------------
+
+ * @param Ignored Directories
+ * @text Игнорируемые директории
+ * @parent Stamp
+ * @desc Игнорируемые директории. Подробности в справке (1.1)
+ * @type string[]
+ * @default ["node_modules"]
 
 */
 
@@ -1139,5 +1282,44 @@ E-mail: kuznetsovdenis96@gmail.com
  * @desc Графика курсора
  * @type file
  * @dir img/system
+
+*/
+
+/*~struct~PrintDetailedError:
+
+ * @param Enabled
+ * @desc Enable detailed error display ?
+ * @type boolean
+ * @default false
+
+ * @param Error Message
+ * @text Error message
+ * @desc Error message
+ * @default Game has encountered a bug. Please report it.
+
+ * @param Restart Message
+ * @text Game restart message
+ * @desc Game restart message
+ * @default Press F5 to restart the game.
+
+*/
+
+/*~struct~PrintDetailedError:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить детальное отображение ошибок ?
+ * @type boolean
+ * @default false
+
+ * @param Error Message
+ * @text Сообщение об ошибке
+ * @desc Сообщение об ошибке
+ * @default В игре обнаружена ошибка. Пожалуйста, сообщите об этом.
+
+ * @param Restart Message
+ * @text Сообщение о перезапуске игры
+ * @desc Сообщение о перезапуске игры
+ * @default Нажмите F5, чтобы перезапустить игру.
 
 */

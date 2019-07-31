@@ -486,34 +486,6 @@ Object.defineProperties(DKTools.Sprite.Button.prototype, {
             return this._mousePressTime;
         },
         configurable: true
-    },
-
-    /**
-     * The X coordinate of press inside the sprite
-     *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Sprite.Button.prototype
-     */
-    pressX : {
-        get: function() {
-            return this.canvasToLocalX(TouchInput.x);
-        },
-        configurable: true
-    },
-
-    /**
-     * The Y coordinate of press inside the sprite
-     *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Sprite.Button.prototype
-     */
-    pressY : {
-        get: function() {
-            return this.canvasToLocalY(TouchInput.y);
-        },
-        configurable: true
     }
 
 });

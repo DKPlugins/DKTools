@@ -7,7 +7,7 @@
  * @type {Object}
  */
 window.Imported = window.Imported || {};
-window.Imported.DKTools = '7.0.0';
+window.Imported.DKTools = '8.0.0';
 
 
 

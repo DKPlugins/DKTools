@@ -36,7 +36,7 @@ DKTools.Utils.Event = class {
      */
     static getAllComments(event) {
         if (Number.isFinite(event)) {
-            event = $gameMap.events()[event];
+            event = $gameMap.event(event);
         }
 
         if (!event) {
@@ -83,7 +83,7 @@ DKTools.Utils.Event = class {
      */
     static getComments(event) {
         if (Number.isFinite(event)) {
-            event = $gameMap.events()[event];
+            event = $gameMap.event(event);
         }
 
         if (!event || !event.page()) {

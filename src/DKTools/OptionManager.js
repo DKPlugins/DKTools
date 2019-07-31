@@ -78,7 +78,7 @@ DKTools.OptionManager = class {
 
         if (cloneListeners) {
             _.forEach(this._optionChangeListeners, (listeners, option) => {
-                _.forEach(listeners, listener => {
+                _.forEach(listeners, (listener) => {
                     optionManager.addOptionChangeListener(option, listener);
                 });
             });

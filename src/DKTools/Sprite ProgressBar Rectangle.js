@@ -54,7 +54,7 @@ DKTools.Sprite.ProgressBar.Rectangle = class extends DKTools.Sprite.ProgressBar 
             const percents = this.getPercents();
             const text = `${percents}%`;
 
-            this.drawText(text, { height: this.realHeight });
+            this.drawText(text, { height: this.height });
         };
     }
 

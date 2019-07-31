@@ -93,6 +93,11 @@ DKTools.Utils.Array = class {
      * DKTools.Utils.Array.contains(array, 3);
      * => false
      *
+     * @example
+     * var array = null;
+     * DKTools.Utils.Array.contains(array, 1);
+     * => false
+     *
      * @returns {Boolean} Array contains a given item
      */
     static contains(array, item) {
@@ -109,12 +114,12 @@ DKTools.Utils.Array = class {
      *
      * @example
      * var array = [1, 1, 2];
-     * DKTools.Utils.Array.contains(array, 1);
+     * DKTools.Utils.Array.count(array, 1);
      * => 2
      *
      * @example
      * var array = [1, 1, 2];
-     * DKTools.Utils.Array.contains(array, 2);
+     * DKTools.Utils.Array.count(array, 2);
      * => 1
      *
      * @returns {Number} Number of item in the array

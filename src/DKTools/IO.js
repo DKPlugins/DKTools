@@ -17,6 +17,7 @@ DKTools.IO = class {
     // initialize methods
 
     /**
+     * @version 8.0.0
      * @static
      */
     static initialize() {
@@ -53,6 +54,25 @@ DKTools.IO = class {
          * @type {String}
          */
         this._projectPath = projectPath;
+
+        /**
+         * @since 8.0.0
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._mode = DKToolsParam.get('File System', 'Mode');
+
+        /**
+         * @since 8.0.0
+         * @private
+         * @readonly
+         * @type {Object}
+         */
+        this._stamp = {};
+
+        this._loadStamp();
+        this._createStamp();
     }
 
     // A methods
@@ -60,6 +80,7 @@ DKTools.IO = class {
     /**
      * Returns true if the absolute path exists
      *
+     * @version 8.0.0
      * @since 3.0.0
      * @static
      *
@@ -70,11 +91,74 @@ DKTools.IO = class {
      * @returns {Boolean} Absolute path exists
      */
     static absolutePathExists(path) {
-        if (!this.isLocalMode()) {
-            return false;
+        if (this.isLocalMode()) {
+            return this._fs.existsSync(path);
+        } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP && path.startsWith(this._projectPath)) {
+            if (this.isFile(path)) {
+                return true;
+            } else if (this.isDirectory(path)) {
+                return true;
+            }
         }
 
-        return this._fs.existsSync(path);
+        return false;
+    }
+
+    // C methods
+
+    /**
+     * Creates the file system stamp
+     *
+     * @since 8.0.0
+     * @private
+     * @static
+     */
+    static _createStamp() {
+        if (!DKTools.Utils.isTest() || !this.isLocalMode() || this.mode === DKTools.IO.MODE_NWJS) {
+            return;
+        }
+
+        const ignoredDirectories = DKToolsParam.get('File System', 'Ignored Directories')
+                                                        .map(path => new DKTools.IO.Directory(path));
+        const directory = DKTools.IO.getRootDirectory();
+        const stamp = this._stamp;
+        let timeout = null;
+
+        const processDirectory = (directory) => {
+            if (ignoredDirectories.some(dir => dir.getFullPath() === directory.getFullPath())) {
+                return;
+            }
+
+            directory.getAllAsync().then(result => result.data).then((data) => {
+                data.forEach((entity) => {
+                    entity.getStatsAsync().then(result => result.data).then((stats) => {
+                        const fullPath = entity.getFullPath().substring(1).split('\\');
+
+                        if (entity.isFile()) {
+                            _.set(stamp, fullPath, { __stats__: { ...stats, type: 'file' } });
+                        } else {
+                            _.set(stamp, fullPath, { __stats__: { ...stats, type: 'directory' } });
+                        }
+
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+
+                        timeout = setTimeout(() => {
+                            const file = new DKTools.IO.File('data/Stamp.json');
+
+                            file.saveJsonAsync(stamp, { compress: true });
+                        });
+                    });
+
+                    if (entity.isDirectory()) {
+                        processDirectory(entity);
+                    }
+                });
+            });
+        };
+
+        processDirectory(directory);
     }
 
     // G methods
@@ -122,7 +206,7 @@ DKTools.IO = class {
     /**
      * Returns true if the full path is a file
      *
-     * @version 3.0.0
+     * @version 8.0.0
      * @static
      *
      * @param {String} fullPath - Path to file
@@ -134,14 +218,19 @@ DKTools.IO = class {
      * @returns {Boolean} Full path is a file
      */
     static isFile(fullPath) {
-        if (!this.isLocalMode()) {
-            return false;
-        }
+        if (this.isLocalMode()) {
+            const absolutePath = this.getAbsolutePath(fullPath);
 
-        const absolutePath = this.getAbsolutePath(fullPath);
+            if (this.absolutePathExists(absolutePath)) {
+                return this._fs.lstatSync(absolutePath).isFile();
+            }
+        } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP) {
+            const parts = this.normalizePath(fullPath).split('\\');
+            const extension = _.last(parts);
 
-        if (this.absolutePathExists(absolutePath)) {
-            return this._fs.lstatSync(absolutePath).isFile();
+            if (extension.includes('.')) {
+                return _.get(this._stamp, parts.concat('__stats__'), {}).type === 'file';
+            }
         }
 
         return false;
@@ -150,7 +239,7 @@ DKTools.IO = class {
     /**
      * Returns true if the full path is a directory
      *
-     * @version 3.0.0
+     * @version 8.0.0
      * @static
      *
      * @param {String} fullPath - Path to directory
@@ -162,14 +251,19 @@ DKTools.IO = class {
      * @returns {Boolean} Full path is a directory
      */
     static isDirectory(fullPath) {
-        if (!this.isLocalMode()) {
-            return false;
-        }
+        if (this.isLocalMode()) {
+            const absolutePath = this.getAbsolutePath(fullPath);
 
-        const absolutePath = this.getAbsolutePath(fullPath);
+            if (this.absolutePathExists(absolutePath)) {
+                return this._fs.lstatSync(absolutePath).isDirectory();
+            }
+        } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP) {
+            const parts = this.normalizePath(fullPath).split('\\').filter(part => !!part);
+            const extension = _.last(parts);
 
-        if (this.absolutePathExists(absolutePath)) {
-            return this._fs.lstatSync(absolutePath).isDirectory();
+            if (!extension.includes('.')) {
+                return _.get(this._stamp, parts.concat('__stats__'), {}).type === 'directory';
+            }
         }
 
         return false;
@@ -205,6 +299,31 @@ DKTools.IO = class {
         }
 
         return this.normalizePath(joined);
+    }
+
+    // L methods
+
+    /**
+     * Loads the file system stamp
+     *
+     * @since 8.0.0
+     * @private
+     * @static
+     */
+    static _loadStamp() {
+        if (this.isLocalMode() || this.mode === DKTools.IO.MODE_NWJS) {
+            return;
+        }
+
+        const file = new DKTools.IO.File('data/Stamp.json');
+
+        file.loadJson({
+            sync: true,
+            decompress: true,
+            onSuccess: (result) => {
+                this._stamp = result.data || this._stamp;
+            }
+        });
     }
 
     // N methods
@@ -459,6 +578,36 @@ Object.defineProperties(DKTools.IO, {
     },
 
     /**
+     * File system mode
+     *
+     * @since 8.0.0
+     * @readonly
+     * @type {Number}
+     * @memberof DKTools.IO
+     */
+    mode: {
+        get: function() {
+            return this._mode;
+        },
+        configurable: true
+    },
+
+    /**
+     * File system stamp
+     *
+     * @since 8.0.0
+     * @readonly
+     * @type {Object}
+     * @memberof DKTools.IO
+     */
+    stamp: {
+        get: function() {
+            return this._stamp;
+        },
+        configurable: true
+    },
+
+    /**
      * Operation completed successfully
      *
      * @constant
@@ -561,6 +710,26 @@ Object.defineProperties(DKTools.IO, {
      * @memberof DKTools.IO
      */
     ERROR_PARSING_DATA: { value: 10 },
+
+    /**
+     * Nwjs + Stamp file system mode
+     *
+     * @since 8.0.0
+     * @constant
+     * @type {Number}
+     * @memberof DKTools.IO
+     */
+    MODE_NWJS_STAMP: { value: 0 },
+
+    /**
+     * Nwjs file system mode
+     *
+     * @since 8.0.0
+     * @constant
+     * @type {Number}
+     * @memberof DKTools.IO
+     */
+    MODE_NWJS: { value: 1 }
 
 });
 

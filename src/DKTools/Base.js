@@ -452,40 +452,6 @@ DKTools.Base = class {
     }
 
     /**
-     * Converts the X of the canvas to the local X
-     *
-     * @param {Number} x - The X of the canvas
-     * @returns {Number} Local X
-     */
-    canvasToLocalX(x) {
-        let node = this;
-
-        while (node) {
-            x -= node.x;
-            node = node.parent;
-        }
-
-        return x;
-    }
-
-    /**
-     * Converts the Y of the canvas to the local Y
-     *
-     * @param {Number} y - The Y of the canvas
-     * @returns {Number} Local Y
-     */
-    canvasToLocalY(y) {
-        let node = this;
-
-        while (node) {
-            y -= node.y;
-            node = node.parent;
-        }
-
-        return y;
-    }
-
-    /**
      * Checks all
      *
      * @version 1.1.0
@@ -637,7 +603,7 @@ DKTools.Base = class {
         const clone = new (this.constructor)(this);
 
         if (options.cloneTexts) {
-            _.forEach(this._texts, textObj => {
+            _.forEach(this._texts, (textObj) => {
                 clone.addText(textObj.text, { ...textObj.options });
             });
         }
@@ -717,6 +683,20 @@ DKTools.Base = class {
         if (this.setActive(false)) {
             this.updateDeactivateEvents();
         }
+    }
+
+    /**
+     * Destroys the object
+     *
+     * @since 8.0.0
+     *
+     * @param {Object} [options] - Destroy options
+     */
+    destroy(options = {}) {
+        this._clearAll();
+
+        this.clearEvents();
+        this.hide();
     }
 
     /**
@@ -2056,6 +2036,8 @@ DKTools.Base = class {
     /**
      * Returns a rectangle of the line
      *
+     * @version 8.0.0
+     *
      * @param {Number | String} line - Line number
      *
      * @see DKTools.Base.prototype.getLineHeight
@@ -2065,18 +2047,42 @@ DKTools.Base = class {
     getLineRect(line) {
         const lineHeight = this.getLineHeight();
 
-        return new Rectangle(0, lineHeight * parseInt(line), this.realWidth, lineHeight);
+        return new Rectangle(0, lineHeight * parseInt(line), this.width, lineHeight);
     }
 
     /**
      * Returns the maximum of lines
+     *
+     * @version 8.0.0
      *
      * @see DKTools.Base.prototype.getLineHeight
      *
      * @returns {Number} Maximum of lines
      */
     getLines() {
-        return this.realHeight / this.getLineHeight();
+        return this.height / this.getLineHeight();
+    }
+
+    /**
+     * Returns the local point (coordinates inside the object)
+     *
+     * @since 8.0.0
+     *
+     * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - The X coordinate or Point or object with parameters
+     * @param {Number} [y] - The Y coordinate (if object is Number)
+     *
+     * @param {Number} [object.x] - The X coordinate
+     * @param {Number} [object.y] - The Y coordinate
+     *
+     * @see DKTools.Utils.Point.toPoint
+     * @see PIXI.Matrix.applyInverse
+     *
+     * @returns {PIXI.Point} Local point (coordinates inside the object)
+     */
+    getLocalPoint(object, y) {
+        const point = DKTools.Utils.Point.toPoint(object, y);
+
+        return this.worldTransform.applyInverse(point);
     }
 
     /**
@@ -2109,6 +2115,7 @@ DKTools.Base = class {
     /**
      * Returns the real center of the object (not including scaling)
      *
+     * @deprecated 8.0.0
      * @since 5.0.0
      *
      * @see DKTools.Base.prototype.getRealSize
@@ -2139,10 +2146,12 @@ DKTools.Base = class {
     /**
      * Returns the real size of the object (not including scaling)
      *
+     * @deprecated 8.0.0
+     *
      * @returns {{ width: Number, height: Number }} Real size of the object (not including scaling)
      */
     getRealSize() {
-        return { width: this.realWidth, height: this.realHeight };
+        return { width: this.width, height: this.height };
     }
 
     /**
@@ -2587,6 +2596,17 @@ DKTools.Base = class {
     }
 
     /**
+     * Returns true if the object was destroyed
+     *
+     * @since 8.0.0
+     *
+     * @returns {Boolean} Object was destroyed
+     */
+    isDestroyed() {
+        return this._destroyed;
+    }
+
+    /**
      * Checks the events for pause
      * Returns the conjunction of pauses of the events
      *
@@ -2605,13 +2625,37 @@ DKTools.Base = class {
     /**
      * Returns true if the coordinates is inside the object
      *
+     * @version 8.0.0
+     *
      * @param {Number} x - The X coordinate
      * @param {Number} y - The Y coordinate
+     *
+     * @see DKTools.Base.prototype.getLocalPoint
      *
      * @returns {Boolean} Coordinates is inside the object
      */
     isInside(x, y) {
-        return false;
+        const point = this.getLocalPoint(x, y);
+        const frame = new Rectangle(0, 0, this.width, this.height);
+        const mask = this.mask;
+
+        if (mask && DKTools.Utils.isFunction(mask.containsPoint)) {
+            if (!mask.containsPoint(point)) {
+                return false;
+            }
+        }
+
+        if (!frame.contains(point.x, point.y)) {
+            return false;
+        }
+
+        const area = this.hitArea;
+
+        if (!area) {
+            return true;
+        }
+
+        return area.contains(point.x, point.y);
     }
 
     /**
@@ -2926,36 +2970,6 @@ DKTools.Base = class {
         this.position.copy(point);
     }
 
-    /**
-     * Moves the object (taking into account the anchor)
-     *
-     * @since 5.0.0
-     *
-     * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - The X coordinate or Point or object with parameters
-     * @param {Number | String} [y] - The Y coordinate or line number (String) (if object is Number)
-     *
-     * @param {Number} [object.x] - The X coordinate
-     * @param {Number | String} [object.y] - The Y coordinate or line number (String)
-     *
-     * @see DKTools.Base.prototype.getRealSize
-     * @see DKTools.Base.prototype.move
-     */
-    moveWithAnchor(object, y) {
-        if (object instanceof Object) {
-            y = object.y;
-        }
-
-        if (DKTools.Utils.isString(y)) { // line number
-            y = this.getLineHeight() * parseFloat(y);
-        }
-
-        const point = DKTools.Utils.Point.toPoint(object, y);
-        const size = this.getRealSize();
-        const anchor = this.anchor;
-
-        this.move(point.x + anchor.x * size.width, point.y + anchor.y * size.height);
-    }
-
     // O methods
 
     /**
@@ -3084,6 +3098,7 @@ DKTools.Base = class {
                     }
 
                     this.updateMouseOutsideEvents();
+
                     this._clearMouseEnterTime();
                 }
         } else {
@@ -3359,24 +3374,9 @@ DKTools.Base = class {
     }
 
     /**
-     * Returns the standard height of the drawing
-     *
-     * @returns {Number | null} Standard height of the drawing or null
-     */
-    standardDrawingHeight() {
-        if (this.hasBitmap()) {
-            return this.bitmap.height;
-        } else if (this.isSprite()) {
-            return this._bitmapHeight;
-        } else if (this.isWindow()) {
-            return this.realHeight;
-        }
-
-        return null;
-    }
-
-    /**
      * Returns the standard width of the drawing
+     *
+     * @version 8.0.0
      *
      * @returns {Number | null} Standard width of the drawing or null
      */
@@ -3386,7 +3386,26 @@ DKTools.Base = class {
         } else if (this.isSprite()) {
             return this._bitmapWidth;
         } else if (this.isWindow()) {
-            return this.realWidth;
+            return this.width;
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the standard height of the drawing
+     *
+     * @version 8.0.0
+     *
+     * @returns {Number | null} Standard height of the drawing or null
+     */
+    standardDrawingHeight() {
+        if (this.hasBitmap()) {
+            return this.bitmap.height;
+        } else if (this.isSprite()) {
+            return this._bitmapHeight;
+        } else if (this.isWindow()) {
+            return this.height;
         }
 
         return null;
@@ -4629,13 +4648,16 @@ Object.defineProperties(DKTools.Base.prototype, {
     /**
      * The X coordinate of mouse inside the object
      *
+     * @deprecated 8.0.0
+     * @version 8.0.0
+     *
      * @readonly
      * @type {Number}
      * @memberof DKTools.Base.prototype
      */
     mouseX : {
         get: function() {
-            return this.canvasToLocalX(TouchInput.mouseX);
+            return this.mouse.x;
         },
         configurable: true
     },
@@ -4643,13 +4665,32 @@ Object.defineProperties(DKTools.Base.prototype, {
     /**
      * The Y coordinate of mouse inside the object
      *
+     * @deprecated 8.0.0
+     * @version 8.0.0
+     *
      * @readonly
      * @type {Number}
      * @memberof DKTools.Base.prototype
      */
     mouseY : {
         get: function() {
-            return this.canvasToLocalY(TouchInput.mouseY);
+            return this.mouse.y;
+        },
+        configurable: true
+    },
+
+    /**
+     * The coordinates of mouse inside the object
+     *
+     * @since 8.0.0
+     *
+     * @readonly
+     * @type {Number}
+     * @memberof DKTools.Base.prototype
+     */
+    mouse: {
+        get: function() {
+            return this.getLocalPoint(TouchInput.mouseX, TouchInput.mouseY);
         },
         configurable: true
     },

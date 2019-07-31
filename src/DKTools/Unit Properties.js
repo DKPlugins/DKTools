@@ -315,18 +315,23 @@ DKTools.Unit.Properties = class extends DKTools.Unit {
      * @returns {Boolean} Unit has the property
      */
     hasProperty(property) {
-        return DKTools.Utils.Array.contains(this._getProperties(), property);
+        const properties = this._getProperties();
+
+        return properties.includes(property);
     }
 
     /**
      * Returns true if the unit has the properties
      *
+     * @version 8.0.0
      * @since 6.3.0
      *
      * @returns {Boolean} Unit has the properties
      */
     hasProperties() {
-        return DKTools.Utils.isFunction(this._properties) || Array.isArray(this._properties) && this._properties.length > 0;
+        const properties = this._getProperties();
+
+        return properties.length > 0;
     }
 
     /**

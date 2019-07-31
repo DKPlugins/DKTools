@@ -159,7 +159,7 @@ DKTools.IO.Entity = class {
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
      * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      *
-     * @version 7.0.0
+     * @version 8.0.0
      * @since 2.0.0
      *
      * @param {Object} object - Options of an operation
@@ -182,12 +182,19 @@ DKTools.IO.Entity = class {
             return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
-        if (!DKTools.IO.isLocalMode()) {
+        if (!DKTools.IO.isLocalMode() && DKTools.IO.mode === DKTools.IO.MODE_NWJS) {
             return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
 
         if (!this.exists()) {
             return { data: null, status: DKTools.IO.ERROR_PATH_DOES_NOT_EXIST };
+        }
+
+        if (!DKTools.IO.isLocalMode() && DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
+            const parts = this.getFullPath().split('\\').filter(part => !!part);
+            const data = _.get(DKTools.IO.stamp, parts.concat('__stats__'), {});
+
+            return { data, status: DKTools.IO.OK };
         }
 
         const fs = DKTools.IO.fs;

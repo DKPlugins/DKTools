@@ -1086,6 +1086,8 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     /**
      * Returns the maximum page rows
      *
+     * @version 8.0.0
+     *
      * @see DKTools.Sprite.Selectable.prototype.getItemHeight
      * @see DKTools.Sprite.Selectable.prototype.getMaxRows
      *
@@ -1093,21 +1095,21 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      */
     getMaxPageRows() {
         const spacing = this._verticalSpacing;
-        const realHeight = this.realHeight;
         const itemHeight = this.getItemHeight();
         const maxRows = this.getMaxRows();
-        let rows = 0, height = 0;
+        let height = this.height;
+        let rows = 0;
 
         for (; rows < maxRows; rows++) {
             if (rows === maxRows - 1) {
-                if (height + itemHeight > realHeight) {
+                if (height - itemHeight < 0) {
                     break;
                 }
-            } else if (height + itemHeight + spacing > realHeight) {
+            } else if (height - itemHeight - spacing < 0) {
                 break;
             }
 
-            height += itemHeight + spacing;
+            height -= itemHeight + spacing;
         }
 
         return rows;
@@ -1498,12 +1500,13 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     }
 
     /**
+     * @version 8.0.0
+     *
      * @param {Number} x - The X coordinate
      * @param {Number} y - The Y coordinate
      *
      * @see DKTools.Sprite.Selectable.prototype.isOutside
-     * @see DKTools.Sprite.Selectable.prototype.canvasToLocalX
-     * @see DKTools.Sprite.Selectable.prototype.canvasToLocalY
+     * @see DKTools.Sprite.Selectable.prototype.getLocalPoint
      * @see DKTools.Sprite.Selectable.prototype.getMaxPageItems
      * @see DKTools.Sprite.Selectable.prototype.getMaxItems
      * @see DKTools.Sprite.Selectable.prototype.getTopIndex
@@ -1517,8 +1520,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
         }
 
         const scale = this.scale;
-        const localX = this.canvasToLocalX(x);
-        const localY = this.canvasToLocalY(y);
+        const localPoint = this.getLocalPoint(x, y);
         const maxPageItems = this.getMaxPageItems();
         const maxItems = this.getMaxItems();
         let index = this.getTopIndex();
@@ -1531,7 +1533,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
             rect.width *= scale.x;
             rect.height *= scale.y;
 
-            if (rect.contains(localX, localY)) {
+            if (rect.contains(localPoint.x, localPoint.y)) {
                 return index;
             }
         }
@@ -1993,6 +1995,8 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     /**
      * Processes the hover of the mouse
      *
+     * @version 8.0.0
+     *
      * @see DKTools.Sprite.Selectable.prototype.isOptionEnabled
      * @see DKTools.Sprite.Selectable.prototype.isCursorMovable
      * @see DKTools.Sprite.Selectable.prototype.hitTest
@@ -2000,7 +2004,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype.playCursorSound
      */
     processMouseHover() {
-        if (this.isOptionEnabled('process-mouse-hover') && this.isCursorMovable()) {
+        if (this.isOptionEnabled('process-mouse-hover') && this.isCursorMovable() && TouchInput.date > Input.date) {
             const lastIndex = this._index;
             const x = TouchInput.mouseX;
             const y = TouchInput.mouseY;
@@ -2599,10 +2603,11 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     /**
      * Returns the standard item width
      *
+     * @version 8.0.0
      * @returns {Function} Standard item width
      */
     standardItemWidth() {
-        return () => Math.floor((this.realWidth + this._horizontalSpacing) / this.getMaxCols() - this._horizontalSpacing);
+        return () => Math.floor((this.width + this._horizontalSpacing) / this.getMaxCols() - this._horizontalSpacing);
     }
 
     /**
@@ -4376,6 +4381,8 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     /**
      * Updates the cursor
      *
+     * @version 8.0.0
+     *
      * @see DKTools.Sprite.Selectable.prototype.isHorizontal
      * @see DKTools.Sprite.Selectable.prototype.isCursorAll
      * @see DKTools.Sprite.Selectable.prototype.isCursorVisible
@@ -4417,7 +4424,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
         if (this.isCursorAll()) {
             const allRowsHeight = this.getMaxRows() * this.getItemHeight();
 
-            this.setCursorRect(0, 0, this.realWidth, allRowsHeight);
+            this.setCursorRect(0, 0, this.width, allRowsHeight);
             this.resetScroll();
         } else if (this.isCursorVisible() || !this._cursorSprite.hasBitmap()) {
             const rect = this.getItemRect(this._index);

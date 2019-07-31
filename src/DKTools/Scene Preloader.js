@@ -11,7 +11,7 @@
  * @memberof DKTools.Scene
  */
 DKTools.Scene.Preloader = class {
-  
+
     constructor() {
         this.initialize.apply(this, arguments);
     }
@@ -123,7 +123,7 @@ DKTools.Scene.Preloader = class {
      */
     start() {
         const promises = _.map(this._queue, (promise) => {
-            return promise.catch(result => {
+            return promise.catch((result) => {
                 this._onError();
 
                 throw result;

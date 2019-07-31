@@ -57,12 +57,52 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Real width of the sprite (not including scaling)
+     * Real width of the sprite
+     *
+     * @deprecated 8.0.0
+     * @version 8.0.0
      *
      * @type {Number}
      * @memberof DKTools.Sprite.prototype
      */
     realWidth: {
+        get: function() {
+            return this.width;
+        },
+        set: function(value) {
+            this.width = value;
+        },
+        configurable: true
+    },
+
+    /**
+     * Real height of the sprite
+     *
+     * @deprecated 8.0.0
+     * @version 8.0.0
+     *
+     * @type {Number}
+     * @memberof DKTools.Sprite.prototype
+     */
+    realHeight: {
+        get: function() {
+            return this.height;
+        },
+        set: function(value) {
+            this.height = value;
+        },
+        configurable: true
+    },
+
+    /**
+     * Width of the sprite
+     *
+     * @version 8.0.0
+     *
+     * @type {Number}
+     * @memberof DKTools.Sprite.prototype
+     */
+    width: {
         get: function() {
             return this._frame.width;
         },
@@ -75,12 +115,14 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Real height of the sprite (not including scaling)
+     * Height of the sprite
+     *
+     * @version 8.0.0
      *
      * @type {Number}
      * @memberof DKTools.Sprite.prototype
      */
-    realHeight: {
+    height: {
         get: function() {
             return this._frame.height;
         },
@@ -93,33 +135,17 @@ Object.defineProperties(DKTools.Sprite.prototype, {
     },
 
     /**
-     * Width of the sprite (taking into account the scaling)
+     * The coordinates of mouse inside the object
      *
-     * @type {Number}
-     * @memberof DKTools.Sprite.prototype
-     */
-    width: {
-        get: function() {
-            return this.realWidth * this.scale.x;
-        },
-        set: function(value) {
-            this.realWidth = Math.floor(value / this.scale.x);
-        },
-        configurable: true
-    },
-
-    /**
-     * Height of the sprite (taking into account the scaling)
+     * @since 8.0.0
      *
+     * @readonly
      * @type {Number}
-     * @memberof DKTools.Sprite.prototype
+     * @memberof DKTools.Base.prototype
      */
-    height: {
+    mouse: {
         get: function() {
-            return this.realHeight * this.scale.y;
-        },
-        set: function(value) {
-            this.realHeight = Math.floor(value / this.scale.y);
+            return this.getLocalPoint(TouchInput.mouseX, TouchInput.mouseY);
         },
         configurable: true
     },
@@ -635,6 +661,23 @@ DKTools.Sprite.prototype.createMask = function(maskShape) {
 // D methods
 
 /**
+ * Destroys the sprite
+ *
+ * @version 8.0.0
+ *
+ * @override
+ *
+ * @param {Object | Boolean} [options] - Destroy options
+ *
+ * @see DKTools.Base.prototype.destroy
+ * @see Sprite.prototype.destroy
+ */
+DKTools.Sprite.prototype.destroy = function(options) {
+    DKTools.Base.prototype.destroy.call(this, options);
+    Sprite.prototype.destroy.call(this, options);
+};
+
+/**
  * Draws all
  *
  * @version 1.1.0
@@ -654,7 +697,7 @@ DKTools.Sprite.prototype.drawAll = function() {
  * Draws all texts
  */
 DKTools.Sprite.prototype.drawAllTexts = function() {
-    _.forEach(this._texts, text => {
+    _.forEach(this._texts, (text) => {
         this[text.type](text.text, text.options);
     });
 };
@@ -828,6 +871,33 @@ DKTools.Sprite.prototype.getCurrentOpacity = function() {
     return this.alpha * 255;
 };
 
+/**
+ * Returns the local point (coordinates inside the sprite)
+ *
+ * @since 8.0.0
+ *
+ * @override
+ *
+ * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - The X coordinate or Point or object with parameters
+ * @param {Number} [y] - The Y coordinate (if object is Number)
+ *
+ * @param {Number} [object.x] - The X coordinate
+ * @param {Number} [object.y] - The Y coordinate
+ *
+ * @see DKTools.Base.prototype.getLocalPoint
+ *
+ * @returns {PIXI.Point} Local point (coordinates inside the sprite)
+ */
+DKTools.Sprite.prototype.getLocalPoint = function(object, y) {
+    const localPoint = DKTools.Base.prototype.getLocalPoint.call(this, object, y);
+    const anchor = this.anchor;
+
+    localPoint.x += this.width * anchor.x;
+    localPoint.y += this.height * anchor.y;
+
+    return localPoint;
+};
+
 // H methods
 
 /**
@@ -877,30 +947,6 @@ DKTools.Sprite.prototype.hasTexts = function() {
 };
 
 // I methods
-
-/**
- * Returns true if the coordinates is inside the sprite
- *
- * @override
- *
- * @param {Number} x - The X coordinate
- * @param {Number} y - The Y coordinate
- *
- * @see DKTools.Sprite.prototype.canvasToLocalX
- * @see DKTools.Sprite.prototype.canvasToLocalY
- *
- * @returns {Boolean} Coordinates is inside the sprite
- */
-DKTools.Sprite.prototype.isInside = function(x, y) {
-    const localX = this.canvasToLocalX(x);
-    const localY = this.canvasToLocalY(y);
-    const width = this.width;
-    const height = this.height;
-    const anchor = this.anchor;
-    const frame = new Rectangle(-width * anchor.x, -height * anchor.y, width, height);
-
-    return frame.contains(localX, localY);
-};
 
 /**
  * Returns true if you can change the size of the sprite
@@ -1389,6 +1435,36 @@ DKTools.Sprite.prototype.loadWindowskin = function(object, listener, hue, smooth
     return this.loadSystem(object || this.standardWindowskin(), listener, hue, smooth);
 };
 
+// M methods
+
+/**
+ * Moves the sprite (taking into account the anchor)
+ *
+ * @since 5.0.0
+ *
+ * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - The X coordinate or Point or object with parameters
+ * @param {Number | String} [y] - The Y coordinate or line number (String) (if object is Number)
+ *
+ * @param {Number} [object.x] - The X coordinate
+ * @param {Number | String} [object.y] - The Y coordinate or line number (String)
+ *
+ * @see DKTools.Base.prototype.move
+ */
+DKTools.Sprite.prototype.moveWithAnchor = function(object, y) {
+    if (object instanceof Object) {
+        y = object.y;
+    }
+
+    if (DKTools.Utils.isString(y)) { // line number
+        y = this.getLineHeight() * parseFloat(y);
+    }
+
+    const point = DKTools.Utils.Point.toPoint(object, y);
+    const anchor = this.anchor;
+
+    this.move(point.x + this.width * anchor.x, point.y + this.height * anchor.y);
+};
+
 // S methods
 
 /**
@@ -1465,11 +1541,11 @@ DKTools.Sprite.prototype.standardFontSize = function() {
 /**
  * Returns the standard frame
  *
- * @version 3.1.0
+ * @version 8.0.0
  * @returns {Rectangle} Standard frame
  */
 DKTools.Sprite.prototype.standardFrame = function() {
-    return new Rectangle(0, 0, this.realWidth, this.realHeight);
+    return new Rectangle(0, 0, this.width, this.height);
 };
 
 /**

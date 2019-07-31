@@ -581,7 +581,7 @@ DKTools.Animation.Action = class extends DKTools.Event {
      *
      * @param {DKTools.Animation} animation - Animation
      */
-    setAnimation (animation) {
+    setAnimation(animation) {
         this._animation = animation;
     }
 
