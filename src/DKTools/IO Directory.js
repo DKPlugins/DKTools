@@ -557,7 +557,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
      *
-     * @version 8.0.0
+     * @version 8.0.1
      *
      * @param {Object} object - Options of an operation
      *
@@ -588,6 +588,8 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
         if (!this.exists()) {
             return { data: null, status: DKTools.IO.ERROR_PATH_DOES_NOT_EXIST };
         }
+
+        const path = this.getFullPath();
 
         const processData = (names) => {
             if (object.template instanceof RegExp) {
@@ -626,7 +628,6 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
         }
 
         const fs = DKTools.IO.fs;
-        const path = this.getFullPath();
         const absolutePath = this.getAbsolutePath();
 
         if (object.sync) {
