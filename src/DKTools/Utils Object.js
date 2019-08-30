@@ -16,26 +16,17 @@ DKTools.Utils.Object = class {
 
     /**
      * Converts the properties to camelcase
-     * Returns the object with converted properties
+     * Returns the new object with converted properties
      *
+     * @version 8.1.0
      * @static
      *
      * @param {Object} object - Object
      *
-     * @returns {Object} Object with converted properties
+     * @returns {Object} New object with converted properties
      */
     static toCamelCase(object) {
-        _.forEach(_.keys(object), key => {
-            const camelCaseKey = _.camelCase(key);
-
-            if (camelCaseKey !== key) {
-                object[camelCaseKey] = object[key];
-
-                delete object[key];
-            }
-        });
-
-        return object;
+        return _.reduce(object, (acc, value, key) => ({ ...acc, [_.camelCase(key)]: value }), {});
     }
 
 };

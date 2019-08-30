@@ -78,9 +78,11 @@ Graphics.initialize = function(width, height, type) {
 
             if (param.Mode === 'FPS') {
                 fpsMeter.showFps();
+
                 this._fpsMeterToggled = false;
             } else {
                 fpsMeter.showDuration();
+
                 this._fpsMeterToggled = true;
             }
         }
@@ -621,6 +623,84 @@ DataManager.onDatabaseLoad = function() {
 
 
 //===========================================================================
+// ImageManager
+//===========================================================================
+
+Object.defineProperties(ImageManager, {
+
+    /**
+     * Parallaxes folder
+     *
+     * @since 8.1.0
+     * @readonly
+     * @type {String}
+     * @memberof ImageManager
+     */
+    PARALLAXES_FOLDER: {
+        get: function() {
+            const param = DKToolsParam.get('Tile Size');
+
+            if (param['Enabled']) {
+                return DKTools.IO.normalizePath(param['Parallaxes Folder'] + '/');
+            }
+
+            return 'img/parallaxes/';
+        },
+        configurable: true
+    },
+
+    /**
+     * Tilesets folder
+     *
+     * @since 8.1.0
+     * @readonly
+     * @type {String}
+     * @memberof ImageManager
+     */
+    TILESETS_FOLDER: {
+        get: function() {
+            const param = DKToolsParam.get('Tile Size');
+
+            if (param['Enabled']) {
+                return DKTools.IO.normalizePath(param['Tilesets Folder'] + '/');
+            }
+
+            return 'img/tilesets/';
+        },
+        configurable: true
+    }
+
+});
+
+ImageManager.loadParallax = function(filename, hue) {
+    return this.loadBitmap(ImageManager.PARALLAXES_FOLDER, filename, hue, true);
+};
+
+ImageManager.loadTileset = function(filename, hue) {
+    return this.loadBitmap(ImageManager.TILESETS_FOLDER, filename, hue, false);
+};
+
+ImageManager.reserveParallax = function(filename, hue, reservationId) {
+    return this.reserveBitmap(ImageManager.PARALLAXES_FOLDER, filename, hue, false, reservationId);
+};
+
+ImageManager.reserveTileset = function(filename, hue, reservationId) {
+    return this.reserveBitmap(ImageManager.TILESETS_FOLDER, filename, hue, false, reservationId);
+};
+
+ImageManager.requestParallax = function(filename, hue) {
+    return this.requestBitmap(ImageManager.PARALLAXES_FOLDER, filename, hue, true);
+};
+
+ImageManager.requestTileset = function(filename, hue) {
+    return this.requestBitmap(ImageManager.TILESETS_FOLDER, filename, hue, false);
+};
+
+
+
+
+
+//===========================================================================
 // AudioManager
 //===========================================================================
 
@@ -663,21 +743,17 @@ SceneManager.initGraphics = function() {
         this._boxHeight = height;
         this._screenHeight = height;
 
-        DKTools_SceneManager_initGraphics.call(this);
-
-        if (DKTools.Utils.isNwjs()) {
-            this.updateResolution();
-        }
-    } else {
-        DKTools_SceneManager_initGraphics.call(this);
+        this.updateResolution();
     }
+
+    DKTools_SceneManager_initGraphics.call(this);
 };
 
 SceneManager.updateResolution = function() {
     const resizeWidth = this._screenWidth - window.innerWidth;
     const resizeHeight = this._screenHeight - window.innerHeight;
 
-    if (resizeWidth > 0 && resizeHeight > 0) {
+    if (resizeWidth !== 0 && resizeHeight !== 0) {
         window.moveBy(-1 * resizeWidth / 2, -1 * resizeHeight / 2);
         window.resizeBy(resizeWidth, resizeHeight);
     }

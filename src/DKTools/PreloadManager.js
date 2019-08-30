@@ -347,6 +347,7 @@ DKTools.PreloadManager = class {
     /**
      * Adds the object to preload queue
      *
+     * @version 8.1.0
      * @since 5.0.0
      * @private
      * @static
@@ -354,7 +355,7 @@ DKTools.PreloadManager = class {
      * @param {String} type - Type (audio or image)
      * @param {Object} object - Object with parameters
      *
-     * @param {String} object.path - Path to file or directory (only for local mode)
+     * @param {String} object.path - Path to file or directory
      * @param {Number} [object.hue] - Hue (only for images)
      * @param {Boolean} [object.caching] - Caching
      */
@@ -367,7 +368,7 @@ DKTools.PreloadManager = class {
             const entity = new DKTools.IO.Directory(object.path);
 
             if (entity.isDirectory()) {
-                if (DKTools.IO.isLocalMode()) {
+                if (DKTools.IO.isLocalMode() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
                     const options = { sync: true };
                     let files = [];
 
@@ -384,21 +385,28 @@ DKTools.PreloadManager = class {
                             return;
                         }
 
-                        this._queue[type][fullPath] = {
-                            ...object,
-                            path: fullPath
-                        };
+                        this._queue[type][fullPath] = { ...object, path: fullPath };
                     });
                 } else {
                     throw new Error('Web browsers and mobile phones cannot load directories!');
                 }
             } else {
-                const file = new DKTools.IO.File(object.path);
+                let path = object.path;
+
+                if (!path.includes('.')) {
+                    if (type === 'image') {
+                        path += '.png';
+                    } else if (type === 'audio') {
+                        path += '.ogg';
+                    }
+                }
+
+                const file = new DKTools.IO.File(path);
                 const fullPath = file.getFullPath();
 
                 if (file.isFile()) {
                     if (!this._queue[type][fullPath]) {
-                        this._queue[type][fullPath] = object;
+                        this._queue[type][fullPath] = { ...object, path };
                     }
                 } else {
                     console.error('This is not a file: ' + fullPath);

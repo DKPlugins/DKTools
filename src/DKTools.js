@@ -3,8 +3,8 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 8.0.1
-Release: 01.08.2019
+Version: 8.1.0
+Release: 29.08.2019
 First release: 13.01.2016
 Supported languages: Russian, English
 */
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 8.0.1
-Релиз: 01.08.2019
+Версия: 8.1.0
+Релиз: 29.08.2019
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.8.0.1 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.8.1.0 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 8.0.1
- Release: 01.08.2019
+ Version: 8.1.0
+ Release: 29.08.2019
  First release: 13.01.2016
  Supported languages: Russian, English
  Thank you for your support: https://dk-plugins.ru/donate
@@ -45,7 +45,7 @@ E-mail: kuznetsovdenis96@gmail.com
  https://dk-plugins.ru/documentation/DKTools/index.html
 
  ### Requirements and dependencies ###
- Version of RPG Maker 1.6+
+ RPG Maker and project version 1.6+
 
  ### Instructions ###
 
@@ -97,6 +97,10 @@ E-mail: kuznetsovdenis96@gmail.com
  ### 3.2 ### Color of the ruler ###
  If the color of the ruler is not specified,
  random color will be selected automatically.
+
+ ### Preloading resources ###
+ To preload a whole folder with resources or a file with a non-standard path,
+ you must specify the "Path" in the "Text" tab instead of the "File" tab.
 
  ### Plugin commands ###
  1. Checks for plugins updates from DKPlugins
@@ -181,12 +185,6 @@ E-mail: kuznetsovdenis96@gmail.com
  * @param New Functions
  * @default ---------------------------------
 
- * @param Print Detailed Error
- * @parent New Functions
- * @desc Detailed error display
- * @type struct<PrintDetailedError>
- * @default {"Enabled":"false","Error Message":"Game has encountered a bug. Please report it.","Restart Message":"Press F5 to restart the game."}
-
  * @param Functions
  * @default ---------------------------------
 
@@ -230,7 +228,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Preloading resources
  * @type struct<PreloadManager>
- * @default {"Enabled":"false","Debugging":"false","Images":"[]"}
+ * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]"}
 
  * @param Screenshots
  * @parent Functions
@@ -248,7 +246,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Tile size
  * @type struct<TileSize>
- * @default {"Enabled":"false","Size":"48"}
+ * @default {"Enabled":"false","Size":"48","Tilesets Folder":"img/tilesets/","Parallaxes Folder":"img/parallaxes/"}
 
  * @param Grid
  * @parent Functions
@@ -271,7 +269,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.8.0.1 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.8.1.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -279,8 +277,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 8.0.1
- Релиз: 01.08.2019
+ Версия: 8.1.0
+ Релиз: 29.08.2019
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
  Спасибо за Вашу поддержку: https://dk-plugins.ru/donate
@@ -295,7 +293,7 @@ E-mail: kuznetsovdenis96@gmail.com
  https://dk-plugins.ru/documentation/DKTools/index.html
 
  ### Требования и зависимости ###
- Версия мейкера 1.6+
+ Версия мейкера и проекта 1.6+
 
  ### Инструкции ###
 
@@ -347,6 +345,10 @@ E-mail: kuznetsovdenis96@gmail.com
 
  ### 3.2 ### Цвет линейки ###
  Если не указан цвет линейки, то автоматически будет выбран случайный цвет.
+
+ ### Предзагрузка ресурсов ###
+ Чтобы предзагрузить целую папку с ресурсами или файл с нестандартным путем,
+ необходимо указывать "Путь" во вкладке "Текст" вместо вкладки "Файл".
 
  ### Команды плагина ###
  1. Проверить обновления плагинов от DKPlugins
@@ -434,13 +436,6 @@ E-mail: kuznetsovdenis96@gmail.com
  * @text Новые функции
  * @default ---------------------------------
 
- * @param Print Detailed Error
- * @text Детальное отображение ошибок
- * @parent New Functions
- * @desc Детальное отображение ошибок
- * @type struct<PrintDetailedError>
- * @default {"Enabled":"false","Error Message":"В игре обнаружена ошибка. Пожалуйста, сообщите об этом.","Restart Message":"Нажмите F5, чтобы перезапустить игру."}
-
  * @param Functions
  * @text Функции
  * @default ---------------------------------
@@ -492,7 +487,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Предварительная загрузка ресурсов
  * @type struct<PreloadManager>
- * @default {"Enabled":"false","Debugging":"false","Images":"[]"}
+ * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]"}
 
  * @param Screenshots
  * @text Скриншоты
@@ -513,7 +508,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Размер тайла
  * @type struct<TileSize>
- * @default {"Enabled":"false","Size":"48"}
+ * @default {"Enabled":"false","Size":"48","Tilesets Folder":"img/tilesets/","Parallaxes Folder":"img/parallaxes/"}
 
  * @param Grid
  * @text Сетка
@@ -535,6 +530,19 @@ E-mail: kuznetsovdenis96@gmail.com
  * @desc Графика курсора
  * @type struct<CursorGraphic>
  * @default {"Enabled":"false","Graphic": ""}
+
+ * @param Print Detailed Error
+ * @text Детальное отображение ошибок
+ * @parent Functions
+ * @desc Детальное отображение ошибок
+ * @type struct<PrintDetailedError>
+ * @default {"Enabled":"false","Error Message":"В игре обнаружена ошибка. Пожалуйста, сообщите об этом.","Restart Message":"Нажмите F5, чтобы перезапустить игру."}
+
+ * @param Print Detailed Error
+ * @parent Functions
+ * @desc Detailed error display
+ * @type struct<PrintDetailedError>
+ * @default {"Enabled":"false","Error Message":"Game has encountered a bug. Please report it.","Restart Message":"Press F5 to restart the game."}
 
 */
 
@@ -892,7 +900,8 @@ E-mail: kuznetsovdenis96@gmail.com
 /*~struct~PreloadManagerImage:
 
  * @param Path
- * @desc Path to file (with extension) or directory. For example, img/system/Window.png for file or img/system/ for directory
+ * @desc The path to the file or directory. Details in the help.
+ * @type file
 
  * @param Hue
  * @desc Hue
@@ -912,7 +921,8 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Path
  * @text Путь
- * @desc Путь к файлу (с расширением) или директории. Например, img/system/Window.png для файла или img/system/ для директории
+ * @desc Путь к файлу или директории. Подробности в справке.
+ * @type file
 
  * @param Hue
  * @text Оттенок
@@ -933,7 +943,8 @@ E-mail: kuznetsovdenis96@gmail.com
 /*~struct~PreloadManagerAudio:
 
  * @param Path
- * @desc Path to file (with extension) or directory. For example, audio/bgm/Battle1.ogg for file or audio/bgm/ for directory
+ * @desc The path to the file or directory. Details in the help.
+ * @type file
 
  * @param Caching
  * @desc Audio caching
@@ -946,7 +957,8 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Path
  * @text Путь
- * @desc Путь к файлу (с расширением) или директории. Например, audio/bgm/Battle1.ogg для файла или audio/bgm/ для директории
+ * @desc Путь к файлу или директории. Подробности в справке.
+ * @type file
 
  * @param Caching
  * @text Кэширование
@@ -1130,6 +1142,14 @@ E-mail: kuznetsovdenis96@gmail.com
  * @min 1
  * @default 48
 
+ * @param Tilesets Folder
+ * @desc Tilesets folder
+ * @default img/tilesets/
+
+ * @param Parallaxes Folder
+ * @desc Parallaxes folder
+ * @default img/parallaxes/
+
  */
 
 /*~struct~TileSize:ru
@@ -1146,6 +1166,16 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type number
  * @min 1
  * @default 48
+
+ * @param Tilesets Folder
+ * @text Папка тайлсетов
+ * @desc Папка тайлсетов
+ * @default img/tilesets/
+
+ * @param Parallaxes Folder
+ * @text Папка параллакса
+ * @desc Папка параллакса
+ * @default img/parallaxes/
 
  */
 

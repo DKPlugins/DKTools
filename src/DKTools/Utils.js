@@ -118,6 +118,10 @@ DKTools.Utils = class {
             return;
         }
 
+        if (!plugins || plugins.length === 0) {
+            return;
+        }
+
         const showNewPlugins = DKToolsParam.get('Check Updates', 'Show New Plugins');
 
         _.forEach(plugins, plugin => {

@@ -3,8 +3,8 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 8.0.1
-Release: 01.08.2019
+Version: 8.1.0
+Release: 29.08.2019
 First release: 13.01.2016
 Supported languages: Russian, English
 */
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 8.0.1
-Релиз: 01.08.2019
+Версия: 8.1.0
+Релиз: 29.08.2019
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.8.0.1 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.8.1.0 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 8.0.1
- Release: 01.08.2019
+ Version: 8.1.0
+ Release: 29.08.2019
  First release: 13.01.2016
  Supported languages: Russian, English
  Thank you for your support: https://dk-plugins.ru/donate
@@ -45,7 +45,7 @@ E-mail: kuznetsovdenis96@gmail.com
  https://dk-plugins.ru/documentation/DKTools/index.html
 
  ### Requirements and dependencies ###
- Version of RPG Maker 1.6+
+ RPG Maker and project version 1.6+
 
  ### Instructions ###
 
@@ -97,6 +97,10 @@ E-mail: kuznetsovdenis96@gmail.com
  ### 3.2 ### Color of the ruler ###
  If the color of the ruler is not specified,
  random color will be selected automatically.
+
+ ### Preloading resources ###
+ To preload a whole folder with resources or a file with a non-standard path,
+ you must specify the "Path" in the "Text" tab instead of the "File" tab.
 
  ### Plugin commands ###
  1. Checks for plugins updates from DKPlugins
@@ -181,12 +185,6 @@ E-mail: kuznetsovdenis96@gmail.com
  * @param New Functions
  * @default ---------------------------------
 
- * @param Print Detailed Error
- * @parent New Functions
- * @desc Detailed error display
- * @type struct<PrintDetailedError>
- * @default {"Enabled":"false","Error Message":"Game has encountered a bug. Please report it.","Restart Message":"Press F5 to restart the game."}
-
  * @param Functions
  * @default ---------------------------------
 
@@ -230,7 +228,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Preloading resources
  * @type struct<PreloadManager>
- * @default {"Enabled":"false","Debugging":"false","Images":"[]"}
+ * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]"}
 
  * @param Screenshots
  * @parent Functions
@@ -248,7 +246,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Tile size
  * @type struct<TileSize>
- * @default {"Enabled":"false","Size":"48"}
+ * @default {"Enabled":"false","Size":"48","Tilesets Folder":"img/tilesets/","Parallaxes Folder":"img/parallaxes/"}
 
  * @param Grid
  * @parent Functions
@@ -271,7 +269,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.8.0.1 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.8.1.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -279,8 +277,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 8.0.1
- Релиз: 01.08.2019
+ Версия: 8.1.0
+ Релиз: 29.08.2019
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
  Спасибо за Вашу поддержку: https://dk-plugins.ru/donate
@@ -295,7 +293,7 @@ E-mail: kuznetsovdenis96@gmail.com
  https://dk-plugins.ru/documentation/DKTools/index.html
 
  ### Требования и зависимости ###
- Версия мейкера 1.6+
+ Версия мейкера и проекта 1.6+
 
  ### Инструкции ###
 
@@ -347,6 +345,10 @@ E-mail: kuznetsovdenis96@gmail.com
 
  ### 3.2 ### Цвет линейки ###
  Если не указан цвет линейки, то автоматически будет выбран случайный цвет.
+
+ ### Предзагрузка ресурсов ###
+ Чтобы предзагрузить целую папку с ресурсами или файл с нестандартным путем,
+ необходимо указывать "Путь" во вкладке "Текст" вместо вкладки "Файл".
 
  ### Команды плагина ###
  1. Проверить обновления плагинов от DKPlugins
@@ -434,13 +436,6 @@ E-mail: kuznetsovdenis96@gmail.com
  * @text Новые функции
  * @default ---------------------------------
 
- * @param Print Detailed Error
- * @text Детальное отображение ошибок
- * @parent New Functions
- * @desc Детальное отображение ошибок
- * @type struct<PrintDetailedError>
- * @default {"Enabled":"false","Error Message":"В игре обнаружена ошибка. Пожалуйста, сообщите об этом.","Restart Message":"Нажмите F5, чтобы перезапустить игру."}
-
  * @param Functions
  * @text Функции
  * @default ---------------------------------
@@ -492,7 +487,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Предварительная загрузка ресурсов
  * @type struct<PreloadManager>
- * @default {"Enabled":"false","Debugging":"false","Images":"[]"}
+ * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]"}
 
  * @param Screenshots
  * @text Скриншоты
@@ -513,7 +508,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Размер тайла
  * @type struct<TileSize>
- * @default {"Enabled":"false","Size":"48"}
+ * @default {"Enabled":"false","Size":"48","Tilesets Folder":"img/tilesets/","Parallaxes Folder":"img/parallaxes/"}
 
  * @param Grid
  * @text Сетка
@@ -535,6 +530,19 @@ E-mail: kuznetsovdenis96@gmail.com
  * @desc Графика курсора
  * @type struct<CursorGraphic>
  * @default {"Enabled":"false","Graphic": ""}
+
+ * @param Print Detailed Error
+ * @text Детальное отображение ошибок
+ * @parent Functions
+ * @desc Детальное отображение ошибок
+ * @type struct<PrintDetailedError>
+ * @default {"Enabled":"false","Error Message":"В игре обнаружена ошибка. Пожалуйста, сообщите об этом.","Restart Message":"Нажмите F5, чтобы перезапустить игру."}
+
+ * @param Print Detailed Error
+ * @parent Functions
+ * @desc Detailed error display
+ * @type struct<PrintDetailedError>
+ * @default {"Enabled":"false","Error Message":"Game has encountered a bug. Please report it.","Restart Message":"Press F5 to restart the game."}
 
 */
 
@@ -892,7 +900,8 @@ E-mail: kuznetsovdenis96@gmail.com
 /*~struct~PreloadManagerImage:
 
  * @param Path
- * @desc Path to file (with extension) or directory. For example, img/system/Window.png for file or img/system/ for directory
+ * @desc The path to the file or directory. Details in the help.
+ * @type file
 
  * @param Hue
  * @desc Hue
@@ -912,7 +921,8 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Path
  * @text Путь
- * @desc Путь к файлу (с расширением) или директории. Например, img/system/Window.png для файла или img/system/ для директории
+ * @desc Путь к файлу или директории. Подробности в справке.
+ * @type file
 
  * @param Hue
  * @text Оттенок
@@ -933,7 +943,8 @@ E-mail: kuznetsovdenis96@gmail.com
 /*~struct~PreloadManagerAudio:
 
  * @param Path
- * @desc Path to file (with extension) or directory. For example, audio/bgm/Battle1.ogg for file or audio/bgm/ for directory
+ * @desc The path to the file or directory. Details in the help.
+ * @type file
 
  * @param Caching
  * @desc Audio caching
@@ -946,7 +957,8 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Path
  * @text Путь
- * @desc Путь к файлу (с расширением) или директории. Например, audio/bgm/Battle1.ogg для файла или audio/bgm/ для директории
+ * @desc Путь к файлу или директории. Подробности в справке.
+ * @type file
 
  * @param Caching
  * @text Кэширование
@@ -1130,6 +1142,14 @@ E-mail: kuznetsovdenis96@gmail.com
  * @min 1
  * @default 48
 
+ * @param Tilesets Folder
+ * @desc Tilesets folder
+ * @default img/tilesets/
+
+ * @param Parallaxes Folder
+ * @desc Parallaxes folder
+ * @default img/parallaxes/
+
  */
 
 /*~struct~TileSize:ru
@@ -1146,6 +1166,16 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type number
  * @min 1
  * @default 48
+
+ * @param Tilesets Folder
+ * @text Папка тайлсетов
+ * @desc Папка тайлсетов
+ * @default img/tilesets/
+
+ * @param Parallaxes Folder
+ * @text Папка параллакса
+ * @desc Папка параллакса
+ * @default img/parallaxes/
 
  */
 
@@ -1335,7 +1365,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 window.Imported = window.Imported || {};
-window.Imported.DKTools = '8.0.1';
+window.Imported.DKTools = '8.1.0';
 
 
 
@@ -1698,6 +1728,10 @@ DKTools.Utils = class {
         } catch(e) {
             console.error('DKTools can not check updates');
 
+            return;
+        }
+
+        if (!plugins || plugins.length === 0) {
             return;
         }
 
@@ -2374,26 +2408,17 @@ DKTools.Utils.Object = class {
 
     /**
      * Converts the properties to camelcase
-     * Returns the object with converted properties
+     * Returns the new object with converted properties
      *
+     * @version 8.1.0
      * @static
      *
      * @param {Object} object - Object
      *
-     * @returns {Object} Object with converted properties
+     * @returns {Object} New object with converted properties
      */
     static toCamelCase(object) {
-        _.forEach(_.keys(object), key => {
-            const camelCaseKey = _.camelCase(key);
-
-            if (camelCaseKey !== key) {
-                object[camelCaseKey] = object[key];
-
-                delete object[key];
-            }
-        });
-
-        return object;
+        return _.reduce(object, (acc, value, key) => ({ ...acc, [_.camelCase(key)]: value }), {});
     }
 
 };
@@ -9618,6 +9643,7 @@ DKTools.PreloadManager = class {
     /**
      * Adds the object to preload queue
      *
+     * @version 8.1.0
      * @since 5.0.0
      * @private
      * @static
@@ -9625,7 +9651,7 @@ DKTools.PreloadManager = class {
      * @param {String} type - Type (audio or image)
      * @param {Object} object - Object with parameters
      *
-     * @param {String} object.path - Path to file or directory (only for local mode)
+     * @param {String} object.path - Path to file or directory
      * @param {Number} [object.hue] - Hue (only for images)
      * @param {Boolean} [object.caching] - Caching
      */
@@ -9638,7 +9664,7 @@ DKTools.PreloadManager = class {
             const entity = new DKTools.IO.Directory(object.path);
 
             if (entity.isDirectory()) {
-                if (DKTools.IO.isLocalMode()) {
+                if (DKTools.IO.isLocalMode() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
                     const options = { sync: true };
                     let files = [];
 
@@ -9655,21 +9681,28 @@ DKTools.PreloadManager = class {
                             return;
                         }
 
-                        this._queue[type][fullPath] = {
-                            ...object,
-                            path: fullPath
-                        };
+                        this._queue[type][fullPath] = { ...object, path: fullPath };
                     });
                 } else {
                     throw new Error('Web browsers and mobile phones cannot load directories!');
                 }
             } else {
-                const file = new DKTools.IO.File(object.path);
+                let path = object.path;
+
+                if (!path.includes('.')) {
+                    if (type === 'image') {
+                        path += '.png';
+                    } else if (type === 'audio') {
+                        path += '.ogg';
+                    }
+                }
+
+                const file = new DKTools.IO.File(path);
                 const fullPath = file.getFullPath();
 
                 if (file.isFile()) {
                     if (!this._queue[type][fullPath]) {
-                        this._queue[type][fullPath] = object;
+                        this._queue[type][fullPath] = { ...object, path };
                     }
                 } else {
                     console.error('This is not a file: ' + fullPath);
@@ -15824,7 +15857,7 @@ DKTools.Base = class {
      * Draws a character face
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 8.1.0
      *
      * @param {String} faceName - Face filename
      * @param {Number} faceIndex - Face index
@@ -16013,7 +16046,7 @@ DKTools.Base = class {
      * Draws an icon
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 8.1.0
      *
      * @param {Number} iconIndex - Icon index
      * @param {Object} [options={}] - Options for drawing
@@ -16057,7 +16090,7 @@ DKTools.Base = class {
      * Draws a name of the item
      * Returns true if successfully completed
      *
-     * @version 6.1.0
+     * @version 8.1.0
      *
      * @param {Object} item - Item
      * @param {Object} [options={}] - Options for drawing
@@ -16221,7 +16254,7 @@ DKTools.Base = class {
      *
      * @param {Object} options - Options for drawing
      *
-     * @param {PIXI.Polygon | PIXI.Point[] | PIXI.ObservablePoint[] | Point[] | Object[]} [options.points] - Polygon or Points or objects with parameters
+     * @param {PIXI.Point[] | PIXI.ObservablePoint[] | Point[] | Object[]} [options.points] - Points or objects with parameters
      * @param {String} [options.color] - Line color
      * @param {Number} [options.lineWidth] - Line width
      * @param {Number} [options.paintOpacity] - Change paint opacity
@@ -17795,6 +17828,8 @@ DKTools.Base = class {
     }
 
     /**
+     * @version 8.1.0
+     *
      * @param {Number} iconIndex
      * @param {Object} textState
      */
@@ -20508,7 +20543,12 @@ DKTools.Sprite.prototype._loadGraphic = function() {
  */
 DKTools.Sprite.prototype.loadAnimation = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/animations/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/animations/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -20535,7 +20575,12 @@ DKTools.Sprite.prototype.loadAnimation = function(object, listener, hue, smooth)
  */
 DKTools.Sprite.prototype.loadBattleback1 = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/battlebacks1/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/battlebacks1/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -20562,7 +20607,12 @@ DKTools.Sprite.prototype.loadBattleback1 = function(object, listener, hue, smoot
  */
 DKTools.Sprite.prototype.loadBattleback2 = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/battlebacks2/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/battlebacks2/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -20594,7 +20644,12 @@ DKTools.Sprite.prototype.loadBattleback2 = function(object, listener, hue, smoot
  */
 DKTools.Sprite.prototype.loadBitmap = function(object, filename, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap(object.folder, object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            object.folder,
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String (folder)
@@ -20631,7 +20686,12 @@ DKTools.Sprite.prototype.loadBitmap = function(object, filename, listener, hue, 
  */
 DKTools.Sprite.prototype.loadCharacter = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/characters/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/characters/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -20658,7 +20718,12 @@ DKTools.Sprite.prototype.loadCharacter = function(object, listener, hue, smooth)
  */
 DKTools.Sprite.prototype.loadEnemy = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/enemies/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/enemies/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -20685,7 +20750,12 @@ DKTools.Sprite.prototype.loadEnemy = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadFace = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/faces/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/faces/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -20695,6 +20765,8 @@ DKTools.Sprite.prototype.loadFace = function(object, listener, hue, smooth) {
 /**
  * Loads a bitmap from img/parallaxes/
  * Returns true if the bitmap has been changed
+ *
+ * @version 8.1.0
  *
  * @param {String | Object} object - Name of file or object with parameters
  * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
@@ -20712,11 +20784,16 @@ DKTools.Sprite.prototype.loadFace = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadParallax = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/parallaxes/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            ImageManager.PARALLAXES_FOLDER,
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
-    return this.loadBitmap('img/parallaxes/', object, listener, hue, smooth);
+    return this.loadBitmap(ImageManager.PARALLAXES_FOLDER, object, listener, hue, smooth);
 };
 
 /**
@@ -20739,7 +20816,12 @@ DKTools.Sprite.prototype.loadParallax = function(object, listener, hue, smooth) 
  */
 DKTools.Sprite.prototype.loadPicture = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/pictures/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/pictures/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -20766,7 +20848,12 @@ DKTools.Sprite.prototype.loadPicture = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadSvActor = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/sv_actors/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/sv_actors/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -20793,7 +20880,12 @@ DKTools.Sprite.prototype.loadSvActor = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadSvEnemy = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/sv_enemies/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/sv_enemies/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -20820,7 +20912,12 @@ DKTools.Sprite.prototype.loadSvEnemy = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadSystem = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/system/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/system/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -20830,6 +20927,8 @@ DKTools.Sprite.prototype.loadSystem = function(object, listener, hue, smooth) {
 /**
  * Loads a bitmap from img/tilesets/
  * Returns true if the bitmap has been changed
+ *
+ * @version 8.1.0
  *
  * @param {String | Object} object - Name of file or object with parameters
  * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
@@ -20847,11 +20946,16 @@ DKTools.Sprite.prototype.loadSystem = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadTileset = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/tilesets/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            ImageManager.TILESETS_FOLDER,
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
-    return this.loadBitmap('img/tilesets/', object, listener, hue, smooth);
+    return this.loadBitmap(ImageManager.TILESETS_FOLDER, object, listener, hue, smooth);
 };
 
 /**
@@ -20874,7 +20978,12 @@ DKTools.Sprite.prototype.loadTileset = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadTitle1 = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/titles1/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/titles1/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -20901,7 +21010,12 @@ DKTools.Sprite.prototype.loadTitle1 = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadTitle2 = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/titles2/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/titles2/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -20930,7 +21044,11 @@ DKTools.Sprite.prototype.loadTitle2 = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadWindowskin = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadSystem(object.filename || this.standardWindowskin(), object.listener, object.hue, object.smooth);
+        return this.loadSystem(
+            object.filename || this.standardWindowskin(),
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -22092,7 +22210,13 @@ DKTools.Sprite.prototype.removeText = function(id, blockRefreshAll = false) {
  */
 DKTools.Sprite.prototype.reserveAnimation = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/animations/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/animations/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -22123,7 +22247,13 @@ DKTools.Sprite.prototype.reserveAnimation = function(object, listener, hue, smoo
  */
 DKTools.Sprite.prototype.reserveBattleback1 = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/battlebacks1/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/battlebacks1/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -22154,7 +22284,13 @@ DKTools.Sprite.prototype.reserveBattleback1 = function(object, listener, hue, sm
  */
 DKTools.Sprite.prototype.reserveBattleback2 = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/battlebacks2/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/battlebacks2/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -22188,7 +22324,13 @@ DKTools.Sprite.prototype.reserveBattleback2 = function(object, listener, hue, sm
  */
 DKTools.Sprite.prototype.reserveBitmap = function(object, filename, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap(object.folder, object.filename, object.listener, object.hue, object.smooth, object.reservationId); // eslint-disable-line max-len
+        return this.reserveBitmap(
+            object.folder,
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String (folder)
@@ -22229,7 +22371,13 @@ DKTools.Sprite.prototype.reserveBitmap = function(object, filename, listener, hu
  */
 DKTools.Sprite.prototype.reserveCharacter = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/characters/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/characters/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -22260,7 +22408,13 @@ DKTools.Sprite.prototype.reserveCharacter = function(object, listener, hue, smoo
  */
 DKTools.Sprite.prototype.reserveEnemy = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/enemies/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/enemies/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -22291,7 +22445,13 @@ DKTools.Sprite.prototype.reserveEnemy = function(object, listener, hue, smooth, 
  */
 DKTools.Sprite.prototype.reserveFace = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/faces/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/faces/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -22302,7 +22462,7 @@ DKTools.Sprite.prototype.reserveFace = function(object, listener, hue, smooth, r
  * Loads and reserves a bitmap from img/parallaxes/
  * Returns true if the bitmap has been changed
  *
- * @version 3.0.0
+ * @version 8.1.0
  *
  * @param {String | Object} object - Name of file or object with parameters
  * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
@@ -22322,11 +22482,17 @@ DKTools.Sprite.prototype.reserveFace = function(object, listener, hue, smooth, r
  */
 DKTools.Sprite.prototype.reserveParallax = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/parallaxes/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            ImageManager.PARALLAXES_FOLDER,
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
-    return this.reserveBitmap('img/parallaxes/', object, listener, hue, smooth, reservationId);
+    return this.reserveBitmap(ImageManager.PARALLAXES_FOLDER, object, listener, hue, smooth, reservationId);
 };
 
 /**
@@ -22353,7 +22519,13 @@ DKTools.Sprite.prototype.reserveParallax = function(object, listener, hue, smoot
  */
 DKTools.Sprite.prototype.reservePicture = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/pictures/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/pictures/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -22384,7 +22556,13 @@ DKTools.Sprite.prototype.reservePicture = function(object, listener, hue, smooth
  */
 DKTools.Sprite.prototype.reserveSvActor = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/sv_actors/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/sv_actors/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -22415,7 +22593,13 @@ DKTools.Sprite.prototype.reserveSvActor = function(object, listener, hue, smooth
  */
 DKTools.Sprite.prototype.reserveSvEnemy = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/sv_enemies/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/sv_enemies/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -22446,7 +22630,13 @@ DKTools.Sprite.prototype.reserveSvEnemy = function(object, listener, hue, smooth
  */
 DKTools.Sprite.prototype.reserveSystem = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/system/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/system/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -22457,7 +22647,7 @@ DKTools.Sprite.prototype.reserveSystem = function(object, listener, hue, smooth,
  * Loads and reserves a bitmap from img/tilesets/
  * Returns true if the bitmap has been changed
  *
- * @version 3.0.0
+ * @version 8.1.0
  *
  * @param {String | Object} object - Name of file or object with parameters
  * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
@@ -22477,11 +22667,17 @@ DKTools.Sprite.prototype.reserveSystem = function(object, listener, hue, smooth,
  */
 DKTools.Sprite.prototype.reserveTileset = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/tilesets/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            ImageManager.TILESETS_FOLDER,
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
-    return this.reserveBitmap('img/tilesets/', object, listener, hue, smooth, reservationId);
+    return this.reserveBitmap(ImageManager.TILESETS_FOLDER, object, listener, hue, smooth, reservationId);
 };
 
 /**
@@ -22508,7 +22704,13 @@ DKTools.Sprite.prototype.reserveTileset = function(object, listener, hue, smooth
  */
 DKTools.Sprite.prototype.reserveTitle1 = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/titles1/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/titles1/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -22540,7 +22742,13 @@ DKTools.Sprite.prototype.reserveTitle1 = function(object, listener, hue, smooth,
  */
 DKTools.Sprite.prototype.reserveTitle2 = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/titles2/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/titles2/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -22573,7 +22781,12 @@ DKTools.Sprite.prototype.reserveTitle2 = function(object, listener, hue, smooth,
  */
 DKTools.Sprite.prototype.reserveWindowskin = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveSystem(object.filename || this.standardWindowskin(), object.listener, object.hue, object.smooth, object.reservationId); // eslint-disable-line max-len
+        return this.reserveSystem(
+            object.filename || this.standardWindowskin(),
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String (filename)
@@ -36906,9 +37119,11 @@ Graphics.initialize = function(width, height, type) {
 
             if (param.Mode === 'FPS') {
                 fpsMeter.showFps();
+
                 this._fpsMeterToggled = false;
             } else {
                 fpsMeter.showDuration();
+
                 this._fpsMeterToggled = true;
             }
         }
@@ -37449,6 +37664,84 @@ DataManager.onDatabaseLoad = function() {
 
 
 //===========================================================================
+// ImageManager
+//===========================================================================
+
+Object.defineProperties(ImageManager, {
+
+    /**
+     * Parallaxes folder
+     *
+     * @since 8.1.0
+     * @readonly
+     * @type {String}
+     * @memberof ImageManager
+     */
+    PARALLAXES_FOLDER: {
+        get: function() {
+            const param = DKToolsParam.get('Tile Size');
+
+            if (param['Enabled']) {
+                return DKTools.IO.normalizePath(param['Parallaxes Folder'] + '/');
+            }
+
+            return 'img/parallaxes/';
+        },
+        configurable: true
+    },
+
+    /**
+     * Tilesets folder
+     *
+     * @since 8.1.0
+     * @readonly
+     * @type {String}
+     * @memberof ImageManager
+     */
+    TILESETS_FOLDER: {
+        get: function() {
+            const param = DKToolsParam.get('Tile Size');
+
+            if (param['Enabled']) {
+                return DKTools.IO.normalizePath(param['Tilesets Folder'] + '/');
+            }
+
+            return 'img/tilesets/';
+        },
+        configurable: true
+    }
+
+});
+
+ImageManager.loadParallax = function(filename, hue) {
+    return this.loadBitmap(ImageManager.PARALLAXES_FOLDER, filename, hue, true);
+};
+
+ImageManager.loadTileset = function(filename, hue) {
+    return this.loadBitmap(ImageManager.TILESETS_FOLDER, filename, hue, false);
+};
+
+ImageManager.reserveParallax = function(filename, hue, reservationId) {
+    return this.reserveBitmap(ImageManager.PARALLAXES_FOLDER, filename, hue, false, reservationId);
+};
+
+ImageManager.reserveTileset = function(filename, hue, reservationId) {
+    return this.reserveBitmap(ImageManager.TILESETS_FOLDER, filename, hue, false, reservationId);
+};
+
+ImageManager.requestParallax = function(filename, hue) {
+    return this.requestBitmap(ImageManager.PARALLAXES_FOLDER, filename, hue, true);
+};
+
+ImageManager.requestTileset = function(filename, hue) {
+    return this.requestBitmap(ImageManager.TILESETS_FOLDER, filename, hue, false);
+};
+
+
+
+
+
+//===========================================================================
 // AudioManager
 //===========================================================================
 
@@ -37491,21 +37784,17 @@ SceneManager.initGraphics = function() {
         this._boxHeight = height;
         this._screenHeight = height;
 
-        DKTools_SceneManager_initGraphics.call(this);
-
-        if (DKTools.Utils.isNwjs()) {
-            this.updateResolution();
-        }
-    } else {
-        DKTools_SceneManager_initGraphics.call(this);
+        this.updateResolution();
     }
+
+    DKTools_SceneManager_initGraphics.call(this);
 };
 
 SceneManager.updateResolution = function() {
     const resizeWidth = this._screenWidth - window.innerWidth;
     const resizeHeight = this._screenHeight - window.innerHeight;
 
-    if (resizeWidth > 0 && resizeHeight > 0) {
+    if (resizeWidth !== 0 && resizeHeight !== 0) {
         window.moveBy(-1 * resizeWidth / 2, -1 * resizeHeight / 2);
         window.resizeBy(resizeWidth, resizeHeight);
     }

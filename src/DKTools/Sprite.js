@@ -1006,7 +1006,12 @@ DKTools.Sprite.prototype._loadGraphic = function() {
  */
 DKTools.Sprite.prototype.loadAnimation = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/animations/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/animations/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -1033,7 +1038,12 @@ DKTools.Sprite.prototype.loadAnimation = function(object, listener, hue, smooth)
  */
 DKTools.Sprite.prototype.loadBattleback1 = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/battlebacks1/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/battlebacks1/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -1060,7 +1070,12 @@ DKTools.Sprite.prototype.loadBattleback1 = function(object, listener, hue, smoot
  */
 DKTools.Sprite.prototype.loadBattleback2 = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/battlebacks2/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/battlebacks2/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -1092,7 +1107,12 @@ DKTools.Sprite.prototype.loadBattleback2 = function(object, listener, hue, smoot
  */
 DKTools.Sprite.prototype.loadBitmap = function(object, filename, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap(object.folder, object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            object.folder,
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String (folder)
@@ -1129,7 +1149,12 @@ DKTools.Sprite.prototype.loadBitmap = function(object, filename, listener, hue, 
  */
 DKTools.Sprite.prototype.loadCharacter = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/characters/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/characters/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -1156,7 +1181,12 @@ DKTools.Sprite.prototype.loadCharacter = function(object, listener, hue, smooth)
  */
 DKTools.Sprite.prototype.loadEnemy = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/enemies/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/enemies/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -1183,7 +1213,12 @@ DKTools.Sprite.prototype.loadEnemy = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadFace = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/faces/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/faces/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -1193,6 +1228,8 @@ DKTools.Sprite.prototype.loadFace = function(object, listener, hue, smooth) {
 /**
  * Loads a bitmap from img/parallaxes/
  * Returns true if the bitmap has been changed
+ *
+ * @version 8.1.0
  *
  * @param {String | Object} object - Name of file or object with parameters
  * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
@@ -1210,11 +1247,16 @@ DKTools.Sprite.prototype.loadFace = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadParallax = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/parallaxes/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            ImageManager.PARALLAXES_FOLDER,
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
-    return this.loadBitmap('img/parallaxes/', object, listener, hue, smooth);
+    return this.loadBitmap(ImageManager.PARALLAXES_FOLDER, object, listener, hue, smooth);
 };
 
 /**
@@ -1237,7 +1279,12 @@ DKTools.Sprite.prototype.loadParallax = function(object, listener, hue, smooth) 
  */
 DKTools.Sprite.prototype.loadPicture = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/pictures/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/pictures/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -1264,7 +1311,12 @@ DKTools.Sprite.prototype.loadPicture = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadSvActor = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/sv_actors/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/sv_actors/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -1291,7 +1343,12 @@ DKTools.Sprite.prototype.loadSvActor = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadSvEnemy = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/sv_enemies/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/sv_enemies/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -1318,7 +1375,12 @@ DKTools.Sprite.prototype.loadSvEnemy = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadSystem = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/system/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/system/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -1328,6 +1390,8 @@ DKTools.Sprite.prototype.loadSystem = function(object, listener, hue, smooth) {
 /**
  * Loads a bitmap from img/tilesets/
  * Returns true if the bitmap has been changed
+ *
+ * @version 8.1.0
  *
  * @param {String | Object} object - Name of file or object with parameters
  * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
@@ -1345,11 +1409,16 @@ DKTools.Sprite.prototype.loadSystem = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadTileset = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/tilesets/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            ImageManager.TILESETS_FOLDER,
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
-    return this.loadBitmap('img/tilesets/', object, listener, hue, smooth);
+    return this.loadBitmap(ImageManager.TILESETS_FOLDER, object, listener, hue, smooth);
 };
 
 /**
@@ -1372,7 +1441,12 @@ DKTools.Sprite.prototype.loadTileset = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadTitle1 = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/titles1/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/titles1/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -1399,7 +1473,12 @@ DKTools.Sprite.prototype.loadTitle1 = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadTitle2 = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadBitmap('img/titles2/', object.filename, object.listener, object.hue, object.smooth);
+        return this.loadBitmap(
+            'img/titles2/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -1428,7 +1507,11 @@ DKTools.Sprite.prototype.loadTitle2 = function(object, listener, hue, smooth) {
  */
 DKTools.Sprite.prototype.loadWindowskin = function(object, listener, hue, smooth) {
     if (object instanceof Object) {
-        return this.loadSystem(object.filename || this.standardWindowskin(), object.listener, object.hue, object.smooth);
+        return this.loadSystem(
+            object.filename || this.standardWindowskin(),
+            object.listener,
+            object.hue,
+            object.smooth);
     }
 
     // object - String
@@ -2590,7 +2673,13 @@ DKTools.Sprite.prototype.removeText = function(id, blockRefreshAll = false) {
  */
 DKTools.Sprite.prototype.reserveAnimation = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/animations/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/animations/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -2621,7 +2710,13 @@ DKTools.Sprite.prototype.reserveAnimation = function(object, listener, hue, smoo
  */
 DKTools.Sprite.prototype.reserveBattleback1 = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/battlebacks1/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/battlebacks1/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -2652,7 +2747,13 @@ DKTools.Sprite.prototype.reserveBattleback1 = function(object, listener, hue, sm
  */
 DKTools.Sprite.prototype.reserveBattleback2 = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/battlebacks2/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/battlebacks2/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -2686,7 +2787,13 @@ DKTools.Sprite.prototype.reserveBattleback2 = function(object, listener, hue, sm
  */
 DKTools.Sprite.prototype.reserveBitmap = function(object, filename, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap(object.folder, object.filename, object.listener, object.hue, object.smooth, object.reservationId); // eslint-disable-line max-len
+        return this.reserveBitmap(
+            object.folder,
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String (folder)
@@ -2727,7 +2834,13 @@ DKTools.Sprite.prototype.reserveBitmap = function(object, filename, listener, hu
  */
 DKTools.Sprite.prototype.reserveCharacter = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/characters/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/characters/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -2758,7 +2871,13 @@ DKTools.Sprite.prototype.reserveCharacter = function(object, listener, hue, smoo
  */
 DKTools.Sprite.prototype.reserveEnemy = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/enemies/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/enemies/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -2789,7 +2908,13 @@ DKTools.Sprite.prototype.reserveEnemy = function(object, listener, hue, smooth, 
  */
 DKTools.Sprite.prototype.reserveFace = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/faces/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/faces/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -2800,7 +2925,7 @@ DKTools.Sprite.prototype.reserveFace = function(object, listener, hue, smooth, r
  * Loads and reserves a bitmap from img/parallaxes/
  * Returns true if the bitmap has been changed
  *
- * @version 3.0.0
+ * @version 8.1.0
  *
  * @param {String | Object} object - Name of file or object with parameters
  * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
@@ -2820,11 +2945,17 @@ DKTools.Sprite.prototype.reserveFace = function(object, listener, hue, smooth, r
  */
 DKTools.Sprite.prototype.reserveParallax = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/parallaxes/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            ImageManager.PARALLAXES_FOLDER,
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
-    return this.reserveBitmap('img/parallaxes/', object, listener, hue, smooth, reservationId);
+    return this.reserveBitmap(ImageManager.PARALLAXES_FOLDER, object, listener, hue, smooth, reservationId);
 };
 
 /**
@@ -2851,7 +2982,13 @@ DKTools.Sprite.prototype.reserveParallax = function(object, listener, hue, smoot
  */
 DKTools.Sprite.prototype.reservePicture = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/pictures/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/pictures/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -2882,7 +3019,13 @@ DKTools.Sprite.prototype.reservePicture = function(object, listener, hue, smooth
  */
 DKTools.Sprite.prototype.reserveSvActor = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/sv_actors/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/sv_actors/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -2913,7 +3056,13 @@ DKTools.Sprite.prototype.reserveSvActor = function(object, listener, hue, smooth
  */
 DKTools.Sprite.prototype.reserveSvEnemy = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/sv_enemies/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/sv_enemies/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -2944,7 +3093,13 @@ DKTools.Sprite.prototype.reserveSvEnemy = function(object, listener, hue, smooth
  */
 DKTools.Sprite.prototype.reserveSystem = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/system/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/system/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -2955,7 +3110,7 @@ DKTools.Sprite.prototype.reserveSystem = function(object, listener, hue, smooth,
  * Loads and reserves a bitmap from img/tilesets/
  * Returns true if the bitmap has been changed
  *
- * @version 3.0.0
+ * @version 8.1.0
  *
  * @param {String | Object} object - Name of file or object with parameters
  * @param {Function} [listener] - Function of processing after loading a bitmap (if object is String)
@@ -2975,11 +3130,17 @@ DKTools.Sprite.prototype.reserveSystem = function(object, listener, hue, smooth,
  */
 DKTools.Sprite.prototype.reserveTileset = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/tilesets/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            ImageManager.TILESETS_FOLDER,
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
-    return this.reserveBitmap('img/tilesets/', object, listener, hue, smooth, reservationId);
+    return this.reserveBitmap(ImageManager.TILESETS_FOLDER, object, listener, hue, smooth, reservationId);
 };
 
 /**
@@ -3006,7 +3167,13 @@ DKTools.Sprite.prototype.reserveTileset = function(object, listener, hue, smooth
  */
 DKTools.Sprite.prototype.reserveTitle1 = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/titles1/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/titles1/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -3038,7 +3205,13 @@ DKTools.Sprite.prototype.reserveTitle1 = function(object, listener, hue, smooth,
  */
 DKTools.Sprite.prototype.reserveTitle2 = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveBitmap('img/titles2/', object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+        return this.reserveBitmap(
+            'img/titles2/',
+            object.filename,
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String
@@ -3071,7 +3244,12 @@ DKTools.Sprite.prototype.reserveTitle2 = function(object, listener, hue, smooth,
  */
 DKTools.Sprite.prototype.reserveWindowskin = function(object, listener, hue, smooth, reservationId) {
     if (object instanceof Object) {
-        return this.reserveSystem(object.filename || this.standardWindowskin(), object.listener, object.hue, object.smooth, object.reservationId); // eslint-disable-line max-len
+        return this.reserveSystem(
+            object.filename || this.standardWindowskin(),
+            object.listener,
+            object.hue,
+            object.smooth,
+            object.reservationId);
     }
 
     // object - String (filename)

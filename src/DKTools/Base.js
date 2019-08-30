@@ -1067,7 +1067,7 @@ DKTools.Base = class {
      * Draws a character face
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 8.1.0
      *
      * @param {String} faceName - Face filename
      * @param {Number} faceIndex - Face index
@@ -1256,7 +1256,7 @@ DKTools.Base = class {
      * Draws an icon
      * Returns true if successfully completed
      *
-     * @version 6.0.0
+     * @version 8.1.0
      *
      * @param {Number} iconIndex - Icon index
      * @param {Object} [options={}] - Options for drawing
@@ -1300,7 +1300,7 @@ DKTools.Base = class {
      * Draws a name of the item
      * Returns true if successfully completed
      *
-     * @version 6.1.0
+     * @version 8.1.0
      *
      * @param {Object} item - Item
      * @param {Object} [options={}] - Options for drawing
@@ -1464,7 +1464,7 @@ DKTools.Base = class {
      *
      * @param {Object} options - Options for drawing
      *
-     * @param {PIXI.Polygon | PIXI.Point[] | PIXI.ObservablePoint[] | Point[] | Object[]} [options.points] - Polygon or Points or objects with parameters
+     * @param {PIXI.Point[] | PIXI.ObservablePoint[] | Point[] | Object[]} [options.points] - Points or objects with parameters
      * @param {String} [options.color] - Line color
      * @param {Number} [options.lineWidth] - Line width
      * @param {Number} [options.paintOpacity] - Change paint opacity
@@ -3038,6 +3038,8 @@ DKTools.Base = class {
     }
 
     /**
+     * @version 8.1.0
+     *
      * @param {Number} iconIndex
      * @param {Object} textState
      */
