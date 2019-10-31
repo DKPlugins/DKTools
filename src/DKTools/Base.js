@@ -3050,12 +3050,18 @@ DKTools.Base = class {
     }
 
     /**
+     * @version 8.2.0
+     *
      * @param {String} code
      * @param {Object} textState
      */
     processEscapeCharacter(code, textState) {
         try {
-            Window_Base.prototype.processEscapeCharacter.call(this, code, textState);
+            const state = { ...textState };
+
+            Window_Base.prototype.processEscapeCharacter.call(this, code, state);
+
+            Object.assign(textState, state);
         } catch(e) {
             switch (code) {
                 case 'C':

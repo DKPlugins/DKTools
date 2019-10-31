@@ -85,7 +85,7 @@ DKTools.Network = class {
      * @returns {Promise} ArrayBuffer
      */
     static async _toFile(response) {
-        return response.arrayBuffer().then(data => data, () => null);
+        return response.arrayBuffer().catch(() => null);
     }
 
     /**
@@ -100,7 +100,7 @@ DKTools.Network = class {
      * @returns {Promise} JSON data
      */
     static async _toJson(response) {
-        return response.json().then(data => data, () => null);
+        return response.json().catch(() => null);
     }
 
 };

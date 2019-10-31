@@ -1,6 +1,6 @@
 **Author**: DK
 
-**Version**: Public 8.1.0
+**Version**: Public 8.2.0
  
 **Description**: Library for RPG Maker MV. Contains many tools for developing.
 

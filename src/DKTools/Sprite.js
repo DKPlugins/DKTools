@@ -1597,10 +1597,15 @@ DKTools.Sprite.prototype.standardFont = function() {
 /**
  * Returns the standard font face
  *
+ * @version 8.2.0
  * @returns {String} Standard font face
  */
 DKTools.Sprite.prototype.standardFontFace = function() {
-    return 'GameFont';
+    try {
+        return Window_Base.prototype.standardFontFace.call(this);
+    } catch (e) {
+        return 'GameFont';
+    }
 };
 
 /**
@@ -1615,10 +1620,15 @@ DKTools.Sprite.prototype.standardFontItalic = function() {
 /**
  * Returns the standard font size
  *
+ * @version 8.2.0
  * @returns {String} Standard font size
  */
 DKTools.Sprite.prototype.standardFontSize = function() {
-    return 28;
+    try {
+        return Window_Base.prototype.standardFontSize.call(this);
+    } catch (e) {
+        return 28;
+    }
 };
 
 /**
@@ -1986,7 +1996,7 @@ DKTools.Sprite.prototype.setupOpacity = function(opacity) {
      * @readonly
      * @type {Number}
      */
-    this._opacity = _.defaultTo(opacity, this.standardOpacity());
+    this._opacity = DKTools.Utils.Number.clamp(_.defaultTo(opacity, this.standardOpacity(), 0, 255));
 };
 
 /**

@@ -58,12 +58,6 @@ ImageCache.prototype._mustBeHeld = function(item) {
 // Graphics
 //===========================================================================
 
-const DKTools_Graphics_printLoadingError = Graphics.printLoadingError;
-Graphics.printLoadingError = function(url) {
-    DKTools_Graphics_printLoadingError.call(this, url);
-    DKTools.Utils.logError(`Failed to load: ${url}`);
-};
-
 const DKTools_Graphics_initialize = Graphics.initialize;
 Graphics.initialize = function(width, height, type) {
     DKTools_Graphics_initialize.call(this, width, height, type);
@@ -86,6 +80,15 @@ Graphics.initialize = function(width, height, type) {
                 this._fpsMeterToggled = true;
             }
         }
+    }
+};
+
+const DKTools_Graphics_printError = Graphics.printError;
+Graphics.printError = function(name, message) {
+    DKTools_Graphics_printError.call(this, name, message);
+
+    if (this._errorPrinter) {
+        this._updateErrorPrinter();
     }
 };
 
@@ -198,7 +201,7 @@ Graphics._makeDetailedErrorHtml = function(name, message, stack) {
         text += '<br>';
     }
 
-    text += '<font color="yellow"><b>' + message + '</b></font><br>';
+    text += '<font color="red"><b>' + message + '</b></font><br>';
 
     _.forEach(stack, (value) => {
         text += '<font color="white">' + value + '</font><br>';
@@ -215,7 +218,11 @@ const DKTools_Graphics_updateErrorPrinter = Graphics._updateErrorPrinter;
 Graphics._updateErrorPrinter = function() {
     DKTools_Graphics_updateErrorPrinter.call(this);
 
-    if (!this._errorPrinter || !DKToolsParam.get('Print Detailed Error', 'Enabled')) {
+    if (!this._errorPrinter || !this._errorShowed) {
+        return;
+    }
+
+    if (!DKToolsParam.get('Print Detailed Error', 'Enabled')) {
         return;
     }
 
@@ -1075,3 +1082,59 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
     DKTools_Game_Interpreter_pluginCommand.call(this, command, args);
     DKTools.PluginCommandManager.process(this, command, args);
 };
+
+
+
+
+
+//===========================================================================
+// applying plugin parameters
+//===========================================================================
+
+if (DKToolsParam.get('Font Size', 'Enabled')) {
+
+    Window_Base.prototype.standardFontSize = function() {
+        return DKToolsParam.get('Font Size', 'Size');
+    };
+
+    DKTools.Sprite.prototype.standardFontSize = function() {
+        try {
+            return Window_Base.prototype.standardFontSize.call(this);
+        } catch (e) {
+            return DKToolsParam.get('Font Size', 'Size');
+        }
+    };
+
+}
+
+if (DKToolsParam.get('Line Height', 'Enabled')) {
+
+    Window_Base.prototype.lineHeight = function() {
+        return DKToolsParam.get('Line Height', 'Height');
+    };
+
+    DKTools.Base.prototype.getLineHeight = function() {
+        try {
+            return Window_Base.prototype.lineHeight.call(this);
+        } catch (e) {
+            return DKToolsParam.get('Line Height', 'Height');
+        }
+    };
+
+    DKTools.Sprite.prototype.getLineHeight = function() {
+        return DKTools.Base.prototype.getLineHeight.call(this);
+    };
+
+    DKTools.Window.prototype.getLineHeight = function() {
+        return DKTools.Base.prototype.getLineHeight.call(this);
+    };
+
+}
+
+if (DKToolsParam.get('Window Padding', 'Enabled')) {
+
+    Window_Base.prototype.standardPadding = function() {
+        return DKToolsParam.get('Window Padding', 'Padding');
+    };
+
+}

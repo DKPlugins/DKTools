@@ -167,24 +167,6 @@ Object.defineProperties(DKTools.ParameterManager.prototype, {
     },
 
     /**
-     * Parameters obtained using PluginManager.parameters
-     *
-     * @readonly
-     * @type {Object}
-     * @memberof DKTools.ParameterManager.prototype
-     */
-    initialParams: {
-        get: function() {
-            if (!this._initialParams) {
-                this._initialParams = PluginManager.parameters(this._pluginName);
-            }
-
-            return this._initialParams;
-        },
-        configurable: true
-    },
-
-    /**
      * Parameters of the plugin
      *
      * @readonly

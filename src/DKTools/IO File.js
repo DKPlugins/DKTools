@@ -25,7 +25,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {String} fullPath - Path to file
      */
     initialize(fullPath = '') {
-        DKTools.IO.Entity.prototype.initialize.call(this, fullPath);
+        super.initialize(fullPath);
 
         this._detectExtension();
     }
@@ -199,15 +199,13 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @returns {Boolean} File exists
      */
     exists() {
-        if (DKTools.IO.isLocalMode() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
-            if (Decrypter.hasEncryptedAudio && this.isAudio() || Decrypter.hasEncryptedImages && this.isImage()) {
-                const path = DKTools.IO.normalizePath(this.getPath() + '/' + Decrypter.extToEncryptExt(this.getFullName()));
+        if (Decrypter.hasEncryptedAudio && this.isAudio() || Decrypter.hasEncryptedImages && this.isImage()) {
+            const path = DKTools.IO.normalizePath(this.getPath() + '/' + Decrypter.extToEncryptExt(this.getFullName()));
 
-                return DKTools.IO.pathExists(path);
-            }
+            return DKTools.IO.pathExists(path);
         }
 
-        return DKTools.IO.Entity.prototype.exists.call(this);
+        return super.exists();
     }
 
     // G methods
@@ -510,11 +508,16 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     /**
      * Loads the audio file
      *
+     * @version 8.2.0
      * @since 3.0.0
      * @returns {WebAudio | null} Audio file or null
      */
     loadAudio() {
-        if (!this.isAudio() || DKTools.IO.isLocalMode() && !this.exists()) {
+        if (!this.isAudio()) {
+            return null;
+        }
+
+        if ((DKTools.IO.isLocalMode() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) && !this.exists()) {
             return null;
         }
 
@@ -665,6 +668,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     /**
      * Loads and returns a bitmap
      *
+     * @version 8.2.0
      * @since 3.0.0
      *
      * @param {Function | Object} object - Function of processing after loading a bitmap or object with parameters
@@ -690,7 +694,11 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
             return this.loadBitmap(object.listener, object.hue, object.smooth);
         }
 
-        if (!this.isImage() || DKTools.IO.isLocalMode() && !this.exists()) {
+        if (!this.isImage()) {
+            return null;
+        }
+
+        if ((DKTools.IO.isLocalMode() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) && !this.exists()) {
             return null;
         }
 

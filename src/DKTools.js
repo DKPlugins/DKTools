@@ -3,8 +3,8 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 8.1.0
-Release: 29.08.2019
+Version: 8.2.0
+Release: 31.10.2019
 First release: 13.01.2016
 Supported languages: Russian, English
 */
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 8.1.0
-Релиз: 29.08.2019
+Версия: 8.2.0
+Релиз: 31.10.2019
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.8.1.0 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.8.2.0 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 8.1.0
- Release: 29.08.2019
+ Version: 8.2.0
+ Release: 31.10.2019
  First release: 13.01.2016
  Supported languages: Russian, English
  Thank you for your support: https://dk-plugins.ru/donate
@@ -173,44 +173,104 @@ E-mail: kuznetsovdenis96@gmail.com
  You can't:
  -Delete or change any information about the plugin (Title, authorship, contact information, version and release)
 
- * @param Parameters
+ * @param System
  * @default ---------------------------------
 
  * @param File System
- * @parent Parameters
+ * @parent System
  * @desc File system parameters. Details in the help (1)
  * @type struct<FileSystem>
- * @default {"Mode":"0","Stamp":"---------------------------------","Ignored Directories":"[\"node_modules\"]"}
+ * @default {"Mode":"0","Ignored Directories":"[\"node_modules\"]"}
 
- * @param New Functions
+ * @param Font Size
+ * @parent System
+ * @desc Font size
+ * @type struct<FontSize>
+ * @default {"Enabled":"false","Size":"28"}
+
+ * @param Screen Resolution
+ * @parent System
+ * @desc Screen resolution
+ * @type struct<ScreenResolution>
+ * @default {"Enabled":"false","Width":"816","Height":"624"}
+
+ * @param Tile Size
+ * @parent System
+ * @desc Tile size
+ * @type struct<TileSize>
+ * @default {"Enabled":"false","Size":"48","Tilesets Folder":"img/tilesets/","Parallaxes Folder":"img/parallaxes/"}
+
+ * @param Image Cache Limit
+ * @parent System
+ * @desc Image cache limit
+ * @type struct<ImageCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
+
+ * @param Cursor Graphic
+ * @parent System
+ * @desc Cursor graphic
+ * @type struct<CursorGraphic>
+ * @default {"Enabled":"false","Graphic": ""}
+
+ * @param Windows
  * @default ---------------------------------
 
- * @param Functions
+ * @param Line Height
+ * @parent Windows
+ * @desc Sets the line height for a window
+ * @type struct<LineHeight>
+ * @default {"Enabled":"false","Height":"36"}
+
+ * @param Window Padding
+ * @parent Windows
+ * @desc Sets the padding for a window
+ * @type struct<WindowPadding>
+ * @default {"Enabled":"false","Padding":"18"}
+
+ * @param Other
  * @default ---------------------------------
 
  * @param Check Updates
  * @parent Functions
- * @desc Check updates
+ * @desc Other
  * @type struct<CheckUpdates>
  * @default {"Enabled":"false","Show New Plugins":"false"}
 
+ * @param Debugging
+ * @default ---------------------------------
+
  * @param Debugging Console
  * @parent Functions
- * @desc Debug console
+ * @desc Debugging
  * @type struct<DebuggingConsole>
  * @default {"Enabled":"false","Open On Error":"false"}
 
  * @param FPS Meter
- * @parent Functions
+ * @parent Debugging
  * @desc FPS Meter
  * @type struct<FPSMeter>
  * @default {"Enabled":"false","Mode":"FPS","Theme":"transparent","History":"20"}
 
- * @param Screen Resolution
- * @parent Functions
- * @desc Screen resolution
- * @type struct<ScreenResolution>
- * @default {"Enabled":"false","Width":"816","Height":"624"}
+ * @param Errors Log
+ * @parent Debugging
+ * @desc Errors logging
+ * @type struct<ErrorsLog>
+ * @default {"Enabled":"None","Filename":"errors_log.txt","File Size":"10"}
+
+ * @param Print Detailed Error
+ * @parent Debugging
+ * @desc Detailed error display
+ * @type struct<PrintDetailedError>
+ * @default {"Enabled":"false","Error Message":"Game has encountered a bug. Please report it.","Restart Message":"Press F5 to restart the game."}
+
+ * @param Grid
+ * @parent Debugging
+ * @desc Displaying the grid on the screen. Details in the help (2)
+ * @type struct<Grid>
+ * @default {"Enabled":"false","Key Code":"118","Grid Color":"white","Grid Width":"1","Ruler Color":"","Ruler Width":"3"}
+
+ * @param Functions
+ * @default ---------------------------------
 
  * @param Quick Start
  * @parent Functions
@@ -236,40 +296,10 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<Screenshots>
  * @default {"Enabled":"false","Key Code":"44","Path":"screenshots/","Filename":"%year_%month_%day_%hours_%minutes_%seconds.png","Type":"png","Quality":"0.9"}
 
- * @param Errors Log
- * @parent Functions
- * @desc Errors logging
- * @type struct<ErrorsLog>
- * @default {"Enabled":"None","Filename":"errors_log.txt","File Size":"10"}
-
- * @param Tile Size
- * @parent Functions
- * @desc Tile size
- * @type struct<TileSize>
- * @default {"Enabled":"false","Size":"48","Tilesets Folder":"img/tilesets/","Parallaxes Folder":"img/parallaxes/"}
-
- * @param Grid
- * @parent Functions
- * @desc Displaying the grid on the screen. Details in the help (2)
- * @type struct<Grid>
- * @default {"Enabled":"false","Key Code":"118","Grid Color":"white","Grid Width":"1","Ruler Color":"","Ruler Width":"3"}
-
- * @param Image Cache Limit
- * @parent Functions
- * @desc Image cache limit
- * @type struct<ImageCacheLimit>
- * @default {"Enabled":"false","Limit":"10000000"}
-
- * @param Cursor Graphic
- * @parent Functions
- * @desc Cursor graphic
- * @type struct<CursorGraphic>
- * @default {"Enabled":"false","Graphic": ""}
-
 */
 
 /*:ru
-* @plugindesc v.8.1.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.8.2.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -277,8 +307,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 8.1.0
- Релиз: 29.08.2019
+ Версия: 8.2.0
+ Релиз: 31.10.2019
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
  Спасибо за Вашу поддержку: https://dk-plugins.ru/donate
@@ -421,52 +451,123 @@ E-mail: kuznetsovdenis96@gmail.com
  Вы не можете:
  -Убирать или изменять любую информацию о плагине (Название, авторство, контактная информация, версия и дата релиза)
 
- * @param Parameters
- * @text Параметры
+ * @param System
+ * @text Система
  * @default ---------------------------------
 
  * @param File System
  * @text Файловая система
- * @parent Parameters
+ * @parent System
  * @desc Параметры файловой системы. Подробности в справке (1)
  * @type struct<FileSystem>
- * @default {"Mode":"0","Stamp":"---------------------------------","Ignored Directories":"[\"node_modules\"]"}
+ * @default {"Mode":"0","Ignored Directories":"[\"node_modules\"]"}
 
- * @param New Functions
- * @text Новые функции
+ * @param Font Size
+ * @text Размер шрифта
+ * @parent System
+ * @desc Размер шрифта
+ * @type struct<FontSize>
+ * @default {"Enabled":"false","Size":"28"}
+
+ * @param Screen Resolution
+ * @text Разрешение экрана
+ * @parent System
+ * @desc Настройки разрешения экрана
+ * @type struct<ScreenResolution>
+ * @default {"Enabled":"false","Width":"816","Height":"624"}
+
+ * @param Tile Size
+ * @text Размер тайла
+ * @parent System
+ * @desc Размер тайла
+ * @type struct<TileSize>
+ * @default {"Enabled":"false","Size":"48","Tilesets Folder":"img/tilesets/","Parallaxes Folder":"img/parallaxes/"}
+
+ * @param Image Cache Limit
+ * @text Лимит кэша изображений
+ * @parent System
+ * @desc Лимит кэша изображений
+ * @type struct<ImageCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
+
+ * @param Cursor Graphic
+ * @text Графика курсора
+ * @parent System
+ * @desc Графика курсора
+ * @type struct<CursorGraphic>
+ * @default {"Enabled":"false","Graphic": ""}
+
+ * @param Windows
+ * @text Окна
  * @default ---------------------------------
 
- * @param Functions
- * @text Функции
+ * @param Line Height
+ * @text Высота строки
+ * @parent Windows
+ * @desc Устанавливает высоту строки для окна
+ * @type struct<LineHeight>
+ * @default {"Enabled":"false","Height":"36"}
+
+ * @param Window Padding
+ * @text Отступ окна
+ * @parent Windows
+ * @desc Устанавливает отступ для окна
+ * @type struct<WindowPadding>
+ * @default {"Enabled":"false","Padding":"18"}
+
+ * @param Other
+ * @text Разное
  * @default ---------------------------------
 
  * @param Check Updates
  * @text Проверка обновлений
- * @parent Functions
+ * @parent Other
  * @desc Проверка обновлений
  * @type struct<CheckUpdates>
  * @default {"Enabled":"false","Show New Plugins":"false"}
 
+ * @param Debugging
+ * @text Отладка
+ * @default ---------------------------------
+
  * @param Debugging Console
  * @text Отладочная консоль
- * @parent Functions
+ * @parent Debugging
  * @desc Отладочная консоль
  * @type struct<DebuggingConsole>
  * @default {"Enabled":"false","Open On Error":"false"}
 
  * @param FPS Meter
  * @text Счетчик FPS
- * @parent Functions
+ * @parent Debugging
  * @desc Счетчик FPS
  * @type struct<FPSMeter>
  * @default {"Enabled":"false","Mode":"FPS","Theme":"transparent","History":"20"}
 
- * @param Screen Resolution
- * @text Разрешение экрана
- * @parent Functions
- * @desc Настройки разрешения экрана
- * @type struct<ScreenResolution>
- * @default {"Enabled":"false","Width":"816","Height":"624"}
+ * @param Errors Log
+ * @text Логирование ошибок
+ * @parent Debugging
+ * @desc Логирование ошибок
+ * @type struct<ErrorsLog>
+ * @default {"Enabled":"None","Filename":"errors_log.txt","File Size":"10"}
+
+ * @param Print Detailed Error
+ * @text Детальное отображение ошибок
+ * @parent Debugging
+ * @desc Детальное отображение ошибок
+ * @type struct<PrintDetailedError>
+ * @default {"Enabled":"false","Error Message":"В игре обнаружена ошибка. Пожалуйста, сообщите об этом.","Restart Message":"Нажмите F5, чтобы перезапустить игру."}
+
+ * @param Grid
+ * @text Сетка
+ * @parent Debugging
+ * @desc Отображение сетки на экране. Подробности в справке (2)
+ * @type struct<Grid>
+ * @default {"Enabled":"false","Key Code":"118","Grid Color":"white","Grid Width":"1","Ruler Color":"","Ruler Width":"3"}
+
+ * @param Functions
+ * @text Функции
+ * @default ---------------------------------
 
  * @param Quick Start
  * @text Быстрый старт
@@ -496,54 +597,6 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<Screenshots>
  * @default {"Enabled":"false","Key Code":"44","Path":"screenshots/","Filename":"%year_%month_%day_%hours_%minutes_%seconds.png","Type":"png","Quality":"0.9"}
 
- * @param Errors Log
- * @text Логирование ошибок
- * @parent Functions
- * @desc Логирование ошибок
- * @type struct<ErrorsLog>
- * @default {"Enabled":"None","Filename":"errors_log.txt","File Size":"10"}
-
- * @param Tile Size
- * @text Размер тайла
- * @parent Functions
- * @desc Размер тайла
- * @type struct<TileSize>
- * @default {"Enabled":"false","Size":"48","Tilesets Folder":"img/tilesets/","Parallaxes Folder":"img/parallaxes/"}
-
- * @param Grid
- * @text Сетка
- * @parent Functions
- * @desc Отображение сетки на экране. Подробности в справке (2)
- * @type struct<Grid>
- * @default {"Enabled":"false","Key Code":"118","Grid Color":"white","Grid Width":"1","Ruler Color":"","Ruler Width":"3"}
-
- * @param Image Cache Limit
- * @text Лимит кэша изображений
- * @parent Functions
- * @desc Лимит кэша изображений
- * @type struct<ImageCacheLimit>
- * @default {"Enabled":"false","Limit":"10000000"}
-
- * @param Cursor Graphic
- * @text Графика курсора
- * @parent Functions
- * @desc Графика курсора
- * @type struct<CursorGraphic>
- * @default {"Enabled":"false","Graphic": ""}
-
- * @param Print Detailed Error
- * @text Детальное отображение ошибок
- * @parent Functions
- * @desc Детальное отображение ошибок
- * @type struct<PrintDetailedError>
- * @default {"Enabled":"false","Error Message":"В игре обнаружена ошибка. Пожалуйста, сообщите об этом.","Restart Message":"Нажмите F5, чтобы перезапустить игру."}
-
- * @param Print Detailed Error
- * @parent Functions
- * @desc Detailed error display
- * @type struct<PrintDetailedError>
- * @default {"Enabled":"false","Error Message":"Game has encountered a bug. Please report it.","Restart Message":"Press F5 to restart the game."}
-
 */
 
 /*~struct~FileSystem:
@@ -557,11 +610,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @value 1
  * @default 0
 
- * @param Stamp
- * @default ---------------------------------
-
  * @param Ignored Directories
- * @parent Stamp
  * @desc Ignored directories. Details in the help (1.1)
  * @type string[]
  * @default ["node_modules"]
@@ -580,13 +629,8 @@ E-mail: kuznetsovdenis96@gmail.com
  * @value 1
  * @default 0
 
- * @param Stamp
- * @text Штамп файловой системы
- * @default ---------------------------------
-
  * @param Ignored Directories
  * @text Игнорируемые директории
- * @parent Stamp
  * @desc Игнорируемые директории. Подробности в справке (1.1)
  * @type string[]
  * @default ["node_modules"]
@@ -1351,5 +1395,101 @@ E-mail: kuznetsovdenis96@gmail.com
  * @text Сообщение о перезапуске игры
  * @desc Сообщение о перезапуске игры
  * @default Нажмите F5, чтобы перезапустить игру.
+
+*/
+
+/*~struct~FontSize:
+
+ * @param Enabled
+ * @desc Enable font resizing?
+ * @type boolean
+ * @default false
+
+ * @param Size
+ * @desc Font size
+ * @type number
+ * @min 1
+ * @default 28
+
+*/
+
+/*~struct~FontSize:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию изменения размера шрифта ?
+ * @type boolean
+ * @default false
+
+ * @param Size
+ * @text Размер шрифта
+ * @desc Размер шрифта
+ * @type number
+ * @min 1
+ * @default 28
+
+*/
+
+/*~struct~LineHeight:
+
+ * @param Enabled
+ * @desc Enable the function to change the line height ?
+ * @type boolean
+ * @default false
+
+ * @param Height
+ * @desc Line height
+ * @type number
+ * @min 0
+ * @default 36
+
+*/
+
+/*~struct~LineHeight:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию для изменения высоты строки ?
+ * @type boolean
+ * @default false
+
+ * @param Height
+ * @text Высота
+ * @desc Высота строки
+ * @type number
+ * @min 0
+ * @default 36
+
+*/
+
+/*~struct~WindowPadding:
+
+ * @param Enabled
+ * @desc Enable function to change padding of windows ?
+ * @type boolean
+ * @default false
+
+ * @param Padding
+ * @desc Window padding
+ * @type number
+ * @min 0
+ * @default 18
+
+*/
+
+/*~struct~WindowPadding:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию изменения отступа окна ?
+ * @type boolean
+ * @default false
+
+ * @param Padding
+ * @text Отступ
+ * @desc Отступ окна
+ * @type number
+ * @min 0
+ * @default 18
 
 */
