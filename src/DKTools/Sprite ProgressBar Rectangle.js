@@ -29,12 +29,10 @@ DKTools.Sprite.ProgressBar.Rectangle = class extends DKTools.Sprite.ProgressBar 
      */
     standardDrawGraphicHandler() {
         return () => {
-            let handler;
+            let handler = this.standardVerticalDrawGraphicHandler();
 
             if (this.isHorizontal()) {
                 handler = this.standardHorizontalDrawGraphicHandler();
-            } else {
-                handler = this.standardVerticalDrawGraphicHandler();
             }
 
             if (DKTools.Utils.isFunction(handler)) {

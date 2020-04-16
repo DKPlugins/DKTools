@@ -41,6 +41,7 @@ DKTools.Scene.prototype._addAllChildren = function() {
 /**
  * Adds a listener of change of the option
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} option - Name of the option
@@ -179,6 +180,7 @@ DKTools.Scene.prototype._createEventManager = function() {
 /**
  * Clears the options
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @see DKTools.OptionManager.prototype.clear
@@ -190,6 +192,7 @@ DKTools.Scene.prototype.clearOptions = function() {
 /**
  * Clears the events
  *
+ * @deprecated 8.3.0
  * @version 2.0.0
  *
  * @param {String[] | String} object Array with event types or event type
@@ -265,7 +268,8 @@ DKTools.Scene.prototype.createForeground = function() {
 DKTools.Scene.prototype.destroy = function(options) {
     this._clearAll();
 
-    this.clearEvents();
+    this._eventManager.clearEvents();
+
     this.deactivate();
 
     Stage.prototype.destroy.call(this, options);
@@ -274,6 +278,7 @@ DKTools.Scene.prototype.destroy = function(options) {
 /**
  * Turns off the option
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} option - Name of the option
@@ -287,6 +292,7 @@ DKTools.Scene.prototype.disableOption = function(option) {
 /**
  * Turns off the options
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String[] | ...String} object - Names of the options
@@ -302,6 +308,7 @@ DKTools.Scene.prototype.disableOptions = function(object) {
 /**
  * Turns on the option
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} option - Name of the option
@@ -315,6 +322,7 @@ DKTools.Scene.prototype.enableOption = function(option) {
 /**
  * Turns on the options
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String[] | ...String} object - Names of the options
@@ -330,6 +338,7 @@ DKTools.Scene.prototype.enableOptions = function(object) {
 /**
  * Finishes the events
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} type - Type of the events
@@ -346,6 +355,7 @@ DKTools.Scene.prototype.finishEvents = function(type, forcedSuccess = false) {
 /**
  * Returns a container for the events by event type
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} type - Type of the events
@@ -361,6 +371,7 @@ DKTools.Scene.prototype.getEventsContainerByType = function(type) {
 /**
  * Returns a container for the events by event
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {DKTools.Event | DKTools.Animation} event - Event
@@ -376,6 +387,7 @@ DKTools.Scene.prototype.getEventsContainer = function(event) {
 /**
  * Returns an index of the event in its container
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {DKTools.Event | DKTools.Animation} event - Event
@@ -391,6 +403,7 @@ DKTools.Scene.prototype.getEventIndex = function(event) {
 /**
  * Returns an array with the all events or events of a certain type
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} [type] - Type of the events
@@ -406,6 +419,7 @@ DKTools.Scene.prototype.getEvents = function(type) {
 /**
  * Returns an array with the all animations or animations of a certain type
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} [type] - Type of animation
@@ -433,6 +447,7 @@ DKTools.Scene.prototype.hasWindowLayer = function() {
  * Checks for existence of the event in the object
  * Returns true if the event exists
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {DKTools.Event | DKTools.Animation} event - Event
@@ -449,6 +464,7 @@ DKTools.Scene.prototype.hasEvent = function(event) {
  * Checks for existence of the events of a certain type
  * Returns true if the events exists
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} [type] - Type of the Events
@@ -465,6 +481,7 @@ DKTools.Scene.prototype.hasEvents = function(type) {
  * Checks for existence of the animation in the object
  * Returns true if the animation exists
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {DKTools.Animation} animation - Animation
@@ -481,6 +498,7 @@ DKTools.Scene.prototype.hasAnimation = function(animation) {
  * Checks for existence of the animations of a certain type
  * Returns true if the animations exists
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} [type] - Type of the animations
@@ -501,7 +519,7 @@ DKTools.Scene.prototype.hasAnimations = function(type) {
  * @param {Function} callback - Function for the child objects
  */
 DKTools.Scene.prototype.iterateChildren = function(callback) {
-    _.forEach(this.children, callback);
+    this.children.forEach(callback);
 };
 
 /**
@@ -513,10 +531,10 @@ DKTools.Scene.prototype.iterateChildren = function(callback) {
  */
 DKTools.Scene.prototype.isChild = function(object) {
     if (object instanceof Window && this.hasWindowLayer()) {
-        return DKTools.Utils.Array.contains(this._windowLayer.children, object);
+        return this._windowLayer.children.includes(object);
     }
 
-    return DKTools.Utils.Array.contains(this.children, object);
+    return this.children.includes(object);
 };
 
 /**
@@ -533,6 +551,7 @@ DKTools.Scene.prototype.isDestroyed = function() {
 /**
  * Returns true if the option is enabled
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} option - Name of the option
@@ -548,6 +567,7 @@ DKTools.Scene.prototype.isOptionEnabled = function(option) {
 /**
  * Returns conjunction of the options
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String[] | ...String} object - Names of the options
@@ -563,6 +583,7 @@ DKTools.Scene.prototype.isOptionsEnabled = function(object) {
 /**
  * Returns disjunction of the options
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String[] | ...String} object - Names of the options
@@ -578,6 +599,7 @@ DKTools.Scene.prototype.isSomeOptionsEnabled = function(object) {
 /**
  * Returns true if the option is disabled
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} option - Name of the option
@@ -593,6 +615,7 @@ DKTools.Scene.prototype.isOptionDisabled = function(option) {
 /**
  * Returns conjunction of the options
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String[] | ...String} object - Names of the options
@@ -608,6 +631,7 @@ DKTools.Scene.prototype.isOptionsDisabled = function(object) {
 /**
  * Returns disjunction of the options
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String[] | ...String} object - Names of the options
@@ -623,6 +647,7 @@ DKTools.Scene.prototype.isSomeOptionsDisabled = function(object) {
 /**
  * Returns true if some option is enabled
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @see DKTools.OptionManager.prototype.isSomeOptionEnabled
@@ -636,6 +661,7 @@ DKTools.Scene.prototype.isSomeOptionEnabled = function() {
 /**
  * Performs a callback function for the events
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} type - Type of the events
@@ -651,6 +677,7 @@ DKTools.Scene.prototype.iterateEventsContainer = function(type, callback) {
  * Checks the events for pause
  * Returns the conjunction of pauses of the events
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} type - Type of the events
@@ -668,6 +695,7 @@ DKTools.Scene.prototype.isEventsPaused = function(type) {
 /**
  * Pauses the events
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} type - Type of the events
@@ -684,6 +712,7 @@ DKTools.Scene.prototype.pauseEvents = function(type, duration) {
 /**
  * Removes the listener of change of the option
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} option - Name of the option
@@ -699,6 +728,7 @@ DKTools.Scene.prototype.removeOptionChangeListener = function(option, listener) 
  * Removes the event from a container
  * Returns true if the event was removed
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {DKTools.Event | DKTools.Animation} event - Event
@@ -714,6 +744,7 @@ DKTools.Scene.prototype.removeEvent = function(event) {
 /**
  * Resumes the events
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} type - Type of the events
@@ -726,13 +757,22 @@ DKTools.Scene.prototype.resumeEvents = function(type) {
 
 /**
  * Removes the window from the scene
+ * Returns true if the window is removed
+ *
+ * @version 8.3.0
  *
  * @param {DKTools.Window | *} window - Window to remove
+ *
+ * @returns {Boolean} Window is removed
  */
 DKTools.Scene.prototype.removeWindow = function(window) {
     if (this.hasWindowLayer() && this.isChild(window)) {
         this._windowLayer.removeChild(window);
+
+        return true;
     }
+
+    return false;
 };
 
 // S methods
@@ -831,6 +871,7 @@ DKTools.Scene.prototype.stopAll = function() {
 /**
  * Stops the events
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} type - Type of the events
@@ -845,6 +886,7 @@ DKTools.Scene.prototype.stopEvents = function(type, forcedSuccess = false) {
 /**
  * Switches the option
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} option - Name of the option
@@ -858,6 +900,7 @@ DKTools.Scene.prototype.switchOption = function(option) {
 /**
  * Switches the options
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String[] | ...String} object - Names of the options
@@ -951,6 +994,7 @@ DKTools.Scene.prototype.updateEvents = function() {
 /**
  * Updates the event
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {DKTools.Event | DKTools.Animation} event - Event
@@ -964,6 +1008,7 @@ DKTools.Scene.prototype.updateEvent = function(event) {
 /**
  * Updates the events from container
  *
+ * @deprecated 8.3.0
  * @since 2.0.0
  *
  * @param {String} type - Type of the events
@@ -977,39 +1022,42 @@ DKTools.Scene.prototype.updateEventsContainer = function(type) {
 /**
  * Updates the events with type: ready
  *
+ * @version 8.3.0
  * @since 2.0.0
  *
  * @see DKTools.EventManager.prototype.updateEventsContainer
  */
 DKTools.Scene.prototype.updateReadyEvents = function() {
     if (this.isReady()) {
-        this.updateEventsContainer('ready');
+        this._eventManager.updateEventsContainer('ready');
     }
 };
 
 /**
  * Updates the events with type: update
  *
+ * @version 8.3.0
  * @since 2.0.0
  *
  * @see DKTools.EventManager.prototype.updateEventsContainer
  */
 DKTools.Scene.prototype.updateUpdateEvents = function() {
-    this.updateEventsContainer('update');
+    this._eventManager.updateEventsContainer('update');
 };
 
 /**
  * Updates the events with type: queue
  *
+ * @version 8.3.0
  * @since 2.0.0
  *
  * @see DKTools.EventManager.prototype.updateEventsContainer
  */
 DKTools.Scene.prototype.updateQueueEvents = function() {
-    const container = this.getEventsContainerByType('queue');
+    const container = this._eventManager.getEventsContainerByType('queue');
     const event = container[0];
 
-    this.updateEvent(event);
+    this._eventManager.updateEvent(event);
 };
 
 

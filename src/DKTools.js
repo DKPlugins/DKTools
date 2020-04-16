@@ -3,7 +3,7 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 8.2.0
+Version: 8.3.0
 Release: 31.10.2019
 First release: 13.01.2016
 Supported languages: Russian, English
@@ -14,14 +14,14 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 8.2.0
+Версия: 8.3.0
 Релиз: 31.10.2019
 Первый релиз: 13.01.2016
 Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.8.2.0 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.8.3.0 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,7 +29,7 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 8.2.0
+ Version: 8.3.0
  Release: 31.10.2019
  First release: 13.01.2016
  Supported languages: Russian, English
@@ -288,7 +288,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Preloading resources
  * @type struct<PreloadManager>
- * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]"}
+ * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]","Progress":"{\"Enabled\":\"false\",\"Background\":\"\",\"Progress Bar Width\":\"Graphics.boxWidth * 2 / 4\",\"Progress Bar Height\":\"48\",\"Progress Bar X\":\"(Graphics.boxWidth - width) * 2 / 4\",\"Progress Bar Y\":\"(Graphics.boxHeight - height) * 2 / 4\",\"Progress Bar Background Color\":\"grey\",\"Progress Bar Progress Color\":\"#33ccff\",\"Progress Bar Text\":\"Loading: %1\"}"}
 
  * @param Screenshots
  * @parent Functions
@@ -299,7 +299,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.8.2.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.8.3.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -307,7 +307,7 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 8.2.0
+ Версия: 8.3.0
  Релиз: 31.10.2019
  Первый релиз: 13.01.2016
  Поддерживаемые языки: Русский, Английский
@@ -588,7 +588,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Предварительная загрузка ресурсов
  * @type struct<PreloadManager>
- * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]"}
+ * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]","Progress":"{\"Enabled\":\"false\",\"Background\":\"\",\"Progress Bar Width\":\"Graphics.boxWidth * 2 / 4\",\"Progress Bar Height\":\"48\",\"Progress Bar X\":\"(Graphics.boxWidth - width) * 2 / 4\",\"Progress Bar Y\":\"(Graphics.boxHeight - height) * 2 / 4\",\"Progress Bar Background Color\":\"grey\",\"Progress Bar Progress Color\":\"#33ccff\",\"Progress Bar Text\":\"Загрузка: %1\"}"}
 
  * @param Screenshots
  * @text Скриншоты
@@ -818,7 +818,10 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default false
 
  * @param Scene Name
- * @desc Name of scene which will be launched instead the title screen. Standard: Scene_Map
+ * @desc Name of scene which will be launched instead the title screen. Standard: Scene_Title
+ * @type combo
+ * @option Scene_Map
+ * @option Scene_Title
  * @default Scene_Map
 
  * @param Skip Saves
@@ -838,7 +841,10 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Scene Name
  * @text Название сцены
- * @desc Название сцены, которая запускается вместо титульного экрана. Стандартно: Scene_Map
+ * @desc Название сцены, которая запускается вместо титульного экрана. Стандартно: Scene_Title
+ * @type combo
+ * @option Scene_Map
+ * @option Scene_Title
  * @default Scene_Map
 
  * @param Skip Saves
@@ -911,6 +917,11 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<PreloadManagerImage>[]
  * @default []
 
+ * @param Progress Bar
+ * @desc Preloading process display
+ * @type struct<PreloadManagerProgressBar>
+ * @default {"Enabled":"false","Background":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Progress Bar Text":"Loading: %1"}
+
  */
 
 /*~struct~PreloadManager:ru
@@ -938,6 +949,12 @@ E-mail: kuznetsovdenis96@gmail.com
  * @desc Предзагрузка изображений
  * @type struct<PreloadManagerImage>[]
  * @default []
+
+ * @param Progress Bar
+ * @text Прогресс
+ * @desc Отображение процесса предзагрузки
+ * @type struct<PreloadManagerProgressBar>
+ * @default {"Enabled":"false","Background":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Progress Bar Text":"Загрузка: %1"}
 
  */
 
@@ -1011,6 +1028,155 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default false
 
  */
+
+/*~struct~PreloadManagerProgressBar:
+
+ * @param Enabled
+ * @desc Enable visual display of preloading ?
+ * @type boolean
+ * @default false
+
+ * @param Background
+ * @desc Background picture
+ * @type file
+ * @dir img/system
+
+ * @param Progress Bar Width
+ * @desc Width of the progress bar
+ * @type combo
+ * @option Graphics.boxWidth * 1 / 4
+ * @option Graphics.boxWidth * 2 / 4
+ * @option Graphics.boxWidth * 3 / 4
+ * @default Graphics.boxWidth * 2 / 4
+
+ * @param Progress Bar Height
+ * @desc Height of the progress bar
+ * @type combo
+ * @option 36
+ * @option 42
+ * @option 48
+ * @default 48
+
+ * @param Progress Bar X
+ * @desc The X coordinate of the progress bar
+ * @type combo
+ * @option (Graphics.boxWidth - width) * 1 / 4
+ * @option (Graphics.boxWidth - width) * 2 / 4
+ * @option (Graphics.boxWidth - width) * 3 / 4
+ * @option (Graphics.boxWidth - width) * 1 / 5
+ * @option (Graphics.boxWidth - width) * 1 / 6
+ * @option (Graphics.boxWidth - width) * 4 / 5
+ * @option (Graphics.boxWidth - width) * 5 / 6
+ * @default (Graphics.boxWidth - width) * 2 / 4
+
+ * @param Progress Bar Y
+ * @desc The Y coordinate of the progress bar
+ * @type combo
+ * @option (Graphics.boxHeight - height) * 1 / 4
+ * @option (Graphics.boxHeight - height) * 2 / 4
+ * @option (Graphics.boxHeight - height) * 3 / 4
+ * @option (Graphics.boxHeight - height) * 1 / 5
+ * @option (Graphics.boxHeight - height) * 1 / 6
+ * @option (Graphics.boxHeight - height) * 4 / 5
+ * @option (Graphics.boxHeight - height) * 5 / 6
+ * @default (Graphics.boxHeight - height) * 2 / 4
+
+ * @param Progress Bar Background Color
+ * @desc Progress bar background color
+ * @type combo
+ * @option grey
+ * @default grey
+
+ * @param Progress Bar Progress Color
+ * @desc Progress bar progress color
+ * @type combo
+ * @option #33ccff
+ * @default #33ccff
+
+ * @param Progress Bar Text
+ * @desc Progress bar text. Use to substitute: %1 - url, %2 - loaded, %3 - total
+ * @default Loading: %1
+
+*/
+
+/*~struct~PreloadManagerProgressBar:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить визуальное отображение загрузки ?
+ * @type boolean
+ * @default false
+
+ * @param Background
+ * @text Фоновое изображение
+ * @desc Фоновое изображение
+ * @type file
+ * @dir img/system
+
+ * @param Progress Bar Width
+ * @text Ширина прогресс бара
+ * @desc Ширина прогресс бара
+ * @type combo
+ * @option Graphics.boxWidth * 1 / 4
+ * @option Graphics.boxWidth * 2 / 4
+ * @option Graphics.boxWidth * 3 / 4
+ * @default Graphics.boxWidth * 2 / 4
+
+ * @param Progress Bar Height
+ * @text Высота прогресс бара
+ * @desc Высота прогресс бара
+ * @type combo
+ * @option 36
+ * @option 42
+ * @option 48
+ * @default 48
+
+ * @param Progress Bar X
+ * @text X прогресс бара
+ * @desc X прогресс бара
+ * @type combo
+ * @option (Graphics.boxWidth - width) * 1 / 4
+ * @option (Graphics.boxWidth - width) * 2 / 4
+ * @option (Graphics.boxWidth - width) * 3 / 4
+ * @option (Graphics.boxWidth - width) * 1 / 5
+ * @option (Graphics.boxWidth - width) * 1 / 6
+ * @option (Graphics.boxWidth - width) * 4 / 5
+ * @option (Graphics.boxWidth - width) * 5 / 6
+ * @default (Graphics.boxWidth - width) * 2 / 4
+
+ * @param Progress Bar Y
+ * @text Y прогресс бара
+ * @desc Y прогресс бара
+ * @type combo
+ * @option (Graphics.boxHeight - height) * 1 / 4
+ * @option (Graphics.boxHeight - height) * 2 / 4
+ * @option (Graphics.boxHeight - height) * 3 / 4
+ * @option (Graphics.boxHeight - height) * 1 / 5
+ * @option (Graphics.boxHeight - height) * 1 / 6
+ * @option (Graphics.boxHeight - height) * 4 / 5
+ * @option (Graphics.boxHeight - height) * 5 / 6
+ * @default (Graphics.boxHeight - height) * 2 / 4
+
+ * @param Progress Bar Background Color
+ * @text Фон прогресс бара
+ * @desc Фон прогресс бара в веб формате
+ * @type combo
+ * @option grey
+ * @default grey
+
+ * @param Progress Bar Progress Color
+ * @text Цвет прогресс бара
+ * @desc Цвет прогресс бара в веб формате
+ * @type combo
+ * @option #33ccff
+ * @default #33ccff
+
+ * @param Progress Bar Text
+ * @text Текст прогресс бара
+ * @desc Текст прогресс бара. Используйте, чтобы подставить: %1 - файл, %2 - загружено, %3 - всего
+ * @default Загрузка: %1
+
+*/
 
 /*~struct~Screenshots:
 

@@ -702,6 +702,7 @@ DKTools.Base = class {
     /**
      * Turns off the option
      *
+     * @deprecated 8.3.0
      * @version 2.0.0
      *
      * @param {String} option - Name of the option
@@ -715,6 +716,7 @@ DKTools.Base = class {
     /**
      * Turns off the options
      *
+     * @deprecated 8.3.0
      * @version 2.0.0
      *
      * @param {String[] | ...String} object - Names of the options
@@ -1671,6 +1673,7 @@ DKTools.Base = class {
     /**
      * Turns on the option
      *
+     * @deprecated 8.3.0
      * @version 2.0.0
      *
      * @param {String} option - Name of the option
@@ -1684,6 +1687,7 @@ DKTools.Base = class {
     /**
      * Turns on the options
      *
+     * @deprecated 8.3.0
      * @version 2.0.0
      *
      * @param {String[] | ...String} object - Names of the options
@@ -4131,6 +4135,7 @@ DKTools.Base = class {
     /**
      * Switches the option
      *
+     * @deprecated 8.3.0
      * @version 2.0.0
      *
      * @param {String} option - Name of the option
@@ -4144,6 +4149,7 @@ DKTools.Base = class {
     /**
      * Switches the options
      *
+     * @deprecated 8.3.0
      * @version 2.0.0
      *
      * @param {String[] | ...String} object - Names of the options

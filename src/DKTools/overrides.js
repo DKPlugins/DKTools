@@ -622,7 +622,7 @@ DataManager.isDatabaseLoaded = function() {
 };
 
 DataManager.onDatabaseLoad = function() {
-    DKTools.PreloadManager.initialize();
+    // to be overriden by plugins
 };
 
 
@@ -1006,15 +1006,95 @@ Scene_Base.prototype.terminate = function() {
 // Scene_Boot
 //===========================================================================
 
+const DKTools_Scene_Boot_create = Scene_Boot.prototype.create;
+Scene_Boot.prototype.create = function() {
+    DKTools_Scene_Boot_create.call(this);
+
+    const params = DKToolsParam.get('Preload Manager', 'Progress Bar');
+
+    this._showProgressBar = params.Enabled && DKTools.PreloadManager.isEnabled();
+
+    if (this._showProgressBar) {
+        if (params.Background) {
+            this._background = new DKTools.Sprite();
+
+            this._background.loadSystem(params.Background);
+
+            this.addChild(this._background);
+        }
+
+        this.createProgressBar(params);
+    }
+};
+
+Scene_Boot.prototype.createProgressBar = function(params) {
+    const width = eval(params['Progress Bar Width']);
+    const height = eval(params['Progress Bar Height']);
+    const x = eval(params['Progress Bar X']);
+    const y = eval(params['Progress Bar Y']);
+
+    this._progressBar = new DKTools.Sprite.ProgressBar.Rectangle(x, y, width, height);
+
+    this._progressBar.setupBackgroundColor(params['Progress Bar Background Color'])
+    this._progressBar.setupProgressColor(params['Progress Bar Progress Color']);
+    this._progressBar.setupMaxValue(DKTools.PreloadManager.getTotal());
+    this._progressBar.setupValue(0);
+
+    this._progressBar.start();
+
+    this._progressBar.setupDrawTextHandler(function() {
+        const text = params['Progress Bar Text'].format(...this._data);
+
+        this.drawText(text, { height: this.height });
+    }.bind(this._progressBar));
+
+    this.addChild(this._progressBar);
+};
+
 const DKTools_Scene_Boot_isReady = Scene_Boot.prototype.isReady;
 Scene_Boot.prototype.isReady = function() {
-    return DKTools_Scene_Boot_isReady.call(this)
-        && DKTools.StartupManager.isReady()
-        && DKTools.PreloadManager.isReady();
+    if (!DKTools_Scene_Boot_isReady.call(this) || !DKTools.StartupManager.isReady()) {
+        return false;
+    }
+
+    if (!this._showProgressBar) {
+        return DKTools.PreloadManager.isReady();
+    }
+
+    return true;
 };
 
 const DKTools_Scene_Boot_start = Scene_Boot.prototype.start;
 Scene_Boot.prototype.start = function() {
+    if (this._showProgressBar && !DKTools.PreloadManager.isFinished()) {
+        const total = DKTools.PreloadManager.getTotal();
+        const maxFrames = 180;
+        const repeatTime = (total > maxFrames ? 1 : Math.ceil(maxFrames / total));
+
+        DKTools.PreloadManager.onFileLoad((data) => {
+            this._progressBar.addEvent({
+                type: 'queue',
+                repeats: 0,
+                repeatTime,
+                onStart: () => {
+                    this._progressBar._data = [data.file.url, data.loaded, data.total];
+                    this._progressBar.nextValue();
+                }
+            });
+        });
+
+        this._progressBar.addOneTimeEvent({
+            type: 'full',
+            onSuccess: () => {
+                this.start();
+            }
+        });
+
+        DKTools.PreloadManager.start();
+
+        return;
+    }
+
     const quickStart = DKToolsParam.get('Quick Start');
 
     if (quickStart['Enabled']) {

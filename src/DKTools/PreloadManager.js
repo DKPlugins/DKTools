@@ -21,32 +21,33 @@ DKTools.PreloadManager = class {
     /**
      * Initializes the manager
      *
+     * @version 8.3.0
      * @static
      */
     static initialize() {
         this.clearCache();
 
-        const param = DKToolsParam.get('Preload Manager');
+        const params = DKToolsParam.get('Preload Manager');
 
         /**
          * @private
          * @readonly
          * @type {Boolean}
          */
-        this._enabled = param['Enabled'];
+        this._enabled = params['Enabled'];
 
         if (!this.isEnabled()) {
             return;
         }
 
-        _.forEach(param['Audio Files'], data => {
+        params['Audio Files'].forEach((data) => {
             this.preloadAudio({
                 path: data.Path,
                 caching: data.Caching
             });
         });
 
-        _.forEach(param['Image Files'], data => {
+        params['Image Files'].forEach((data) => {
             this.preloadImage({
                 path: data.Path,
                 hue: data.Hue,
@@ -54,7 +55,24 @@ DKTools.PreloadManager = class {
             });
         });
 
-        this.start();
+        const progressParams = params['Progress Bar'];
+        let start = false;
+
+        if (!progressParams.Enabled) {
+            start = true;
+
+            this.onFileLoad(() => {
+                Graphics.updateLoading();
+            });
+
+            this.onFinish(() => {
+                Graphics.endLoading();
+            });
+        }
+
+        if (start) {
+            this.start();
+        }
     }
 
     // C methods
@@ -94,6 +112,7 @@ DKTools.PreloadManager = class {
     /**
      * Finishes the preloading
      *
+     * @version 8.3.0
      * @private
      * @static
      *
@@ -104,11 +123,33 @@ DKTools.PreloadManager = class {
 
         this.clearQueue();
 
-        this._log('Preloading complete! \n' +
-            'Loaded/Skipped/Total: ' + this._loaded + '/' + this._skipped + '/' + this._total + '\n' +
-            'Preloading time: ' + (this._finishTime - this._startTime) / 1000 + ' sec');
+        const preloadingTime = (this._finishTime - this._startTime) / 1000;
+        const total = this.getTotal();
 
-        Graphics.endLoading();
+        this._log('Preloading complete! \n' +
+            'Loaded/Skipped/Total: ' + this._loaded + '/' + this._skipped + '/' + total + '\n' +
+            'Preloading time: ' + preloadingTime + ' sec');
+
+        if (this._finishListeners) {
+            const data = {
+                loaded: this._loaded,
+                skipped: this._skipped,
+                preloadingTime,
+                total
+            };
+
+            while (this._finishListeners.length > 0) {
+                const handler = this._finishListeners.shift();
+
+                handler(data);
+            }
+
+            delete this._finishListeners;
+        }
+
+        if (this._fileLoadListeners) {
+            delete this._fileLoadListeners;
+        }
     }
 
     // G methods
@@ -206,6 +247,19 @@ DKTools.PreloadManager = class {
      */
     static getCachedImageByPath(path) {
         return this.getCachedImageByKey(this._generateImageKey(path));
+    }
+
+    /**
+     * Returns the total amount of resources to preload
+     *
+     * @static
+     *
+     * @since 8.3.0
+     *
+     * @returns {Number} Total amount of resources to preload
+     */
+    static getTotal() {
+        return _.size(this._queue.audio) + _.size(this._queue.image);
     }
 
     // I methods
@@ -328,6 +382,7 @@ DKTools.PreloadManager = class {
     /**
      * Processes the loading of the data
      *
+     * @version 8.3.0
      * @since 5.0.0
      * @private
      * @static
@@ -339,7 +394,57 @@ DKTools.PreloadManager = class {
 
         this._log(`Loaded ${data instanceof WebAudio ? 'audio': 'image'}: ${data.url}`);
 
-        Graphics.updateLoading();
+        if (this._fileLoadListeners) {
+            const obj = {
+                file: data,
+                loadded: this._loaded,
+                total: this.getTotal()
+            };
+
+            this._fileLoadListeners.forEach((callback) => {
+                callback(obj);
+            });
+        }
+    }
+
+    /**
+     * Adds a callback function to handle file load
+     * All callback functions will be cleared after the preload is finished
+     * Callback function takes 1 argument - object with following properties:
+     * file (WebAudio or Bitmap), loaded, total
+     *
+     * @static
+     *
+     * @since 8.3.0
+     *
+     * @param {Function} callback
+     */
+    static onFileLoad(callback) {
+        if (!this._fileLoadListeners) {
+            this._fileLoadListeners = [];
+        }
+
+        this._fileLoadListeners.push(callback);
+    }
+
+    /**
+     * Adds a callback function to handle finish of preloading
+     * All callback functions will be cleared after the preload is finished
+     * Callback function takes 1 argument - object with following properties:
+     * loaded, skipped, preloadingTime (seconds), total
+     *
+     * @static
+     *
+     * @since 8.3.0
+     *
+     * @param {Function} callback
+     */
+    static onFinish(callback) {
+        if (!this._finishListeners) {
+            this._finishListeners = [];
+        }
+
+        this._finishListeners.push(callback);
     }
 
     // P methods
@@ -378,7 +483,7 @@ DKTools.PreloadManager = class {
                         files = entity.getImageFiles(options).data;
                     }
 
-                    _.forEach(files, file => {
+                    files.forEach((file) => {
                         const fullPath = file.getFullPath();
 
                         if (this._queue[type][fullPath]) {
@@ -427,7 +532,7 @@ DKTools.PreloadManager = class {
     static _processLoadAudioFiles() {
         const buffers = [];
 
-        _.forEach(this._queue.audio, data => {
+        _.forEach(this._queue.audio, (data) => {
             const file = new DKTools.IO.File(data.path);
             const fullPath = file.getFullPath();
 
@@ -462,7 +567,7 @@ DKTools.PreloadManager = class {
             }
         });
 
-        return _.map(buffers, buffer => DKTools.Utils.WebAudio.loadAsync(buffer).then(() => this._onFileLoad(buffer)));
+        return buffers.map(buffer => DKTools.Utils.WebAudio.loadAsync(buffer).then(() => this._onFileLoad(buffer)));
     }
 
     /**
@@ -477,7 +582,7 @@ DKTools.PreloadManager = class {
     static _processLoadImageFiles() {
         const bitmaps = [];
 
-        _.forEach(this._queue.image, data => {
+        _.forEach(this._queue.image, (data) => {
             const file = new DKTools.IO.File(data.path);
             const fullPath = file.getFullPath();
 
@@ -516,7 +621,7 @@ DKTools.PreloadManager = class {
             }
         });
 
-        return _.map(bitmaps, bitmap => DKTools.Utils.Bitmap.loadAsync(bitmap).then(() => this._onFileLoad(bitmap)));
+        return bitmaps.map(bitmap => DKTools.Utils.Bitmap.loadAsync(bitmap).then(() => this._onFileLoad(bitmap)));
     }
 
     /**
@@ -613,7 +718,7 @@ DKTools.PreloadManager = class {
     /**
      * Starts the preloading
      *
-     * @version 5.0.0
+     * @version 8.3.0
      * @static
      */
     static start() {
@@ -621,25 +726,27 @@ DKTools.PreloadManager = class {
             return;
         }
 
+        const total = this.getTotal();
+
         this._loaded = 0;
         this._skipped = 0;
-        this._total = _.size(this._queue.audio) + _.size(this._queue.image);
         this._startTime = new Date();
         this._finishTime = null;
 
-        this._log('DKTools Preload Manager is running... \n' +
-            'Total files to load: ' + this._total);
-
-        if (this._total === 0) {
+        if (total === 0) {
             this._finish();
 
             return;
         }
 
+        this._log('DKTools Preload Manager is running... \n' +
+            'Total files to load: ' + total);
+
         const audioPromise = Promise.all(this._processLoadAudioFiles());
         const imagePromise = Promise.all(this._processLoadImageFiles());
 
-        Promise.all([audioPromise, imagePromise]).then(() => this._finish());
+        Promise.all([audioPromise, imagePromise])
+            .then(() => this._finish());
     }
 
 };
