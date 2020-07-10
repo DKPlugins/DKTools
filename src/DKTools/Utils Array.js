@@ -78,6 +78,7 @@ DKTools.Utils.Array = class {
     /**
      * Checks whether the array contains a given item
      *
+     * @deprecated 9.0.0
      * @static
      *
      * @param {Array} array - The array in which the search is performed
@@ -243,6 +244,7 @@ DKTools.Utils.Array = class {
     /**
      * Checks whether the array is empty
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      * @static
      *
@@ -427,11 +429,7 @@ DKTools.Utils.Array = class {
      * @returns {Number} Sum of array values
      */
     static sum(array) {
-        return _.reduce(array, (acc, value) => {
-            acc += value;
-
-            return acc;
-        }, 0);
+        return _.reduce(array, (acc, value) => acc + value, 0);
     }
 
 };

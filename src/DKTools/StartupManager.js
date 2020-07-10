@@ -39,12 +39,12 @@ DKTools.StartupManager = class {
     /**
      * Initializes modules
      *
-     * @version 8.3.0
+     * @version 9.0.0
      * @static
      * @async
      */
     static async initializeModules() {
-        DKTools.PreloadManager.initialize();
+        // to be overriden by plugins
     }
 
     // C methods

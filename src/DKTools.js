@@ -3,10 +3,9 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 8.3.0
-Release: 31.10.2019
+Version: 9.0.0
+Release: 11.06.2020
 First release: 13.01.2016
-Supported languages: Russian, English
 */
 
 /*ru
@@ -14,14 +13,13 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 8.3.0
-Релиз: 31.10.2019
+Версия: 9.0.0
+Релиз: 11.06.2020
 Первый релиз: 13.01.2016
-Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.8.3.0 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.9.0.0 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,11 +27,13 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 8.3.0
- Release: 31.10.2019
+ Version: 9.0.0
+ Release: 11.06.2020
  First release: 13.01.2016
- Supported languages: Russian, English
- Thank you for your support: https://dk-plugins.ru/donate
+
+ ### Support ###
+ Donate: https://dk-plugins.ru/donate
+ Become a patron: https://www.patreon.com/dkplugins
 
  ### DKTools on DKPlugins ###
  https://dk-plugins.ru/mv/dktools/
@@ -57,7 +57,7 @@ E-mail: kuznetsovdenis96@gmail.com
  Nwjs - standard file system mode (PC only)
 
  In the Nwjs + Stamp mode, each time you start a game test, the plugin scans
- project files and saves data to the file "data/stamp.json"
+ project files and saves data to the file "data/Stamp.json"
 
  Data can also be updated using the plugin command UpdateFileSystemStamp
 
@@ -136,8 +136,8 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.Event
  DKTools.Animation
  DKTools.Animation.Action
- DKTools.OptionManager
- DKTools.EventManager
+ DKTools.OptionsManager
+ DKTools.EventsManager
  DKTools.Unit
  DKTools.Unit.Property
  DKTools.Unit.Properties
@@ -160,7 +160,6 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.Scene
 
  ### Licenses and terms of use ###
-
  DKTools uses a third-party library "lodash": https://lodash.com/license
 
  Recent information about the terms of use: https://dk-plugins.ru/terms-of-use
@@ -200,17 +199,38 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<TileSize>
  * @default {"Enabled":"false","Size":"48","Tilesets Folder":"img/tilesets/","Parallaxes Folder":"img/parallaxes/"}
 
- * @param Image Cache Limit
- * @parent System
- * @desc Image cache limit
- * @type struct<ImageCacheLimit>
- * @default {"Enabled":"false","Limit":"10000000"}
-
  * @param Cursor Graphic
  * @parent System
  * @desc Cursor graphic
  * @type struct<CursorGraphic>
  * @default {"Enabled":"false","Graphic": ""}
+
+ * @param Preloading
+ * @default ---------------------------------
+
+ * @param Initial Preloading
+ * @parent Preloading
+ * @desc Initial preloading of resources
+ * @type struct<PreloadManager>
+ * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]","Progress Bar":"{\"Enabled\":\"false\",\"Background\":\"\",\"Progress Bar X\":\"(Graphics.boxWidth - width) * 2 / 4\",\"Progress Bar Y\":\"(Graphics.boxHeight - height) * 2 / 4\",\"Progress Bar Text\":\"Loading: %1\",\"Progress Bar Text Size\":\"28\",\"Progress Bar Style\":\"colors\",\"Colors Style\":\"\",\"Progress Bar Width\":\"Graphics.boxWidth * 2 / 4\",\"Progress Bar Height\":\"48\",\"Progress Bar Background Color\":\"grey\",\"Progress Bar Progress Color\":\"#33ccff\",\"Images Style\":\"\",\"Progress Bar Background Image\":\"\",\"Progress Bar Progress Image\":\"\"}"}
+
+ * @param Maps Preloading
+ * @parent Preloading
+ * @desc Maps preloading
+ * @type struct<MapsPreloading>
+ * @default {"Enabled":"false","Debugging":"false","Maps":"[]"}
+
+ * @param Audio Cache Limit
+ * @parent Preloading
+ * @desc Audio cache limit
+ * @type struct<AudioCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
+
+ * @param Image Cache Limit
+ * @parent Preloading
+ * @desc Image cache limit
+ * @type struct<ImageCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
 
  * @param Windows
  * @default ---------------------------------
@@ -284,12 +304,6 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<QuickLoad>
  * @default {"Enabled":"false","Key Code":"117"}
 
- * @param Preload Manager
- * @parent Functions
- * @desc Preloading resources
- * @type struct<PreloadManager>
- * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]","Progress":"{\"Enabled\":\"false\",\"Background\":\"\",\"Progress Bar Width\":\"Graphics.boxWidth * 2 / 4\",\"Progress Bar Height\":\"48\",\"Progress Bar X\":\"(Graphics.boxWidth - width) * 2 / 4\",\"Progress Bar Y\":\"(Graphics.boxHeight - height) * 2 / 4\",\"Progress Bar Background Color\":\"grey\",\"Progress Bar Progress Color\":\"#33ccff\",\"Progress Bar Text\":\"Loading: %1\"}"}
-
  * @param Screenshots
  * @parent Functions
  * @desc Screenshots
@@ -299,7 +313,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.8.3.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.9.0.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -307,11 +321,13 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 8.3.0
- Релиз: 31.10.2019
+ Версия: 9.0.0
+ Релиз: 11.06.2020
  Первый релиз: 13.01.2016
- Поддерживаемые языки: Русский, Английский
- Спасибо за Вашу поддержку: https://dk-plugins.ru/donate
+
+ ### Поддержка ###
+ Поддержать: https://dk-plugins.ru/donate
+ Стать патроном: https://www.patreon.com/dkplugins
 
  ### DKTools на DKPlugins ###
  https://dk-plugins.ru/mv/dktools/
@@ -414,8 +430,8 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.Event
  DKTools.Animation
  DKTools.Animation.Action
- DKTools.OptionManager
- DKTools.EventManager
+ DKTools.OptionsManager
+ DKTools.EventsManager
  DKTools.Unit
  DKTools.Unit.Property
  DKTools.Unit.Properties
@@ -438,7 +454,6 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.Scene
 
  ### Лицензии и правила использования плагина ###
-
  DKTools использует стороннюю библиотеку "lodash": https://lodash.com/license
 
  Актуальная информация о правилах использования: https://dk-plugins.ru/terms-of-use
@@ -483,19 +498,44 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<TileSize>
  * @default {"Enabled":"false","Size":"48","Tilesets Folder":"img/tilesets/","Parallaxes Folder":"img/parallaxes/"}
 
- * @param Image Cache Limit
- * @text Лимит кэша изображений
- * @parent System
- * @desc Лимит кэша изображений
- * @type struct<ImageCacheLimit>
- * @default {"Enabled":"false","Limit":"10000000"}
-
  * @param Cursor Graphic
  * @text Графика курсора
  * @parent System
  * @desc Графика курсора
  * @type struct<CursorGraphic>
  * @default {"Enabled":"false","Graphic": ""}
+
+ * @param Preloading
+ * @text Предзагрузка
+ * @default ---------------------------------
+
+ * @param Initial Preloading
+ * @text Начальная предзагрузка
+ * @parent Preloading
+ * @desc Начальная предзагрузка
+ * @type struct<PreloadManager>
+ * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]","Progress Bar":"{\"Enabled\":\"false\",\"Background\":\"\",\"Progress Bar X\":\"(Graphics.boxWidth - width) * 2 / 4\",\"Progress Bar Y\":\"(Graphics.boxHeight - height) * 2 / 4\",\"Progress Bar Text\":\"Загрузка: %1\",\"Progress Bar Text Size\":\"28\",\"Progress Bar Style\":\"colors\",\"Colors Style\":\"\",\"Progress Bar Width\":\"Graphics.boxWidth * 2 / 4\",\"Progress Bar Height\":\"48\",\"Progress Bar Background Color\":\"grey\",\"Progress Bar Progress Color\":\"#33ccff\",\"Images Style\":\"\",\"Progress Bar Background Image\":\"\",\"Progress Bar Progress Image\":\"\"}"}
+
+ * @param Maps Preloading
+ * @text Предзагрузка карт
+ * @parent Preloading
+ * @desc Предварительная загрузка карт
+ * @type struct<MapsPreloading>
+ * @default {"Enabled":"false","Debugging":"false","Maps":"[]"}
+
+ * @param Audio Cache Limit
+ * @text Лимит кэша аудио
+ * @parent Preloading
+ * @desc Лимит кэша аудио
+ * @type struct<AudioCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
+
+ * @param Image Cache Limit
+ * @text Лимит кэша изображений
+ * @parent Preloading
+ * @desc Лимит кэша изображений
+ * @type struct<ImageCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
 
  * @param Windows
  * @text Окна
@@ -582,13 +622,6 @@ E-mail: kuznetsovdenis96@gmail.com
  * @desc Быстрая загрузка игры
  * @type struct<QuickLoad>
  * @default {"Enabled":"false","Key Code":"117"}
-
- * @param Preload Manager
- * @text Предзагрузка ресурсов
- * @parent Functions
- * @desc Предварительная загрузка ресурсов
- * @type struct<PreloadManager>
- * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]","Progress":"{\"Enabled\":\"false\",\"Background\":\"\",\"Progress Bar Width\":\"Graphics.boxWidth * 2 / 4\",\"Progress Bar Height\":\"48\",\"Progress Bar X\":\"(Graphics.boxWidth - width) * 2 / 4\",\"Progress Bar Y\":\"(Graphics.boxHeight - height) * 2 / 4\",\"Progress Bar Background Color\":\"grey\",\"Progress Bar Progress Color\":\"#33ccff\",\"Progress Bar Text\":\"Загрузка: %1\"}"}
 
  * @param Screenshots
  * @text Скриншоты
@@ -909,18 +942,19 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Audio Files
  * @desc Preloading audio files
- * @type struct<PreloadManagerAudio>[]
+ * @type file[]
+ * @dir audio/
  * @default []
 
  * @param Image Files
  * @desc Preloading image files
- * @type struct<PreloadManagerImage>[]
+ * @type struct<ImagePreloading>[]
  * @default []
 
  * @param Progress Bar
  * @desc Preloading process display
  * @type struct<PreloadManagerProgressBar>
- * @default {"Enabled":"false","Background":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Progress Bar Text":"Loading: %1"}
+ * @default {"Enabled":"false","Background":"","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Text":"Loading: %1","Progress Bar Text Size":"28","Progress Bar Style":"colors","Colors Style":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Images Style":"","Progress Bar Background Image":"","Progress Bar Progress Image":""}
 
  */
 
@@ -941,91 +975,21 @@ E-mail: kuznetsovdenis96@gmail.com
  * @param Audio Files
  * @text Звуки
  * @desc Предзагрузка звуков
- * @type struct<PreloadManagerAudio>[]
+ * @type file[]
+ * @dir audio/
  * @default []
 
  * @param Image Files
  * @text Изображения
  * @desc Предзагрузка изображений
- * @type struct<PreloadManagerImage>[]
+ * @type struct<ImagePreloading>[]
  * @default []
 
  * @param Progress Bar
  * @text Прогресс
  * @desc Отображение процесса предзагрузки
  * @type struct<PreloadManagerProgressBar>
- * @default {"Enabled":"false","Background":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Progress Bar Text":"Загрузка: %1"}
-
- */
-
-/*~struct~PreloadManagerImage:
-
- * @param Path
- * @desc The path to the file or directory. Details in the help.
- * @type file
-
- * @param Hue
- * @desc Hue
- * @type number
- * @min 0
- * @max 360
- * @default 0
-
- * @param Caching
- * @desc Image caching
- * @type boolean
- * @default false
-
- */
-
-/*~struct~PreloadManagerImage:ru
-
- * @param Path
- * @text Путь
- * @desc Путь к файлу или директории. Подробности в справке.
- * @type file
-
- * @param Hue
- * @text Оттенок
- * @desc Оттенок
- * @type number
- * @min 0
- * @max 360
- * @default 0
-
- * @param Caching
- * @text Кэширование
- * @desc Кэширование изображений
- * @type boolean
- * @default false
-
- */
-
-/*~struct~PreloadManagerAudio:
-
- * @param Path
- * @desc The path to the file or directory. Details in the help.
- * @type file
-
- * @param Caching
- * @desc Audio caching
- * @type boolean
- * @default false
-
- */
-
-/*~struct~PreloadManagerAudio:ru
-
- * @param Path
- * @text Путь
- * @desc Путь к файлу или директории. Подробности в справке.
- * @type file
-
- * @param Caching
- * @text Кэширование
- * @desc Кэширование звуков
- * @type boolean
- * @default false
+ * @default {"Enabled":"false","Background":"","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Text":"Загрузка: %1","Progress Bar Text Size":"28","Progress Bar Style":"colors","Colors Style":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Images Style":"","Progress Bar Background Image":"","Progress Bar Progress Image":""}
 
  */
 
@@ -1041,24 +1005,8 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type file
  * @dir img/system
 
- * @param Progress Bar Width
- * @desc Width of the progress bar
- * @type combo
- * @option Graphics.boxWidth * 1 / 4
- * @option Graphics.boxWidth * 2 / 4
- * @option Graphics.boxWidth * 3 / 4
- * @default Graphics.boxWidth * 2 / 4
-
- * @param Progress Bar Height
- * @desc Height of the progress bar
- * @type combo
- * @option 36
- * @option 42
- * @option 48
- * @default 48
-
  * @param Progress Bar X
- * @desc The X coordinate of the progress bar
+ * @desc The X coordinate of the progress bar. Use to substitute: width - width of progress bar, height - height of progress bar
  * @type combo
  * @option (Graphics.boxWidth - width) * 1 / 4
  * @option (Graphics.boxWidth - width) * 2 / 4
@@ -1070,7 +1018,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default (Graphics.boxWidth - width) * 2 / 4
 
  * @param Progress Bar Y
- * @desc The Y coordinate of the progress bar
+ * @desc The Y coordinate of the progress bar. Use to substitute: width - width of progress bar, height - height of progress bar
  * @type combo
  * @option (Graphics.boxHeight - height) * 1 / 4
  * @option (Graphics.boxHeight - height) * 2 / 4
@@ -1081,21 +1029,72 @@ E-mail: kuznetsovdenis96@gmail.com
  * @option (Graphics.boxHeight - height) * 5 / 6
  * @default (Graphics.boxHeight - height) * 2 / 4
 
+ * @param Progress Bar Text
+ * @desc Progress bar text. Use to substitute: %1 - url, %2 - loaded, %3 - total, %4 - percents
+ * @default Loading: %1
+
+ * @param Progress Bar Text Size
+ * @desc Progress bar text size
+ * @type number
+ * @min 1
+ * @default 28
+
+ * @param Progress Bar Style
+ * @desc Style of the progress bar
+ * @type select
+ * @option colors
+ * @option images
+ * @default colors
+
+ * @param Colors Style
+ * @text Style "colors"
+
+ * @param Progress Bar Width
+ * @parent Colors Style
+ * @desc Width of the progress bar
+ * @type combo
+ * @option Graphics.boxWidth * 1 / 4
+ * @option Graphics.boxWidth * 2 / 4
+ * @option Graphics.boxWidth * 3 / 4
+ * @default Graphics.boxWidth * 2 / 4
+
+ * @param Progress Bar Height
+ * @parent Colors Style
+ * @desc Height of the progress bar
+ * @type combo
+ * @option 36
+ * @option 42
+ * @option 48
+ * @default 48
+
  * @param Progress Bar Background Color
+ * @parent Colors Style
  * @desc Progress bar background color
  * @type combo
  * @option grey
  * @default grey
 
  * @param Progress Bar Progress Color
+ * @parent Colors Style
  * @desc Progress bar progress color
  * @type combo
  * @option #33ccff
  * @default #33ccff
 
- * @param Progress Bar Text
- * @desc Progress bar text. Use to substitute: %1 - url, %2 - loaded, %3 - total
- * @default Loading: %1
+ * @param Images Style
+ * @text Style "images"
+
+ * @param Progress Bar Background Image
+ * @parent Images Style
+ * @desc Background image of the progress bar
+ * @type file
+ * @dir img/system
+
+ * @param Progress Bar Progress Image
+ * @parent Images Style
+ * @desc Progress image of the progress bar
+ * @type file
+ * @dir img/system
 
 */
 
@@ -1113,27 +1112,9 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type file
  * @dir img/system
 
- * @param Progress Bar Width
- * @text Ширина прогресс бара
- * @desc Ширина прогресс бара
- * @type combo
- * @option Graphics.boxWidth * 1 / 4
- * @option Graphics.boxWidth * 2 / 4
- * @option Graphics.boxWidth * 3 / 4
- * @default Graphics.boxWidth * 2 / 4
-
- * @param Progress Bar Height
- * @text Высота прогресс бара
- * @desc Высота прогресс бара
- * @type combo
- * @option 36
- * @option 42
- * @option 48
- * @default 48
-
  * @param Progress Bar X
  * @text X прогресс бара
- * @desc X прогресс бара
+ * @desc X прогресс бара. Используйте, чтобы подставить: width - ширина прогресс бара, height - высота прогресс бара
  * @type combo
  * @option (Graphics.boxWidth - width) * 1 / 4
  * @option (Graphics.boxWidth - width) * 2 / 4
@@ -1146,7 +1127,7 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Progress Bar Y
  * @text Y прогресс бара
- * @desc Y прогресс бара
+ * @desc Y прогресс бара. Используйте, чтобы подставить: width - ширина прогресс бара, height - высота прогресс бара
  * @type combo
  * @option (Graphics.boxHeight - height) * 1 / 4
  * @option (Graphics.boxHeight - height) * 2 / 4
@@ -1157,8 +1138,54 @@ E-mail: kuznetsovdenis96@gmail.com
  * @option (Graphics.boxHeight - height) * 5 / 6
  * @default (Graphics.boxHeight - height) * 2 / 4
 
+ * @param Progress Bar Text
+ * @text Текст прогресс бара
+ * @desc Текст прогресс бара. Используйте, чтобы подставить: %1 - файл, %2 - загружено, %3 - всего, %4 - проценты
+ * @default Загрузка: %1
+
+ * @param Progress Bar Text Size
+ * @text Размер текста прогресс бара
+ * @desc Размер текста прогресс бара
+ * @type number
+ * @min 1
+ * @default 28
+
+ * @param Progress Bar Style
+ * @text Стиль прогресс бара
+ * @desc Стиль прогресс бара
+ * @type select
+ * @option цвета
+ * @value colors
+ * @option изображения
+ * @value images
+ * @default colors
+
+ * @param Colors Style
+ * @text Стиль "цвета"
+
+ * @param Progress Bar Width
+ * @text Ширина прогресс бара
+ * @parent Colors Style
+ * @desc Ширина прогресс бара
+ * @type combo
+ * @option Graphics.boxWidth * 1 / 4
+ * @option Graphics.boxWidth * 2 / 4
+ * @option Graphics.boxWidth * 3 / 4
+ * @default Graphics.boxWidth * 2 / 4
+
+ * @param Progress Bar Height
+ * @text Высота прогресс бара
+ * @parent Colors Style
+ * @desc Высота прогресс бара
+ * @type combo
+ * @option 36
+ * @option 42
+ * @option 48
+ * @default 48
+
  * @param Progress Bar Background Color
  * @text Фон прогресс бара
+ * @parent Colors Style
  * @desc Фон прогресс бара в веб формате
  * @type combo
  * @option grey
@@ -1166,17 +1193,150 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Progress Bar Progress Color
  * @text Цвет прогресс бара
+ * @parent Colors Style
  * @desc Цвет прогресс бара в веб формате
  * @type combo
  * @option #33ccff
  * @default #33ccff
 
- * @param Progress Bar Text
- * @text Текст прогресс бара
- * @desc Текст прогресс бара. Используйте, чтобы подставить: %1 - файл, %2 - загружено, %3 - всего
- * @default Загрузка: %1
+ * @param Images Style
+ * @text Стиль "изображения"
+
+ * @param Progress Bar Background Image
+ * @text Изображение заднего фона прогресс бара
+ * @parent Images Style
+ * @desc Изображение заднего фона прогресс бара
+ * @type file
+ * @dir img/system
+
+ * @param Progress Bar Progress Image
+ * @text Изображение прогресса прогресс бара
+ * @parent Images Style
+ * @desc Изображение прогресса прогресс бара
+ * @type file
+ * @dir img/system
 
 */
+
+/*~struct~MapsPreloading:
+
+ * @param Enabled
+ * @desc Enable maps preloading function ?
+ * @type boolean
+ * @default false
+
+ * @param Debugging
+ * @desc Display preload information in the console ?
+ * @type boolean
+ * @default false
+
+ * @param Maps
+ * @desc Maps
+ * @type struct<MapsPreloadingData>[]
+ * @default []
+
+*/
+
+/*~struct~MapsPreloading:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию предзагрузки карт ?
+ * @type boolean
+ * @default false
+
+ * @param Debugging
+ * @text Отладка
+ * @desc Выводить информацию о предзагрузке в консоль ?
+ * @type boolean
+ * @default false
+
+ * @param Maps
+ * @text Карты
+ * @desc Карты
+ * @type struct<MapsPreloadingData>[]
+ * @default []
+
+*/
+
+/*~struct~MapsPreloadingData:
+
+ * @param Map Id
+ * @desc Map id
+ * @type number
+ * @min 1
+ * @default 1
+
+ * @param Audio Files
+ * @desc Preloading audio files
+ * @type file[]
+ * @dir audio/
+ * @default []
+
+ * @param Image Files
+ * @desc Preloading image files
+ * @type struct<ImagePreloading>[]
+ * @default []
+
+*/
+
+/*~struct~MapsPreloadingData:ru
+
+ * @param Map Id
+ * @text Номер карты
+ * @desc Номер карты
+ * @type number
+ * @min 1
+ * @default 1
+
+ * @param Audio Files
+ * @text Звуки
+ * @desc Предзагрузка звуков
+ * @type file[]
+ * @dir audio/
+ * @default []
+
+ * @param Image Files
+ * @text Изображения
+ * @desc Предзагрузка изображений
+ * @type struct<ImagePreloading>[]
+ * @default []
+
+*/
+
+/*~struct~ImagePreloading:
+
+ * @param Path
+ * @desc The path to the file or directory. Details in the help.
+ * @type file
+ * @dir img/
+
+ * @param Hue
+ * @desc Hue
+ * @type number
+ * @min 0
+ * @max 360
+ * @default 0
+
+ */
+
+/*~struct~ImagePreloading:ru
+
+ * @param Path
+ * @text Путь
+ * @desc Путь к файлу или директории. Подробности в справке.
+ * @type file
+ * @dir img/
+
+ * @param Hue
+ * @text Оттенок
+ * @desc Оттенок
+ * @type number
+ * @min 0
+ * @max 360
+ * @default 0
+
+ */
 
 /*~struct~Screenshots:
 
@@ -1462,6 +1622,38 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default 3
 
  */
+
+/*~struct~AudioCacheLimit:
+
+ * @param Enabled
+ * @desc Enable the audio cache limit function ?
+ * @type boolean
+ * @default false
+
+ * @param Limit
+ * @desc Audio cache limit
+ * @type number
+ * @min 0
+ * @default 10000000
+
+*/
+
+/*~struct~AudioCacheLimit:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию изменения лимита кэша аудио ?
+ * @type boolean
+ * @default false
+
+ * @param Limit
+ * @text Лимит
+ * @desc Лимит кэша аудио
+ * @type number
+ * @min 0
+ * @default 10000000
+
+*/
 
 /*~struct~ImageCacheLimit:
 

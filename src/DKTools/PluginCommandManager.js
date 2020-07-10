@@ -35,6 +35,7 @@ DKTools.PluginCommandManager = class {
     /**
      * Processes the handler of the command
      *
+     * @version 9.0.0
      * @static
      *
      * @param {Game_Interpreter} gameInterpreter - Interpreter
@@ -42,6 +43,10 @@ DKTools.PluginCommandManager = class {
      * @param {Array} args - Arguments of the command
      */
     static process(gameInterpreter, pluginCommand, args) {
+        if (!pluginCommand) {
+            throw new Error(`Empty plugin command!`);
+        }
+
         const handler = this._pluginCommands[pluginCommand.toLowerCase()];
 
         if (DKTools.Utils.isFunction(handler)) {

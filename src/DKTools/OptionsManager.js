@@ -1,18 +1,18 @@
 //===========================================================================
-// DKTools.OptionManager
+// DKTools.OptionsManager
 //===========================================================================
 
 /**
  * Option manager class
  *
- * @class DKTools.OptionManager
+ * @class DKTools.OptionsManager
  *
- * @since 2.0.0
+ * @since 9.0.0
  * @memberof DKTools
  *
- * @see DKTools.OptionManager.prototype.initialize
+ * @see DKTools.OptionsManager.prototype.initialize
  */
-DKTools.OptionManager = class {
+DKTools.OptionsManager = class {
 
     constructor() {
         this.initialize.apply(this, arguments);
@@ -69,10 +69,10 @@ DKTools.OptionManager = class {
      *
      * @param {Boolean} [cloneListeners=false] - Clone the option change listeners
      *
-     * @returns {DKTools.OptionManager} Cloned manager
+     * @returns {DKTools.OptionsManager} Cloned manager
      */
     clone(cloneListeners = false) {
-        const optionManager = new DKTools.OptionManager();
+        const optionManager = new DKTools.OptionsManager();
 
         optionManager.enableOptions(this._options);
 
@@ -106,7 +106,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.disableOption
+     * @see DKTools.OptionsManager.prototype.disableOption
      */
     disableOptions(object) {
         const options = (arguments.length > 1 ? arguments : object);
@@ -133,7 +133,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.enableOption
+     * @see DKTools.OptionsManager.prototype.enableOption
      */
     enableOptions(object) {
         const options = (arguments.length > 1 ? arguments : object);
@@ -142,12 +142,12 @@ DKTools.OptionManager = class {
     }
 
     /**
-     * @param {DKTools.OptionManager} optionManager - Option manager
+     * @param {DKTools.OptionsManager} optionManager - Option manager
      *
      * @returns {Boolean}
      */
     equals(optionManager) {
-        return optionManager instanceof DKTools.OptionManager && _.isEqual(this._options, optionManager.options);
+        return optionManager instanceof DKTools.OptionsManager && _.isEqual(this._options, optionManager.options);
     }
 
     // I methods
@@ -157,7 +157,7 @@ DKTools.OptionManager = class {
      *
      * @param {String} option - Name of the option
      *
-     * @see DKTools.OptionManager.prototype.isOptionEnabled
+     * @see DKTools.OptionsManager.prototype.isOptionEnabled
      *
      * @returns {Boolean} Option is disabled
      */
@@ -183,7 +183,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isOptionDisabled
+     * @see DKTools.OptionsManager.prototype.isOptionDisabled
      *
      * @returns {Boolean} Conjunction of the options
      */
@@ -198,7 +198,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isOptionEnabled
+     * @see DKTools.OptionsManager.prototype.isOptionEnabled
      *
      * @returns {Boolean} Conjunction of the options
      */
@@ -222,7 +222,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isOptionDisabled
+     * @see DKTools.OptionsManager.prototype.isOptionDisabled
      *
      * @returns {Boolean} Disjunction of the options
      */
@@ -237,7 +237,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isOptionEnabled
+     * @see DKTools.OptionsManager.prototype.isOptionEnabled
      *
      * @returns {Boolean} Disjunction of the options
      */
@@ -284,9 +284,9 @@ DKTools.OptionManager = class {
      *
      * @param {String} option - Name of the option
      *
-     * @see DKTools.OptionManager.prototype.isOptionEnabled
-     * @see DKTools.OptionManager.prototype.disableOption
-     * @see DKTools.OptionManager.prototype.enableOption
+     * @see DKTools.OptionsManager.prototype.isOptionEnabled
+     * @see DKTools.OptionsManager.prototype.disableOption
+     * @see DKTools.OptionsManager.prototype.enableOption
      */
     switchOption(option) {
         if (this.isOptionEnabled(option)) {
@@ -301,7 +301,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.switchOption
+     * @see DKTools.OptionsManager.prototype.switchOption
      */
     switchOptions(object) {
         const options = (arguments.length > 1 ? arguments : object);
@@ -313,14 +313,14 @@ DKTools.OptionManager = class {
 
 // properties
 
-Object.defineProperties(DKTools.OptionManager, {
+Object.defineProperties(DKTools.OptionsManager, {
 
     /**
      * Options
      *
      * @readonly
      * @type {String[]}
-     * @memberof DKTools.OptionManager.prototype
+     * @memberof DKTools.OptionsManager.prototype
      */
     options: {
         get: function() {

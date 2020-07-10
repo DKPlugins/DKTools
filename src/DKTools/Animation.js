@@ -103,7 +103,7 @@ DKTools.Animation = class extends DKTools.Event {
      * @returns {Boolean} Animation has the actions
      */
     hasActions() {
-        return !DKTools.Utils.Array.isEmpty(this._actions);
+        return this._actions.length > 0;
     }
 
     // I methods

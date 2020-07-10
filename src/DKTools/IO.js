@@ -450,6 +450,20 @@ DKTools.IO = class {
         return this.absolutePathExists(this.getAbsolutePath(path));
     }
 
+    // R methods
+
+    /**
+     * Reverses slashes on "/"
+     *
+     * @since 9.0.0
+     * @static
+     * @param {String} path - Path
+     * @returns {String} Path with reversed slashes "/"
+     */
+    static reverseSlashes(path) {
+        return path.replace(/\\/g, '/');
+    }
+
     // S methods
 
     /**

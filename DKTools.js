@@ -3,10 +3,9 @@ Title: DKTools
 Author: DK (Denis Kuznetsov)
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 8.3.0
-Release: 31.10.2019
+Version: 9.0.0
+Release: 11.06.2020
 First release: 13.01.2016
-Supported languages: Russian, English
 */
 
 /*ru
@@ -14,14 +13,13 @@ Supported languages: Russian, English
 Автор: DK (Денис Кузнецов)
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 8.3.0
-Релиз: 31.10.2019
+Версия: 9.0.0
+Релиз: 11.06.2020
 Первый релиз: 13.01.2016
-Поддерживаемые языки: Русский, Английский
 */
 
 /*:
-* @plugindesc v.8.3.0 Library for RPG Maker. Made with ♥ by DKPlugins
+* @plugindesc v.9.0.0 Library for RPG Maker. Made with ♥ by DKPlugins
 * @author DK (Denis Kuznetsov)
 * @help
 
@@ -29,11 +27,13 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DK (Denis Kuznetsov)
  Site: https://dk-plugins.ru
- Version: 8.3.0
- Release: 31.10.2019
+ Version: 9.0.0
+ Release: 11.06.2020
  First release: 13.01.2016
- Supported languages: Russian, English
- Thank you for your support: https://dk-plugins.ru/donate
+
+ ### Support ###
+ Donate: https://dk-plugins.ru/donate
+ Become a patron: https://www.patreon.com/dkplugins
 
  ### DKTools on DKPlugins ###
  https://dk-plugins.ru/mv/dktools/
@@ -57,7 +57,7 @@ E-mail: kuznetsovdenis96@gmail.com
  Nwjs - standard file system mode (PC only)
 
  In the Nwjs + Stamp mode, each time you start a game test, the plugin scans
- project files and saves data to the file "data/stamp.json"
+ project files and saves data to the file "data/Stamp.json"
 
  Data can also be updated using the plugin command UpdateFileSystemStamp
 
@@ -136,8 +136,8 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.Event
  DKTools.Animation
  DKTools.Animation.Action
- DKTools.OptionManager
- DKTools.EventManager
+ DKTools.OptionsManager
+ DKTools.EventsManager
  DKTools.Unit
  DKTools.Unit.Property
  DKTools.Unit.Properties
@@ -160,7 +160,6 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.Scene
 
  ### Licenses and terms of use ###
-
  DKTools uses a third-party library "lodash": https://lodash.com/license
 
  Recent information about the terms of use: https://dk-plugins.ru/terms-of-use
@@ -200,17 +199,38 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<TileSize>
  * @default {"Enabled":"false","Size":"48","Tilesets Folder":"img/tilesets/","Parallaxes Folder":"img/parallaxes/"}
 
- * @param Image Cache Limit
- * @parent System
- * @desc Image cache limit
- * @type struct<ImageCacheLimit>
- * @default {"Enabled":"false","Limit":"10000000"}
-
  * @param Cursor Graphic
  * @parent System
  * @desc Cursor graphic
  * @type struct<CursorGraphic>
  * @default {"Enabled":"false","Graphic": ""}
+
+ * @param Preloading
+ * @default ---------------------------------
+
+ * @param Initial Preloading
+ * @parent Preloading
+ * @desc Initial preloading of resources
+ * @type struct<PreloadManager>
+ * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]","Progress Bar":"{\"Enabled\":\"false\",\"Background\":\"\",\"Progress Bar X\":\"(Graphics.boxWidth - width) * 2 / 4\",\"Progress Bar Y\":\"(Graphics.boxHeight - height) * 2 / 4\",\"Progress Bar Text\":\"Loading: %1\",\"Progress Bar Text Size\":\"28\",\"Progress Bar Style\":\"colors\",\"Colors Style\":\"\",\"Progress Bar Width\":\"Graphics.boxWidth * 2 / 4\",\"Progress Bar Height\":\"48\",\"Progress Bar Background Color\":\"grey\",\"Progress Bar Progress Color\":\"#33ccff\",\"Images Style\":\"\",\"Progress Bar Background Image\":\"\",\"Progress Bar Progress Image\":\"\"}"}
+
+ * @param Maps Preloading
+ * @parent Preloading
+ * @desc Maps preloading
+ * @type struct<MapsPreloading>
+ * @default {"Enabled":"false","Debugging":"false","Maps":"[]"}
+
+ * @param Audio Cache Limit
+ * @parent Preloading
+ * @desc Audio cache limit
+ * @type struct<AudioCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
+
+ * @param Image Cache Limit
+ * @parent Preloading
+ * @desc Image cache limit
+ * @type struct<ImageCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
 
  * @param Windows
  * @default ---------------------------------
@@ -284,12 +304,6 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<QuickLoad>
  * @default {"Enabled":"false","Key Code":"117"}
 
- * @param Preload Manager
- * @parent Functions
- * @desc Preloading resources
- * @type struct<PreloadManager>
- * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]","Progress":"{\"Enabled\":\"false\",\"Background\":\"\",\"Progress Bar Width\":\"Graphics.boxWidth * 2 / 4\",\"Progress Bar Height\":\"48\",\"Progress Bar X\":\"(Graphics.boxWidth - width) * 2 / 4\",\"Progress Bar Y\":\"(Graphics.boxHeight - height) * 2 / 4\",\"Progress Bar Background Color\":\"grey\",\"Progress Bar Progress Color\":\"#33ccff\",\"Progress Bar Text\":\"Loading: %1\"}"}
-
  * @param Screenshots
  * @parent Functions
  * @desc Screenshots
@@ -299,7 +313,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.8.3.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
+* @plugindesc v.9.0.0 Библиотека для RPG Maker. Сделано с ♥ от DKPlugins
 * @author DK (Денис Кузнецов)
 * @help
 
@@ -307,11 +321,13 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DK (Денис Кузнецов)
  Сайт: https://dk-plugins.ru
- Версия: 8.3.0
- Релиз: 31.10.2019
+ Версия: 9.0.0
+ Релиз: 11.06.2020
  Первый релиз: 13.01.2016
- Поддерживаемые языки: Русский, Английский
- Спасибо за Вашу поддержку: https://dk-plugins.ru/donate
+
+ ### Поддержка ###
+ Поддержать: https://dk-plugins.ru/donate
+ Стать патроном: https://www.patreon.com/dkplugins
 
  ### DKTools на DKPlugins ###
  https://dk-plugins.ru/mv/dktools/
@@ -414,8 +430,8 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.Event
  DKTools.Animation
  DKTools.Animation.Action
- DKTools.OptionManager
- DKTools.EventManager
+ DKTools.OptionsManager
+ DKTools.EventsManager
  DKTools.Unit
  DKTools.Unit.Property
  DKTools.Unit.Properties
@@ -438,7 +454,6 @@ E-mail: kuznetsovdenis96@gmail.com
  DKTools.Scene
 
  ### Лицензии и правила использования плагина ###
-
  DKTools использует стороннюю библиотеку "lodash": https://lodash.com/license
 
  Актуальная информация о правилах использования: https://dk-plugins.ru/terms-of-use
@@ -483,19 +498,44 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<TileSize>
  * @default {"Enabled":"false","Size":"48","Tilesets Folder":"img/tilesets/","Parallaxes Folder":"img/parallaxes/"}
 
- * @param Image Cache Limit
- * @text Лимит кэша изображений
- * @parent System
- * @desc Лимит кэша изображений
- * @type struct<ImageCacheLimit>
- * @default {"Enabled":"false","Limit":"10000000"}
-
  * @param Cursor Graphic
  * @text Графика курсора
  * @parent System
  * @desc Графика курсора
  * @type struct<CursorGraphic>
  * @default {"Enabled":"false","Graphic": ""}
+
+ * @param Preloading
+ * @text Предзагрузка
+ * @default ---------------------------------
+
+ * @param Initial Preloading
+ * @text Начальная предзагрузка
+ * @parent Preloading
+ * @desc Начальная предзагрузка
+ * @type struct<PreloadManager>
+ * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]","Progress Bar":"{\"Enabled\":\"false\",\"Background\":\"\",\"Progress Bar X\":\"(Graphics.boxWidth - width) * 2 / 4\",\"Progress Bar Y\":\"(Graphics.boxHeight - height) * 2 / 4\",\"Progress Bar Text\":\"Загрузка: %1\",\"Progress Bar Text Size\":\"28\",\"Progress Bar Style\":\"colors\",\"Colors Style\":\"\",\"Progress Bar Width\":\"Graphics.boxWidth * 2 / 4\",\"Progress Bar Height\":\"48\",\"Progress Bar Background Color\":\"grey\",\"Progress Bar Progress Color\":\"#33ccff\",\"Images Style\":\"\",\"Progress Bar Background Image\":\"\",\"Progress Bar Progress Image\":\"\"}"}
+
+ * @param Maps Preloading
+ * @text Предзагрузка карт
+ * @parent Preloading
+ * @desc Предварительная загрузка карт
+ * @type struct<MapsPreloading>
+ * @default {"Enabled":"false","Debugging":"false","Maps":"[]"}
+
+ * @param Audio Cache Limit
+ * @text Лимит кэша аудио
+ * @parent Preloading
+ * @desc Лимит кэша аудио
+ * @type struct<AudioCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
+
+ * @param Image Cache Limit
+ * @text Лимит кэша изображений
+ * @parent Preloading
+ * @desc Лимит кэша изображений
+ * @type struct<ImageCacheLimit>
+ * @default {"Enabled":"false","Limit":"10000000"}
 
  * @param Windows
  * @text Окна
@@ -582,13 +622,6 @@ E-mail: kuznetsovdenis96@gmail.com
  * @desc Быстрая загрузка игры
  * @type struct<QuickLoad>
  * @default {"Enabled":"false","Key Code":"117"}
-
- * @param Preload Manager
- * @text Предзагрузка ресурсов
- * @parent Functions
- * @desc Предварительная загрузка ресурсов
- * @type struct<PreloadManager>
- * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]","Progress":"{\"Enabled\":\"false\",\"Background\":\"\",\"Progress Bar Width\":\"Graphics.boxWidth * 2 / 4\",\"Progress Bar Height\":\"48\",\"Progress Bar X\":\"(Graphics.boxWidth - width) * 2 / 4\",\"Progress Bar Y\":\"(Graphics.boxHeight - height) * 2 / 4\",\"Progress Bar Background Color\":\"grey\",\"Progress Bar Progress Color\":\"#33ccff\",\"Progress Bar Text\":\"Загрузка: %1\"}"}
 
  * @param Screenshots
  * @text Скриншоты
@@ -909,18 +942,19 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Audio Files
  * @desc Preloading audio files
- * @type struct<PreloadManagerAudio>[]
+ * @type file[]
+ * @dir audio/
  * @default []
 
  * @param Image Files
  * @desc Preloading image files
- * @type struct<PreloadManagerImage>[]
+ * @type struct<ImagePreloading>[]
  * @default []
 
  * @param Progress Bar
  * @desc Preloading process display
  * @type struct<PreloadManagerProgressBar>
- * @default {"Enabled":"false","Background":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Progress Bar Text":"Loading: %1"}
+ * @default {"Enabled":"false","Background":"","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Text":"Loading: %1","Progress Bar Text Size":"28","Progress Bar Style":"colors","Colors Style":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Images Style":"","Progress Bar Background Image":"","Progress Bar Progress Image":""}
 
  */
 
@@ -941,91 +975,21 @@ E-mail: kuznetsovdenis96@gmail.com
  * @param Audio Files
  * @text Звуки
  * @desc Предзагрузка звуков
- * @type struct<PreloadManagerAudio>[]
+ * @type file[]
+ * @dir audio/
  * @default []
 
  * @param Image Files
  * @text Изображения
  * @desc Предзагрузка изображений
- * @type struct<PreloadManagerImage>[]
+ * @type struct<ImagePreloading>[]
  * @default []
 
  * @param Progress Bar
  * @text Прогресс
  * @desc Отображение процесса предзагрузки
  * @type struct<PreloadManagerProgressBar>
- * @default {"Enabled":"false","Background":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Progress Bar Text":"Загрузка: %1"}
-
- */
-
-/*~struct~PreloadManagerImage:
-
- * @param Path
- * @desc The path to the file or directory. Details in the help.
- * @type file
-
- * @param Hue
- * @desc Hue
- * @type number
- * @min 0
- * @max 360
- * @default 0
-
- * @param Caching
- * @desc Image caching
- * @type boolean
- * @default false
-
- */
-
-/*~struct~PreloadManagerImage:ru
-
- * @param Path
- * @text Путь
- * @desc Путь к файлу или директории. Подробности в справке.
- * @type file
-
- * @param Hue
- * @text Оттенок
- * @desc Оттенок
- * @type number
- * @min 0
- * @max 360
- * @default 0
-
- * @param Caching
- * @text Кэширование
- * @desc Кэширование изображений
- * @type boolean
- * @default false
-
- */
-
-/*~struct~PreloadManagerAudio:
-
- * @param Path
- * @desc The path to the file or directory. Details in the help.
- * @type file
-
- * @param Caching
- * @desc Audio caching
- * @type boolean
- * @default false
-
- */
-
-/*~struct~PreloadManagerAudio:ru
-
- * @param Path
- * @text Путь
- * @desc Путь к файлу или директории. Подробности в справке.
- * @type file
-
- * @param Caching
- * @text Кэширование
- * @desc Кэширование звуков
- * @type boolean
- * @default false
+ * @default {"Enabled":"false","Background":"","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Text":"Загрузка: %1","Progress Bar Text Size":"28","Progress Bar Style":"colors","Colors Style":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Images Style":"","Progress Bar Background Image":"","Progress Bar Progress Image":""}
 
  */
 
@@ -1041,24 +1005,8 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type file
  * @dir img/system
 
- * @param Progress Bar Width
- * @desc Width of the progress bar
- * @type combo
- * @option Graphics.boxWidth * 1 / 4
- * @option Graphics.boxWidth * 2 / 4
- * @option Graphics.boxWidth * 3 / 4
- * @default Graphics.boxWidth * 2 / 4
-
- * @param Progress Bar Height
- * @desc Height of the progress bar
- * @type combo
- * @option 36
- * @option 42
- * @option 48
- * @default 48
-
  * @param Progress Bar X
- * @desc The X coordinate of the progress bar
+ * @desc The X coordinate of the progress bar. Use to substitute: width - width of progress bar, height - height of progress bar
  * @type combo
  * @option (Graphics.boxWidth - width) * 1 / 4
  * @option (Graphics.boxWidth - width) * 2 / 4
@@ -1070,7 +1018,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default (Graphics.boxWidth - width) * 2 / 4
 
  * @param Progress Bar Y
- * @desc The Y coordinate of the progress bar
+ * @desc The Y coordinate of the progress bar. Use to substitute: width - width of progress bar, height - height of progress bar
  * @type combo
  * @option (Graphics.boxHeight - height) * 1 / 4
  * @option (Graphics.boxHeight - height) * 2 / 4
@@ -1081,21 +1029,72 @@ E-mail: kuznetsovdenis96@gmail.com
  * @option (Graphics.boxHeight - height) * 5 / 6
  * @default (Graphics.boxHeight - height) * 2 / 4
 
+ * @param Progress Bar Text
+ * @desc Progress bar text. Use to substitute: %1 - url, %2 - loaded, %3 - total, %4 - percents
+ * @default Loading: %1
+
+ * @param Progress Bar Text Size
+ * @desc Progress bar text size
+ * @type number
+ * @min 1
+ * @default 28
+
+ * @param Progress Bar Style
+ * @desc Style of the progress bar
+ * @type select
+ * @option colors
+ * @option images
+ * @default colors
+
+ * @param Colors Style
+ * @text Style "colors"
+
+ * @param Progress Bar Width
+ * @parent Colors Style
+ * @desc Width of the progress bar
+ * @type combo
+ * @option Graphics.boxWidth * 1 / 4
+ * @option Graphics.boxWidth * 2 / 4
+ * @option Graphics.boxWidth * 3 / 4
+ * @default Graphics.boxWidth * 2 / 4
+
+ * @param Progress Bar Height
+ * @parent Colors Style
+ * @desc Height of the progress bar
+ * @type combo
+ * @option 36
+ * @option 42
+ * @option 48
+ * @default 48
+
  * @param Progress Bar Background Color
+ * @parent Colors Style
  * @desc Progress bar background color
  * @type combo
  * @option grey
  * @default grey
 
  * @param Progress Bar Progress Color
+ * @parent Colors Style
  * @desc Progress bar progress color
  * @type combo
  * @option #33ccff
  * @default #33ccff
 
- * @param Progress Bar Text
- * @desc Progress bar text. Use to substitute: %1 - url, %2 - loaded, %3 - total
- * @default Loading: %1
+ * @param Images Style
+ * @text Style "images"
+
+ * @param Progress Bar Background Image
+ * @parent Images Style
+ * @desc Background image of the progress bar
+ * @type file
+ * @dir img/system
+
+ * @param Progress Bar Progress Image
+ * @parent Images Style
+ * @desc Progress image of the progress bar
+ * @type file
+ * @dir img/system
 
 */
 
@@ -1113,27 +1112,9 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type file
  * @dir img/system
 
- * @param Progress Bar Width
- * @text Ширина прогресс бара
- * @desc Ширина прогресс бара
- * @type combo
- * @option Graphics.boxWidth * 1 / 4
- * @option Graphics.boxWidth * 2 / 4
- * @option Graphics.boxWidth * 3 / 4
- * @default Graphics.boxWidth * 2 / 4
-
- * @param Progress Bar Height
- * @text Высота прогресс бара
- * @desc Высота прогресс бара
- * @type combo
- * @option 36
- * @option 42
- * @option 48
- * @default 48
-
  * @param Progress Bar X
  * @text X прогресс бара
- * @desc X прогресс бара
+ * @desc X прогресс бара. Используйте, чтобы подставить: width - ширина прогресс бара, height - высота прогресс бара
  * @type combo
  * @option (Graphics.boxWidth - width) * 1 / 4
  * @option (Graphics.boxWidth - width) * 2 / 4
@@ -1146,7 +1127,7 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Progress Bar Y
  * @text Y прогресс бара
- * @desc Y прогресс бара
+ * @desc Y прогресс бара. Используйте, чтобы подставить: width - ширина прогресс бара, height - высота прогресс бара
  * @type combo
  * @option (Graphics.boxHeight - height) * 1 / 4
  * @option (Graphics.boxHeight - height) * 2 / 4
@@ -1157,8 +1138,54 @@ E-mail: kuznetsovdenis96@gmail.com
  * @option (Graphics.boxHeight - height) * 5 / 6
  * @default (Graphics.boxHeight - height) * 2 / 4
 
+ * @param Progress Bar Text
+ * @text Текст прогресс бара
+ * @desc Текст прогресс бара. Используйте, чтобы подставить: %1 - файл, %2 - загружено, %3 - всего, %4 - проценты
+ * @default Загрузка: %1
+
+ * @param Progress Bar Text Size
+ * @text Размер текста прогресс бара
+ * @desc Размер текста прогресс бара
+ * @type number
+ * @min 1
+ * @default 28
+
+ * @param Progress Bar Style
+ * @text Стиль прогресс бара
+ * @desc Стиль прогресс бара
+ * @type select
+ * @option цвета
+ * @value colors
+ * @option изображения
+ * @value images
+ * @default colors
+
+ * @param Colors Style
+ * @text Стиль "цвета"
+
+ * @param Progress Bar Width
+ * @text Ширина прогресс бара
+ * @parent Colors Style
+ * @desc Ширина прогресс бара
+ * @type combo
+ * @option Graphics.boxWidth * 1 / 4
+ * @option Graphics.boxWidth * 2 / 4
+ * @option Graphics.boxWidth * 3 / 4
+ * @default Graphics.boxWidth * 2 / 4
+
+ * @param Progress Bar Height
+ * @text Высота прогресс бара
+ * @parent Colors Style
+ * @desc Высота прогресс бара
+ * @type combo
+ * @option 36
+ * @option 42
+ * @option 48
+ * @default 48
+
  * @param Progress Bar Background Color
  * @text Фон прогресс бара
+ * @parent Colors Style
  * @desc Фон прогресс бара в веб формате
  * @type combo
  * @option grey
@@ -1166,17 +1193,150 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Progress Bar Progress Color
  * @text Цвет прогресс бара
+ * @parent Colors Style
  * @desc Цвет прогресс бара в веб формате
  * @type combo
  * @option #33ccff
  * @default #33ccff
 
- * @param Progress Bar Text
- * @text Текст прогресс бара
- * @desc Текст прогресс бара. Используйте, чтобы подставить: %1 - файл, %2 - загружено, %3 - всего
- * @default Загрузка: %1
+ * @param Images Style
+ * @text Стиль "изображения"
+
+ * @param Progress Bar Background Image
+ * @text Изображение заднего фона прогресс бара
+ * @parent Images Style
+ * @desc Изображение заднего фона прогресс бара
+ * @type file
+ * @dir img/system
+
+ * @param Progress Bar Progress Image
+ * @text Изображение прогресса прогресс бара
+ * @parent Images Style
+ * @desc Изображение прогресса прогресс бара
+ * @type file
+ * @dir img/system
 
 */
+
+/*~struct~MapsPreloading:
+
+ * @param Enabled
+ * @desc Enable maps preloading function ?
+ * @type boolean
+ * @default false
+
+ * @param Debugging
+ * @desc Display preload information in the console ?
+ * @type boolean
+ * @default false
+
+ * @param Maps
+ * @desc Maps
+ * @type struct<MapsPreloadingData>[]
+ * @default []
+
+*/
+
+/*~struct~MapsPreloading:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию предзагрузки карт ?
+ * @type boolean
+ * @default false
+
+ * @param Debugging
+ * @text Отладка
+ * @desc Выводить информацию о предзагрузке в консоль ?
+ * @type boolean
+ * @default false
+
+ * @param Maps
+ * @text Карты
+ * @desc Карты
+ * @type struct<MapsPreloadingData>[]
+ * @default []
+
+*/
+
+/*~struct~MapsPreloadingData:
+
+ * @param Map Id
+ * @desc Map id
+ * @type number
+ * @min 1
+ * @default 1
+
+ * @param Audio Files
+ * @desc Preloading audio files
+ * @type file[]
+ * @dir audio/
+ * @default []
+
+ * @param Image Files
+ * @desc Preloading image files
+ * @type struct<ImagePreloading>[]
+ * @default []
+
+*/
+
+/*~struct~MapsPreloadingData:ru
+
+ * @param Map Id
+ * @text Номер карты
+ * @desc Номер карты
+ * @type number
+ * @min 1
+ * @default 1
+
+ * @param Audio Files
+ * @text Звуки
+ * @desc Предзагрузка звуков
+ * @type file[]
+ * @dir audio/
+ * @default []
+
+ * @param Image Files
+ * @text Изображения
+ * @desc Предзагрузка изображений
+ * @type struct<ImagePreloading>[]
+ * @default []
+
+*/
+
+/*~struct~ImagePreloading:
+
+ * @param Path
+ * @desc The path to the file or directory. Details in the help.
+ * @type file
+ * @dir img/
+
+ * @param Hue
+ * @desc Hue
+ * @type number
+ * @min 0
+ * @max 360
+ * @default 0
+
+ */
+
+/*~struct~ImagePreloading:ru
+
+ * @param Path
+ * @text Путь
+ * @desc Путь к файлу или директории. Подробности в справке.
+ * @type file
+ * @dir img/
+
+ * @param Hue
+ * @text Оттенок
+ * @desc Оттенок
+ * @type number
+ * @min 0
+ * @max 360
+ * @default 0
+
+ */
 
 /*~struct~Screenshots:
 
@@ -1463,6 +1623,38 @@ E-mail: kuznetsovdenis96@gmail.com
 
  */
 
+/*~struct~AudioCacheLimit:
+
+ * @param Enabled
+ * @desc Enable the audio cache limit function ?
+ * @type boolean
+ * @default false
+
+ * @param Limit
+ * @desc Audio cache limit
+ * @type number
+ * @min 0
+ * @default 10000000
+
+*/
+
+/*~struct~AudioCacheLimit:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию изменения лимита кэша аудио ?
+ * @type boolean
+ * @default false
+
+ * @param Limit
+ * @text Лимит
+ * @desc Лимит кэша аудио
+ * @type number
+ * @min 0
+ * @default 10000000
+
+*/
+
 /*~struct~ImageCacheLimit:
 
  * @param Enabled
@@ -1671,7 +1863,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 window.Imported = window.Imported || {};
-window.Imported.DKTools = '8.3.0';
+window.Imported.DKTools = '9.0.0';
 
 
 
@@ -1938,7 +2130,7 @@ DKTools.Utils = class {
     /**
      * Initializes the utils
      *
-     * @version 5.0.0
+     * @version 9.0.0
      * @static
      */
     static initialize() {
@@ -1996,6 +2188,8 @@ DKTools.Utils = class {
 
         this.__tileSize();
 
+        this.__audioCacheLimit();
+
         this.__imageCacheLimit();
 
         if (DKToolsParam.get('Debugging Console', 'Enabled')) {
@@ -2004,6 +2198,23 @@ DKTools.Utils = class {
 
         if (DKToolsParam.get('Check Updates', 'Enabled')) {
             this._checkUpdates();
+        }
+    }
+
+    // A methods
+
+    /**
+     * @since 9.0.0
+     * @private
+     * @static
+     */
+    static __audioCacheLimit() {
+        const param = DKToolsParam.get('Audio Cache Limit') || {};
+
+        if (param['Enabled']) {
+            AudioCache.limit = param['Limit'];
+        } else {
+            AudioCache.limit = 10 * 1000 * 1000;
         }
     }
 
@@ -2043,7 +2254,7 @@ DKTools.Utils = class {
 
         const showNewPlugins = DKToolsParam.get('Check Updates', 'Show New Plugins');
 
-        _.forEach(plugins, plugin => {
+        plugins.forEach((plugin) => {
             const newVersion = plugin.version;
 
             if (DKTools.PluginManager.isRegistered(plugin.name)) {
@@ -2151,10 +2362,10 @@ DKTools.Utils = class {
      * @static
      */
     static __imageCacheLimit() {
-        const param = DKToolsParam.get('Image Cache Limit');
+        const param = DKToolsParam.get('Image Cache Limit') || {};
 
-        if (param.Enabled) {
-            ImageCache.limit = param.Limit;
+        if (param['Enabled']) {
+            ImageCache.limit = param['Limit'];
         }
     }
 
@@ -2299,7 +2510,7 @@ DKTools.Utils = class {
             return;
         }
 
-        const param = DKToolsParam.get('Errors Log');
+        const param = DKToolsParam.get('Errors Log') || {};
         const isTest = DKTools.Utils.isTest();
         const enabled = param['Enabled'];
 
@@ -2455,11 +2666,11 @@ DKTools.Utils = class {
      * @static
      */
     static __tileSize() {
-        const param = DKToolsParam.get('Tile Size');
+        const param = DKToolsParam.get('Tile Size') || {};
 
-        if (param.Enabled) {
-            Tilemap.TILE_WIDTH = param.Size;
-            Tilemap.TILE_HEIGHT = param.Size;
+        if (param['Enabled']) {
+            Tilemap.TILE_WIDTH = param['Size'];
+            Tilemap.TILE_HEIGHT = param['Size'];
         }
     }
 
@@ -2974,6 +3185,7 @@ DKTools.Utils.Array = class {
     /**
      * Checks whether the array contains a given item
      *
+     * @deprecated 9.0.0
      * @static
      *
      * @param {Array} array - The array in which the search is performed
@@ -3139,6 +3351,7 @@ DKTools.Utils.Array = class {
     /**
      * Checks whether the array is empty
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      * @static
      *
@@ -3323,11 +3536,7 @@ DKTools.Utils.Array = class {
      * @returns {Number} Sum of array values
      */
     static sum(array) {
-        return _.reduce(array, (acc, value) => {
-            acc += value;
-
-            return acc;
-        }, 0);
+        return _.reduce(array, (acc, value) => acc + value, 0);
     }
 
 };
@@ -3518,7 +3727,7 @@ DKTools.Utils.Point = class {
         }
 
         const toFinite = (value) => {
-            return Number.isFinite(value) ? value : 0;
+            return (Number.isFinite(value) ? value : 0);
         };
         let x;
 
@@ -5205,6 +5414,20 @@ DKTools.IO = class {
      */
     static pathExists(path) {
         return this.absolutePathExists(this.getAbsolutePath(path));
+    }
+
+    // R methods
+
+    /**
+     * Reverses slashes on "/"
+     *
+     * @since 9.0.0
+     * @static
+     * @param {String} path - Path
+     * @returns {String} Path with reversed slashes "/"
+     */
+    static reverseSlashes(path) {
+        return path.replace(/\\/g, '/');
     }
 
     // S methods
@@ -7803,12 +8026,12 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
 
         const processData = (names) => {
             if (object.template instanceof RegExp) {
-                names = _.filter(names, name => object.template.test(name));
+                names = names.filter(name => object.template.test(name));
             } else if (DKTools.Utils.isString(object.template)) {
-                names = _.filter(names, name => name === object.template);
+                names = names.filter(name => name === object.template);
             }
 
-            const data = _.reduce(names, (acc, name) => {
+            const data = names.reduce((acc, name) => {
                 const fullPath = DKTools.IO.normalizePath(path + '/' + name);
 
                 if (DKTools.IO.isFile(fullPath)) {
@@ -7944,7 +8167,8 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
-        const processData = (entities) => _.filter(entities, entity => entity.isFile());
+        const processData =
+            (entities) => entities.filter(entity => entity.isFile());
 
         if (object.sync) {
             const result = this.getAll(object);
@@ -9544,6 +9768,7 @@ DKTools.PluginCommandManager = class {
     /**
      * Processes the handler of the command
      *
+     * @version 9.0.0
      * @static
      *
      * @param {Game_Interpreter} gameInterpreter - Interpreter
@@ -9551,6 +9776,10 @@ DKTools.PluginCommandManager = class {
      * @param {Array} args - Arguments of the command
      */
     static process(gameInterpreter, pluginCommand, args) {
+        if (!pluginCommand) {
+            throw new Error(`Empty plugin command!`);
+        }
+
         const handler = this._pluginCommands[pluginCommand.toLowerCase()];
 
         if (DKTools.Utils.isFunction(handler)) {
@@ -9616,46 +9845,47 @@ DKTools.PreloadManager = class {
     // initialize methods
 
     /**
-     * Initializes the manager
+     * Initializes preloading
      *
-     * @version 8.3.0
+     * @version 9.0.0
      * @static
      */
     static initialize() {
-        this.clearCache();
+        const params = DKToolsParam.get('Initial Preloading') || {};
 
-        const params = DKToolsParam.get('Preload Manager');
+        if (!params['Enabled']) {
+            this.start();
 
-        /**
-         * @private
-         * @readonly
-         * @type {Boolean}
-         */
-        this._enabled = params['Enabled'];
-
-        if (!this.isEnabled()) {
             return;
         }
 
-        params['Audio Files'].forEach((data) => {
+        this.setDebugging(params['Debugging']);
+
+        params['Audio Files'].forEach((path) => {
             this.preloadAudio({
-                path: data.Path,
-                caching: data.Caching
+                path: 'audio/' + path,
+                caching: true
             });
         });
 
         params['Image Files'].forEach((data) => {
             this.preloadImage({
-                path: data.Path,
-                hue: data.Hue,
-                caching: data.Caching
+                path: 'img/' + data['Path'],
+                hue: data['Hue'],
+                caching: true
             });
         });
 
-        const progressParams = params['Progress Bar'];
+        const total = this.getTotal();
+
+        if (total >= 30) {
+            console.warn('Too many files to preload! Load only needed files.');
+        }
+
+        const progressParams = params['Progress Bar'] || {};
         let start = false;
 
-        if (!progressParams.Enabled) {
+        if (!progressParams['Enabled']) {
             start = true;
 
             this.onFileLoad(() => {
@@ -9692,7 +9922,7 @@ DKTools.PreloadManager = class {
     /**
      * Clears the preload queue
      *
-     * @version 5.0.0
+     * @version 9.0.0
      * @static
      */
     static clearQueue() {
@@ -9701,7 +9931,7 @@ DKTools.PreloadManager = class {
          * @readonly
          * @type {Object[]}
          */
-        this._queue = { audio: [], image: [] };
+        this._queue = { audio: {}, image: {} };
     }
 
     // F methods
@@ -9709,7 +9939,7 @@ DKTools.PreloadManager = class {
     /**
      * Finishes the preloading
      *
-     * @version 8.3.0
+     * @version 9.0.0
      * @private
      * @static
      *
@@ -9717,15 +9947,16 @@ DKTools.PreloadManager = class {
      */
     static _finish() {
         this._finishTime = new Date();
-
-        this.clearQueue();
+        this._debugging = false;
 
         const preloadingTime = (this._finishTime - this._startTime) / 1000;
         const total = this.getTotal();
 
-        this._log('Preloading complete! \n' +
-            'Loaded/Skipped/Total: ' + this._loaded + '/' + this._skipped + '/' + total + '\n' +
-            'Preloading time: ' + preloadingTime + ' sec');
+        if (total > 0) {
+            this._log('Preloading complete! \n' +
+                'Loaded/Skipped/Total: ' + this._loaded + '/' + this._skipped + '/' + total + '\n' +
+                'Preloading time: ' + preloadingTime + ' sec');
+        }
 
         if (this._finishListeners) {
             const data = {
@@ -9747,6 +9978,8 @@ DKTools.PreloadManager = class {
         if (this._fileLoadListeners) {
             delete this._fileLoadListeners;
         }
+
+        this.clearQueue();
     }
 
     // G methods
@@ -9890,18 +10123,6 @@ DKTools.PreloadManager = class {
     }
 
     /**
-     * Returns true if the manager is enabled
-     *
-     * @since 5.0.0
-     * @static
-     *
-     * @returns {Boolean} Manager is enabled
-     */
-    static isEnabled() {
-        return this._enabled;
-    }
-
-    /**
      * Returns true if the preloading is finished
      *
      * @since 5.0.0
@@ -9921,7 +10142,7 @@ DKTools.PreloadManager = class {
      * @returns {Boolean} Preload manager is ready
      */
     static isReady() {
-        return !this.isEnabled() || this.isFinished();
+        return this.isFinished();
     }
 
     /**
@@ -9956,18 +10177,31 @@ DKTools.PreloadManager = class {
         return this.isImageCachedByKey(this._generateImageKey(path, hue));
     }
 
+    /**
+     * Returns true if the preloading is started
+     *
+     * @since 9.0.0
+     * @static
+     *
+     * @returns {Boolean} Preloading is started
+     */
+    static isStarted() {
+        return !!this._startTime;
+    }
+
     // L methods
 
     /**
      * Logs the message in the console
      *
+     * @version 9.0.0
      * @private
      * @static
      *
      * @param {String} message - Message
      */
     static _log(message) {
-        if (!this.isEnabled() || !DKTools.Utils.isTest() || !DKToolsParam.get('Preload Manager', 'Debugging') || !message) {
+        if (!this._debugging || !message) {
             return;
         }
 
@@ -10014,7 +10248,12 @@ DKTools.PreloadManager = class {
      *
      * @since 8.3.0
      *
-     * @param {Function} callback
+     * @param {Function} callback - Callback
+     *
+     * @example
+     * DKTools.PreloadManager.onFileLoad(() => {
+     *     Graphics.updateLoading();
+     * });
      */
     static onFileLoad(callback) {
         if (!this._fileLoadListeners) {
@@ -10034,7 +10273,12 @@ DKTools.PreloadManager = class {
      *
      * @since 8.3.0
      *
-     * @param {Function} callback
+     * @param {Function} callback - Callback
+     *
+     * @example
+     * DKTools.PreloadManager.onFinish(() => {
+     *     Graphics.endLoading();
+     * });
      */
     static onFinish(callback) {
         if (!this._finishListeners) {
@@ -10049,7 +10293,7 @@ DKTools.PreloadManager = class {
     /**
      * Adds the object to preload queue
      *
-     * @version 8.1.0
+     * @version 9.0.0
      * @since 5.0.0
      * @private
      * @static
@@ -10062,10 +10306,6 @@ DKTools.PreloadManager = class {
      * @param {Boolean} [object.caching] - Caching
      */
     static _preload(type, object) {
-        if (!this.isEnabled()) {
-            return;
-        }
-
         if (object instanceof Object && DKTools.Utils.isString(object.path)) {
             const entity = new DKTools.IO.Directory(object.path);
 
@@ -10074,10 +10314,16 @@ DKTools.PreloadManager = class {
                     const options = { sync: true };
                     let files = [];
 
-                    if (type === 'audio') {
-                        files = entity.getAudioFiles(options).data;
-                    } else if (type === 'image') {
-                        files = entity.getImageFiles(options).data;
+                    if (this._files[object.path]) {
+                        files = this._files[object.path];
+                    } else {
+                        if (type === 'audio') {
+                            files = entity.getAudioFiles(options).data || [];
+                        } else if (type === 'image') {
+                            files = entity.getImageFiles(options).data || [];
+                        }
+
+                        this._files[object.path] = files;
                     }
 
                     files.forEach((file) => {
@@ -10087,7 +10333,11 @@ DKTools.PreloadManager = class {
                             return;
                         }
 
-                        this._queue[type][fullPath] = { ...object, path: fullPath };
+                        if (type === 'audio') {
+                            this._processAudioFile(file, object);
+                        } else if (type === 'image') {
+                            this._processImageFile(file, object);
+                        }
                     });
                 } else {
                     throw new Error('Web browsers and mobile phones cannot load directories!');
@@ -10106,9 +10356,15 @@ DKTools.PreloadManager = class {
                 const file = new DKTools.IO.File(path);
                 const fullPath = file.getFullPath();
 
+                if (this._queue[type][fullPath]) {
+                    return;
+                }
+
                 if (file.isFile()) {
-                    if (!this._queue[type][fullPath]) {
-                        this._queue[type][fullPath] = { ...object, path };
+                    if (type === 'audio') {
+                        this._processAudioFile(file, object);
+                    } else if (type === 'image') {
+                        this._processImageFile(file, object);
                     }
                 } else {
                     console.error('This is not a file: ' + fullPath);
@@ -10118,8 +10374,120 @@ DKTools.PreloadManager = class {
     }
 
     /**
+     * @since 9.0.0
+     * @private
+     * @param {DKTools.IO.File} file
+     * @param {Object} object
+     */
+    static _processAudioFile(file, object) {
+        const fullPath = file.getFullPath();
+        const normalizedPath = DKTools.IO.reverseSlashes(fullPath);
+
+        if (this._queue.audio[normalizedPath]) {
+            return;
+        }
+
+        const folder = file.getDirectoryName();
+        const name = file.getName();
+
+        if (object.caching) {
+            if (this.isAudioCachedByPath(normalizedPath)) {
+                this._log('Audio already preloaded: ' + normalizedPath + '. Skipped...');
+
+                if (folder === 'se' && AudioManager.isStaticSe({ name })) {
+                    this.releaseAudioByPath(normalizedPath);
+                }
+
+                return;
+            } else if (AudioManager.isLoaded(folder, name)) {
+                if (folder !== 'se' || !AudioManager.isStaticSe({ name })) {
+                    const webAudio = AudioManager.createBuffer(folder, name);
+
+                    this._cache.audio[this._generateAudioKey(normalizedPath)] = webAudio;
+
+                    AudioManager.releaseBuffer(folder, name);
+                }
+
+                this._log('Audio already preloaded: ' + normalizedPath + '. Skipped...');
+
+                return;
+            }
+        } else {
+            const reserved = AudioManager.isReserved(folder, name);
+            const loaded = AudioManager.isLoaded(folder, name);
+
+            if (!reserved && loaded && (folder !== 'se' || !AudioManager.isStaticSe({ name }))) {
+                AudioManager._audioCache.reserve(
+                    AudioManager._generateCacheKey(folder, name),
+                    AudioManager.createBuffer(folder, name),
+                    AudioManager._defaultReservationId);
+            }
+
+            if (reserved || loaded) {
+                this._log('Audio already preloaded: ' + normalizedPath + '. Skipped...');
+
+                return;
+            }
+        }
+
+        this._queue.audio[normalizedPath] = { ...object, path: normalizedPath };
+    }
+
+    /**
+     * @since 9.0.0
+     * @private
+     * @param {DKTools.IO.File} file
+     * @param {Object} object
+     */
+    static _processImageFile(file, object) {
+        const fullPath = file.getFullPath();
+        const normalizedPath = DKTools.IO.reverseSlashes(fullPath);
+
+        if (this._queue.image[normalizedPath]) {
+            return;
+        }
+
+        if (object.caching) {
+            if (this.isImageCachedByPath(normalizedPath, object.hue)) {
+                this._log('Image already preloaded: ' + normalizedPath + '. Skipped...');
+
+                return;
+            } else if (ImageManager.isLoaded(normalizedPath, object.hue)) {
+                const bitmap = ImageManager.loadNormalBitmap(normalizedPath, object.hue);
+
+                this._cache.image[this._generateImageKey(bitmap.url, object.hue)] = bitmap;
+
+                ImageManager.releaseBitmap(normalizedPath);
+
+                this._log('Image already preloaded: ' + normalizedPath + '. Skipped...');
+
+                return;
+            }
+        } else {
+            const reserved = ImageManager.isReserved(normalizedPath, object.hue);
+            const loaded = ImageManager.isLoaded(normalizedPath, object.hue);
+
+            if (!reserved && loaded) {
+                ImageManager._imageCache.reserve(
+                    ImageManager._generateCacheKey(normalizedPath, object.hue),
+                    ImageManager.loadNormalBitmap(normalizedPath, object.hue),
+                    ImageManager._defaultReservationId);
+            }
+
+            if (reserved || loaded) {
+                this._log('Image already preloaded: ' + normalizedPath + '. Skipped...');
+
+                return;
+            }
+        }
+
+        this._queue.image[normalizedPath] = { ...object, path: normalizedPath };
+    }
+
+    /**
      * Processes audio loading
      *
+     * @version 9.0.0
      * @since 5.0.0
      * @static
      * @private
@@ -10142,14 +10510,14 @@ DKTools.PreloadManager = class {
                         return;
                     }
 
-                    const buffer = file.loadAudio();
+                    const webAudio = file.loadAudio({ ...data.options });
 
-                    if (buffer) {
+                    if (webAudio) {
                         if (data.caching) {
-                            this._cache.audio[this._generateAudioKey(buffer.url)] = buffer;
+                            this._cache.audio[this._generateAudioKey(webAudio.url)] = webAudio;
                         }
 
-                        buffers.push(buffer);
+                        buffers.push(webAudio);
                     } else {
                         this._skipped++;
                         this._log('Cannot load an audio: ' + fullPath + '. Skipped...');
@@ -10170,6 +10538,7 @@ DKTools.PreloadManager = class {
     /**
      * Processes image loading
      *
+     * @version 9.0.0
      * @since 5.0.0
      * @static
      * @private
@@ -10192,11 +10561,23 @@ DKTools.PreloadManager = class {
                         return;
                     }
 
-                    const bitmap = DKTools.Utils.Bitmap.reserve({
-                        folder: file.getPath(),
-                        filename: file.getName(),
-                        hue: data.hue
-                    });
+                    let bitmap;
+
+                    if (data.caching) {
+                        bitmap = DKTools.Utils.Bitmap.load({
+                            ...data.options,
+                            folder: file.getPath(),
+                            filename: file.getName(),
+                            hue: data.hue
+                        });
+                    } else {
+                        bitmap = DKTools.Utils.Bitmap.reserve({
+                            ...data.options,
+                            folder: file.getPath(),
+                            filename: file.getName(),
+                            hue: data.hue
+                        });
+                    }
 
                     if (bitmap) {
                         if (data.caching) {
@@ -10233,6 +10614,29 @@ DKTools.PreloadManager = class {
      * @param {Boolean} [object.caching] - Caching
      *
      * @see DKTools.PreloadManager._preload
+     *
+     * @example
+     * // folder preloading
+     * const path = 'audio/se/';
+     *
+     * DKTools.PreloadManager.preloadAudio({
+     *     path: path,
+     *     caching: false
+     * });
+     *
+     * DKTools.PreloadManager.start();
+     *
+     * @example
+     * // file preloading
+     * // auto converts extension for mobile devices
+     * const path = 'audio/se/Cancel1.ogg';
+     *
+     * DKTools.PreloadManager.preloadAudio({
+     *     path: path,
+     *     caching: false
+     * });
+     *
+     * DKTools.PreloadManager.start();
      */
     static preloadAudio(object) {
         this._preload('audio', object);
@@ -10251,6 +10655,30 @@ DKTools.PreloadManager = class {
      * @param {Boolean} [object.caching] - Caching
      *
      * @see DKTools.PreloadManager._preload
+     *
+     * @example
+     * // folder preloading
+     * const path = 'img/system/';
+     *
+     * DKTools.PreloadManager.preloadImage({
+     *     path: path,
+     *     hue: 0,
+     *     caching: false
+     * });
+     *
+     * DKTools.PreloadManager.start();
+     *
+     * @example
+     * // file preloading
+     * const path = 'img/system/Window.png';
+     *
+     * DKTools.PreloadManager.preloadImage({
+     *     path: path,
+     *     hue: 0,
+     *     caching: false
+     * });
+     *
+     * DKTools.PreloadManager.start();
      */
     static preloadImage(object) {
         this._preload('image', object);
@@ -10267,7 +10695,7 @@ DKTools.PreloadManager = class {
      * @param {String} key - Key of the cached audio
      */
     static releaseAudioByKey(key) {
-        this._cache.audio[key] = undefined;
+        delete this._cache.audio[key];
     }
 
     /**
@@ -10291,7 +10719,7 @@ DKTools.PreloadManager = class {
      * @param {String} key - Key of the cached image
      */
     static releaseImageByKey(key) {
-        this._cache.image[key] = undefined;
+        delete this._cache.image[key];
     }
 
     /**
@@ -10313,16 +10741,28 @@ DKTools.PreloadManager = class {
     // S methods
 
     /**
-     * Starts the preloading
+     * Sets the output of debugging information to the console
+     * Each finish resets debugging
      *
-     * @version 8.3.0
+     * @since 9.0.0
      * @static
+     *
+     * @param {Boolean} enabled - Enable output
+     */
+    static setDebugging(enabled) {
+        this._debugging = enabled || false;
+    }
+
+    /**
+     * Starts the preloading
+     * Returns the promise
+     *
+     * @version 9.0.0
+     * @static
+     *
+     * @returns {Promise}
      */
     static start() {
-        if (!this.isEnabled()) {
-            return;
-        }
-
         const total = this.getTotal();
 
         this._loaded = 0;
@@ -10331,9 +10771,8 @@ DKTools.PreloadManager = class {
         this._finishTime = null;
 
         if (total === 0) {
-            this._finish();
-
-            return;
+            return Promise.resolve()
+                .then(() => this._finish());
         }
 
         this._log('DKTools Preload Manager is running... \n' +
@@ -10342,7 +10781,7 @@ DKTools.PreloadManager = class {
         const audioPromise = Promise.all(this._processLoadAudioFiles());
         const imagePromise = Promise.all(this._processLoadImageFiles());
 
-        Promise.all([audioPromise, imagePromise])
+        return Promise.all([audioPromise, imagePromise])
             .then(() => this._finish());
     }
 
@@ -10370,11 +10809,202 @@ Object.defineProperties(DKTools.PreloadManager, {
      * @memberof DKTools.PreloadManager
      */
     _cache: {
-        value: { audio: [], image: [] },
+        value: { audio: {}, image: {} },
         writable: true
+    },
+
+    /**
+     * @since 9.0.0
+     * @private
+     * @readonly
+     * @type {Object}
+     * @memberof DKTools.PreloadManager
+     */
+    _files: {
+        value: {}
     }
 
 });
+
+// scene
+
+DKTools.PreloadManager.Scene = function() {
+    this.initialize.apply(this, arguments);
+};
+
+DKTools.PreloadManager.Scene.prototype = Object.create(Scene_Base.prototype);
+DKTools.PreloadManager.Scene.prototype.constructor = DKTools.PreloadManager.Scene;
+
+DKTools.PreloadManager.Scene.prototype.initialize = function() {
+    Scene_Base.prototype.initialize.apply(this, arguments);
+
+    this._params = DKToolsParam.get('Initial Preloading', 'Progress Bar');
+    this._total = DKTools.PreloadManager.getTotal();
+    this._nextScene = Scene_Boot;
+};
+
+// prepare
+
+DKTools.PreloadManager.Scene.prototype.prepare = function(nextScene) {
+    this._nextScene = nextScene;
+};
+
+// preloading
+
+DKTools.PreloadManager.Scene.prototype.setupPreloading = function() {
+    Scene_Base.prototype.setupPreloading.apply(this, arguments);
+
+    if (this._params['Progress Bar Style'] === 'images') {
+        this._preloader.add(DKTools.Utils.Bitmap.reserveAsync({
+            folder: 'img/system/',
+            filename: this._params['Progress Bar Background Image']
+        }).then((bitmap) => {
+            this._backgroundBitmap = bitmap;
+        }));
+
+        this._preloader.add(DKTools.Utils.Bitmap.reserveAsync({
+            folder: 'img/system/',
+            filename: this._params['Progress Bar Progress Image']
+        }).then((bitmap) => {
+            this._progressBitmap = bitmap;
+        }));
+    }
+};
+
+//
+
+DKTools.PreloadManager.Scene.prototype.isGameFontLoaded = Scene_Boot.prototype.isGameFontLoaded;
+
+//
+
+DKTools.PreloadManager.Scene.prototype.create = function() {
+    if (this._total === 0) {
+        SceneManager.goto(this._nextScene);
+
+        return;
+    }
+
+    if (this._params['Background']) {
+        this.createBackground();
+    }
+
+    this.createProgressBar();
+};
+
+DKTools.PreloadManager.Scene.prototype.createBackground = function() {
+    this._background = new Sprite(ImageManager.loadSystem(this._params['Background']));
+
+    this.addChild(this._background);
+};
+
+DKTools.PreloadManager.Scene.prototype.createProgressBar = function() {
+    const params = this._params;
+    const style = params['Progress Bar Style'] || 'colors';
+    let width;
+    let height;
+
+    if (style === 'colors') {
+        width = eval(params['Progress Bar Width']);
+        height = eval(params['Progress Bar Height']);
+    } else {
+        if (this._backgroundBitmap.width !== this._progressBitmap.width) {
+            console.warn(`PreloadManager: different width of background and progress!`);
+        }
+
+        if (this._backgroundBitmap.height !== this._progressBitmap.height) {
+            console.warn(`PreloadManager: different height of background and progress!`);
+        }
+
+        width = Math.max(this._backgroundBitmap.width, this._progressBitmap.width);
+        height = Math.max(this._backgroundBitmap.height, this._progressBitmap.height);
+    }
+
+    const x = eval(params['Progress Bar X']) || 0;
+    const y = eval(params['Progress Bar Y']) || 0;
+
+    this._progressBar = new DKTools.Sprite.ProgressBar.Rectangle(x, y, width, height);
+
+    this._progressBar.setupFont({ fontSize: params['Progress Bar Text Size'] });
+
+    if (style === 'colors') {
+        this._progressBar.setupBackgroundColor(params['Progress Bar Background Color'])
+        this._progressBar.setupProgressColor(params['Progress Bar Progress Color']);
+    } else {
+        this._progressBar._backgroundBitmap = this._backgroundBitmap;
+        this._progressBar._progressBitmap = this._progressBitmap;
+
+        this._progressBar.setupDrawGraphicHandler(function() {
+            this.drawBitmap(this._backgroundBitmap);
+            this.drawBitmap(this._progressBitmap, {
+                source: (bitmap) => ({ width: bitmap.width * this.getPercents() / 100 })
+            });
+        }.bind(this._progressBar));
+    }
+
+    if (params['Progress Bar Text']) {
+        this._progressBar.setupDrawTextHandler(function() {
+            if (!this._data) {
+                return;
+            }
+
+            const text = params['Progress Bar Text'].format(...[...this._data, this.getPercents()]);
+
+            this.drawText(text, { height: this.height });
+        }.bind(this._progressBar));
+    }
+
+    this._progressBar.setupMaxValue(this._total);
+    this._progressBar.setupValue(0);
+
+    this._progressBar.start();
+
+    this.addChild(this._progressBar);
+};
+
+DKTools.PreloadManager.Scene.prototype.isReady = function() {
+    return Scene_Base.prototype.isReady.apply(this, arguments)
+        && DKTools.StartupManager.isReady()
+        && this.isGameFontLoaded();
+};
+
+DKTools.PreloadManager.Scene.prototype.start = function() {
+    const total = this._total;
+    const maxFrames = 180;
+    const repeatTime = (total > maxFrames ? 1 : Math.ceil(maxFrames / total));
+
+    DKTools.PreloadManager.onFileLoad((data) => {
+        this._progressBar.addEvent({
+            type: 'queue',
+            repeats: 0,
+            repeatTime,
+            onStart: () => {
+                this._progressBar._data = [data.file.url, data.loaded, data.total];
+                this._progressBar.nextValue();
+            }
+        });
+    });
+
+    this._progressBar.addOneTimeEvent({
+        type: 'full',
+        onSuccess: () => {
+            SceneManager.goto(this._nextScene);
+        }
+    });
+
+    DKTools.PreloadManager.start();
+};
+
+DKTools.PreloadManager.Scene.prototype.terminate = function() {
+    Scene_Base.prototype.terminate.apply(this, arguments);
+
+    if (this._background) {
+        this.removeChild(this._background);
+    }
+
+    if (this._progressBar) {
+        this.removeChild(this._progressBar);
+    }
+};
 
 
 
@@ -10421,12 +11051,12 @@ DKTools.StartupManager = class {
     /**
      * Initializes modules
      *
-     * @version 8.3.0
+     * @version 9.0.0
      * @static
      * @async
      */
     static async initializeModules() {
-        DKTools.PreloadManager.initialize();
+        // to be overriden by plugins
     }
 
     // C methods
@@ -11217,7 +11847,7 @@ DKTools.Event = class {
      * @param {Boolean} [forcedSuccess=false]
      */
     _callOnSuccessHandler(forcedSuccess = false) {
-        if (this._canCallOnSuccessHandler() || forcedSuccess) {
+        if (this._canCallOnSuccessHandler() || forcedSuccess && this.hasOnSuccessHandler()) {
             this._onSuccess(this);
         }
     }
@@ -11238,7 +11868,7 @@ DKTools.Event = class {
      *
      * @private
      */
-    _callonFailHandler() {
+    _callOnFailHandler() {
         if (this._canCallonFailHandler()) {
             this._onFail(this);
         }
@@ -11355,7 +11985,7 @@ DKTools.Event = class {
         if (this.isFinished() || forcedSuccess) {
             this._callOnSuccessHandler(forcedSuccess);
         } else {
-            this._callonFailHandler();
+            this._callOnFailHandler();
         }
 
         this._clearRemainingTime();
@@ -11625,13 +12255,13 @@ DKTools.Event = class {
      *
      * @since 5.0.0
      *
-     * @param {DKTools.EventManager} manager - Manager
+     * @param {DKTools.EventsManager} manager - Manager
      */
     setManager(manager) {
         /**
          * @private
          * @readonly
-         * @type {DKTools.EventManager}
+         * @type {DKTools.EventsManager}
          */
         this._manager = manager;
     }
@@ -11833,7 +12463,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      * Manager of the event
      *
      * @readonly
-     * @type {DKTools.EventManager}
+     * @type {DKTools.EventsManager}
      * @memberof DKTools.Event.prototype
      */
     manager: {
@@ -12142,7 +12772,7 @@ DKTools.Animation = class extends DKTools.Event {
      * @returns {Boolean} Animation has the actions
      */
     hasActions() {
-        return !DKTools.Utils.Array.isEmpty(this._actions);
+        return this._actions.length > 0;
     }
 
     // I methods
@@ -12954,20 +13584,20 @@ Object.defineProperties(DKTools.Animation.Action.prototype, {
 
 
 //===========================================================================
-// DKTools.OptionManager
+// DKTools.OptionsManager
 //===========================================================================
 
 /**
  * Option manager class
  *
- * @class DKTools.OptionManager
+ * @class DKTools.OptionsManager
  *
- * @since 2.0.0
+ * @since 9.0.0
  * @memberof DKTools
  *
- * @see DKTools.OptionManager.prototype.initialize
+ * @see DKTools.OptionsManager.prototype.initialize
  */
-DKTools.OptionManager = class {
+DKTools.OptionsManager = class {
 
     constructor() {
         this.initialize.apply(this, arguments);
@@ -13024,10 +13654,10 @@ DKTools.OptionManager = class {
      *
      * @param {Boolean} [cloneListeners=false] - Clone the option change listeners
      *
-     * @returns {DKTools.OptionManager} Cloned manager
+     * @returns {DKTools.OptionsManager} Cloned manager
      */
     clone(cloneListeners = false) {
-        const optionManager = new DKTools.OptionManager();
+        const optionManager = new DKTools.OptionsManager();
 
         optionManager.enableOptions(this._options);
 
@@ -13061,7 +13691,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.disableOption
+     * @see DKTools.OptionsManager.prototype.disableOption
      */
     disableOptions(object) {
         const options = (arguments.length > 1 ? arguments : object);
@@ -13088,7 +13718,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.enableOption
+     * @see DKTools.OptionsManager.prototype.enableOption
      */
     enableOptions(object) {
         const options = (arguments.length > 1 ? arguments : object);
@@ -13097,12 +13727,12 @@ DKTools.OptionManager = class {
     }
 
     /**
-     * @param {DKTools.OptionManager} optionManager - Option manager
+     * @param {DKTools.OptionsManager} optionManager - Option manager
      *
      * @returns {Boolean}
      */
     equals(optionManager) {
-        return optionManager instanceof DKTools.OptionManager && _.isEqual(this._options, optionManager.options);
+        return optionManager instanceof DKTools.OptionsManager && _.isEqual(this._options, optionManager.options);
     }
 
     // I methods
@@ -13112,7 +13742,7 @@ DKTools.OptionManager = class {
      *
      * @param {String} option - Name of the option
      *
-     * @see DKTools.OptionManager.prototype.isOptionEnabled
+     * @see DKTools.OptionsManager.prototype.isOptionEnabled
      *
      * @returns {Boolean} Option is disabled
      */
@@ -13138,7 +13768,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isOptionDisabled
+     * @see DKTools.OptionsManager.prototype.isOptionDisabled
      *
      * @returns {Boolean} Conjunction of the options
      */
@@ -13153,7 +13783,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isOptionEnabled
+     * @see DKTools.OptionsManager.prototype.isOptionEnabled
      *
      * @returns {Boolean} Conjunction of the options
      */
@@ -13177,7 +13807,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isOptionDisabled
+     * @see DKTools.OptionsManager.prototype.isOptionDisabled
      *
      * @returns {Boolean} Disjunction of the options
      */
@@ -13192,7 +13822,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isOptionEnabled
+     * @see DKTools.OptionsManager.prototype.isOptionEnabled
      *
      * @returns {Boolean} Disjunction of the options
      */
@@ -13239,9 +13869,9 @@ DKTools.OptionManager = class {
      *
      * @param {String} option - Name of the option
      *
-     * @see DKTools.OptionManager.prototype.isOptionEnabled
-     * @see DKTools.OptionManager.prototype.disableOption
-     * @see DKTools.OptionManager.prototype.enableOption
+     * @see DKTools.OptionsManager.prototype.isOptionEnabled
+     * @see DKTools.OptionsManager.prototype.disableOption
+     * @see DKTools.OptionsManager.prototype.enableOption
      */
     switchOption(option) {
         if (this.isOptionEnabled(option)) {
@@ -13256,7 +13886,7 @@ DKTools.OptionManager = class {
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.switchOption
+     * @see DKTools.OptionsManager.prototype.switchOption
      */
     switchOptions(object) {
         const options = (arguments.length > 1 ? arguments : object);
@@ -13268,14 +13898,14 @@ DKTools.OptionManager = class {
 
 // properties
 
-Object.defineProperties(DKTools.OptionManager, {
+Object.defineProperties(DKTools.OptionsManager, {
 
     /**
      * Options
      *
      * @readonly
      * @type {String[]}
-     * @memberof DKTools.OptionManager.prototype
+     * @memberof DKTools.OptionsManager.prototype
      */
     options: {
         get: function() {
@@ -13291,20 +13921,20 @@ Object.defineProperties(DKTools.OptionManager, {
 
 
 //===========================================================================
-// DKTools.EventManager
+// DKTools.EventsManager
 //===========================================================================
 
 /**
  * Event manager class
  *
- * @class DKTools.EventManager
+ * @class DKTools.EventsManager
  *
- * @since 2.0.0
+ * @since 9.0.0
  * @memberof DKTools
  *
- * @see DKTools.EventManager.prototype.initialize
+ * @see DKTools.EventsManager.prototype.initialize
  */
-DKTools.EventManager = class {
+DKTools.EventsManager = class {
 
     constructor() {
         this.initialize.apply(this, arguments);
@@ -13429,7 +14059,7 @@ DKTools.EventManager = class {
      * @param {Function} [object.onFail] - Handler of the event fail
      *
      * @see DKTools.Event
-     * @see DKTools.EventManager.prototype.addEvent
+     * @see DKTools.EventsManager.prototype.addEvent
      *
      * @returns {DKTools.Event} Added event
      */
@@ -13497,11 +14127,14 @@ DKTools.EventManager = class {
     /**
      * Creates a container for the events
      *
+     * @version 9.0.0
      * @param {String} type - Type of the events
      * @returns {Array} Container for the events
      */
     createEventsContainer(type) {
-        this._events[type] = [];
+        if (!this._events[type]) {
+            this._events[type] = [];
+        }
 
         return this._events[type];
     }
@@ -13545,7 +14178,7 @@ DKTools.EventManager = class {
      * @see DKTools.Event.prototype.finish
      */
     finishEvents(type, forcedSuccess = false) {
-        this.iterateEventsContainer(type, event => {
+        this.iterateEventsContainer(type, (event) => {
             event.finish(forcedSuccess);
         });
     }
@@ -13559,7 +14192,7 @@ DKTools.EventManager = class {
      * @returns {Array} Array with the animations
      */
     getAnimations(type) {
-        return _.filter(this.getEvents(type), event => event instanceof DKTools.Animation);
+        return this.getEvents(type).filter(event => event instanceof DKTools.Animation);
     }
 
     /**
@@ -13585,7 +14218,7 @@ DKTools.EventManager = class {
 
         let events = [];
 
-        _.forEach(this._events, container => {
+        _.forEach(this._events, (container) => {
             events = events.concat(container);
         });
 
@@ -13633,7 +14266,7 @@ DKTools.EventManager = class {
      * @returns {Boolean} Animations exists
      */
     hasAnimations(type) {
-        return !DKTools.Utils.Array.isEmpty(this.getAnimations(type));
+        return this.getAnimations(type).length > 0;
     }
 
     /**
@@ -13655,7 +14288,7 @@ DKTools.EventManager = class {
      * @returns {Boolean} Events exists
      */
     hasEvents(type) {
-        return !DKTools.Utils.Array.isEmpty(this.getEvents(type));
+        return this.getEvents(type).length > 0;
     }
 
     // I methods
@@ -13758,7 +14391,7 @@ DKTools.EventManager = class {
     /**
      * Updates the manager
      *
-     * @see DKTools.EventManager._checkEvents
+     * @see DKTools.EventsManager._checkEvents
      */
     update() {
         this._checkEvents();
@@ -13790,14 +14423,14 @@ DKTools.EventManager = class {
 
 // properties
 
-Object.defineProperties(DKTools.EventManager, {
+Object.defineProperties(DKTools.EventsManager, {
 
     /**
      * Events
      *
      * @readonly
      * @type {Object}
-     * @memberof DKTools.EventManager.prototype
+     * @memberof DKTools.EventsManager.prototype
      */
     events: {
         get: function() {
@@ -15332,10 +15965,10 @@ DKTools.Base = class {
      *
      * @param {DKTools.Animation} animation - Animation to add
      *
-     * @see DKTools.EventManager.addAnimation
+     * @see DKTools.EventsManager.addAnimation
      */
     addAnimation(animation) {
-        this._eventManager.addAnimation(animation);
+        this._eventsManager.addAnimation(animation);
     }
 
     /**
@@ -15359,12 +15992,12 @@ DKTools.Base = class {
      * @param {Function} [object.onFail] - Handler of the event fail
      *
      * @see DKTools.Event
-     * @see DKTools.EventManager.prototype.addEvent
+     * @see DKTools.EventsManager.prototype.addEvent
      *
      * @returns {DKTools.Event} Added event
      */
     addEvent(object) {
-        return this._eventManager.addEvent(object);
+        return this._eventsManager.addEvent(object);
     }
 
     /**
@@ -15386,26 +16019,27 @@ DKTools.Base = class {
      * @param {Function} [object.onFail] - Handler of the event fail
      *
      * @see DKTools.Event
-     * @see DKTools.EventManager.prototype.addOneTimeEvent
+     * @see DKTools.EventsManager.prototype.addOneTimeEvent
      *
      * @returns {DKTools.Event} Added event
      */
     addOneTimeEvent(object) {
-        return this._eventManager.addOneTimeEvent(object);
+        return this._eventsManager.addOneTimeEvent(object);
     }
 
     /**
      * Adds a listener of change of the option
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String} option - Name of the option
      * @param {Function} listener - Listener
      *
-     * @see DKTools.OptionManager.prototype.addOptionChangeListener
+     * @see DKTools.OptionsManager.prototype.addOptionChangeListener
      */
     addOptionChangeListener(option, listener) {
-        this._optionManager.addOptionChangeListener(option, listener);
+        this._optionsManager.addOptionChangeListener(option, listener);
     }
 
     /**
@@ -15502,49 +16136,49 @@ DKTools.Base = class {
     /**
      * Creates all
      *
-     * @version 2.0.0
+     * @version 9.0.0
      * @private
      *
-     * @see DKTools.Base.prototype._createOptionManager
+     * @see DKTools.Base.prototype._createOptionsManager
      * @see DKTools.Base.prototype._createEventManager
      */
     _createAll() {
-        this._createOptionManager();
-        this._createEventManager();
+        this._createOptionsManager();
+        this._createEventsManager();
     }
 
     /**
      * Creates the event manager
      *
-     * @since 2.0.0
+     * @since 9.0.0
      * @private
      *
-     * @see DKTools.EventManager
+     * @see DKTools.EventsManager
      */
-    _createEventManager() {
+    _createEventsManager() {
         /**
          * @private
          * @readonly
-         * @type {DKTools.EventManager}
+         * @type {DKTools.EventsManager}
          */
-        this._eventManager = new DKTools.EventManager(this);
+        this._eventsManager = new DKTools.EventsManager(this);
     }
 
     /**
      * Creates the option manager
      *
-     * @since 2.0.0
+     * @since 9.0.0
      * @private
      *
-     * @see DKTools.OptionManager
+     * @see DKTools.OptionsManager
      */
-    _createOptionManager() {
+    _createOptionsManager() {
         /**
          * @private
          * @readonly
-         * @type {DKTools.OptionManager}
+         * @type {DKTools.OptionsManager}
          */
-        this._optionManager = new DKTools.OptionManager();
+        this._optionsManager = new DKTools.OptionsManager();
     }
 
     /**
@@ -15688,10 +16322,10 @@ DKTools.Base = class {
      *
      * @param {String[] | String} object Array with event types or event type
      *
-     * @see DKTools.EventManager.prototype.clearEvents
+     * @see DKTools.EventsManager.prototype.clearEvents
      */
     clearEvents(object) {
-        this._eventManager.clearEvents(object);
+        this._eventsManager.clearEvents(object);
     }
 
     /**
@@ -15725,10 +16359,10 @@ DKTools.Base = class {
      *
      * @since 2.0.0
      *
-     * @see DKTools.OptionManager.prototype.clear
+     * @see DKTools.OptionsManager.prototype.clear
      */
     clearOptions() {
-        this._optionManager.clear();
+        this._optionsManager.clear();
     }
 
     /**
@@ -15807,7 +16441,7 @@ DKTools.Base = class {
         }
 
         if (options.cloneOptions) {
-            clone.enableOptions(this._optionManager.options);
+            clone.enableOptions(this._optionsManager.options);
         }
 
         if (!options.blockStart) {
@@ -15900,29 +16534,14 @@ DKTools.Base = class {
     /**
      * Turns off the option
      *
-     * @deprecated 8.3.0
      * @version 2.0.0
      *
      * @param {String} option - Name of the option
      *
-     * @see DKTools.OptionManager.prototype.disableOption
+     * @see DKTools.OptionsManager.prototype.disableOption
      */
     disableOption(option) {
-        this._optionManager.disableOption(option);
-    }
-
-    /**
-     * Turns off the options
-     *
-     * @deprecated 8.3.0
-     * @version 2.0.0
-     *
-     * @param {String[] | ...String} object - Names of the options
-     *
-     * @see DKTools.OptionManager.prototype.disableOptions
-     */
-    disableOptions(object) {
-        this._optionManager.disableOptions.apply(this._optionManager, arguments);
+        this._optionsManager.disableOption(option);
     }
 
     /**
@@ -16871,29 +17490,27 @@ DKTools.Base = class {
     /**
      * Turns on the option
      *
-     * @deprecated 8.3.0
      * @version 2.0.0
      *
      * @param {String} option - Name of the option
      *
-     * @see DKTools.OptionManager.prototype.enableOption
+     * @see DKTools.OptionsManager.prototype.enableOption
      */
     enableOption(option) {
-        this._optionManager.enableOption(option);
+        this._optionsManager.enableOption(option);
     }
 
     /**
      * Turns on the options
      *
-     * @deprecated 8.3.0
      * @version 2.0.0
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.enableOptions
+     * @see DKTools.OptionsManager.prototype.enableOptions
      */
     enableOptions(object) {
-        this._optionManager.enableOptions.apply(this._optionManager, arguments);
+        this._optionsManager.enableOptions.apply(this._optionsManager, arguments);
     }
 
     // F methods
@@ -17073,12 +17690,12 @@ DKTools.Base = class {
      * @param {Number | String | *} id - ID of the animation
      * @param {String} [type] - Type of the animation
      *
-     * @see DKTools.EventManager.prototype.findAnimation
+     * @see DKTools.EventsManager.prototype.findAnimation
      *
      * @returns {DKTools.Animation | undefined} Animation
      */
     findAnimation(id, type) {
-        return this._eventManager.findAnimation(id, type);
+        return this._eventsManager.findAnimation(id, type);
     }
 
     /**
@@ -17089,12 +17706,12 @@ DKTools.Base = class {
      * @param {Number | String | *} id - ID of the event
      * @param {String} [type] - Type of the event
      *
-     * @see DKTools.EventManager.prototype.findEvent
+     * @see DKTools.EventsManager.prototype.findEvent
      *
      * @returns {DKTools.Event | DKTools.Animation | undefined} Event
      */
     findEvent(id, type) {
-        return this._eventManager.findEvent(id, type);
+        return this._eventsManager.findEvent(id, type);
     }
 
     /**
@@ -17105,10 +17722,10 @@ DKTools.Base = class {
      * @param {String} type - Type of the events
      * @param {Boolean} [forcedSuccess] - Forced success for the finish of the events
      *
-     * @see DKTools.EventManager.prototype.finishEvents
+     * @see DKTools.EventsManager.prototype.finishEvents
      */
     finishEvents(type, forcedSuccess = false) {
-        this._eventManager.finishEvents(type, forcedSuccess);
+        this._eventsManager.finishEvents(type, forcedSuccess);
     }
 
     // G methods
@@ -17120,12 +17737,12 @@ DKTools.Base = class {
      *
      * @param {String} [type] - Type of animation
      *
-     * @see DKTools.EventManager.prototype.getAnimations
+     * @see DKTools.EventsManager.prototype.getAnimations
      *
      * @returns {Array} Array with the animations
      */
     getAnimations(type) {
-        return this._eventManager.getAnimations(type);
+        return this._eventsManager.getAnimations(type);
     }
 
     /**
@@ -17145,12 +17762,12 @@ DKTools.Base = class {
      *
      * @param {DKTools.Event | DKTools.Animation} event - Event
      *
-     * @see DKTools.EventManager.prototype.getEventIndex
+     * @see DKTools.EventsManager.prototype.getEventIndex
      *
      * @returns {Number} Index of the event in its container
      */
     getEventIndex(event) {
-        return this._eventManager.getEventIndex(event);
+        return this._eventsManager.getEventIndex(event);
     }
 
     /**
@@ -17160,12 +17777,12 @@ DKTools.Base = class {
      *
      * @param {String} [type] - Type of the events
      *
-     * @see DKTools.EventManager.prototype.getEvents
+     * @see DKTools.EventsManager.prototype.getEvents
      *
      * @returns {Array} Array with the events
      */
     getEvents(type) {
-        return this._eventManager.getEvents(type);
+        return this._eventsManager.getEvents(type);
     }
 
     /**
@@ -17175,12 +17792,12 @@ DKTools.Base = class {
      *
      * @param {DKTools.Event | DKTools.Animation} event - Event
      *
-     * @see DKTools.EventManager.prototype.getEventsContainer
+     * @see DKTools.EventsManager.prototype.getEventsContainer
      *
      * @returns {Array} Container for the events
      */
     getEventsContainer(event) {
-        return this._eventManager.getEventsContainer(event);
+        return this._eventsManager.getEventsContainer(event);
     }
 
     /**
@@ -17190,12 +17807,12 @@ DKTools.Base = class {
      *
      * @param {String} type - Type of the events
      *
-     * @see DKTools.EventManager.prototype.getEventsContainerByType
+     * @see DKTools.EventsManager.prototype.getEventsContainerByType
      *
      * @returns {Array} Container for the events
      */
     getEventsContainerByType(type) {
-        return this._eventManager.getEventsContainerByType(type);
+        return this._eventsManager.getEventsContainerByType(type);
     }
 
     /**
@@ -17616,12 +18233,12 @@ DKTools.Base = class {
      *
      * @param {DKTools.Animation} animation - Animation
      *
-     * @see DKTools.EventManager.prototype.hasAnimation
+     * @see DKTools.EventsManager.prototype.hasAnimation
      *
      * @returns {Boolean} Animation exists
      */
     hasAnimation(animation) {
-        return this._eventManager.hasAnimation(animation);
+        return this._eventsManager.hasAnimation(animation);
     }
 
     /**
@@ -17632,12 +18249,12 @@ DKTools.Base = class {
      *
      * @param {String} [type] - Type of the animations
      *
-     * @see DKTools.EventManager.prototype.hasAnimations
+     * @see DKTools.EventsManager.prototype.hasAnimations
      *
      * @returns {Boolean} Animations exists
      */
     hasAnimations(type) {
-        return this._eventManager.hasAnimations(type);
+        return this._eventsManager.hasAnimations(type);
     }
 
     /**
@@ -17653,32 +18270,34 @@ DKTools.Base = class {
      * Checks for existence of the event in the object
      * Returns true if the event exists
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {DKTools.Event | DKTools.Animation} event - Event
      *
-     * @see DKTools.EventManager.prototype.hasEvent
+     * @see DKTools.EventsManager.prototype.hasEvent
      *
      * @returns {Boolean} Event exists
      */
     hasEvent(event) {
-        return this._eventManager.hasEvent(event);
+        return this._eventsManager.hasEvent(event);
     }
 
     /**
      * Checks for existence of the events of a certain type
      * Returns true if the events exists
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String} [type] - Type of the Events
      *
-     * @see DKTools.EventManager.prototype.hasEvents
+     * @see DKTools.EventsManager.prototype.hasEvents
      *
      * @returns {Boolean} Events exists
      */
     hasEvents(type) {
-        return this._eventManager.hasEvents(type);
+        return this._eventsManager.hasEvents(type);
     }
 
     /**
@@ -17812,16 +18431,17 @@ DKTools.Base = class {
      * Checks the events for pause
      * Returns the conjunction of pauses of the events
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String} type - Type of the events
      *
-     * @see DKTools.EventManager.prototype.isEventsPaused
+     * @see DKTools.EventsManager.prototype.isEventsPaused
      *
      * @returns {Boolean} Conjunction of pauses of the events
      */
     isEventsPaused(type) {
-        return this._eventManager.isEventsPaused(type);
+        return this._eventsManager.isEventsPaused(type);
     }
 
     /**
@@ -17883,61 +18503,65 @@ DKTools.Base = class {
     /**
      * Returns true if the option is disabled
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String} option - Name of the option
      *
-     * @see DKTools.OptionManager.prototype.isOptionDisabled
+     * @see DKTools.OptionsManager.prototype.isOptionDisabled
      *
      * @returns {Boolean} Option is disabled
      */
     isOptionDisabled(option) {
-        return this._optionManager.isOptionDisabled(option);
+        return this._optionsManager.isOptionDisabled(option);
     }
 
     /**
      * Returns true if the option is enabled
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String} option - Name of the option
      *
-     * @see DKTools.OptionManager.prototype.isOptionEnabled
+     * @see DKTools.OptionsManager.prototype.isOptionEnabled
      *
      * @returns {Boolean} Option is enabled
      */
     isOptionEnabled(option) {
-        return this._optionManager.isOptionEnabled(option);
+        return this._optionsManager.isOptionEnabled(option);
     }
 
     /**
      * Returns conjunction of the options
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isOptionsDisabled
+     * @see DKTools.OptionsManager.prototype.isOptionsDisabled
      *
      * @returns {Boolean} Conjunction of the options
      */
     isOptionsDisabled(object) {
-        return this._optionManager.isOptionsDisabled.apply(this._optionManager, arguments);
+        return this._optionsManager.isOptionsDisabled.apply(this._optionsManager, arguments);
     }
 
     /**
      * Returns conjunction of the options
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isOptionsEnabled
+     * @see DKTools.OptionsManager.prototype.isOptionsEnabled
      *
      * @returns {Boolean} Conjunction of the options
      */
     isOptionsEnabled(object) {
-        return this._optionManager.isOptionsEnabled.apply(this._optionManager, arguments);
+        return this._optionsManager.isOptionsEnabled.apply(this._optionsManager, arguments);
     }
 
     /**
@@ -17988,44 +18612,47 @@ DKTools.Base = class {
     /**
      * Returns true if some option is enabled
      *
+     * @deprecated 9.0.0
      * @since 2.0.0
      *
-     * @see DKTools.OptionManager.prototype.isSomeOptionEnabled
+     * @see DKTools.OptionsManager.prototype.isSomeOptionEnabled
      *
      * @returns {Boolean} Some option is enabled
      */
     isSomeOptionEnabled() {
-        return this._optionManager.isSomeOptionEnabled();
+        return this._optionsManager.isSomeOptionEnabled();
     }
 
     /**
      * Returns disjunction of the options
      *
+     * @deprecated 9.0.0
      * @since 2.0.0
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isSomeOptionsDisabled
+     * @see DKTools.OptionsManager.prototype.isSomeOptionsDisabled
      *
      * @returns {Boolean} Disjunction of the options
      */
     isSomeOptionsDisabled(object) {
-        return this._optionManager.isSomeOptionsDisabled.apply(this._optionManager, arguments);
+        return this._optionsManager.isSomeOptionsDisabled.apply(this._optionsManager, arguments);
     }
 
     /**
      * Returns disjunction of the options
      *
+     * @deprecated 9.0.0
      * @since 2.0.0
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isSomeOptionsEnabled
+     * @see DKTools.OptionsManager.prototype.isSomeOptionsEnabled
      *
      * @returns {Boolean} Disjunction of the options
      */
     isSomeOptionsEnabled(object) {
-        return this._optionManager.isSomeOptionsEnabled.apply(this._optionManager, arguments);
+        return this._optionsManager.isSomeOptionsEnabled.apply(this._optionsManager, arguments);
     }
 
     /**
@@ -18044,6 +18671,17 @@ DKTools.Base = class {
      */
     isStarted() {
         return this._started;
+    }
+
+    /**
+     * Returns true if the touch is inside the object
+     *
+     * @see DKTools.Base.prototype.isInside
+     *
+     * @returns {Boolean} Touch is inside the object
+     */
+    isTouchInside() {
+        return this.isInside(TouchInput.x, TouchInput.y);
     }
 
     /**
@@ -18092,7 +18730,7 @@ DKTools.Base = class {
      * @param {Function} callback - Function for the child objects
      */
     iterateChildren(callback) {
-        _.forEach(this.children, callback);
+        this.children.forEach(callback);
     }
 
     /**
@@ -18103,10 +18741,10 @@ DKTools.Base = class {
      * @param {String} type - Type of the events
      * @param {Function} callback - Event processing function
      *
-     * @see DKTools.EventManager.prototype.iterateEventsContainer
+     * @see DKTools.EventsManager.prototype.iterateEventsContainer
      */
     iterateEventsContainer(type, callback) {
-        this._eventManager.iterateEventsContainer(type, callback);
+        this._eventsManager.iterateEventsContainer(type, callback);
     }
 
     // M methods
@@ -18210,10 +18848,10 @@ DKTools.Base = class {
      * @param {String} type - Type of the events
      * @param {Number} duration - Duration of pause
      *
-     * @see DKTools.EventManager.prototype.pauseEvents
+     * @see DKTools.EventsManager.prototype.pauseEvents
      */
     pauseEvents(type, duration) {
-        this._eventManager.pauseEvents(type, duration);
+        this._eventsManager.pauseEvents(type, duration);
     }
 
     /**
@@ -18225,8 +18863,10 @@ DKTools.Base = class {
      * @see DKTools.Base.prototype.processWheel
      */
     processAll() {
-        this.processMouse();
-        this.processWheel();
+        if (!DKTools.Utils.isMobileDevice()) {
+            this.processMouse();
+            this.processWheel();
+        }
     }
 
     /**
@@ -18288,8 +18928,8 @@ DKTools.Base = class {
      * @since 2.0.0
      */
     processMouse() {
-        if (this.isOptionEnabled('process-mouse') && this.isVisible() &&
-            (this.isActive() || this.isOptionEnabled('process-mouse-ignore-active'))) {
+        if (this._optionsManager.isOptionEnabled('process-mouse') && this.isVisible() &&
+            (this.isActive() || this._optionsManager.isOptionEnabled('process-mouse-ignore-active'))) {
                 if (this.isMouseInside()) {
                     if (this._mouseEnterTime === 0) {
                         this.updateMouseEnterEvents();
@@ -18449,12 +19089,12 @@ DKTools.Base = class {
      *
      * @param {DKTools.Event | DKTools.Animation} event - Event
      *
-     * @see DKTools.EventManager.prototype.removeEvent
+     * @see DKTools.EventsManager.prototype.removeEvent
      *
      * @returns {Boolean} Event was removed
      */
     removeEvent(event) {
-        return this._eventManager.removeEvent(event);
+        return this._eventsManager.removeEvent(event);
     }
 
     /**
@@ -18506,28 +19146,30 @@ DKTools.Base = class {
     /**
      * Removes the listener of change of the option
      *
+     * @deprecated 9.0.0
      * @since 2.0.0
      *
      * @param {String} option - Name of the option
      * @param {Function} listener - Listener
      *
-     * @see DKTools.OptionManager.prototype.removeOptionChangeListener
+     * @see DKTools.OptionsManager.prototype.removeOptionChangeListener
      */
     removeOptionChangeListener(option, listener) {
-        this._optionManager.removeOptionChangeListener(option, listener);
+        this._optionsManager.removeOptionChangeListener(option, listener);
     }
 
     /**
      * Resumes the events
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String} type - Type of the events
      *
-     * @see DKTools.EventManager.prototype.resumeEvents
+     * @see DKTools.EventsManager.prototype.resumeEvents
      */
     resumeEvents(type) {
-        this._eventManager.resumeEvents(type);
+        this._eventsManager.resumeEvents(type);
     }
 
     // S methods
@@ -19178,10 +19820,10 @@ DKTools.Base = class {
      * @param {String} type - Type of the events
      * @param {Boolean} [forcedSuccess] - Forced success for the finish of the events
      *
-     * @see DKTools.EventManager.prototype.stopEvents
+     * @see DKTools.EventsManager.prototype.stopEvents
      */
     stopEvents(type, forcedSuccess = false) {
-        this._eventManager.stopEvents(type, forcedSuccess);
+        this._eventsManager.stopEvents(type, forcedSuccess);
     }
 
     /**
@@ -19330,34 +19972,6 @@ DKTools.Base = class {
         return true;
     }
 
-    /**
-     * Switches the option
-     *
-     * @deprecated 8.3.0
-     * @version 2.0.0
-     *
-     * @param {String} option - Name of the option
-     *
-     * @see DKTools.OptionManager.prototype.switchOption
-     */
-    switchOption(option) {
-        this._optionManager.switchOption(option);
-    }
-
-    /**
-     * Switches the options
-     *
-     * @deprecated 8.3.0
-     * @version 2.0.0
-     *
-     * @param {String[] | ...String} object - Names of the options
-     *
-     * @see DKTools.OptionManager.prototype.switchOptions
-     */
-    switchOptions(object) {
-        this._optionManager.switchOptions.apply(this._optionManager, arguments);
-    }
-
     // T methods
 
     /**
@@ -19494,7 +20108,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: activate
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateActivateEvents() {
         this.updateEventsContainer('activate');
@@ -19505,7 +20119,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateAddAllChildrenEvents() {
         this.updateEventsContainer('add-all-children');
@@ -19516,7 +20130,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateCheckAllEvents() {
         this.updateEventsContainer('check-all');
@@ -19545,7 +20159,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateCreateAllEvents() {
         this.updateEventsContainer('create-all');
@@ -19554,7 +20168,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: deactivate
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateDeactivateEvents() {
         this.updateEventsContainer('deactivate');
@@ -19565,10 +20179,10 @@ DKTools.Base = class {
      *
      * @param {DKTools.Event | DKTools.Animation} event - Event
      *
-     * @see DKTools.EventManager.prototype.updateEvent
+     * @see DKTools.EventsManager.prototype.updateEvent
      */
     updateEvent(event) {
-        this._eventManager.updateEvent(event);
+        this._eventsManager.updateEvent(event);
     }
 
     /**
@@ -19576,14 +20190,15 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.update
+     * @see DKTools.EventsManager.prototype.update
      * @see DKTools.Base.protoype.updateReadyEvents
      * @see DKTools.Base.protoype.updateUpdateEvents
      * @see DKTools.Base.protoype.updateQueueEvents
      * @see DKTools.Base.protoype.updateWheelEvents
      */
     updateEvents() {
-        this._eventManager.update();
+        this._eventsManager.update();
+
         this.updateReadyEvents();
         this.updateUpdateEvents();
         this.updateQueueEvents();
@@ -19596,16 +20211,16 @@ DKTools.Base = class {
      *
      * @param {String} type - Type of the events
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateEventsContainer(type) {
-        this._eventManager.updateEventsContainer(type);
+        this._eventsManager.updateEventsContainer(type);
     }
 
     /**
      * Updates the events with type: hide
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateHideEvents() {
         this.updateEventsContainer('hide');
@@ -19625,7 +20240,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseEnterEvents() {
         this.updateEventsContainer('mouse-enter');
@@ -19636,7 +20251,7 @@ DKTools.Base = class {
      *
      * @since 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseInsideEvents() {
         this.updateEventsContainer('mouse-inside');
@@ -19647,7 +20262,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseLeaveEvents() {
         this.updateEventsContainer('mouse-leave');
@@ -19658,7 +20273,7 @@ DKTools.Base = class {
      *
      * @since 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseMoveEvents() {
         this.updateEventsContainer('mouse-move');
@@ -19669,7 +20284,7 @@ DKTools.Base = class {
      *
      * @since 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseOutsideEvents() {
         this.updateEventsContainer('mouse-outside');
@@ -19685,7 +20300,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: queue
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateQueueEvents() {
         const container = this.getEventsContainerByType('queue');
@@ -19697,7 +20312,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: ready
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateReadyEvents() {
         if (this.isReady()) {
@@ -19710,7 +20325,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateRedrawAllEvents() {
         this.updateEventsContainer('redraw-all');
@@ -19721,7 +20336,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateRefreshAllEvents() {
         this.updateEventsContainer('refresh-all');
@@ -19732,7 +20347,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateRemoveAllChildrenEvents() {
         this.updateEventsContainer('remove-all-children');
@@ -19743,7 +20358,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateRemoveAllEvents() {
         this.updateEventsContainer('remove-all');
@@ -19752,7 +20367,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: show
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateShowEvents() {
         this.updateEventsContainer('show');
@@ -19763,7 +20378,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateStartAllEvents() {
         this.updateEventsContainer('start-all');
@@ -19772,7 +20387,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: start
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateStartEvents() {
         if (this.isStarted()) {
@@ -19785,7 +20400,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateTerminateAllEvents() {
         this.updateEventsContainer('terminate-all-children');
@@ -19796,7 +20411,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateUpdateAllEvents() {
         this.updateEventsContainer('update-all');
@@ -19805,7 +20420,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: update
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateUpdateEvents() {
         this.updateEventsContainer('update');
@@ -19818,7 +20433,7 @@ DKTools.Base = class {
      *
      * @param {String} type Type of the wheel event (inside or outside)
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateWheelXEvents(type) {
         this.updateEventsContainer('wheel-X-' + type);
@@ -19831,7 +20446,7 @@ DKTools.Base = class {
      *
      * @param {String} type - Type of the wheel event (inside or outside)
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateWheelYEvents(type) {
         this.updateEventsContainer('wheel-Y-' + type);
@@ -19858,44 +20473,9 @@ Object.defineProperties(DKTools.Base.prototype, {
     },
 
     /**
-     * The X coordinate of mouse inside the object
-     *
-     * @deprecated 8.0.0
-     * @version 8.0.0
-     *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Base.prototype
-     */
-    mouseX : {
-        get: function() {
-            return this.mouse.x;
-        },
-        configurable: true
-    },
-
-    /**
-     * The Y coordinate of mouse inside the object
-     *
-     * @deprecated 8.0.0
-     * @version 8.0.0
-     *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Base.prototype
-     */
-    mouseY : {
-        get: function() {
-            return this.mouse.y;
-        },
-        configurable: true
-    },
-
-    /**
      * The coordinates of mouse inside the object
      *
      * @since 8.0.0
-     *
      * @readonly
      * @type {Number}
      * @memberof DKTools.Base.prototype
@@ -19903,6 +20483,35 @@ Object.defineProperties(DKTools.Base.prototype, {
     mouse: {
         get: function() {
             return this.getLocalPoint(TouchInput.mouseX, TouchInput.mouseY);
+        },
+        configurable: true
+    },
+
+    /**
+     * Time of mouse enter inside the object
+     *
+     * @readonly
+     * @type {Number}
+     * @memberof DKTools.Base.prototype
+     */
+    mouseEnterTime: {
+        get: function() {
+            return this._mouseEnterTime;
+        },
+        configurable: true
+    },
+
+    /**
+     * The coordinates of touch inside the object
+     *
+     * @since 9.0.0
+     * @readonly
+     * @type {Number}
+     * @memberof DKTools.Base.prototype
+     */
+    touch: {
+        get: function() {
+            return this.getLocalPoint(TouchInput.x, TouchInput.y);
         },
         configurable: true
     },
@@ -19936,15 +20545,31 @@ Object.defineProperties(DKTools.Base.prototype, {
     },
 
     /**
-     * Time of mouse enter inside the object
+     * Events manager
      *
+     * @since 9.0.0
      * @readonly
-     * @type {Number}
+     * @type {DKTools.EventsManager}
      * @memberof DKTools.Base.prototype
      */
-    mouseEnterTime: {
+    eventsManager: {
         get: function() {
-            return this._mouseEnterTime;
+            return this._eventsManager;
+        },
+        configurable: true
+    },
+
+    /**
+     * Options manager
+     *
+     * @since 9.0.0
+     * @readonly
+     * @type {DKTools.OptionsManager}
+     * @memberof DKTools.Base.prototype
+     */
+    optionsManager: {
+        get: function() {
+            return this._optionsManager;
         },
         configurable: true
     }
@@ -23478,20 +24103,26 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
     /**
      * Clears all data
      *
-     * @version 2.0.0
+     * @version 9.0.0
      * @private
      * @override
      *
      * @see DKTools.Sprite.prototype._clearAll
      * @see DKTools.Sprite.Button.prototype._clearMousePressTime
+     * @see DKTools.Sprite.Button.prototype._clearTouchPressTime
      */
     _clearAll() {
-        DKTools.Sprite.prototype._clearAll.call(this);
-        this._clearMousePressTime();
+        super._clearAll();
+
+        if (DKTools.Utils.isMobileDevice()) {
+            this._clearTouchPressTime();
+        } else {
+            this._clearMousePressTime();
+        }
     }
 
     /**
-     * Clears pressed time
+     * Clears pressed time (mouse)
      *
      * @since 2.0.0
      * @private
@@ -23505,7 +24136,42 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
         this._mousePressTime = 0;
     }
 
+    /**
+     * Clears pressed time (touch devices)
+     *
+     * @since 9.0.0
+     * @private
+     */
+    _clearTouchPressTime() {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._touchPressTime = 0;
+    }
+
     // I methods
+
+    /**
+     * Returns true if the button is pressed longer than the long press interval
+     *
+     * @returns {Boolean} Button is pressed longer than the long press interval
+     */
+    isLongPressed() {
+        return this._mousePressTime >= this._longPressInterval;
+    }
+
+    /**
+     * Returns true if toched longer than the long press interval
+     *
+     * @since 9.0.0
+     *
+     * @returns {Boolean} Toched longer than the long press interval
+     */
+    isLongTouched() {
+        return this._touchPressTime >= this._longPressInterval;
+    }
 
     /**
      * Returns true if the button is pressed
@@ -23519,12 +24185,16 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
     }
 
     /**
-     * Returns true if the button is pressed longer than the long press interval
+     * Returns true if touched
      *
-     * @returns {Boolean} Button is pressed longer than the long press interval
+     * @since 9.0.0
+     *
+     * @see DKTools.Sprite.Button.prototype.isLongTouched
+     *
+     * @returns {Boolean} Touched
      */
-    isLongPressed() {
-        return this._mousePressTime >= this._longPressInterval;
+    isTouched() {
+        return this._touchPressTime > 0 && !this.isLongTouched();
     }
 
     // S methods
@@ -23540,7 +24210,7 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
      * @see DKTools.Sprite.Button.prototype._setupUpdateButtonStateEvent
      */
     _setupEvents() {
-        DKTools.Sprite.prototype._setupEvents.call(this);
+        super._setupEvents();
         this._setupUpdateButtonStateEvent();
     }
 
@@ -23555,8 +24225,11 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
      * @see DKTools.Sprite.Button.prototype._setupProcessMouseOption
      */
     _setupOptions() {
-        DKTools.Sprite.prototype._setupOptions.call(this);
-        this._setupProcessMouseOption();
+        super._setupOptions();
+
+        if (!DKTools.Utils.isMobileDevice()) {
+            this._setupProcessMouseOption();
+        }
     }
 
     /**
@@ -23621,7 +24294,7 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
     setupAll(object = {}) {
         object = object || {};
 
-        DKTools.Sprite.prototype.setupAll.call(this, object);
+        super.setupAll(object);
 
         this.setupLongPressInterval(object.longPressInterval);
     }
@@ -23664,7 +24337,7 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
         object = object || {};
 
         const block = true;
-        let changed = DKTools.Sprite.prototype.setAll.call(this, object, block);
+        let changed = super.setAll(object, block);
 
         if (this.setLongPressInterval(object.longPressInterval)) {
             changed++;
@@ -23710,15 +24383,20 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
     /**
      * Processes all
      *
+     * @version 9.0.0
      * @override
      *
      * @see DKTools.Sprite.prototype.processAll
-     * @see DKTools.Sprite.Button.prototype.isOptionDisabled
      * @see DKTools.Sprite.Button.prototype.processMousePress
      */
     processAll() {
-        DKTools.Sprite.prototype.processAll.call(this);
-        this.processMousePress();
+        super.processAll();
+
+        if (DKTools.Utils.isMobileDevice()) {
+            this.processTouch();
+        } else {
+            this.processMousePress();
+        }
     }
 
     /**
@@ -23726,21 +24404,22 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
      *
      * @version 2.0.0
      *
-     * @see DKTools.Sprite.Button.prototype.isVisibleAndActive
-     * @see TouchInput.isMousePressed
+     * @see DKTools.Sprite.Button.prototype.isVisible
+     * @see DKTools.Sprite.Button.prototype.isActive
      * @see DKTools.Sprite.Button.prototype.isMouseInside
      * @see DKTools.Sprite.Button.prototype.isLongPressed
-     * @see TouchInput.isLeftButtonPressed
-     * @see TouchInput.isMiddleButtonPressed
-     * @see TouchInput.isRightButtonPressed
      * @see DKTools.Sprite.Button.prototype.updateMouseLongPressEvents
      * @see DKTools.Sprite.Button.prototype.isPressed
      * @see DKTools.Sprite.Button.prototype.updateMouseClickEvents
      * @see DKTools.Sprite.Button.prototype._clearMousePressTime
+     * @see TouchInput.isMousePressed
+     * @see TouchInput.isLeftButtonPressed
+     * @see TouchInput.isMiddleButtonPressed
+     * @see TouchInput.isRightButtonPressed
      */
     processMousePress() {
         if (this.isVisible() && this.isMouseInside() &&
-            (this.isActive() || this.isOptionEnabled('process-mouse-press-ignore-active'))) {
+            (this.isActive() || this._optionsManager.isOptionEnabled('process-mouse-press-ignore-active'))) {
             if (TouchInput.isMousePressed()) {
                 this._mousePressTime++;
 
@@ -23795,7 +24474,116 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
         }
     }
 
+    /**
+     * Processes a touches
+     *
+     * @since 9.0.0
+     *
+     * @see DKTools.Sprite.Button.prototype.isVisible
+     * @see DKTools.Sprite.Button.prototype.isActive
+     * @see DKTools.Sprite.Button.prototype.isTouchInside
+     * @see DKTools.Sprite.Button.prototype.isTouched
+     * @see DKTools.Sprite.Button.prototype.isLongTouched
+     * @see DKTools.Sprite.Button.prototype.updateTouchEvents
+     * @see DKTools.Sprite.Button.prototype.updateLongTouchEvents
+     * @see DKTools.Sprite.Button.prototype.updateTouchDownEvents
+     * @see DKTools.Sprite.Button.prototype.updateTouchUpEvents
+     * @see DKTools.Sprite.Button.prototype.updateLongTouchStartedEvents
+     * @see DKTools.Sprite.Button.prototype.updateLongTouchFinishedEvents
+     * @see DKTools.Sprite.Button.prototype._clearTouchPressTime
+     * @see TouchInput.isScreenPressed
+     */
+    processTouch() {
+        if (this.isVisible() && this.isTouchInside() &&
+            (this.isActive() || this._optionsManager.isOptionEnabled('process-touch-ignore-active'))) {
+            if (TouchInput.isScreenPressed()) {
+                this._touchPressTime++;
+
+                this.updateTouchDownEvents();
+
+                if (this.isLongTouched()) {
+                    if (this._touchPressTime === this._longPressInterval) {
+                        this.updateLongTouchStartedEvents();
+                    }
+
+                    this.updateLongTouchEvents();
+                }
+            } else {
+                if (this.isLongTouched()) {
+                    this.updateLongTouchFinishedEvents();
+                } else if (this.isTouched()) {
+                    this.updateTouchEvents();
+                }
+
+                if (this._touchPressTime > 0) {
+                    this.updateTouchUpEvents();
+                }
+
+                this._clearTouchPressTime();
+            }
+        } else {
+            this._clearTouchPressTime();
+        }
+    }
+
     // U methods
+
+    /**
+     * Updates the button state
+     *
+     * @version 9.0.0
+     *
+     * @see DKTools.Sprite.Button.prototype.updateStatePressedEvents
+     * @see DKTools.Sprite.Button.prototype.updateStateNormalEvents
+     */
+    updateButtonState() {
+        if (DKTools.Utils.isMobileDevice()) {
+            if (this._touchPressTime > 0) {
+                this.updateStatePressedEvents();
+            } else {
+                this.updateStateNormalEvents();
+            }
+        } else {
+            if (this._mousePressTime > 0) {
+                this.updateStatePressedEvents();
+            } else {
+                this.updateStateNormalEvents();
+            }
+        }
+    }
+
+    /**
+     * Updates the events with type: long-touch
+     *
+     * @since 9.0.0
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
+     */
+    updateLongTouchEvents() {
+        this.updateEventsContainer('long-touch');
+    }
+
+    /**
+     * Updates the events with type: mouse-long-press-finished
+     *
+     * @since 9.0.0
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
+     */
+    updateLongTouchFinishedEvents() {
+        this.updateEventsContainer('long-touch-finished');
+    }
+
+    /**
+     * Updates the events with type: mouse-long-press-started
+     *
+     * @since 9.0.0
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
+     */
+    updateLongTouchStartedEvents() {
+        this.updateEventsContainer('long-touch-started');
+    }
 
     /**
      * Updates the events with type: mouse-down-button
@@ -23898,19 +24686,36 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
     }
 
     /**
-     * Updates the button state
+     * Updates the events with type: touch
      *
-     * @see DKTools.Sprite.Button.prototype.isPressed
-     * @see DKTools.Sprite.Button.prototype.isLongPressed
-     * @see DKTools.Sprite.Button.prototype.updateStatePressedEvents
-     * @see DKTools.Sprite.Button.prototype.updateStateNormalEvents
+     * @since 9.0.0
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
-    updateButtonState() {
-        if (this._mousePressTime > 0) {
-            this.updateStatePressedEvents();
-        } else {
-            this.updateStateNormalEvents();
-        }
+    updateTouchEvents() {
+        this.updateEventsContainer('touch');
+    }
+
+    /**
+     * Updates the events with type: touch-down
+     *
+     * @since 9.0.0
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
+     */
+    updateTouchDownEvents() {
+        this.updateEventsContainer('touch-down');
+    }
+
+    /**
+     * Updates the events with type: touch-up
+     *
+     * @since 9.0.0
+     *
+     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
+     */
+    updateTouchUpEvents() {
+        this.updateEventsContainer('touch-up');
     }
 
 };
@@ -23943,6 +24748,21 @@ Object.defineProperties(DKTools.Sprite.Button.prototype, {
     mousePressTime: {
         get: function() {
             return this._mousePressTime;
+        },
+        configurable: true
+    },
+
+    /**
+     * Touch press time
+     *
+     * @since 9.0.0
+     * @readonly
+     * @type {Number}
+     * @memberof DKTools.Sprite.Button.prototype
+     */
+    touchPressTime: {
+        get: function() {
+            return this._touchPressTime;
         },
         configurable: true
     }
@@ -24666,7 +25486,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype._addCursorSprite
      */
     _addAllChildren() {
-        DKTools.Sprite.Button.prototype._addAllChildren.call(this);
+        super._addAllChildren();
         this._addCursorSprite();
     }
 
@@ -24685,7 +25505,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @override
      */
     activate() {
-        DKTools.Sprite.Button.prototype.activate.call(this);
+        super.activate();
         this.reselect();
     }
 
@@ -24753,7 +25573,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype._clearTopCol
      */
     _clearAll() {
-        DKTools.Sprite.Button.prototype._clearAll.call(this);
+        super._clearAll();
         this._clearItems();
         this._clearHandlers();
         this._clearTopRow();
@@ -25028,7 +25848,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype.deselect
      */
     deactivate(deselect = false) {
-        DKTools.Sprite.Button.prototype.deactivate.call(this);
+        super.deactivate();
 
         if (deselect) {
             this.deselect();
@@ -25071,7 +25891,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @override
      */
     drawAll() {
-        DKTools.Sprite.Button.prototype.drawAll.call(this);
+        super.drawAll();
         this.drawAllItems();
     }
 
@@ -26551,7 +27371,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype.processHandling
      */
     processAll() {
-        DKTools.Sprite.Button.prototype.processAll.call(this);
+        super.processAll();
 
         this.processCursorMove();
         this.processHandling();
@@ -26601,6 +27421,14 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
             this.cursorPageUp();
         }
 
+        if (Input.isTriggered('home')) {
+            this.selectFirstItem();
+        }
+
+        if (Input.isTriggered('end')) {
+            this.selectLastItem();
+        }
+
         if (this._index !== lastIndex) {
             this.playCursorSound();
         }
@@ -26637,14 +27465,13 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      *
      * @version 8.0.0
      *
-     * @see DKTools.Sprite.Selectable.prototype.isOptionEnabled
      * @see DKTools.Sprite.Selectable.prototype.isCursorMovable
      * @see DKTools.Sprite.Selectable.prototype.hitTest
      * @see DKTools.Sprite.Selectable.prototype.selectItem
      * @see DKTools.Sprite.Selectable.prototype.playCursorSound
      */
     processMouseHover() {
-        if (this.isOptionEnabled('process-mouse-hover') && this.isCursorMovable() && TouchInput.date > Input.date) {
+        if (this._optionsManager.isOptionEnabled('process-mouse-hover') && this.isCursorMovable() && TouchInput.date > Input.date) {
             const lastIndex = this._index;
             const x = TouchInput.mouseX;
             const y = TouchInput.mouseY;
@@ -26659,7 +27486,6 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     /**
      * Processes the scroll of the mouse wheel
      *
-     * @see DKTools.Sprite.Selectable.prototype.isOptionEnabled
      * @see DKTools.Sprite.Selectable.prototype.isVisibleAndActive
      * @see DKTools.Sprite.Selectable.prototype.isHorizontal
      * @see DKTools.Sprite.Selectable.prototype.scrollRight
@@ -26668,8 +27494,9 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype.scrollUp
      */
     processWheelScroll() {
-        if (this.isOptionEnabled('process-wheel-scroll') && this.isVisibleAndActive()) {
+        if (this._optionsManager.isOptionEnabled('process-wheel-scroll') && this.isVisibleAndActive()) {
             const wheelY = this._wheelY;
+            const lastIndex = this._index;
 
             if (wheelY > 0) {
                 if (this.isHorizontal()) {
@@ -26683,6 +27510,10 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
                 } else {
                     this.scrollUp();
                 }
+            }
+
+            if (this._index !== lastIndex) {
+                this.playCursorSound();
             }
         }
     }
@@ -26889,7 +27720,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     /**
      * Sets the events
      *
-     * @version 3.0.0
+     * @version 9.0.0
      * @private
      * @override
      *
@@ -26898,13 +27729,34 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype._setupMouseLongPressEvent
      * @see DKTools.Sprite.Selectable.prototype._setupMouseHoverEvents
      * @see DKTools.Sprite.Selectable.prototype._setupWheelScrollEvents
+     * @see DKTools.Sprite.Selectable.prototype._setupTouchEvent
+     * @see DKTools.Sprite.Selectable.prototype._setupLongTouchEvent
      */
     _setupEvents() {
-        DKTools.Sprite.Button.prototype._setupEvents.call(this);
-        this._setupMouseClickEvent();
-        this._setupMouseLongPressEvent();
-        this._setupMouseHoverEvents();
-        this._setupWheelScrollEvents();
+        super._setupEvents();
+
+        if (!DKTools.Utils.isMobileDevice()) {
+            this._setupMouseClickEvent();
+            this._setupMouseLongPressEvent();
+            this._setupMouseHoverEvents();
+            this._setupWheelScrollEvents();
+        } else {
+            this._setupTouchEvent();
+            this._setupLongTouchEvent();
+        }
+    }
+
+    /**
+     * Sets the event of the long touch (long-touch)
+     *
+     * @since 9.0.0
+     * @private
+     */
+    _setupLongTouchEvent() {
+        this.addEvent({
+            type: 'long-touch',
+            onUpdate: this._onTouch.bind(this, false)
+        });
     }
 
     /**
@@ -26940,7 +27792,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      *
      * @private
      *
-     * @see DKTools.Sprite.Selectable.prototype.addEvent
+     * @see DKTools.Sprite.Selectable.prototype.processMouseHover
      */
     _setupMouseHoverEvents() {
         this.addEvent({
@@ -26951,6 +27803,19 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
         this.addEvent({
             type: 'mouse-move',
             onUpdate: this.processMouseHover.bind(this)
+        });
+    }
+
+    /**
+     * Sets the event of the touch (touch)
+     *
+     * @since 9.0.0
+     * @private
+     */
+    _setupTouchEvent() {
+        this.addEvent({
+            type: 'touch',
+            onUpdate: this._onTouch.bind(this, true)
         });
     }
 
@@ -27400,7 +28265,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     setupAll(object = {}) {
         object = object || {};
 
-        DKTools.Sprite.Button.prototype.setupAll.call(this, object);
+        super.setupAll(object);
 
         this.setupIndex(object.index);
         this.setupMaxCols(object.maxCols);
@@ -27890,7 +28755,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
         object = object || {};
 
         const block = true;
-        let changed = DKTools.Sprite.Button.prototype.setAll.call(this, object, block);
+        let changed = super.setAll(object, block);
 
         if (this.setIndex(object.index, block)) {
             changed++;
@@ -28841,6 +29706,18 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     }
 
     /**
+     * Selects the first item
+     *
+     * @since 9.0.0
+     * @param {Boolean} [playCursor=false]
+     *
+     * @see DKTools.Sprite.Selectable.prototype.selectItem
+     */
+    selectFirstItem(playCursor = false) {
+        this.selectItem(0, playCursor);
+    }
+
+    /**
      * Selects the item
      *
      * @version 6.0.0
@@ -29014,7 +29891,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype.updateCursor
      */
     updateAll() {
-        DKTools.Sprite.Button.prototype.updateAll.call(this);
+        super.updateAll();
         this.updateCursor();
     }
 
@@ -29474,6 +30351,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      * Animates the empty value
      * Returns the update event
      *
+     * @version 9.0.0
      * @param {Number} duration - Duration of animation
      *
      * @see DKTools.Sprite.ProgressBar.prototype.animateValue
@@ -29481,7 +30359,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      * @returns {DKTools.Event} Update event
      */
     animateEmpty(duration) {
-        return this.animateValue(0, duration);
+        return this.animateValue(this._minValue, duration);
     }
 
     /**
@@ -29501,7 +30379,8 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
             type: 'update',
             repeatTime: duration,
             repeats: 0,
-            onUpdate: this._updateAnimateValue.bind(this, value)
+            onUpdate: this._updateAnimateValue.bind(
+                this, DKTools.Utils.Number.clamp(value, this._minValue, this._maxValue))
         });
     }
 
@@ -29515,6 +30394,33 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      */
     canCloneFixedBitmap() {
         return false;
+    }
+
+    /**
+     * Checks all
+     *
+     * @override 9.0.0
+     *
+     * @see DKTools.Sprite.prototype.checkAll
+     */
+    checkAll() {
+        super.checkAll();
+        this.checkValue();
+    }
+
+    /**
+     * Checks the value
+     *
+     * @since 9.0.0
+     */
+    checkValue() {
+        if (this._value < this._minValue) {
+            this._value = this._minValue;
+        }
+
+        if (this._value > this._maxValue) {
+            this._value = this._maxValue;
+        }
     }
 
     // D methods
@@ -29569,6 +30475,29 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     // G methods
 
     /**
+     * Returns the elapsed value
+     *
+     * @since 9.0.0
+     * @private
+     *
+     * @returns {Number} Elapsed value
+     */
+    _getElapsed() {
+        return Math.abs(this._value - this._minValue);
+    }
+
+    /**
+     * Returns the elapsed steps
+     *
+     * @since 9.0.0
+     *
+     * @returns {Number} Elapsed steps
+     */
+    getElapsedSteps() {
+        return this._getElapsed() / this._valueStep;
+    }
+
+    /**
      * Returns the next value
      *
      * @returns {Number} Next value
@@ -29578,21 +30507,62 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     }
 
     /**
-     * Returns the current value in percent
+     * Returns the current value in percents
      *
-     * @returns {Number} Current value in percent
+     * @version 9.0.0
+     * @returns {Number} Current value in percents
      */
     getPercents() {
-        return Math.ceil(this._value / this._maxValue * 100);
+        return DKTools.Utils.Number.clamp(
+            Math.abs(Math.ceil(this._getElapsed() * 100 / this.getRange())), 0, 100);
     }
 
     /**
      * Returns the previous value
      *
+     * @version 9.0.0
      * @returns {Number} Previous value
      */
     getPrevValue() {
-        return Math.max(0, this._value - this._valueStep);
+        return Math.max(this._minValue, this._value - this._valueStep);
+    }
+
+    /**
+     * Returns the range
+     *
+     * @since 9.0.0
+     *
+     * @returns {Number} range
+     */
+    getRange() {
+        return this._maxValue - this._minValue;
+    }
+
+    /**
+     * Returns the remaining steps
+     *
+     * @since 9.0.0
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.getSteps
+     * @see DKTools.Sprite.ProgressBar.prototype.getElapsedSteps
+     *
+     * @returns {Number} Remaining steps
+     */
+    getRemainingSteps() {
+        return this.getSteps() - this.getElapsedSteps();
+    }
+
+    /**
+     * Returns the total steps
+     *
+     * @since 9.0.0
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.getRange
+     *
+     * @returns {Number} Total steps
+     */
+    getSteps() {
+        return this.getRange() / this._valueStep;
     }
 
     // H methods
@@ -29620,10 +30590,11 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     /**
      * Returns true if the progress bar is empty
      *
+     * @version 9.0.0
      * @returns {Boolean} Progress bar is empty
      */
     isEmpty() {
-        return this._value === 0;
+        return this._value === this._minValue;
     }
 
     /**
@@ -29660,10 +30631,11 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     /**
      * Makes the progress bar empty
      *
+     * @version 9.0.0
      * @see DKTools.Sprite.ProgressBar.prototype.setValue
      */
     makeEmpty() {
-        this.setValue(0);
+        this.setValue(this._minValue);
     }
 
     /**
@@ -29711,6 +30683,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      * Changes all parameters
      * Returns the number of changed parameters
      *
+     * @version 9.0.0
      * @override
      *
      * @param {Object} [object={}] - Parameters
@@ -29719,6 +30692,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      *
      * @param {Number} [object.valueStep] - Value step
      * @param {Number} [object.maxValue] - Maximum value
+     * @param {Number} [object.minValue] - Minimum value
      * @param {Number} [object.value] - Value
      * @param {String} [object.backgroundColor] - Background color
      * @param {String} [object.progressColor] - Progress color
@@ -29728,6 +30702,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      * @see DKTools.Sprite.prototype.setAll
      * @see DKTools.Sprite.ProgressBar.prototype.setValueStep
      * @see DKTools.Sprite.ProgressBar.prototype.setMaxValue
+     * @see DKTools.Sprite.ProgressBar.prototype.setMinValue
      * @see DKTools.Sprite.ProgressBar.prototype.setValue
      * @see DKTools.Sprite.ProgressBar.prototype.setBackgroundColor
      * @see DKTools.Sprite.ProgressBar.prototype.setProgressColor
@@ -29749,6 +30724,10 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
         }
 
         if (this.setMaxValue(object.maxValue, block)) {
+            changed++;
+        }
+
+        if (this.setMinValue(object.minValue, block)) {
             changed++;
         }
 
@@ -29902,6 +30881,39 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     }
 
     /**
+     * Changes the minimum value
+     * Returns true if the change occurred
+     *
+     * @since 9.0.0
+     * @param {Number} [min] - Minimum value
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setupMinValue
+     * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setMinValue(min, blockRefreshAll = false) {
+        if (this._minValue === min) {
+            return false;
+        }
+
+        const lastMin = this._minValue;
+
+        this.setupMinValue(min);
+
+        if (this._minValue === lastMin) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
      * Changes the progress color
      * Returns true if the change occurred
      *
@@ -30003,12 +31015,14 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     /**
      * Sets all parameters
      *
+     * @version 9.0.0
      * @override
      *
      * @param {Object} [object={}] - Parameters
      *
      * @param {Number} [object.valueStep] - Value step
      * @param {Number} [object.maxValue] - Maximum value
+     * @param {Number} [object.minValue] - Minimum value
      * @param {Number} [object.value] - Value
      * @param {String} [object.backgroundColor] - Background color
      * @param {String} [object.progressColor] - Progress color
@@ -30018,6 +31032,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      * @see DKTools.Sprite.prototype.setupAll
      * @see DKTools.Sprite.ProgressBar.setupValueStep
      * @see DKTools.Sprite.ProgressBar.setupMaxValue
+     * @see DKTools.Sprite.ProgressBar.setupMinValue
      * @see DKTools.Sprite.ProgressBar.setupValue
      * @see DKTools.Sprite.ProgressBar.setupBackgroundColor
      * @see DKTools.Sprite.ProgressBar.setupProgressColor
@@ -30031,6 +31046,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
 
         this.setupValueStep(object.valueStep);
         this.setupMaxValue(object.maxValue);
+        this.setupMinValue(object.minValue);
         this.setupValue(object.value);
         this.setupBackgroundColor(object.progressColor);
         this.setupProgressColor(object.progressColor);
@@ -30091,7 +31107,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      *
      * @param {Number} [max=this.standardMaxValue()] - Maximum value
      *
-     * @see DKTools.Sprite.ProgressBar.prototype.setupMaxValue
+     * @see DKTools.Sprite.ProgressBar.prototype.standardMaxValue
      */
     setupMaxValue(max) {
         /**
@@ -30099,7 +31115,24 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
          * @readonly
          * @type {Number}
          */
-        this._maxValue = max || this.standardMaxValue();
+        this._maxValue = _.defaultTo(max, this.standardMaxValue());
+    }
+
+    /**
+     * Sets the minimum value
+     *
+     * @since 9.0.0
+     * @param {Number} [min=this.standardMinValue()] - Minimum value
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.standardMinValue
+     */
+    setupMinValue(min) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._minValue = _.defaultTo(min, this.standardMinValue());
     }
 
     /**
@@ -30121,13 +31154,15 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     /**
      * Sets the value
      *
+     * @version 9.0.0
      * @param {Number} [value=this.standardValue()] - Value
      *
      * @see DKTools.Sprite.ProgressBar.prototype.standardValue
      */
     setupValue(value) {
+        const min = this._minValue;
         const max = this._maxValue;
-        const newValue = Math.max(0, Math.min(value, max));
+        const newValue = DKTools.Utils.Number.clamp(value, min, max);
 
         /**
          * @private
@@ -30197,6 +31232,16 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      */
     standardMaxValue() {
         return 100;
+    }
+
+    /**
+     * Returns the standard minimum value
+     *
+     * @since 9.0.0
+     * @returns {Number} Standard minimum value
+     */
+    standardMinValue() {
+        return 0;
     }
 
     /**
@@ -30334,6 +31379,21 @@ Object.defineProperties(DKTools.Sprite.ProgressBar.prototype, {
     maxValue: {
         get: function() {
             return this._maxValue;
+        },
+        configurable: true
+    },
+
+    /**
+     * Minimum value
+     *
+     * @since 9.0.0
+     * @readonly
+     * @type {Number}
+     * @memberof DKTools.Sprite.ProgressBar.prototype
+     */
+    minValue: {
+        get: function() {
+            return this._minValue;
         },
         configurable: true
     },
@@ -31215,14 +32275,29 @@ DKTools.Sprite.CheckBox = class extends DKTools.Sprite.Button {
     /**
      * Updates the events with type: mouse-click-button
      *
-     * @param {String} button - Mouse button
+     * @override
+     *
+     * @param {String} button - Mouse button (left, middle or right)
      *
      * @see DKTools.Sprite.CheckBox.prototype.switch
      * @see DKTools.Sprite.Button.prototype.updateMouseClickEvents
      */
     updateMouseClickEvents(button) {
         this.switch();
-        DKTools.Sprite.Button.prototype.updateMouseClickEvents.call(this, button);
+        super.updateMouseClickEvents(button);
+    }
+
+    /**
+     * Updates the events with type: touch
+     *
+     * @override 9.0.0
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.switch
+     * @see DKTools.Sprite.Button.prototype.updateTouchEvents
+     */
+    updateTouchEvents() {
+        this.switch();
+        super.updateTouchEvents();
     }
 
     /**
@@ -36317,21 +37392,6 @@ DKTools.Scene.prototype._addAllChildren = function() {
 };
 
 /**
- * Adds a listener of change of the option
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- * @param {Function} listener - Listener
- *
- * @see DKTools.OptionManager.prototype.addOptionChangeListener
- */
-DKTools.Scene.prototype.addOptionChangeListener = function(option, listener) {
-    this._optionManager.addOptionChangeListener(option, listener);
-};
-
-/**
  * Adds the event
  *
  * @since 2.0.0
@@ -36351,12 +37411,12 @@ DKTools.Scene.prototype.addOptionChangeListener = function(option, listener) {
  * @param {Function} [object.onFail] - Handler of the event fail
  *
  * @see DKTools.Event
- * @see DKTools.EventManager.prototype.addEvent
+ * @see DKTools.EventsManager.prototype.addEvent
  *
  * @returns {DKTools.Event} Added event
  */
 DKTools.Scene.prototype.addEvent = function(object) {
-    return this._eventManager.addEvent(object);
+    return this._eventsManager.addEvent(object);
 };
 
 /**
@@ -36377,12 +37437,12 @@ DKTools.Scene.prototype.addEvent = function(object) {
  * @param {Function} [object.onFail] - Handler of the event fail
  *
  * @see DKTools.Event
- * @see DKTools.EventManager.prototype.addOneTimeEvent
+ * @see DKTools.EventsManager.prototype.addOneTimeEvent
  *
  * @returns {DKTools.Event} Added event
  */
 DKTools.Scene.prototype.addOneTimeEvent = function(object) {
-    return this._eventManager.addOneTimeEvent(object);
+    return this._eventsManager.addOneTimeEvent(object);
 };
 
 /**
@@ -36392,10 +37452,10 @@ DKTools.Scene.prototype.addOneTimeEvent = function(object) {
  *
  * @param {DKTools.Animation} animation - Animation to add
  *
- * @see DKTools.EventManager.addAnimation
+ * @see DKTools.EventsManager.addAnimation
  */
 DKTools.Scene.prototype.addAnimation = function(animation) {
-    this._eventManager.addAnimation(animation);
+    this._eventsManager.addAnimation(animation);
 };
 
 // C methods
@@ -36412,73 +37472,47 @@ DKTools.Scene.prototype._clearAll = function() {
 /**
  * Creates all
  *
- * @version 2.0.0
+ * @version 9.0.0
  * @private
  *
  * @see DKTools.Scene.prototype._createOptionManager
  * @see DKTools.Scene.prototype._createEventManager
  */
 DKTools.Scene.prototype._createAll = function() {
-    this._createOptionManager();
-    this._createEventManager();
+    this._createOptionsManager();
+    this._createEventsManager();
 };
 
 /**
  * Creates the option manager
  *
- * @since 2.0.0
+ * @since 9.0.0
  * @private
  */
-DKTools.Scene.prototype._createOptionManager = function() {
+DKTools.Scene.prototype._createOptionsManager = function() {
     /**
      * @private
      * @readonly
-     * @type {DKTools.OptionManager}
+     * @type {DKTools.OptionsManager}
      */
-    this._optionManager = new DKTools.OptionManager();
+    this._optionsManager = new DKTools.OptionsManager();
 };
 
 /**
  * Creates the event manager
  *
- * @since 2.0.0
+ * @since 9.0.0
  * @private
  *
- * @see DKTools.EventManager
+ * @see DKTools.EventsManager
  */
-DKTools.Scene.prototype._createEventManager = function() {
+DKTools.Scene.prototype._createEventsManager = function() {
     /**
      * @private
      * @readonly
-     * @type {DKTools.EventManager}
+     * @type {DKTools.EventsManager}
      */
-    this._eventManager = new DKTools.EventManager(this);
-};
-
-/**
- * Clears the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @see DKTools.OptionManager.prototype.clear
- */
-DKTools.Scene.prototype.clearOptions = function() {
-    this._optionManager.clear();
-};
-
-/**
- * Clears the events
- *
- * @deprecated 8.3.0
- * @version 2.0.0
- *
- * @param {String[] | String} object Array with event types or event type
- *
- * @see DKTools.EventManager.prototype.clearEvents
- */
-DKTools.Scene.prototype.clearEvents = function(object) {
-    this._eventManager.clearEvents(object);
+    this._eventsManager = new DKTools.EventsManager(this);
 };
 
 /**
@@ -36546,168 +37580,11 @@ DKTools.Scene.prototype.createForeground = function() {
 DKTools.Scene.prototype.destroy = function(options) {
     this._clearAll();
 
-    this._eventManager.clearEvents();
+    this._eventsManager.clearEvents();
 
     this.deactivate();
 
     Stage.prototype.destroy.call(this, options);
-};
-
-/**
- * Turns off the option
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- *
- * @see DKTools.OptionManager.prototype.disableOption
- */
-DKTools.Scene.prototype.disableOption = function(option) {
-    this._optionManager.disableOption(option);
-};
-
-/**
- * Turns off the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.disableOptions
- */
-DKTools.Scene.prototype.disableOptions = function(object) {
-    this._optionManager.disableOption(object);
-};
-
-// E methods
-
-/**
- * Turns on the option
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- *
- * @see DKTools.OptionManager.prototype.enableOption
- */
-DKTools.Scene.prototype.enableOption = function(option) {
-    this._optionManager.enableOption(option);
-};
-
-/**
- * Turns on the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.enableOptions
- */
-DKTools.Scene.prototype.enableOptions = function(object) {
-    this._optionManager.enableOption(object);
-};
-
-// F methods
-
-/**
- * Finishes the events
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- * @param {Boolean} [forcedSuccess] - Forced success for the finish of the events
- *
- * @see DKTools.EventManager.prototype.finishEvents
- */
-DKTools.Scene.prototype.finishEvents = function(type, forcedSuccess = false) {
-    this._eventManager.finishEvents(type, forcedSuccess);
-};
-
-// G methods
-
-/**
- * Returns a container for the events by event type
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- *
- * @see DKTools.EventManager.prototype.getEventsContainerByType
- *
- * @returns {Array} Container for the events
- */
-DKTools.Scene.prototype.getEventsContainerByType = function(type) {
-    return this._eventManager.getEventsContainerByType(type);
-};
-
-/**
- * Returns a container for the events by event
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {DKTools.Event | DKTools.Animation} event - Event
- *
- * @see DKTools.EventManager.prototype.getEventsContainer
- *
- * @returns {Array} Container for the events
- */
-DKTools.Scene.prototype.getEventsContainer = function(event) {
-    return this._eventManager.getEventsContainer(event);
-};
-
-/**
- * Returns an index of the event in its container
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {DKTools.Event | DKTools.Animation} event - Event
- *
- * @see DKTools.EventManager.prototype.getEventIndex
- *
- * @returns {Number} Index of the event in its container
- */
-DKTools.Scene.prototype.getEventIndex = function(event) {
-    return this._eventManager.getEventIndex(event);
-};
-
-/**
- * Returns an array with the all events or events of a certain type
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} [type] - Type of the events
- *
- * @see DKTools.EventManager.prototype.getEvents
- *
- * @returns {Array} Array with the events
- */
-DKTools.Scene.prototype.getEvents = function(type) {
-    return this._eventManager.getEvents(type);
-};
-
-/**
- * Returns an array with the all animations or animations of a certain type
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} [type] - Type of animation
- *
- * @see DKTools.EventManager.prototype.getAnimations
- *
- * @returns {Array} Array with the animations
- */
-DKTools.Scene.prototype.getAnimations = function(type) {
-    return this._eventManager.getAnimations(type);
 };
 
 // H methods
@@ -36719,74 +37596,6 @@ DKTools.Scene.prototype.getAnimations = function(type) {
  */
 DKTools.Scene.prototype.hasWindowLayer = function() {
     return !!this._windowLayer;
-};
-
-/**
- * Checks for existence of the event in the object
- * Returns true if the event exists
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {DKTools.Event | DKTools.Animation} event - Event
- *
- * @see DKTools.EventManager.prototype.hasEvent
- *
- * @returns {Boolean} Event exists
- */
-DKTools.Scene.prototype.hasEvent = function(event) {
-    return this._eventManager.hasEvent(event);
-};
-
-/**
- * Checks for existence of the events of a certain type
- * Returns true if the events exists
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} [type] - Type of the Events
- *
- * @see DKTools.EventManager.prototype.hasEvents
- *
- * @returns {Boolean} Events exists
- */
-DKTools.Scene.prototype.hasEvents = function(type) {
-    return this._eventManager.hasEvents(type);
-};
-
-/**
- * Checks for existence of the animation in the object
- * Returns true if the animation exists
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {DKTools.Animation} animation - Animation
- *
- * @see DKTools.EventManager.prototype.hasAnimation
- *
- * @returns {Boolean} Animation exists
- */
-DKTools.Scene.prototype.hasAnimation = function(animation) {
-    return this._eventManager.hasAnimation(animation);
-};
-
-/**
- * Checks for existence of the animations of a certain type
- * Returns true if the animations exists
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} [type] - Type of the animations
- *
- * @see DKTools.EventManager.prototype.hasAnimations
- *
- * @returns {Boolean} Animations exists
- */
-DKTools.Scene.prototype.hasAnimations = function(type) {
-    return this._eventManager.hasAnimations(type);
 };
 
 // I methods
@@ -36826,212 +37635,7 @@ DKTools.Scene.prototype.isDestroyed = function() {
     return this._destroyed;
 };
 
-/**
- * Returns true if the option is enabled
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- *
- * @see DKTools.OptionManager.prototype.isOptionEnabled
- *
- * @returns {Boolean} Option is enabled
- */
-DKTools.Scene.prototype.isOptionEnabled = function(option) {
-    return this._optionManager.isOptionEnabled(option);
-};
-
-/**
- * Returns conjunction of the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.isOptionsEnabled
- *
- * @returns {Boolean} Conjunction of the options
- */
-DKTools.Scene.prototype.isOptionsEnabled = function(object) {
-    return this._optionManager.isOptionsEnabled(object);
-};
-
-/**
- * Returns disjunction of the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.isSomeOptionsEnabled
- *
- * @returns {Boolean} Disjunction of the options
- */
-DKTools.Scene.prototype.isSomeOptionsEnabled = function(object) {
-    return this._optionManager.isSomeOptionsEnabled(object);
-};
-
-/**
- * Returns true if the option is disabled
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- *
- * @see DKTools.OptionManager.prototype.isOptionDisabled
- *
- * @returns {Boolean} Option is disabled
- */
-DKTools.Scene.prototype.isOptionDisabled = function(option) {
-    return this._optionManager.isOptionDisabled(option);
-};
-
-/**
- * Returns conjunction of the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.isOptionsDisabled
- *
- * @returns {Boolean} Conjunction of the options
- */
-DKTools.Scene.prototype.isOptionsDisabled = function(object) {
-    return this._optionManager.isOptionsDisabled(object);
-};
-
-/**
- * Returns disjunction of the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.isSomeOptionsDisabled
- *
- * @returns {Boolean} Disjunction of the options
- */
-DKTools.Scene.prototype.isSomeOptionsDisabled = function(object) {
-    return this._optionManager.isSomeOptionsDisabled(object);
-};
-
-/**
- * Returns true if some option is enabled
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @see DKTools.OptionManager.prototype.isSomeOptionEnabled
- *
- * @returns {Boolean} Some option is enabled
- */
-DKTools.Scene.prototype.isSomeOptionEnabled = function() {
-    return this._optionManager.isSomeOptionEnabled();
-};
-
-/**
- * Performs a callback function for the events
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- * @param {Function} callback - Event processing function
- *
- * @see DKTools.EventManager.prototype.iterateEventsContainer
- */
-DKTools.Scene.prototype.iterateEventsContainer = function(type, callback) {
-    this._eventManager.iterateEventsContainer(type, callback);
-};
-
-/**
- * Checks the events for pause
- * Returns the conjunction of pauses of the events
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- *
- * @see DKTools.EventManager.prototype.isEventsPaused
- *
- * @returns {Boolean} Conjunction of pauses of the events
- */
-DKTools.Scene.prototype.isEventsPaused = function(type) {
-    return this._eventManager.isEventsPaused(type);
-};
-
-// P methods
-
-/**
- * Pauses the events
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- * @param {Number} duration - Duration of pause
- *
- * @see DKTools.EventManager.prototype.pauseEvents
- */
-DKTools.Scene.prototype.pauseEvents = function(type, duration) {
-    this._eventManager.pauseEvents(type, duration);
-};
-
 // R methods
-
-/**
- * Removes the listener of change of the option
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- * @param {Function} listener - Listener
- *
- * @see DKTools.OptionManager.prototype.removeOptionsChangeListener
- */
-DKTools.Scene.prototype.removeOptionChangeListener = function(option, listener) {
-    this._optionManager.removeOptionChangeListener(option, listener);
-};
-
-/**
- * Removes the event from a container
- * Returns true if the event was removed
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {DKTools.Event | DKTools.Animation} event - Event
- *
- * @see DKTools.EventManager.prototype.removeEvent
- *
- * @returns {Boolean} Event was removed
- */
-DKTools.Scene.prototype.removeEvent = function(event) {
-    return this._eventManager.removeEvent(event);
-};
-
-/**
- * Resumes the events
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- *
- * @see DKTools.EventManager.prototype.resumeEvents
- */
-DKTools.Scene.prototype.resumeEvents = function(type) {
-    this._eventManager.resumeEvents(type);
-};
 
 /**
  * Removes the window from the scene
@@ -37146,49 +37750,6 @@ DKTools.Scene.prototype.stopAll = function() {
     // to be overridden by plugins
 };
 
-/**
- * Stops the events
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- * @param {Boolean} [forcedSuccess] - Forced success for the finish of the events
- *
- * @see DKTools.EventManager.prototype.stopEvents
- */
-DKTools.Scene.prototype.stopEvents = function(type, forcedSuccess = false) {
-    this._eventManager.stopEvents(type, forcedSuccess);
-};
-
-/**
- * Switches the option
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- *
- * @see DKTools.OptionManager.prototype.switchOption
- */
-DKTools.Scene.prototype.switchOption = function(option) {
-    this._optionManager.disableOption(option);
-};
-
-/**
- * Switches the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.switchOptions
- */
-DKTools.Scene.prototype.switchOptions = function(object) {
-    this._optionManager.switchOptions(object);
-};
-
 // T methods
 
 /**
@@ -37256,45 +37817,17 @@ DKTools.Scene.prototype.updateChildren = function() {
  *
  * @since 2.0.0
  *
- * @see DKTools.EventManager.prototype.update
+ * @see DKTools.EventsManager.prototype.update
  * @see DKTools.Base.protoype.updateReadyEvents
  * @see DKTools.Base.protoype.updateUpdateEvents
  * @see DKTools.Base.protoype.updateQueueEvents
  * @see DKTools.Base.protoype.updateWheelEvents
  */
 DKTools.Scene.prototype.updateEvents = function() {
-    this._eventManager.update();
+    this._eventsManager.update();
     this.updateReadyEvents();
     this.updateUpdateEvents();
     this.updateQueueEvents();
-};
-
-/**
- * Updates the event
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {DKTools.Event | DKTools.Animation} event - Event
- *
- * @see DKTools.EventManager.prototype.updateEvent
- */
-DKTools.Scene.prototype.updateEvent = function(event) {
-    this._eventManager.updateEvent(event);
-};
-
-/**
- * Updates the events from container
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- *
- * @see DKTools.EventManager.prototype.updateEventsContainer
- */
-DKTools.Scene.prototype.updateEventsContainer = function(type) {
-    this._eventManager.updateEventsContainer(type);
 };
 
 /**
@@ -37303,11 +37836,11 @@ DKTools.Scene.prototype.updateEventsContainer = function(type) {
  * @version 8.3.0
  * @since 2.0.0
  *
- * @see DKTools.EventManager.prototype.updateEventsContainer
+ * @see DKTools.EventsManager.prototype.updateEventsContainer
  */
 DKTools.Scene.prototype.updateReadyEvents = function() {
     if (this.isReady()) {
-        this._eventManager.updateEventsContainer('ready');
+        this._eventsManager.updateEventsContainer('ready');
     }
 };
 
@@ -37317,10 +37850,10 @@ DKTools.Scene.prototype.updateReadyEvents = function() {
  * @version 8.3.0
  * @since 2.0.0
  *
- * @see DKTools.EventManager.prototype.updateEventsContainer
+ * @see DKTools.EventsManager.prototype.updateEventsContainer
  */
 DKTools.Scene.prototype.updateUpdateEvents = function() {
-    this._eventManager.updateEventsContainer('update');
+    this._eventsManager.updateEventsContainer('update');
 };
 
 /**
@@ -37329,13 +37862,13 @@ DKTools.Scene.prototype.updateUpdateEvents = function() {
  * @version 8.3.0
  * @since 2.0.0
  *
- * @see DKTools.EventManager.prototype.updateEventsContainer
+ * @see DKTools.EventsManager.prototype.updateEventsContainer
  */
 DKTools.Scene.prototype.updateQueueEvents = function() {
-    const container = this._eventManager.getEventsContainerByType('queue');
+    const container = this._eventsManager.getEventsContainerByType('queue');
     const event = container[0];
 
-    this._eventManager.updateEvent(event);
+    this._eventsManager.updateEvent(event);
 };
 
 
@@ -37523,6 +38056,7 @@ const DKTools_window_onload = window.onload;
 window.onload = function() {
     DKTools.Utils.initialize();
     DKTools.IO.initialize();
+    DKTools.PreloadManager.initialize();
     DKTools_window_onload.call(this);
     DKTools.PluginManager.initialize();
 };
@@ -37535,20 +38069,69 @@ window.onload = function() {
 // ImageCache
 //===========================================================================
 
+ImageCache.prototype.add = function(key, bitmap) {
+    this._items[key] = {
+        touch: Date.now(),
+        bitmap,
+        key
+    };
+};
+
+ImageCache.prototype.reserve = function(key, bitmap, reservationId) {
+    this._items[key] = {
+        touch: Date.now(),
+        reservationId,
+        bitmap,
+        key
+    };
+
+    this._truncateCache();
+};
+
 const DKTools_ImageCache_get = ImageCache.prototype.get;
 ImageCache.prototype.get = function(key) {
-    return DKTools_ImageCache_get.call(this, key) || DKTools.PreloadManager.getCachedImageByKey(key);
+    return DKTools_ImageCache_get.call(this, key) || DKTools.PreloadManager.getCachedImageByKey(key) || null;
+};
+
+ImageCache.prototype.has = function(key) {
+    return !!this._items[key];
+};
+
+ImageCache.prototype.isReserved = function(key, reservationId) {
+    const item = this._items[key];
+
+    if (!item) {
+        return false;
+    }
+
+    return (reservationId ?
+        item.reservationId === reservationId : item.reservationId > 0);
+};
+
+ImageCache.prototype.release = function(key) {
+    delete this._items[key];
 };
 
 ImageCache.prototype._truncateCache = function() {
     const items = this._items;
+    const now = Date.now();
     let sizeLeft = ImageCache.limit;
 
     Object.keys(items).map(key => items[key])
         .filter(item => !this._mustBeHeld(item))
         .sort((a, b) => b.touch - a.touch)
         .forEach((item) => {
-            if (sizeLeft > 0 && !DKTools.PreloadManager.isImageCachedByKey(item.key)) {
+            if (DKTools.PreloadManager.isImageCachedByKey(item.key)) {
+                delete items[item.key];
+
+                return;
+            }
+
+            if (item.expiredAt > 0 && item.expiredAt > now) {
+                return;
+            }
+
+            if (sizeLeft > 0) {
                 const bitmap = item.bitmap;
 
                 sizeLeft -= bitmap.width * bitmap.height;
@@ -37558,14 +38141,104 @@ ImageCache.prototype._truncateCache = function() {
         });
 };
 
-const DKTools_ImageCache_mustBeHeld = ImageCache.prototype._mustBeHeld;
-ImageCache.prototype._mustBeHeld = function(item) {
-    if (DKTools.PreloadManager.isImageCachedByKey(item.key)) {
+
+
+
+
+//===========================================================================
+// AudioCache
+//===========================================================================
+
+class AudioCache extends ImageCache {
+
+    // A methods
+
+    /**
+     * @param {String} key
+     * @param {WebAudio} audio
+     */
+    add(key, audio) {
+        this._items[key] = {
+            touch: Date.now(),
+            audio,
+            key
+        };
+    }
+
+    // G methods
+
+    get(key) {
+        if (this._items[key]) {
+            const item = this._items[key];
+
+            item.touch = Date.now();
+
+            return item.audio;
+        }
+
+        return DKTools.PreloadManager.getCachedAudioByKey(key) || null;
+    }
+
+    // M methods
+
+    _mustBeHeld(item) {
+        if (item.reservationId || !item.audio.isReady()) {
+            return true;
+        }
+
         return false;
     }
 
-    return DKTools_ImageCache_mustBeHeld.call(this, item);
-};
+    // R methods
+
+    /**
+     * @param {String} key
+     * @param {WebAudio} audio
+     * @param {Number} reservationId
+     */
+    reserve(key, audio, reservationId) {
+        this._items[key] = {
+            touch: Date.now(),
+            reservationId,
+            audio,
+            key
+        };
+
+        this._truncateCache();
+    }
+
+    // T methods
+
+    _truncateCache() {
+        const items = this._items;
+        const now = Date.now();
+        let sizeLeft = AudioCache.limit;
+
+        Object.keys(items).map(key => items[key])
+            .filter(item => !this._mustBeHeld(item))
+            .sort((a, b) => b.touch - a.touch)
+            .forEach((item) => {
+                if (DKTools.PreloadManager.isAudioCachedByKey(item.key)) {
+                    delete items[item.key];
+
+                    return;
+                }
+
+                if (item.expiredAt > 0 && item.expiredAt > now) {
+                    return;
+                }
+
+                if (sizeLeft > 0) {
+                    const audio = item.audio;
+
+                    sizeLeft -= audio._totalTime * audio._sampleRate;
+                } else {
+                    delete items[item.key];
+                }
+            });
+    }
+
+}
 
 
 
@@ -37579,15 +38252,15 @@ const DKTools_Graphics_initialize = Graphics.initialize;
 Graphics.initialize = function(width, height, type) {
     DKTools_Graphics_initialize.call(this, width, height, type);
 
-    const param = DKToolsParam.get('FPS Meter');
+    const param = DKToolsParam.get('FPS Meter') || {};
 
-    if (DKTools.Utils.isTest() && param.Enabled) {
+    if (DKTools.Utils.isTest() && param['Enabled']) {
         const fpsMeter = this._fpsMeter;
 
         if (fpsMeter) {
             this.showFps();
 
-            if (param.Mode === 'FPS') {
+            if (param['Mode'] === 'FPS') {
                 fpsMeter.showFps();
 
                 this._fpsMeterToggled = false;
@@ -37611,12 +38284,12 @@ Graphics.printError = function(name, message) {
 
 const DKTools_Graphics_createFPSMeter = Graphics._createFPSMeter;
 Graphics._createFPSMeter = function() {
-    const param = DKToolsParam.get('FPS Meter');
+    const param = DKToolsParam.get('FPS Meter') || {};
 
-    if (param.Enabled) {
+    if (param['Enabled']) {
         this._fpsMeter = new FPSMeter({
-            theme: param.Theme,
-            history: param.History,
+            theme: param['Theme'],
+            history: param['History'],
             toggleOn: null,
             graph: 1,
             decimals: 0
@@ -37754,6 +38427,22 @@ Graphics._updateErrorPrinter = function() {
 
 
 //===========================================================================
+// Input
+//===========================================================================
+
+if (Input.keyMapper['35'] === undefined) {
+    Input.keyMapper['35'] = 'end';
+}
+
+if (Input.keyMapper['36'] === undefined) {
+    Input.keyMapper['36'] = 'home';
+}
+
+
+
+
+
+//===========================================================================
 // TouchInput
 //===========================================================================
 
@@ -37761,10 +38450,10 @@ const DKTools_TouchInput_initialize = TouchInput.initialize;
 TouchInput.initialize = function() {
     DKTools_TouchInput_initialize.call(this);
 
-    const param = DKToolsParam.get('Cursor Graphic');
+    const param = DKToolsParam.get('Cursor Graphic') || {};
 
-    if (param.Enabled) {
-        const graphicName = param.Graphic;
+    if (param['Enabled']) {
+        const graphicName = param['Graphic'];
 
         if (graphicName) {
             document.body.style.cursor = `url('img/system/${graphicName}.png'), default`;
@@ -37963,6 +38652,16 @@ TouchInput.isRightButtonReleased = function() {
     return this._rightButtonReleased;
 };
 
+/**
+ * Returns true if the screen is pressed (for mobile devices)
+ *
+ * @static
+ * @returns {Boolean} Screen is pressed (for mobile devices)
+ */
+TouchInput.isScreenPressed = function() {
+    return this._screenPressed;
+};
+
 // event methods
 
 const DKTools_TouchInput_onLeftButtonDown = TouchInput._onLeftButtonDown;
@@ -38090,6 +38789,20 @@ Tilemap.prototype.initialize = function() {
     this._tileHeight = Tilemap.TILE_HEIGHT || this._tileHeight;
 };
 
+const DKTools_Tilemap_createLayers_patch19 = Tilemap.prototype._createLayers;
+Tilemap.prototype._createLayers = function() {
+    // fix possible memory leak
+    if (this._lowerLayer) {
+        this.removeChild(this._lowerLayer);
+    }
+
+    if (this._upperLayer) {
+        this.removeChild(this._upperLayer);
+    }
+
+    DKTools_Tilemap_createLayers_patch19.apply(this, arguments);
+};
+
 
 
 
@@ -38162,13 +38875,21 @@ Object.defineProperties(ImageManager, {
      */
     PARALLAXES_FOLDER: {
         get: function() {
-            const param = DKToolsParam.get('Tile Size');
+            if (this.__parallaxesFolder__ === undefined) {
+                const param = DKToolsParam.get('Tile Size') || {};
+                const defaultFolder = 'img/parallaxes/';
 
-            if (param['Enabled']) {
-                return DKTools.IO.normalizePath(param['Parallaxes Folder'] + '/');
+                if (param['Enabled']) {
+                    const folder = param['Parallaxes Folder'];
+
+                    this.__parallaxesFolder__ = (folder ?
+                        DKTools.IO.normalizePath(folder + '/') : defaultFolder);
+                } else {
+                    this.__parallaxesFolder__ = defaultFolder;
+                }
             }
 
-            return 'img/parallaxes/';
+            return this.__parallaxesFolder__;
         },
         configurable: true
     },
@@ -38183,13 +38904,21 @@ Object.defineProperties(ImageManager, {
      */
     TILESETS_FOLDER: {
         get: function() {
-            const param = DKToolsParam.get('Tile Size');
+            if (this.__tilesetsFolder__ === undefined) {
+                const param = DKToolsParam.get('Tile Size') || {};
+                const defaultFolder = 'img/tilesets/';
 
-            if (param['Enabled']) {
-                return DKTools.IO.normalizePath(param['Tilesets Folder'] + '/');
+                if (param['Enabled']) {
+                    const folder = param['Tilesets Folder'];
+
+                    this.__tilesetsFolder__ = (folder ?
+                        DKTools.IO.normalizePath(folder + '/') : defaultFolder);
+                } else {
+                    this.__tilesetsFolder__ = defaultFolder;
+                }
             }
 
-            return 'img/tilesets/';
+            return this.__tilesetsFolder__;
         },
         configurable: true
     }
@@ -38204,12 +38933,24 @@ ImageManager.loadTileset = function(filename, hue) {
     return this.loadBitmap(ImageManager.TILESETS_FOLDER, filename, hue, false);
 };
 
+const DKTools_ImageManager_loadNormalBitmap = ImageManager.loadNormalBitmap;
+ImageManager.loadNormalBitmap = function(path, hue) {
+    return DKTools_ImageManager_loadNormalBitmap.call(
+        this, DKTools.IO.reverseSlashes(path), hue);
+};
+
 ImageManager.reserveParallax = function(filename, hue, reservationId) {
     return this.reserveBitmap(ImageManager.PARALLAXES_FOLDER, filename, hue, false, reservationId);
 };
 
 ImageManager.reserveTileset = function(filename, hue, reservationId) {
     return this.reserveBitmap(ImageManager.TILESETS_FOLDER, filename, hue, false, reservationId);
+};
+
+const DKTools_ImageManager_reserveNormalBitmap = ImageManager.reserveNormalBitmap;
+ImageManager.reserveNormalBitmap = function(path, hue, reservationId) {
+    return DKTools_ImageManager_reserveNormalBitmap.call(
+        this, DKTools.IO.reverseSlashes(path), hue, reservationId);
 };
 
 ImageManager.requestParallax = function(filename, hue) {
@@ -38220,6 +38961,26 @@ ImageManager.requestTileset = function(filename, hue) {
     return this.requestBitmap(ImageManager.TILESETS_FOLDER, filename, hue, false);
 };
 
+const DKTools_ImageManager_requestNormalBitmap = ImageManager.requestNormalBitmap;
+ImageManager.requestNormalBitmap = function(path, hue) {
+    return DKTools_ImageManager_requestNormalBitmap.call(
+        this, DKTools.IO.reverseSlashes(path), hue);
+};
+
+ImageManager.isLoaded = function(path, hue) {
+    return this._imageCache.has(this._generateCacheKey(path, hue || 0));
+};
+
+ImageManager.isReserved = function(path, hue, reservationId) {
+    const key = this._generateCacheKey(path, hue || 0);
+
+    return this._imageCache.isReserved(key, reservationId) || DKTools.PreloadManager.isImageCachedByKey(key);
+};
+
+ImageManager.releaseBitmap = function(path, hue) {
+    this._imageCache.release(this._generateCacheKey(path, hue || 0));
+};
+
 
 
 
@@ -38228,16 +38989,115 @@ ImageManager.requestTileset = function(filename, hue) {
 // AudioManager
 //===========================================================================
 
-const DKTools_AudioManager_createBuffer = AudioManager.createBuffer;
-AudioManager.createBuffer = function(folder, name) {
-    const ext = this.audioFileExt();
-    const url = this._path + folder + '/' + encodeURIComponent(name) + ext;
+/**
+ * @since 9.0.0
+ * @private
+ * @static
+ * @type {AudioCache}
+ */
+AudioManager._audioCache = new AudioCache();
 
-    if (DKTools.PreloadManager.isAudioCachedByPath(url)) {
-        return DKTools.PreloadManager.getCachedAudioByPath(url);
+/**
+ * @since 9.0.0
+ * @private
+ * @static
+ * @param {String} folder
+ * @param {String} name
+ * @returns {String}
+ */
+AudioManager._generateCacheKey = function(folder, name) {
+    return DKTools.IO.reverseSlashes(
+        this._path + folder + '/' + encodeURIComponent(name) + this.audioFileExt());
+};
+
+/**
+ * @override
+ * @static
+ * @param {String} folder
+ * @param {String} name
+ * @param {Number} [reservationId]
+ * @returns {WebAudio | Html5Audio}
+ */
+AudioManager.createBuffer = function(folder, name, reservationId) {
+    const url = this._generateCacheKey(folder, name);
+
+    if (this.shouldUseHtml5Audio() && folder === 'bgm') {
+        if (this._blobUrl) {
+            Html5Audio.setup(this._blobUrl);
+        } else {
+            Html5Audio.setup(url);
+        }
+
+        return Html5Audio;
+    } else {
+        let audio = this._audioCache.get(url);
+
+        if (!audio) {
+            audio = new WebAudio(url);
+
+            this._audioCache.reserve(url, audio, reservationId || this._defaultReservationId);
+        }
+
+        return audio;
+    }
+};
+
+/**
+ * @since 9.0.0
+ * @static
+ * @param {Number} reservationId
+ */
+AudioManager.releaseReservation = function(reservationId) {
+    this._audioCache.releaseReservation(reservationId);
+};
+
+/**
+ * @since 9.0.0
+ * @static
+ * @param {Number} reservationId
+ */
+AudioManager.setDefaultReservationId = function(reservationId) {
+    this._defaultReservationId = reservationId;
+};
+
+/**
+ * @since 9.0.0
+ * @static
+ * @param {String} folder
+ * @param {String} name
+ * @returns {Boolean}
+ */
+AudioManager.isLoaded = function(folder, name) {
+    return this._audioCache.has(this._generateCacheKey(folder, name));
+};
+
+/**
+ * @since 9.0.0
+ * @static
+ * @param {String} folder
+ * @param {String} name
+ * @param {Number} [reservationId]
+ * @returns {Boolean}
+ */
+AudioManager.isReserved = function(folder, name, reservationId) {
+    if (folder === 'se' && this._staticBuffers.some(b => b._reservedSeName === name)) {
+        return true;
     }
 
-    return DKTools_AudioManager_createBuffer.call(this, folder, name);
+    const key = this._generateCacheKey(folder, name);
+
+    return this._audioCache.isReserved(key, reservationId)
+        || DKTools.PreloadManager.isAudioCachedByKey(key);
+};
+
+/**
+ * @since 9.0.0
+ * @static
+ * @param {String} folder
+ * @param {String} name
+ */
+AudioManager.releaseBuffer = function(folder, name) {
+    this._audioCache.release(this._generateCacheKey(folder, name));
 };
 
 
@@ -38252,15 +39112,23 @@ const DKTools_SceneManager_initialize = SceneManager.initialize;
 SceneManager.initialize = async function() {
     await DKTools_SceneManager_initialize.call(this);
     await DKTools.StartupManager.initialize();
+
+    const needsShowProgressBar = DKToolsParam.get('Initial Preloading', 'Enabled')
+        && DKToolsParam.get('Initial Preloading', 'Progress Bar', { key: 'Enabled' })
+        && DKTools.PreloadManager.getTotal() > 0;
+
+    if (needsShowProgressBar) {
+        await this.goto(DKTools.PreloadManager.Scene);
+    }
 };
 
 const DKTools_SceneManager_initGraphics = SceneManager.initGraphics;
 SceneManager.initGraphics = function() {
-    const param = DKToolsParam.get('Screen Resolution');
+    const param = DKToolsParam.get('Screen Resolution') || {};
 
-    if (param.Enabled) {
-        const width = param.Width;
-        const height = param.Height;
+    if (param['Enabled']) {
+        const width = param['Width'];
+        const height = param['Height'];
 
         this._boxWidth = width;
         this._screenWidth = width;
@@ -38449,6 +39317,21 @@ Scene_Base.prototype.initialize = function() {
     this._preloader = new DKTools.Scene.Preloader();
 };
 
+const DKTools_Scene_Base_attachReservation = Scene_Base.prototype.attachReservation;
+Scene_Base.prototype.attachReservation = function() {
+    DKTools_Scene_Base_attachReservation.call(this);
+
+    this._audioReservationId = this._imageReservationId;
+
+    AudioManager.setDefaultReservationId(this._audioReservationId);
+};
+
+const DKTools_Scene_Base_detachReservation = Scene_Base.prototype.detachReservation;
+Scene_Base.prototype.detachReservation = function() {
+    DKTools_Scene_Base_detachReservation.call(this);
+    AudioManager.releaseReservation(this._audioReservationId);
+};
+
 /**
  * Activates the scene
  *
@@ -38523,96 +39406,15 @@ Scene_Base.prototype.terminate = function() {
 // Scene_Boot
 //===========================================================================
 
-const DKTools_Scene_Boot_create = Scene_Boot.prototype.create;
-Scene_Boot.prototype.create = function() {
-    DKTools_Scene_Boot_create.call(this);
-
-    const params = DKToolsParam.get('Preload Manager', 'Progress Bar');
-
-    this._showProgressBar = params.Enabled && DKTools.PreloadManager.isEnabled();
-
-    if (this._showProgressBar) {
-        if (params.Background) {
-            this._background = new DKTools.Sprite();
-
-            this._background.loadSystem(params.Background);
-
-            this.addChild(this._background);
-        }
-
-        this.createProgressBar(params);
-    }
-};
-
-Scene_Boot.prototype.createProgressBar = function(params) {
-    const width = eval(params['Progress Bar Width']);
-    const height = eval(params['Progress Bar Height']);
-    const x = eval(params['Progress Bar X']);
-    const y = eval(params['Progress Bar Y']);
-
-    this._progressBar = new DKTools.Sprite.ProgressBar.Rectangle(x, y, width, height);
-
-    this._progressBar.setupBackgroundColor(params['Progress Bar Background Color'])
-    this._progressBar.setupProgressColor(params['Progress Bar Progress Color']);
-    this._progressBar.setupMaxValue(DKTools.PreloadManager.getTotal());
-    this._progressBar.setupValue(0);
-
-    this._progressBar.start();
-
-    this._progressBar.setupDrawTextHandler(function() {
-        const text = params['Progress Bar Text'].format(...this._data);
-
-        this.drawText(text, { height: this.height });
-    }.bind(this._progressBar));
-
-    this.addChild(this._progressBar);
-};
-
 const DKTools_Scene_Boot_isReady = Scene_Boot.prototype.isReady;
 Scene_Boot.prototype.isReady = function() {
-    if (!DKTools_Scene_Boot_isReady.call(this) || !DKTools.StartupManager.isReady()) {
-        return false;
-    }
-
-    if (!this._showProgressBar) {
-        return DKTools.PreloadManager.isReady();
-    }
-
-    return true;
+    return DKTools_Scene_Boot_isReady.call(this)
+        && DKTools.StartupManager.isReady();
 };
 
 const DKTools_Scene_Boot_start = Scene_Boot.prototype.start;
 Scene_Boot.prototype.start = function() {
-    if (this._showProgressBar && !DKTools.PreloadManager.isFinished()) {
-        const total = DKTools.PreloadManager.getTotal();
-        const maxFrames = 180;
-        const repeatTime = (total > maxFrames ? 1 : Math.ceil(maxFrames / total));
-
-        DKTools.PreloadManager.onFileLoad((data) => {
-            this._progressBar.addEvent({
-                type: 'queue',
-                repeats: 0,
-                repeatTime,
-                onStart: () => {
-                    this._progressBar._data = [data.file.url, data.loaded, data.total];
-                    this._progressBar.nextValue();
-                }
-            });
-        });
-
-        this._progressBar.addOneTimeEvent({
-            type: 'full',
-            onSuccess: () => {
-                this.start();
-            }
-        });
-
-        DKTools.PreloadManager.start();
-
-        return;
-    }
-
-    const quickStart = DKToolsParam.get('Quick Start');
+    const quickStart = DKToolsParam.get('Quick Start') || {};
 
     if (quickStart['Enabled']) {
         DKTools_Scene_Boot_start.call(this);
@@ -38639,6 +39441,53 @@ Scene_Boot.prototype.start = function() {
 // Scene_Map
 //===========================================================================
 
+Scene_Map.prototype.setupPreloading = function() {
+    Scene_Base.prototype.setupPreloading.call(this);
+    this._setupMapPreloading();
+};
+
+Scene_Map.prototype._setupMapPreloading = function() {
+    const params = DKToolsParam.get('Maps Preloading') || {};
+
+    if (!params['Enabled']) {
+        return;
+    }
+
+    const mapId = ($gamePlayer.isTransferring() ? $gamePlayer.newMapId() : $gameMap.mapId());
+    const preset = _.find(params['Maps'], { 'Map Id': mapId });
+
+    if (!preset) {
+        return;
+    }
+
+    DKTools.PreloadManager.setDebugging(params['Debugging']);
+
+    preset['Audio Files'].forEach((path) => {
+       DKTools.PreloadManager.preloadAudio({ path: 'audio/' + path });
+    });
+
+    preset['Image Files'].forEach((data) => {
+        DKTools.PreloadManager.preloadImage({
+            path: 'img/' + data['Path'],
+            hue: data['Hue']
+        });
+    });
+
+    if (DKTools.PreloadManager.getTotal() === 0) {
+        return;
+    }
+
+    DKTools.PreloadManager.onFileLoad(() => {
+        Graphics.updateLoading();
+    });
+
+    DKTools.PreloadManager.onFinish(() => {
+        Graphics.endLoading();
+    });
+
+    this._preloader.add(DKTools.PreloadManager.start());
+};
+
 const DKTools_Scene_Map_isReady = Scene_Map.prototype.isReady;
 Scene_Map.prototype.isReady = function() {
     if (!this.isPreloaded()) {
@@ -38647,6 +39496,31 @@ Scene_Map.prototype.isReady = function() {
 
     return DKTools_Scene_Map_isReady.call(this);
 };
+
+const DKTools_Scene_Map_terminate = Scene_Map.prototype.terminate;
+Scene_Map.prototype.terminate = function() {
+    if (!SceneManager.isNextScene(Scene_Map)) {
+        const stamp = Date.now() + 30 * 1000; // 30 seconds
+
+        Object.values(ImageManager._imageCache._items).forEach((item) => {
+            if (item.reservationId === this._imageReservationId) {
+                item.expiredAt = stamp;
+
+                delete item.reservationId;
+            }
+        });
+
+        Object.values(AudioManager._audioCache._items).forEach((item) => {
+            if (item.reservationId === this._audioReservationId) {
+                item.expiredAt = stamp;
+
+                delete item.reservationId;
+            }
+        });
+    }
+
+    DKTools_Scene_Map_terminate.apply(this, arguments);
+}
 
 
 
@@ -38678,6 +39552,44 @@ const DKTools_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.plugin
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
     DKTools_Game_Interpreter_pluginCommand.call(this, command, args);
     DKTools.PluginCommandManager.process(this, command, args);
+};
+
+
+
+
+
+//===========================================================================
+// Window_Base
+//===========================================================================
+
+Window_Base.prototype.processNewLine = function(textState) {
+    textState.x = textState.left;
+    textState.y += textState.height;
+    textState.index++; // fix text height
+    textState.height = this.calcTextHeight(textState, false);
+};
+
+
+
+
+
+//===========================================================================
+// Window_Selectable
+//===========================================================================
+
+const DKTools_Window_Selectable_processCursorMove = Window_Selectable.prototype.processCursorMove;
+Window_Selectable.prototype.processCursorMove = function() {
+    if (this.isCursorMovable()) {
+        if (Input.isTriggered('home')) {
+            this.select(0);
+        }
+
+        if (Input.isTriggered('end')) {
+            this.select(Math.max(0, this.maxItems() - 1));
+        }
+    }
+
+    DKTools_Window_Selectable_processCursorMove.call(this);
 };
 
 
@@ -38735,3 +39647,7 @@ if (DKToolsParam.get('Window Padding', 'Enabled')) {
     };
 
 }
+
+
+
+

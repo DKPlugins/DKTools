@@ -39,21 +39,6 @@ DKTools.Scene.prototype._addAllChildren = function() {
 };
 
 /**
- * Adds a listener of change of the option
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- * @param {Function} listener - Listener
- *
- * @see DKTools.OptionManager.prototype.addOptionChangeListener
- */
-DKTools.Scene.prototype.addOptionChangeListener = function(option, listener) {
-    this._optionManager.addOptionChangeListener(option, listener);
-};
-
-/**
  * Adds the event
  *
  * @since 2.0.0
@@ -73,12 +58,12 @@ DKTools.Scene.prototype.addOptionChangeListener = function(option, listener) {
  * @param {Function} [object.onFail] - Handler of the event fail
  *
  * @see DKTools.Event
- * @see DKTools.EventManager.prototype.addEvent
+ * @see DKTools.EventsManager.prototype.addEvent
  *
  * @returns {DKTools.Event} Added event
  */
 DKTools.Scene.prototype.addEvent = function(object) {
-    return this._eventManager.addEvent(object);
+    return this._eventsManager.addEvent(object);
 };
 
 /**
@@ -99,12 +84,12 @@ DKTools.Scene.prototype.addEvent = function(object) {
  * @param {Function} [object.onFail] - Handler of the event fail
  *
  * @see DKTools.Event
- * @see DKTools.EventManager.prototype.addOneTimeEvent
+ * @see DKTools.EventsManager.prototype.addOneTimeEvent
  *
  * @returns {DKTools.Event} Added event
  */
 DKTools.Scene.prototype.addOneTimeEvent = function(object) {
-    return this._eventManager.addOneTimeEvent(object);
+    return this._eventsManager.addOneTimeEvent(object);
 };
 
 /**
@@ -114,10 +99,10 @@ DKTools.Scene.prototype.addOneTimeEvent = function(object) {
  *
  * @param {DKTools.Animation} animation - Animation to add
  *
- * @see DKTools.EventManager.addAnimation
+ * @see DKTools.EventsManager.addAnimation
  */
 DKTools.Scene.prototype.addAnimation = function(animation) {
-    this._eventManager.addAnimation(animation);
+    this._eventsManager.addAnimation(animation);
 };
 
 // C methods
@@ -134,73 +119,47 @@ DKTools.Scene.prototype._clearAll = function() {
 /**
  * Creates all
  *
- * @version 2.0.0
+ * @version 9.0.0
  * @private
  *
  * @see DKTools.Scene.prototype._createOptionManager
  * @see DKTools.Scene.prototype._createEventManager
  */
 DKTools.Scene.prototype._createAll = function() {
-    this._createOptionManager();
-    this._createEventManager();
+    this._createOptionsManager();
+    this._createEventsManager();
 };
 
 /**
  * Creates the option manager
  *
- * @since 2.0.0
+ * @since 9.0.0
  * @private
  */
-DKTools.Scene.prototype._createOptionManager = function() {
+DKTools.Scene.prototype._createOptionsManager = function() {
     /**
      * @private
      * @readonly
-     * @type {DKTools.OptionManager}
+     * @type {DKTools.OptionsManager}
      */
-    this._optionManager = new DKTools.OptionManager();
+    this._optionsManager = new DKTools.OptionsManager();
 };
 
 /**
  * Creates the event manager
  *
- * @since 2.0.0
+ * @since 9.0.0
  * @private
  *
- * @see DKTools.EventManager
+ * @see DKTools.EventsManager
  */
-DKTools.Scene.prototype._createEventManager = function() {
+DKTools.Scene.prototype._createEventsManager = function() {
     /**
      * @private
      * @readonly
-     * @type {DKTools.EventManager}
+     * @type {DKTools.EventsManager}
      */
-    this._eventManager = new DKTools.EventManager(this);
-};
-
-/**
- * Clears the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @see DKTools.OptionManager.prototype.clear
- */
-DKTools.Scene.prototype.clearOptions = function() {
-    this._optionManager.clear();
-};
-
-/**
- * Clears the events
- *
- * @deprecated 8.3.0
- * @version 2.0.0
- *
- * @param {String[] | String} object Array with event types or event type
- *
- * @see DKTools.EventManager.prototype.clearEvents
- */
-DKTools.Scene.prototype.clearEvents = function(object) {
-    this._eventManager.clearEvents(object);
+    this._eventsManager = new DKTools.EventsManager(this);
 };
 
 /**
@@ -268,168 +227,11 @@ DKTools.Scene.prototype.createForeground = function() {
 DKTools.Scene.prototype.destroy = function(options) {
     this._clearAll();
 
-    this._eventManager.clearEvents();
+    this._eventsManager.clearEvents();
 
     this.deactivate();
 
     Stage.prototype.destroy.call(this, options);
-};
-
-/**
- * Turns off the option
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- *
- * @see DKTools.OptionManager.prototype.disableOption
- */
-DKTools.Scene.prototype.disableOption = function(option) {
-    this._optionManager.disableOption(option);
-};
-
-/**
- * Turns off the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.disableOptions
- */
-DKTools.Scene.prototype.disableOptions = function(object) {
-    this._optionManager.disableOption(object);
-};
-
-// E methods
-
-/**
- * Turns on the option
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- *
- * @see DKTools.OptionManager.prototype.enableOption
- */
-DKTools.Scene.prototype.enableOption = function(option) {
-    this._optionManager.enableOption(option);
-};
-
-/**
- * Turns on the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.enableOptions
- */
-DKTools.Scene.prototype.enableOptions = function(object) {
-    this._optionManager.enableOption(object);
-};
-
-// F methods
-
-/**
- * Finishes the events
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- * @param {Boolean} [forcedSuccess] - Forced success for the finish of the events
- *
- * @see DKTools.EventManager.prototype.finishEvents
- */
-DKTools.Scene.prototype.finishEvents = function(type, forcedSuccess = false) {
-    this._eventManager.finishEvents(type, forcedSuccess);
-};
-
-// G methods
-
-/**
- * Returns a container for the events by event type
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- *
- * @see DKTools.EventManager.prototype.getEventsContainerByType
- *
- * @returns {Array} Container for the events
- */
-DKTools.Scene.prototype.getEventsContainerByType = function(type) {
-    return this._eventManager.getEventsContainerByType(type);
-};
-
-/**
- * Returns a container for the events by event
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {DKTools.Event | DKTools.Animation} event - Event
- *
- * @see DKTools.EventManager.prototype.getEventsContainer
- *
- * @returns {Array} Container for the events
- */
-DKTools.Scene.prototype.getEventsContainer = function(event) {
-    return this._eventManager.getEventsContainer(event);
-};
-
-/**
- * Returns an index of the event in its container
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {DKTools.Event | DKTools.Animation} event - Event
- *
- * @see DKTools.EventManager.prototype.getEventIndex
- *
- * @returns {Number} Index of the event in its container
- */
-DKTools.Scene.prototype.getEventIndex = function(event) {
-    return this._eventManager.getEventIndex(event);
-};
-
-/**
- * Returns an array with the all events or events of a certain type
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} [type] - Type of the events
- *
- * @see DKTools.EventManager.prototype.getEvents
- *
- * @returns {Array} Array with the events
- */
-DKTools.Scene.prototype.getEvents = function(type) {
-    return this._eventManager.getEvents(type);
-};
-
-/**
- * Returns an array with the all animations or animations of a certain type
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} [type] - Type of animation
- *
- * @see DKTools.EventManager.prototype.getAnimations
- *
- * @returns {Array} Array with the animations
- */
-DKTools.Scene.prototype.getAnimations = function(type) {
-    return this._eventManager.getAnimations(type);
 };
 
 // H methods
@@ -441,74 +243,6 @@ DKTools.Scene.prototype.getAnimations = function(type) {
  */
 DKTools.Scene.prototype.hasWindowLayer = function() {
     return !!this._windowLayer;
-};
-
-/**
- * Checks for existence of the event in the object
- * Returns true if the event exists
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {DKTools.Event | DKTools.Animation} event - Event
- *
- * @see DKTools.EventManager.prototype.hasEvent
- *
- * @returns {Boolean} Event exists
- */
-DKTools.Scene.prototype.hasEvent = function(event) {
-    return this._eventManager.hasEvent(event);
-};
-
-/**
- * Checks for existence of the events of a certain type
- * Returns true if the events exists
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} [type] - Type of the Events
- *
- * @see DKTools.EventManager.prototype.hasEvents
- *
- * @returns {Boolean} Events exists
- */
-DKTools.Scene.prototype.hasEvents = function(type) {
-    return this._eventManager.hasEvents(type);
-};
-
-/**
- * Checks for existence of the animation in the object
- * Returns true if the animation exists
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {DKTools.Animation} animation - Animation
- *
- * @see DKTools.EventManager.prototype.hasAnimation
- *
- * @returns {Boolean} Animation exists
- */
-DKTools.Scene.prototype.hasAnimation = function(animation) {
-    return this._eventManager.hasAnimation(animation);
-};
-
-/**
- * Checks for existence of the animations of a certain type
- * Returns true if the animations exists
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} [type] - Type of the animations
- *
- * @see DKTools.EventManager.prototype.hasAnimations
- *
- * @returns {Boolean} Animations exists
- */
-DKTools.Scene.prototype.hasAnimations = function(type) {
-    return this._eventManager.hasAnimations(type);
 };
 
 // I methods
@@ -548,212 +282,7 @@ DKTools.Scene.prototype.isDestroyed = function() {
     return this._destroyed;
 };
 
-/**
- * Returns true if the option is enabled
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- *
- * @see DKTools.OptionManager.prototype.isOptionEnabled
- *
- * @returns {Boolean} Option is enabled
- */
-DKTools.Scene.prototype.isOptionEnabled = function(option) {
-    return this._optionManager.isOptionEnabled(option);
-};
-
-/**
- * Returns conjunction of the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.isOptionsEnabled
- *
- * @returns {Boolean} Conjunction of the options
- */
-DKTools.Scene.prototype.isOptionsEnabled = function(object) {
-    return this._optionManager.isOptionsEnabled(object);
-};
-
-/**
- * Returns disjunction of the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.isSomeOptionsEnabled
- *
- * @returns {Boolean} Disjunction of the options
- */
-DKTools.Scene.prototype.isSomeOptionsEnabled = function(object) {
-    return this._optionManager.isSomeOptionsEnabled(object);
-};
-
-/**
- * Returns true if the option is disabled
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- *
- * @see DKTools.OptionManager.prototype.isOptionDisabled
- *
- * @returns {Boolean} Option is disabled
- */
-DKTools.Scene.prototype.isOptionDisabled = function(option) {
-    return this._optionManager.isOptionDisabled(option);
-};
-
-/**
- * Returns conjunction of the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.isOptionsDisabled
- *
- * @returns {Boolean} Conjunction of the options
- */
-DKTools.Scene.prototype.isOptionsDisabled = function(object) {
-    return this._optionManager.isOptionsDisabled(object);
-};
-
-/**
- * Returns disjunction of the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.isSomeOptionsDisabled
- *
- * @returns {Boolean} Disjunction of the options
- */
-DKTools.Scene.prototype.isSomeOptionsDisabled = function(object) {
-    return this._optionManager.isSomeOptionsDisabled(object);
-};
-
-/**
- * Returns true if some option is enabled
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @see DKTools.OptionManager.prototype.isSomeOptionEnabled
- *
- * @returns {Boolean} Some option is enabled
- */
-DKTools.Scene.prototype.isSomeOptionEnabled = function() {
-    return this._optionManager.isSomeOptionEnabled();
-};
-
-/**
- * Performs a callback function for the events
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- * @param {Function} callback - Event processing function
- *
- * @see DKTools.EventManager.prototype.iterateEventsContainer
- */
-DKTools.Scene.prototype.iterateEventsContainer = function(type, callback) {
-    this._eventManager.iterateEventsContainer(type, callback);
-};
-
-/**
- * Checks the events for pause
- * Returns the conjunction of pauses of the events
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- *
- * @see DKTools.EventManager.prototype.isEventsPaused
- *
- * @returns {Boolean} Conjunction of pauses of the events
- */
-DKTools.Scene.prototype.isEventsPaused = function(type) {
-    return this._eventManager.isEventsPaused(type);
-};
-
-// P methods
-
-/**
- * Pauses the events
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- * @param {Number} duration - Duration of pause
- *
- * @see DKTools.EventManager.prototype.pauseEvents
- */
-DKTools.Scene.prototype.pauseEvents = function(type, duration) {
-    this._eventManager.pauseEvents(type, duration);
-};
-
 // R methods
-
-/**
- * Removes the listener of change of the option
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- * @param {Function} listener - Listener
- *
- * @see DKTools.OptionManager.prototype.removeOptionsChangeListener
- */
-DKTools.Scene.prototype.removeOptionChangeListener = function(option, listener) {
-    this._optionManager.removeOptionChangeListener(option, listener);
-};
-
-/**
- * Removes the event from a container
- * Returns true if the event was removed
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {DKTools.Event | DKTools.Animation} event - Event
- *
- * @see DKTools.EventManager.prototype.removeEvent
- *
- * @returns {Boolean} Event was removed
- */
-DKTools.Scene.prototype.removeEvent = function(event) {
-    return this._eventManager.removeEvent(event);
-};
-
-/**
- * Resumes the events
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- *
- * @see DKTools.EventManager.prototype.resumeEvents
- */
-DKTools.Scene.prototype.resumeEvents = function(type) {
-    this._eventManager.resumeEvents(type);
-};
 
 /**
  * Removes the window from the scene
@@ -868,49 +397,6 @@ DKTools.Scene.prototype.stopAll = function() {
     // to be overridden by plugins
 };
 
-/**
- * Stops the events
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- * @param {Boolean} [forcedSuccess] - Forced success for the finish of the events
- *
- * @see DKTools.EventManager.prototype.stopEvents
- */
-DKTools.Scene.prototype.stopEvents = function(type, forcedSuccess = false) {
-    this._eventManager.stopEvents(type, forcedSuccess);
-};
-
-/**
- * Switches the option
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} option - Name of the option
- *
- * @see DKTools.OptionManager.prototype.switchOption
- */
-DKTools.Scene.prototype.switchOption = function(option) {
-    this._optionManager.disableOption(option);
-};
-
-/**
- * Switches the options
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String[] | ...String} object - Names of the options
- *
- * @see DKTools.OptionManager.prototype.switchOptions
- */
-DKTools.Scene.prototype.switchOptions = function(object) {
-    this._optionManager.switchOptions(object);
-};
-
 // T methods
 
 /**
@@ -978,45 +464,17 @@ DKTools.Scene.prototype.updateChildren = function() {
  *
  * @since 2.0.0
  *
- * @see DKTools.EventManager.prototype.update
+ * @see DKTools.EventsManager.prototype.update
  * @see DKTools.Base.protoype.updateReadyEvents
  * @see DKTools.Base.protoype.updateUpdateEvents
  * @see DKTools.Base.protoype.updateQueueEvents
  * @see DKTools.Base.protoype.updateWheelEvents
  */
 DKTools.Scene.prototype.updateEvents = function() {
-    this._eventManager.update();
+    this._eventsManager.update();
     this.updateReadyEvents();
     this.updateUpdateEvents();
     this.updateQueueEvents();
-};
-
-/**
- * Updates the event
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {DKTools.Event | DKTools.Animation} event - Event
- *
- * @see DKTools.EventManager.prototype.updateEvent
- */
-DKTools.Scene.prototype.updateEvent = function(event) {
-    this._eventManager.updateEvent(event);
-};
-
-/**
- * Updates the events from container
- *
- * @deprecated 8.3.0
- * @since 2.0.0
- *
- * @param {String} type - Type of the events
- *
- * @see DKTools.EventManager.prototype.updateEventsContainer
- */
-DKTools.Scene.prototype.updateEventsContainer = function(type) {
-    this._eventManager.updateEventsContainer(type);
 };
 
 /**
@@ -1025,11 +483,11 @@ DKTools.Scene.prototype.updateEventsContainer = function(type) {
  * @version 8.3.0
  * @since 2.0.0
  *
- * @see DKTools.EventManager.prototype.updateEventsContainer
+ * @see DKTools.EventsManager.prototype.updateEventsContainer
  */
 DKTools.Scene.prototype.updateReadyEvents = function() {
     if (this.isReady()) {
-        this._eventManager.updateEventsContainer('ready');
+        this._eventsManager.updateEventsContainer('ready');
     }
 };
 
@@ -1039,10 +497,10 @@ DKTools.Scene.prototype.updateReadyEvents = function() {
  * @version 8.3.0
  * @since 2.0.0
  *
- * @see DKTools.EventManager.prototype.updateEventsContainer
+ * @see DKTools.EventsManager.prototype.updateEventsContainer
  */
 DKTools.Scene.prototype.updateUpdateEvents = function() {
-    this._eventManager.updateEventsContainer('update');
+    this._eventsManager.updateEventsContainer('update');
 };
 
 /**
@@ -1051,13 +509,13 @@ DKTools.Scene.prototype.updateUpdateEvents = function() {
  * @version 8.3.0
  * @since 2.0.0
  *
- * @see DKTools.EventManager.prototype.updateEventsContainer
+ * @see DKTools.EventsManager.prototype.updateEventsContainer
  */
 DKTools.Scene.prototype.updateQueueEvents = function() {
-    const container = this._eventManager.getEventsContainerByType('queue');
+    const container = this._eventsManager.getEventsContainerByType('queue');
     const event = container[0];
 
-    this._eventManager.updateEvent(event);
+    this._eventsManager.updateEvent(event);
 };
 
 

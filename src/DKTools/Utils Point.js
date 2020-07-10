@@ -180,7 +180,7 @@ DKTools.Utils.Point = class {
         }
 
         const toFinite = (value) => {
-            return Number.isFinite(value) ? value : 0;
+            return (Number.isFinite(value) ? value : 0);
         };
         let x;
 

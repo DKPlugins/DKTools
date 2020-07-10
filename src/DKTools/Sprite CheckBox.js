@@ -428,14 +428,29 @@ DKTools.Sprite.CheckBox = class extends DKTools.Sprite.Button {
     /**
      * Updates the events with type: mouse-click-button
      *
-     * @param {String} button - Mouse button
+     * @override
+     *
+     * @param {String} button - Mouse button (left, middle or right)
      *
      * @see DKTools.Sprite.CheckBox.prototype.switch
      * @see DKTools.Sprite.Button.prototype.updateMouseClickEvents
      */
     updateMouseClickEvents(button) {
         this.switch();
-        DKTools.Sprite.Button.prototype.updateMouseClickEvents.call(this, button);
+        super.updateMouseClickEvents(button);
+    }
+
+    /**
+     * Updates the events with type: touch
+     *
+     * @override 9.0.0
+     *
+     * @see DKTools.Sprite.CheckBox.prototype.switch
+     * @see DKTools.Sprite.Button.prototype.updateTouchEvents
+     */
+    updateTouchEvents() {
+        this.switch();
+        super.updateTouchEvents();
     }
 
     /**

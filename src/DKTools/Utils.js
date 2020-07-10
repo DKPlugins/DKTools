@@ -19,7 +19,7 @@ DKTools.Utils = class {
     /**
      * Initializes the utils
      *
-     * @version 5.0.0
+     * @version 9.0.0
      * @static
      */
     static initialize() {
@@ -77,6 +77,8 @@ DKTools.Utils = class {
 
         this.__tileSize();
 
+        this.__audioCacheLimit();
+
         this.__imageCacheLimit();
 
         if (DKToolsParam.get('Debugging Console', 'Enabled')) {
@@ -85,6 +87,23 @@ DKTools.Utils = class {
 
         if (DKToolsParam.get('Check Updates', 'Enabled')) {
             this._checkUpdates();
+        }
+    }
+
+    // A methods
+
+    /**
+     * @since 9.0.0
+     * @private
+     * @static
+     */
+    static __audioCacheLimit() {
+        const param = DKToolsParam.get('Audio Cache Limit') || {};
+
+        if (param['Enabled']) {
+            AudioCache.limit = param['Limit'];
+        } else {
+            AudioCache.limit = 10 * 1000 * 1000;
         }
     }
 
@@ -124,7 +143,7 @@ DKTools.Utils = class {
 
         const showNewPlugins = DKToolsParam.get('Check Updates', 'Show New Plugins');
 
-        _.forEach(plugins, plugin => {
+        plugins.forEach((plugin) => {
             const newVersion = plugin.version;
 
             if (DKTools.PluginManager.isRegistered(plugin.name)) {
@@ -232,10 +251,10 @@ DKTools.Utils = class {
      * @static
      */
     static __imageCacheLimit() {
-        const param = DKToolsParam.get('Image Cache Limit');
+        const param = DKToolsParam.get('Image Cache Limit') || {};
 
-        if (param.Enabled) {
-            ImageCache.limit = param.Limit;
+        if (param['Enabled']) {
+            ImageCache.limit = param['Limit'];
         }
     }
 
@@ -380,7 +399,7 @@ DKTools.Utils = class {
             return;
         }
 
-        const param = DKToolsParam.get('Errors Log');
+        const param = DKToolsParam.get('Errors Log') || {};
         const isTest = DKTools.Utils.isTest();
         const enabled = param['Enabled'];
 
@@ -536,11 +555,11 @@ DKTools.Utils = class {
      * @static
      */
     static __tileSize() {
-        const param = DKToolsParam.get('Tile Size');
+        const param = DKToolsParam.get('Tile Size') || {};
 
-        if (param.Enabled) {
-            Tilemap.TILE_WIDTH = param.Size;
-            Tilemap.TILE_HEIGHT = param.Size;
+        if (param['Enabled']) {
+            Tilemap.TILE_WIDTH = param['Size'];
+            Tilemap.TILE_HEIGHT = param['Size'];
         }
     }
 

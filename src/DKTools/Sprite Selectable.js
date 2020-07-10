@@ -26,7 +26,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype._addCursorSprite
      */
     _addAllChildren() {
-        DKTools.Sprite.Button.prototype._addAllChildren.call(this);
+        super._addAllChildren();
         this._addCursorSprite();
     }
 
@@ -45,7 +45,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @override
      */
     activate() {
-        DKTools.Sprite.Button.prototype.activate.call(this);
+        super.activate();
         this.reselect();
     }
 
@@ -113,7 +113,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype._clearTopCol
      */
     _clearAll() {
-        DKTools.Sprite.Button.prototype._clearAll.call(this);
+        super._clearAll();
         this._clearItems();
         this._clearHandlers();
         this._clearTopRow();
@@ -388,7 +388,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype.deselect
      */
     deactivate(deselect = false) {
-        DKTools.Sprite.Button.prototype.deactivate.call(this);
+        super.deactivate();
 
         if (deselect) {
             this.deselect();
@@ -431,7 +431,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @override
      */
     drawAll() {
-        DKTools.Sprite.Button.prototype.drawAll.call(this);
+        super.drawAll();
         this.drawAllItems();
     }
 
@@ -1911,7 +1911,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype.processHandling
      */
     processAll() {
-        DKTools.Sprite.Button.prototype.processAll.call(this);
+        super.processAll();
 
         this.processCursorMove();
         this.processHandling();
@@ -1961,6 +1961,14 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
             this.cursorPageUp();
         }
 
+        if (Input.isTriggered('home')) {
+            this.selectFirstItem();
+        }
+
+        if (Input.isTriggered('end')) {
+            this.selectLastItem();
+        }
+
         if (this._index !== lastIndex) {
             this.playCursorSound();
         }
@@ -1997,14 +2005,13 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      *
      * @version 8.0.0
      *
-     * @see DKTools.Sprite.Selectable.prototype.isOptionEnabled
      * @see DKTools.Sprite.Selectable.prototype.isCursorMovable
      * @see DKTools.Sprite.Selectable.prototype.hitTest
      * @see DKTools.Sprite.Selectable.prototype.selectItem
      * @see DKTools.Sprite.Selectable.prototype.playCursorSound
      */
     processMouseHover() {
-        if (this.isOptionEnabled('process-mouse-hover') && this.isCursorMovable() && TouchInput.date > Input.date) {
+        if (this._optionsManager.isOptionEnabled('process-mouse-hover') && this.isCursorMovable() && TouchInput.date > Input.date) {
             const lastIndex = this._index;
             const x = TouchInput.mouseX;
             const y = TouchInput.mouseY;
@@ -2019,7 +2026,6 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     /**
      * Processes the scroll of the mouse wheel
      *
-     * @see DKTools.Sprite.Selectable.prototype.isOptionEnabled
      * @see DKTools.Sprite.Selectable.prototype.isVisibleAndActive
      * @see DKTools.Sprite.Selectable.prototype.isHorizontal
      * @see DKTools.Sprite.Selectable.prototype.scrollRight
@@ -2028,8 +2034,9 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype.scrollUp
      */
     processWheelScroll() {
-        if (this.isOptionEnabled('process-wheel-scroll') && this.isVisibleAndActive()) {
+        if (this._optionsManager.isOptionEnabled('process-wheel-scroll') && this.isVisibleAndActive()) {
             const wheelY = this._wheelY;
+            const lastIndex = this._index;
 
             if (wheelY > 0) {
                 if (this.isHorizontal()) {
@@ -2043,6 +2050,10 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
                 } else {
                     this.scrollUp();
                 }
+            }
+
+            if (this._index !== lastIndex) {
+                this.playCursorSound();
             }
         }
     }
@@ -2249,7 +2260,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     /**
      * Sets the events
      *
-     * @version 3.0.0
+     * @version 9.0.0
      * @private
      * @override
      *
@@ -2258,13 +2269,34 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype._setupMouseLongPressEvent
      * @see DKTools.Sprite.Selectable.prototype._setupMouseHoverEvents
      * @see DKTools.Sprite.Selectable.prototype._setupWheelScrollEvents
+     * @see DKTools.Sprite.Selectable.prototype._setupTouchEvent
+     * @see DKTools.Sprite.Selectable.prototype._setupLongTouchEvent
      */
     _setupEvents() {
-        DKTools.Sprite.Button.prototype._setupEvents.call(this);
-        this._setupMouseClickEvent();
-        this._setupMouseLongPressEvent();
-        this._setupMouseHoverEvents();
-        this._setupWheelScrollEvents();
+        super._setupEvents();
+
+        if (!DKTools.Utils.isMobileDevice()) {
+            this._setupMouseClickEvent();
+            this._setupMouseLongPressEvent();
+            this._setupMouseHoverEvents();
+            this._setupWheelScrollEvents();
+        } else {
+            this._setupTouchEvent();
+            this._setupLongTouchEvent();
+        }
+    }
+
+    /**
+     * Sets the event of the long touch (long-touch)
+     *
+     * @since 9.0.0
+     * @private
+     */
+    _setupLongTouchEvent() {
+        this.addEvent({
+            type: 'long-touch',
+            onUpdate: this._onTouch.bind(this, false)
+        });
     }
 
     /**
@@ -2300,7 +2332,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      *
      * @private
      *
-     * @see DKTools.Sprite.Selectable.prototype.addEvent
+     * @see DKTools.Sprite.Selectable.prototype.processMouseHover
      */
     _setupMouseHoverEvents() {
         this.addEvent({
@@ -2311,6 +2343,19 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
         this.addEvent({
             type: 'mouse-move',
             onUpdate: this.processMouseHover.bind(this)
+        });
+    }
+
+    /**
+     * Sets the event of the touch (touch)
+     *
+     * @since 9.0.0
+     * @private
+     */
+    _setupTouchEvent() {
+        this.addEvent({
+            type: 'touch',
+            onUpdate: this._onTouch.bind(this, true)
         });
     }
 
@@ -2760,7 +2805,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     setupAll(object = {}) {
         object = object || {};
 
-        DKTools.Sprite.Button.prototype.setupAll.call(this, object);
+        super.setupAll(object);
 
         this.setupIndex(object.index);
         this.setupMaxCols(object.maxCols);
@@ -3250,7 +3295,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
         object = object || {};
 
         const block = true;
-        let changed = DKTools.Sprite.Button.prototype.setAll.call(this, object, block);
+        let changed = super.setAll(object, block);
 
         if (this.setIndex(object.index, block)) {
             changed++;
@@ -4201,6 +4246,18 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
     }
 
     /**
+     * Selects the first item
+     *
+     * @since 9.0.0
+     * @param {Boolean} [playCursor=false]
+     *
+     * @see DKTools.Sprite.Selectable.prototype.selectItem
+     */
+    selectFirstItem(playCursor = false) {
+        this.selectItem(0, playCursor);
+    }
+
+    /**
      * Selects the item
      *
      * @version 6.0.0
@@ -4374,7 +4431,7 @@ DKTools.Sprite.Selectable = class extends DKTools.Sprite.Button {
      * @see DKTools.Sprite.Selectable.prototype.updateCursor
      */
     updateAll() {
-        DKTools.Sprite.Button.prototype.updateAll.call(this);
+        super.updateAll();
         this.updateCursor();
     }
 

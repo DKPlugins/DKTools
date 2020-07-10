@@ -1,18 +1,18 @@
 //===========================================================================
-// DKTools.EventManager
+// DKTools.EventsManager
 //===========================================================================
 
 /**
  * Event manager class
  *
- * @class DKTools.EventManager
+ * @class DKTools.EventsManager
  *
- * @since 2.0.0
+ * @since 9.0.0
  * @memberof DKTools
  *
- * @see DKTools.EventManager.prototype.initialize
+ * @see DKTools.EventsManager.prototype.initialize
  */
-DKTools.EventManager = class {
+DKTools.EventsManager = class {
 
     constructor() {
         this.initialize.apply(this, arguments);
@@ -137,7 +137,7 @@ DKTools.EventManager = class {
      * @param {Function} [object.onFail] - Handler of the event fail
      *
      * @see DKTools.Event
-     * @see DKTools.EventManager.prototype.addEvent
+     * @see DKTools.EventsManager.prototype.addEvent
      *
      * @returns {DKTools.Event} Added event
      */
@@ -205,11 +205,14 @@ DKTools.EventManager = class {
     /**
      * Creates a container for the events
      *
+     * @version 9.0.0
      * @param {String} type - Type of the events
      * @returns {Array} Container for the events
      */
     createEventsContainer(type) {
-        this._events[type] = [];
+        if (!this._events[type]) {
+            this._events[type] = [];
+        }
 
         return this._events[type];
     }
@@ -253,7 +256,7 @@ DKTools.EventManager = class {
      * @see DKTools.Event.prototype.finish
      */
     finishEvents(type, forcedSuccess = false) {
-        this.iterateEventsContainer(type, event => {
+        this.iterateEventsContainer(type, (event) => {
             event.finish(forcedSuccess);
         });
     }
@@ -267,7 +270,7 @@ DKTools.EventManager = class {
      * @returns {Array} Array with the animations
      */
     getAnimations(type) {
-        return _.filter(this.getEvents(type), event => event instanceof DKTools.Animation);
+        return this.getEvents(type).filter(event => event instanceof DKTools.Animation);
     }
 
     /**
@@ -293,7 +296,7 @@ DKTools.EventManager = class {
 
         let events = [];
 
-        _.forEach(this._events, container => {
+        _.forEach(this._events, (container) => {
             events = events.concat(container);
         });
 
@@ -341,7 +344,7 @@ DKTools.EventManager = class {
      * @returns {Boolean} Animations exists
      */
     hasAnimations(type) {
-        return !DKTools.Utils.Array.isEmpty(this.getAnimations(type));
+        return this.getAnimations(type).length > 0;
     }
 
     /**
@@ -363,7 +366,7 @@ DKTools.EventManager = class {
      * @returns {Boolean} Events exists
      */
     hasEvents(type) {
-        return !DKTools.Utils.Array.isEmpty(this.getEvents(type));
+        return this.getEvents(type).length > 0;
     }
 
     // I methods
@@ -466,7 +469,7 @@ DKTools.EventManager = class {
     /**
      * Updates the manager
      *
-     * @see DKTools.EventManager._checkEvents
+     * @see DKTools.EventsManager._checkEvents
      */
     update() {
         this._checkEvents();
@@ -498,14 +501,14 @@ DKTools.EventManager = class {
 
 // properties
 
-Object.defineProperties(DKTools.EventManager, {
+Object.defineProperties(DKTools.EventsManager, {
 
     /**
      * Events
      *
      * @readonly
      * @type {Object}
-     * @memberof DKTools.EventManager.prototype
+     * @memberof DKTools.EventsManager.prototype
      */
     events: {
         get: function() {

@@ -593,12 +593,12 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
 
         const processData = (names) => {
             if (object.template instanceof RegExp) {
-                names = _.filter(names, name => object.template.test(name));
+                names = names.filter(name => object.template.test(name));
             } else if (DKTools.Utils.isString(object.template)) {
-                names = _.filter(names, name => name === object.template);
+                names = names.filter(name => name === object.template);
             }
 
-            const data = _.reduce(names, (acc, name) => {
+            const data = names.reduce((acc, name) => {
                 const fullPath = DKTools.IO.normalizePath(path + '/' + name);
 
                 if (DKTools.IO.isFile(fullPath)) {
@@ -734,7 +734,8 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
-        const processData = (entities) => _.filter(entities, entity => entity.isFile());
+        const processData =
+            (entities) => entities.filter(entity => entity.isFile());
 
         if (object.sync) {
             const result = this.getAll(object);

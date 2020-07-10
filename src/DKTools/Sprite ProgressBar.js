@@ -47,6 +47,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      * Animates the empty value
      * Returns the update event
      *
+     * @version 9.0.0
      * @param {Number} duration - Duration of animation
      *
      * @see DKTools.Sprite.ProgressBar.prototype.animateValue
@@ -54,7 +55,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      * @returns {DKTools.Event} Update event
      */
     animateEmpty(duration) {
-        return this.animateValue(0, duration);
+        return this.animateValue(this._minValue, duration);
     }
 
     /**
@@ -74,7 +75,8 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
             type: 'update',
             repeatTime: duration,
             repeats: 0,
-            onUpdate: this._updateAnimateValue.bind(this, value)
+            onUpdate: this._updateAnimateValue.bind(
+                this, DKTools.Utils.Number.clamp(value, this._minValue, this._maxValue))
         });
     }
 
@@ -88,6 +90,33 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      */
     canCloneFixedBitmap() {
         return false;
+    }
+
+    /**
+     * Checks all
+     *
+     * @override 9.0.0
+     *
+     * @see DKTools.Sprite.prototype.checkAll
+     */
+    checkAll() {
+        super.checkAll();
+        this.checkValue();
+    }
+
+    /**
+     * Checks the value
+     *
+     * @since 9.0.0
+     */
+    checkValue() {
+        if (this._value < this._minValue) {
+            this._value = this._minValue;
+        }
+
+        if (this._value > this._maxValue) {
+            this._value = this._maxValue;
+        }
     }
 
     // D methods
@@ -142,6 +171,29 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     // G methods
 
     /**
+     * Returns the elapsed value
+     *
+     * @since 9.0.0
+     * @private
+     *
+     * @returns {Number} Elapsed value
+     */
+    _getElapsed() {
+        return Math.abs(this._value - this._minValue);
+    }
+
+    /**
+     * Returns the elapsed steps
+     *
+     * @since 9.0.0
+     *
+     * @returns {Number} Elapsed steps
+     */
+    getElapsedSteps() {
+        return this._getElapsed() / this._valueStep;
+    }
+
+    /**
      * Returns the next value
      *
      * @returns {Number} Next value
@@ -151,21 +203,62 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     }
 
     /**
-     * Returns the current value in percent
+     * Returns the current value in percents
      *
-     * @returns {Number} Current value in percent
+     * @version 9.0.0
+     * @returns {Number} Current value in percents
      */
     getPercents() {
-        return Math.ceil(this._value / this._maxValue * 100);
+        return DKTools.Utils.Number.clamp(
+            Math.abs(Math.ceil(this._getElapsed() * 100 / this.getRange())), 0, 100);
     }
 
     /**
      * Returns the previous value
      *
+     * @version 9.0.0
      * @returns {Number} Previous value
      */
     getPrevValue() {
-        return Math.max(0, this._value - this._valueStep);
+        return Math.max(this._minValue, this._value - this._valueStep);
+    }
+
+    /**
+     * Returns the range
+     *
+     * @since 9.0.0
+     *
+     * @returns {Number} range
+     */
+    getRange() {
+        return this._maxValue - this._minValue;
+    }
+
+    /**
+     * Returns the remaining steps
+     *
+     * @since 9.0.0
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.getSteps
+     * @see DKTools.Sprite.ProgressBar.prototype.getElapsedSteps
+     *
+     * @returns {Number} Remaining steps
+     */
+    getRemainingSteps() {
+        return this.getSteps() - this.getElapsedSteps();
+    }
+
+    /**
+     * Returns the total steps
+     *
+     * @since 9.0.0
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.getRange
+     *
+     * @returns {Number} Total steps
+     */
+    getSteps() {
+        return this.getRange() / this._valueStep;
     }
 
     // H methods
@@ -193,10 +286,11 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     /**
      * Returns true if the progress bar is empty
      *
+     * @version 9.0.0
      * @returns {Boolean} Progress bar is empty
      */
     isEmpty() {
-        return this._value === 0;
+        return this._value === this._minValue;
     }
 
     /**
@@ -233,10 +327,11 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     /**
      * Makes the progress bar empty
      *
+     * @version 9.0.0
      * @see DKTools.Sprite.ProgressBar.prototype.setValue
      */
     makeEmpty() {
-        this.setValue(0);
+        this.setValue(this._minValue);
     }
 
     /**
@@ -284,6 +379,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      * Changes all parameters
      * Returns the number of changed parameters
      *
+     * @version 9.0.0
      * @override
      *
      * @param {Object} [object={}] - Parameters
@@ -292,6 +388,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      *
      * @param {Number} [object.valueStep] - Value step
      * @param {Number} [object.maxValue] - Maximum value
+     * @param {Number} [object.minValue] - Minimum value
      * @param {Number} [object.value] - Value
      * @param {String} [object.backgroundColor] - Background color
      * @param {String} [object.progressColor] - Progress color
@@ -301,6 +398,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      * @see DKTools.Sprite.prototype.setAll
      * @see DKTools.Sprite.ProgressBar.prototype.setValueStep
      * @see DKTools.Sprite.ProgressBar.prototype.setMaxValue
+     * @see DKTools.Sprite.ProgressBar.prototype.setMinValue
      * @see DKTools.Sprite.ProgressBar.prototype.setValue
      * @see DKTools.Sprite.ProgressBar.prototype.setBackgroundColor
      * @see DKTools.Sprite.ProgressBar.prototype.setProgressColor
@@ -322,6 +420,10 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
         }
 
         if (this.setMaxValue(object.maxValue, block)) {
+            changed++;
+        }
+
+        if (this.setMinValue(object.minValue, block)) {
             changed++;
         }
 
@@ -475,6 +577,39 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     }
 
     /**
+     * Changes the minimum value
+     * Returns true if the change occurred
+     *
+     * @since 9.0.0
+     * @param {Number} [min] - Minimum value
+     * @param {Boolean} [blockRefreshAll=false] - Blocking the call of the "refreshAll" function
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.setupMinValue
+     * @see DKTools.Sprite.ProgressBar.prototype.refreshAll
+     *
+     * @returns {Boolean} Change occurred
+     */
+    setMinValue(min, blockRefreshAll = false) {
+        if (this._minValue === min) {
+            return false;
+        }
+
+        const lastMin = this._minValue;
+
+        this.setupMinValue(min);
+
+        if (this._minValue === lastMin) {
+            return false;
+        }
+
+        if (!blockRefreshAll) {
+            this.refreshAll();
+        }
+
+        return true;
+    }
+
+    /**
      * Changes the progress color
      * Returns true if the change occurred
      *
@@ -576,12 +711,14 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     /**
      * Sets all parameters
      *
+     * @version 9.0.0
      * @override
      *
      * @param {Object} [object={}] - Parameters
      *
      * @param {Number} [object.valueStep] - Value step
      * @param {Number} [object.maxValue] - Maximum value
+     * @param {Number} [object.minValue] - Minimum value
      * @param {Number} [object.value] - Value
      * @param {String} [object.backgroundColor] - Background color
      * @param {String} [object.progressColor] - Progress color
@@ -591,6 +728,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      * @see DKTools.Sprite.prototype.setupAll
      * @see DKTools.Sprite.ProgressBar.setupValueStep
      * @see DKTools.Sprite.ProgressBar.setupMaxValue
+     * @see DKTools.Sprite.ProgressBar.setupMinValue
      * @see DKTools.Sprite.ProgressBar.setupValue
      * @see DKTools.Sprite.ProgressBar.setupBackgroundColor
      * @see DKTools.Sprite.ProgressBar.setupProgressColor
@@ -604,6 +742,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
 
         this.setupValueStep(object.valueStep);
         this.setupMaxValue(object.maxValue);
+        this.setupMinValue(object.minValue);
         this.setupValue(object.value);
         this.setupBackgroundColor(object.progressColor);
         this.setupProgressColor(object.progressColor);
@@ -664,7 +803,7 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      *
      * @param {Number} [max=this.standardMaxValue()] - Maximum value
      *
-     * @see DKTools.Sprite.ProgressBar.prototype.setupMaxValue
+     * @see DKTools.Sprite.ProgressBar.prototype.standardMaxValue
      */
     setupMaxValue(max) {
         /**
@@ -672,7 +811,24 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
          * @readonly
          * @type {Number}
          */
-        this._maxValue = max || this.standardMaxValue();
+        this._maxValue = _.defaultTo(max, this.standardMaxValue());
+    }
+
+    /**
+     * Sets the minimum value
+     *
+     * @since 9.0.0
+     * @param {Number} [min=this.standardMinValue()] - Minimum value
+     *
+     * @see DKTools.Sprite.ProgressBar.prototype.standardMinValue
+     */
+    setupMinValue(min) {
+        /**
+         * @private
+         * @readonly
+         * @type {Number}
+         */
+        this._minValue = _.defaultTo(min, this.standardMinValue());
     }
 
     /**
@@ -694,13 +850,15 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
     /**
      * Sets the value
      *
+     * @version 9.0.0
      * @param {Number} [value=this.standardValue()] - Value
      *
      * @see DKTools.Sprite.ProgressBar.prototype.standardValue
      */
     setupValue(value) {
+        const min = this._minValue;
         const max = this._maxValue;
-        const newValue = Math.max(0, Math.min(value, max));
+        const newValue = DKTools.Utils.Number.clamp(value, min, max);
 
         /**
          * @private
@@ -770,6 +928,16 @@ DKTools.Sprite.ProgressBar = class extends DKTools.Sprite {
      */
     standardMaxValue() {
         return 100;
+    }
+
+    /**
+     * Returns the standard minimum value
+     *
+     * @since 9.0.0
+     * @returns {Number} Standard minimum value
+     */
+    standardMinValue() {
+        return 0;
     }
 
     /**
@@ -907,6 +1075,21 @@ Object.defineProperties(DKTools.Sprite.ProgressBar.prototype, {
     maxValue: {
         get: function() {
             return this._maxValue;
+        },
+        configurable: true
+    },
+
+    /**
+     * Minimum value
+     *
+     * @since 9.0.0
+     * @readonly
+     * @type {Number}
+     * @memberof DKTools.Sprite.ProgressBar.prototype
+     */
+    minValue: {
+        get: function() {
+            return this._minValue;
         },
         configurable: true
     },

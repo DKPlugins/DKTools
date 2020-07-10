@@ -245,7 +245,7 @@ DKTools.Event = class {
      * @param {Boolean} [forcedSuccess=false]
      */
     _callOnSuccessHandler(forcedSuccess = false) {
-        if (this._canCallOnSuccessHandler() || forcedSuccess) {
+        if (this._canCallOnSuccessHandler() || forcedSuccess && this.hasOnSuccessHandler()) {
             this._onSuccess(this);
         }
     }
@@ -266,7 +266,7 @@ DKTools.Event = class {
      *
      * @private
      */
-    _callonFailHandler() {
+    _callOnFailHandler() {
         if (this._canCallonFailHandler()) {
             this._onFail(this);
         }
@@ -383,7 +383,7 @@ DKTools.Event = class {
         if (this.isFinished() || forcedSuccess) {
             this._callOnSuccessHandler(forcedSuccess);
         } else {
-            this._callonFailHandler();
+            this._callOnFailHandler();
         }
 
         this._clearRemainingTime();
@@ -653,13 +653,13 @@ DKTools.Event = class {
      *
      * @since 5.0.0
      *
-     * @param {DKTools.EventManager} manager - Manager
+     * @param {DKTools.EventsManager} manager - Manager
      */
     setManager(manager) {
         /**
          * @private
          * @readonly
-         * @type {DKTools.EventManager}
+         * @type {DKTools.EventsManager}
          */
         this._manager = manager;
     }
@@ -861,7 +861,7 @@ Object.defineProperties(DKTools.Event.prototype, {
      * Manager of the event
      *
      * @readonly
-     * @type {DKTools.EventManager}
+     * @type {DKTools.EventsManager}
      * @memberof DKTools.Event.prototype
      */
     manager: {

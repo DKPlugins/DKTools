@@ -19,46 +19,47 @@ DKTools.PreloadManager = class {
     // initialize methods
 
     /**
-     * Initializes the manager
+     * Initializes preloading
      *
-     * @version 8.3.0
+     * @version 9.0.0
      * @static
      */
     static initialize() {
-        this.clearCache();
+        const params = DKToolsParam.get('Initial Preloading') || {};
 
-        const params = DKToolsParam.get('Preload Manager');
+        if (!params['Enabled']) {
+            this.start();
 
-        /**
-         * @private
-         * @readonly
-         * @type {Boolean}
-         */
-        this._enabled = params['Enabled'];
-
-        if (!this.isEnabled()) {
             return;
         }
 
-        params['Audio Files'].forEach((data) => {
+        this.setDebugging(params['Debugging']);
+
+        params['Audio Files'].forEach((path) => {
             this.preloadAudio({
-                path: data.Path,
-                caching: data.Caching
+                path: 'audio/' + path,
+                caching: true
             });
         });
 
         params['Image Files'].forEach((data) => {
             this.preloadImage({
-                path: data.Path,
-                hue: data.Hue,
-                caching: data.Caching
+                path: 'img/' + data['Path'],
+                hue: data['Hue'],
+                caching: true
             });
         });
 
-        const progressParams = params['Progress Bar'];
+        const total = this.getTotal();
+
+        if (total >= 30) {
+            console.warn('Too many files to preload! Load only needed files.');
+        }
+
+        const progressParams = params['Progress Bar'] || {};
         let start = false;
 
-        if (!progressParams.Enabled) {
+        if (!progressParams['Enabled']) {
             start = true;
 
             this.onFileLoad(() => {
@@ -95,7 +96,7 @@ DKTools.PreloadManager = class {
     /**
      * Clears the preload queue
      *
-     * @version 5.0.0
+     * @version 9.0.0
      * @static
      */
     static clearQueue() {
@@ -104,7 +105,7 @@ DKTools.PreloadManager = class {
          * @readonly
          * @type {Object[]}
          */
-        this._queue = { audio: [], image: [] };
+        this._queue = { audio: {}, image: {} };
     }
 
     // F methods
@@ -112,7 +113,7 @@ DKTools.PreloadManager = class {
     /**
      * Finishes the preloading
      *
-     * @version 8.3.0
+     * @version 9.0.0
      * @private
      * @static
      *
@@ -120,15 +121,16 @@ DKTools.PreloadManager = class {
      */
     static _finish() {
         this._finishTime = new Date();
-
-        this.clearQueue();
+        this._debugging = false;
 
         const preloadingTime = (this._finishTime - this._startTime) / 1000;
         const total = this.getTotal();
 
-        this._log('Preloading complete! \n' +
-            'Loaded/Skipped/Total: ' + this._loaded + '/' + this._skipped + '/' + total + '\n' +
-            'Preloading time: ' + preloadingTime + ' sec');
+        if (total > 0) {
+            this._log('Preloading complete! \n' +
+                'Loaded/Skipped/Total: ' + this._loaded + '/' + this._skipped + '/' + total + '\n' +
+                'Preloading time: ' + preloadingTime + ' sec');
+        }
 
         if (this._finishListeners) {
             const data = {
@@ -150,6 +152,8 @@ DKTools.PreloadManager = class {
         if (this._fileLoadListeners) {
             delete this._fileLoadListeners;
         }
+
+        this.clearQueue();
     }
 
     // G methods
@@ -293,18 +297,6 @@ DKTools.PreloadManager = class {
     }
 
     /**
-     * Returns true if the manager is enabled
-     *
-     * @since 5.0.0
-     * @static
-     *
-     * @returns {Boolean} Manager is enabled
-     */
-    static isEnabled() {
-        return this._enabled;
-    }
-
-    /**
      * Returns true if the preloading is finished
      *
      * @since 5.0.0
@@ -324,7 +316,7 @@ DKTools.PreloadManager = class {
      * @returns {Boolean} Preload manager is ready
      */
     static isReady() {
-        return !this.isEnabled() || this.isFinished();
+        return this.isFinished();
     }
 
     /**
@@ -359,18 +351,31 @@ DKTools.PreloadManager = class {
         return this.isImageCachedByKey(this._generateImageKey(path, hue));
     }
 
+    /**
+     * Returns true if the preloading is started
+     *
+     * @since 9.0.0
+     * @static
+     *
+     * @returns {Boolean} Preloading is started
+     */
+    static isStarted() {
+        return !!this._startTime;
+    }
+
     // L methods
 
     /**
      * Logs the message in the console
      *
+     * @version 9.0.0
      * @private
      * @static
      *
      * @param {String} message - Message
      */
     static _log(message) {
-        if (!this.isEnabled() || !DKTools.Utils.isTest() || !DKToolsParam.get('Preload Manager', 'Debugging') || !message) {
+        if (!this._debugging || !message) {
             return;
         }
 
@@ -417,7 +422,12 @@ DKTools.PreloadManager = class {
      *
      * @since 8.3.0
      *
-     * @param {Function} callback
+     * @param {Function} callback - Callback
+     *
+     * @example
+     * DKTools.PreloadManager.onFileLoad(() => {
+     *     Graphics.updateLoading();
+     * });
      */
     static onFileLoad(callback) {
         if (!this._fileLoadListeners) {
@@ -437,7 +447,12 @@ DKTools.PreloadManager = class {
      *
      * @since 8.3.0
      *
-     * @param {Function} callback
+     * @param {Function} callback - Callback
+     *
+     * @example
+     * DKTools.PreloadManager.onFinish(() => {
+     *     Graphics.endLoading();
+     * });
      */
     static onFinish(callback) {
         if (!this._finishListeners) {
@@ -452,7 +467,7 @@ DKTools.PreloadManager = class {
     /**
      * Adds the object to preload queue
      *
-     * @version 8.1.0
+     * @version 9.0.0
      * @since 5.0.0
      * @private
      * @static
@@ -465,10 +480,6 @@ DKTools.PreloadManager = class {
      * @param {Boolean} [object.caching] - Caching
      */
     static _preload(type, object) {
-        if (!this.isEnabled()) {
-            return;
-        }
-
         if (object instanceof Object && DKTools.Utils.isString(object.path)) {
             const entity = new DKTools.IO.Directory(object.path);
 
@@ -477,10 +488,16 @@ DKTools.PreloadManager = class {
                     const options = { sync: true };
                     let files = [];
 
-                    if (type === 'audio') {
-                        files = entity.getAudioFiles(options).data;
-                    } else if (type === 'image') {
-                        files = entity.getImageFiles(options).data;
+                    if (this._files[object.path]) {
+                        files = this._files[object.path];
+                    } else {
+                        if (type === 'audio') {
+                            files = entity.getAudioFiles(options).data || [];
+                        } else if (type === 'image') {
+                            files = entity.getImageFiles(options).data || [];
+                        }
+
+                        this._files[object.path] = files;
                     }
 
                     files.forEach((file) => {
@@ -490,7 +507,11 @@ DKTools.PreloadManager = class {
                             return;
                         }
 
-                        this._queue[type][fullPath] = { ...object, path: fullPath };
+                        if (type === 'audio') {
+                            this._processAudioFile(file, object);
+                        } else if (type === 'image') {
+                            this._processImageFile(file, object);
+                        }
                     });
                 } else {
                     throw new Error('Web browsers and mobile phones cannot load directories!');
@@ -509,9 +530,15 @@ DKTools.PreloadManager = class {
                 const file = new DKTools.IO.File(path);
                 const fullPath = file.getFullPath();
 
+                if (this._queue[type][fullPath]) {
+                    return;
+                }
+
                 if (file.isFile()) {
-                    if (!this._queue[type][fullPath]) {
-                        this._queue[type][fullPath] = { ...object, path };
+                    if (type === 'audio') {
+                        this._processAudioFile(file, object);
+                    } else if (type === 'image') {
+                        this._processImageFile(file, object);
                     }
                 } else {
                     console.error('This is not a file: ' + fullPath);
@@ -521,8 +548,120 @@ DKTools.PreloadManager = class {
     }
 
     /**
+     * @since 9.0.0
+     * @private
+     * @param {DKTools.IO.File} file
+     * @param {Object} object
+     */
+    static _processAudioFile(file, object) {
+        const fullPath = file.getFullPath();
+        const normalizedPath = DKTools.IO.reverseSlashes(fullPath);
+
+        if (this._queue.audio[normalizedPath]) {
+            return;
+        }
+
+        const folder = file.getDirectoryName();
+        const name = file.getName();
+
+        if (object.caching) {
+            if (this.isAudioCachedByPath(normalizedPath)) {
+                this._log('Audio already preloaded: ' + normalizedPath + '. Skipped...');
+
+                if (folder === 'se' && AudioManager.isStaticSe({ name })) {
+                    this.releaseAudioByPath(normalizedPath);
+                }
+
+                return;
+            } else if (AudioManager.isLoaded(folder, name)) {
+                if (folder !== 'se' || !AudioManager.isStaticSe({ name })) {
+                    const webAudio = AudioManager.createBuffer(folder, name);
+
+                    this._cache.audio[this._generateAudioKey(normalizedPath)] = webAudio;
+
+                    AudioManager.releaseBuffer(folder, name);
+                }
+
+                this._log('Audio already preloaded: ' + normalizedPath + '. Skipped...');
+
+                return;
+            }
+        } else {
+            const reserved = AudioManager.isReserved(folder, name);
+            const loaded = AudioManager.isLoaded(folder, name);
+
+            if (!reserved && loaded && (folder !== 'se' || !AudioManager.isStaticSe({ name }))) {
+                AudioManager._audioCache.reserve(
+                    AudioManager._generateCacheKey(folder, name),
+                    AudioManager.createBuffer(folder, name),
+                    AudioManager._defaultReservationId);
+            }
+
+            if (reserved || loaded) {
+                this._log('Audio already preloaded: ' + normalizedPath + '. Skipped...');
+
+                return;
+            }
+        }
+
+        this._queue.audio[normalizedPath] = { ...object, path: normalizedPath };
+    }
+
+    /**
+     * @since 9.0.0
+     * @private
+     * @param {DKTools.IO.File} file
+     * @param {Object} object
+     */
+    static _processImageFile(file, object) {
+        const fullPath = file.getFullPath();
+        const normalizedPath = DKTools.IO.reverseSlashes(fullPath);
+
+        if (this._queue.image[normalizedPath]) {
+            return;
+        }
+
+        if (object.caching) {
+            if (this.isImageCachedByPath(normalizedPath, object.hue)) {
+                this._log('Image already preloaded: ' + normalizedPath + '. Skipped...');
+
+                return;
+            } else if (ImageManager.isLoaded(normalizedPath, object.hue)) {
+                const bitmap = ImageManager.loadNormalBitmap(normalizedPath, object.hue);
+
+                this._cache.image[this._generateImageKey(bitmap.url, object.hue)] = bitmap;
+
+                ImageManager.releaseBitmap(normalizedPath);
+
+                this._log('Image already preloaded: ' + normalizedPath + '. Skipped...');
+
+                return;
+            }
+        } else {
+            const reserved = ImageManager.isReserved(normalizedPath, object.hue);
+            const loaded = ImageManager.isLoaded(normalizedPath, object.hue);
+
+            if (!reserved && loaded) {
+                ImageManager._imageCache.reserve(
+                    ImageManager._generateCacheKey(normalizedPath, object.hue),
+                    ImageManager.loadNormalBitmap(normalizedPath, object.hue),
+                    ImageManager._defaultReservationId);
+            }
+
+            if (reserved || loaded) {
+                this._log('Image already preloaded: ' + normalizedPath + '. Skipped...');
+
+                return;
+            }
+        }
+
+        this._queue.image[normalizedPath] = { ...object, path: normalizedPath };
+    }
+
+    /**
      * Processes audio loading
      *
+     * @version 9.0.0
      * @since 5.0.0
      * @static
      * @private
@@ -545,14 +684,14 @@ DKTools.PreloadManager = class {
                         return;
                     }
 
-                    const buffer = file.loadAudio();
+                    const webAudio = file.loadAudio({ ...data.options });
 
-                    if (buffer) {
+                    if (webAudio) {
                         if (data.caching) {
-                            this._cache.audio[this._generateAudioKey(buffer.url)] = buffer;
+                            this._cache.audio[this._generateAudioKey(webAudio.url)] = webAudio;
                         }
 
-                        buffers.push(buffer);
+                        buffers.push(webAudio);
                     } else {
                         this._skipped++;
                         this._log('Cannot load an audio: ' + fullPath + '. Skipped...');
@@ -573,6 +712,7 @@ DKTools.PreloadManager = class {
     /**
      * Processes image loading
      *
+     * @version 9.0.0
      * @since 5.0.0
      * @static
      * @private
@@ -595,11 +735,23 @@ DKTools.PreloadManager = class {
                         return;
                     }
 
-                    const bitmap = DKTools.Utils.Bitmap.reserve({
-                        folder: file.getPath(),
-                        filename: file.getName(),
-                        hue: data.hue
-                    });
+                    let bitmap;
+
+                    if (data.caching) {
+                        bitmap = DKTools.Utils.Bitmap.load({
+                            ...data.options,
+                            folder: file.getPath(),
+                            filename: file.getName(),
+                            hue: data.hue
+                        });
+                    } else {
+                        bitmap = DKTools.Utils.Bitmap.reserve({
+                            ...data.options,
+                            folder: file.getPath(),
+                            filename: file.getName(),
+                            hue: data.hue
+                        });
+                    }
 
                     if (bitmap) {
                         if (data.caching) {
@@ -636,6 +788,29 @@ DKTools.PreloadManager = class {
      * @param {Boolean} [object.caching] - Caching
      *
      * @see DKTools.PreloadManager._preload
+     *
+     * @example
+     * // folder preloading
+     * const path = 'audio/se/';
+     *
+     * DKTools.PreloadManager.preloadAudio({
+     *     path: path,
+     *     caching: false
+     * });
+     *
+     * DKTools.PreloadManager.start();
+     *
+     * @example
+     * // file preloading
+     * // auto converts extension for mobile devices
+     * const path = 'audio/se/Cancel1.ogg';
+     *
+     * DKTools.PreloadManager.preloadAudio({
+     *     path: path,
+     *     caching: false
+     * });
+     *
+     * DKTools.PreloadManager.start();
      */
     static preloadAudio(object) {
         this._preload('audio', object);
@@ -654,6 +829,30 @@ DKTools.PreloadManager = class {
      * @param {Boolean} [object.caching] - Caching
      *
      * @see DKTools.PreloadManager._preload
+     *
+     * @example
+     * // folder preloading
+     * const path = 'img/system/';
+     *
+     * DKTools.PreloadManager.preloadImage({
+     *     path: path,
+     *     hue: 0,
+     *     caching: false
+     * });
+     *
+     * DKTools.PreloadManager.start();
+     *
+     * @example
+     * // file preloading
+     * const path = 'img/system/Window.png';
+     *
+     * DKTools.PreloadManager.preloadImage({
+     *     path: path,
+     *     hue: 0,
+     *     caching: false
+     * });
+     *
+     * DKTools.PreloadManager.start();
      */
     static preloadImage(object) {
         this._preload('image', object);
@@ -670,7 +869,7 @@ DKTools.PreloadManager = class {
      * @param {String} key - Key of the cached audio
      */
     static releaseAudioByKey(key) {
-        this._cache.audio[key] = undefined;
+        delete this._cache.audio[key];
     }
 
     /**
@@ -694,7 +893,7 @@ DKTools.PreloadManager = class {
      * @param {String} key - Key of the cached image
      */
     static releaseImageByKey(key) {
-        this._cache.image[key] = undefined;
+        delete this._cache.image[key];
     }
 
     /**
@@ -716,16 +915,28 @@ DKTools.PreloadManager = class {
     // S methods
 
     /**
-     * Starts the preloading
+     * Sets the output of debugging information to the console
+     * Each finish resets debugging
      *
-     * @version 8.3.0
+     * @since 9.0.0
      * @static
+     *
+     * @param {Boolean} enabled - Enable output
+     */
+    static setDebugging(enabled) {
+        this._debugging = enabled || false;
+    }
+
+    /**
+     * Starts the preloading
+     * Returns the promise
+     *
+     * @version 9.0.0
+     * @static
+     *
+     * @returns {Promise}
      */
     static start() {
-        if (!this.isEnabled()) {
-            return;
-        }
-
         const total = this.getTotal();
 
         this._loaded = 0;
@@ -734,9 +945,8 @@ DKTools.PreloadManager = class {
         this._finishTime = null;
 
         if (total === 0) {
-            this._finish();
-
-            return;
+            return Promise.resolve()
+                .then(() => this._finish());
         }
 
         this._log('DKTools Preload Manager is running... \n' +
@@ -745,7 +955,7 @@ DKTools.PreloadManager = class {
         const audioPromise = Promise.all(this._processLoadAudioFiles());
         const imagePromise = Promise.all(this._processLoadImageFiles());
 
-        Promise.all([audioPromise, imagePromise])
+        return Promise.all([audioPromise, imagePromise])
             .then(() => this._finish());
     }
 
@@ -773,11 +983,202 @@ Object.defineProperties(DKTools.PreloadManager, {
      * @memberof DKTools.PreloadManager
      */
     _cache: {
-        value: { audio: [], image: [] },
+        value: { audio: {}, image: {} },
         writable: true
+    },
+
+    /**
+     * @since 9.0.0
+     * @private
+     * @readonly
+     * @type {Object}
+     * @memberof DKTools.PreloadManager
+     */
+    _files: {
+        value: {}
     }
 
 });
+
+// scene
+
+DKTools.PreloadManager.Scene = function() {
+    this.initialize.apply(this, arguments);
+};
+
+DKTools.PreloadManager.Scene.prototype = Object.create(Scene_Base.prototype);
+DKTools.PreloadManager.Scene.prototype.constructor = DKTools.PreloadManager.Scene;
+
+DKTools.PreloadManager.Scene.prototype.initialize = function() {
+    Scene_Base.prototype.initialize.apply(this, arguments);
+
+    this._params = DKToolsParam.get('Initial Preloading', 'Progress Bar');
+    this._total = DKTools.PreloadManager.getTotal();
+    this._nextScene = Scene_Boot;
+};
+
+// prepare
+
+DKTools.PreloadManager.Scene.prototype.prepare = function(nextScene) {
+    this._nextScene = nextScene;
+};
+
+// preloading
+
+DKTools.PreloadManager.Scene.prototype.setupPreloading = function() {
+    Scene_Base.prototype.setupPreloading.apply(this, arguments);
+
+    if (this._params['Progress Bar Style'] === 'images') {
+        this._preloader.add(DKTools.Utils.Bitmap.reserveAsync({
+            folder: 'img/system/',
+            filename: this._params['Progress Bar Background Image']
+        }).then((bitmap) => {
+            this._backgroundBitmap = bitmap;
+        }));
+
+        this._preloader.add(DKTools.Utils.Bitmap.reserveAsync({
+            folder: 'img/system/',
+            filename: this._params['Progress Bar Progress Image']
+        }).then((bitmap) => {
+            this._progressBitmap = bitmap;
+        }));
+    }
+};
+
+//
+
+DKTools.PreloadManager.Scene.prototype.isGameFontLoaded = Scene_Boot.prototype.isGameFontLoaded;
+
+//
+
+DKTools.PreloadManager.Scene.prototype.create = function() {
+    if (this._total === 0) {
+        SceneManager.goto(this._nextScene);
+
+        return;
+    }
+
+    if (this._params['Background']) {
+        this.createBackground();
+    }
+
+    this.createProgressBar();
+};
+
+DKTools.PreloadManager.Scene.prototype.createBackground = function() {
+    this._background = new Sprite(ImageManager.loadSystem(this._params['Background']));
+
+    this.addChild(this._background);
+};
+
+DKTools.PreloadManager.Scene.prototype.createProgressBar = function() {
+    const params = this._params;
+    const style = params['Progress Bar Style'] || 'colors';
+    let width;
+    let height;
+
+    if (style === 'colors') {
+        width = eval(params['Progress Bar Width']);
+        height = eval(params['Progress Bar Height']);
+    } else {
+        if (this._backgroundBitmap.width !== this._progressBitmap.width) {
+            console.warn(`PreloadManager: different width of background and progress!`);
+        }
+
+        if (this._backgroundBitmap.height !== this._progressBitmap.height) {
+            console.warn(`PreloadManager: different height of background and progress!`);
+        }
+
+        width = Math.max(this._backgroundBitmap.width, this._progressBitmap.width);
+        height = Math.max(this._backgroundBitmap.height, this._progressBitmap.height);
+    }
+
+    const x = eval(params['Progress Bar X']) || 0;
+    const y = eval(params['Progress Bar Y']) || 0;
+
+    this._progressBar = new DKTools.Sprite.ProgressBar.Rectangle(x, y, width, height);
+
+    this._progressBar.setupFont({ fontSize: params['Progress Bar Text Size'] });
+
+    if (style === 'colors') {
+        this._progressBar.setupBackgroundColor(params['Progress Bar Background Color'])
+        this._progressBar.setupProgressColor(params['Progress Bar Progress Color']);
+    } else {
+        this._progressBar._backgroundBitmap = this._backgroundBitmap;
+        this._progressBar._progressBitmap = this._progressBitmap;
+
+        this._progressBar.setupDrawGraphicHandler(function() {
+            this.drawBitmap(this._backgroundBitmap);
+            this.drawBitmap(this._progressBitmap, {
+                source: (bitmap) => ({ width: bitmap.width * this.getPercents() / 100 })
+            });
+        }.bind(this._progressBar));
+    }
+
+    if (params['Progress Bar Text']) {
+        this._progressBar.setupDrawTextHandler(function() {
+            if (!this._data) {
+                return;
+            }
+
+            const text = params['Progress Bar Text'].format(...[...this._data, this.getPercents()]);
+
+            this.drawText(text, { height: this.height });
+        }.bind(this._progressBar));
+    }
+
+    this._progressBar.setupMaxValue(this._total);
+    this._progressBar.setupValue(0);
+
+    this._progressBar.start();
+
+    this.addChild(this._progressBar);
+};
+
+DKTools.PreloadManager.Scene.prototype.isReady = function() {
+    return Scene_Base.prototype.isReady.apply(this, arguments)
+        && DKTools.StartupManager.isReady()
+        && this.isGameFontLoaded();
+};
+
+DKTools.PreloadManager.Scene.prototype.start = function() {
+    const total = this._total;
+    const maxFrames = 180;
+    const repeatTime = (total > maxFrames ? 1 : Math.ceil(maxFrames / total));
+
+    DKTools.PreloadManager.onFileLoad((data) => {
+        this._progressBar.addEvent({
+            type: 'queue',
+            repeats: 0,
+            repeatTime,
+            onStart: () => {
+                this._progressBar._data = [data.file.url, data.loaded, data.total];
+                this._progressBar.nextValue();
+            }
+        });
+    });
+
+    this._progressBar.addOneTimeEvent({
+        type: 'full',
+        onSuccess: () => {
+            SceneManager.goto(this._nextScene);
+        }
+    });
+
+    DKTools.PreloadManager.start();
+};
+
+DKTools.PreloadManager.Scene.prototype.terminate = function() {
+    Scene_Base.prototype.terminate.apply(this, arguments);
+
+    if (this._background) {
+        this.removeChild(this._background);
+    }
+
+    if (this._progressBar) {
+        this.removeChild(this._progressBar);
+    }
+};
 
 
 

@@ -1,6 +1,6 @@
 **Author**: DK
 
-**Version**: Public 8.3.0
+**Version**: Public 9.0.0
  
 **Description**: Library for RPG Maker MV. Contains many tools for developing.
 
@@ -78,9 +78,9 @@ DKTools.Animation
 
 DKTools.Animation.Action
 
-DKTools.OptionManager
+DKTools.OptionsManager
 
-DKTools.EventManager
+DKTools.EventsManager
 
 DKTools.Unit
 

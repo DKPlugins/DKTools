@@ -134,10 +134,10 @@ DKTools.Base = class {
      *
      * @param {DKTools.Animation} animation - Animation to add
      *
-     * @see DKTools.EventManager.addAnimation
+     * @see DKTools.EventsManager.addAnimation
      */
     addAnimation(animation) {
-        this._eventManager.addAnimation(animation);
+        this._eventsManager.addAnimation(animation);
     }
 
     /**
@@ -161,12 +161,12 @@ DKTools.Base = class {
      * @param {Function} [object.onFail] - Handler of the event fail
      *
      * @see DKTools.Event
-     * @see DKTools.EventManager.prototype.addEvent
+     * @see DKTools.EventsManager.prototype.addEvent
      *
      * @returns {DKTools.Event} Added event
      */
     addEvent(object) {
-        return this._eventManager.addEvent(object);
+        return this._eventsManager.addEvent(object);
     }
 
     /**
@@ -188,26 +188,27 @@ DKTools.Base = class {
      * @param {Function} [object.onFail] - Handler of the event fail
      *
      * @see DKTools.Event
-     * @see DKTools.EventManager.prototype.addOneTimeEvent
+     * @see DKTools.EventsManager.prototype.addOneTimeEvent
      *
      * @returns {DKTools.Event} Added event
      */
     addOneTimeEvent(object) {
-        return this._eventManager.addOneTimeEvent(object);
+        return this._eventsManager.addOneTimeEvent(object);
     }
 
     /**
      * Adds a listener of change of the option
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String} option - Name of the option
      * @param {Function} listener - Listener
      *
-     * @see DKTools.OptionManager.prototype.addOptionChangeListener
+     * @see DKTools.OptionsManager.prototype.addOptionChangeListener
      */
     addOptionChangeListener(option, listener) {
-        this._optionManager.addOptionChangeListener(option, listener);
+        this._optionsManager.addOptionChangeListener(option, listener);
     }
 
     /**
@@ -304,49 +305,49 @@ DKTools.Base = class {
     /**
      * Creates all
      *
-     * @version 2.0.0
+     * @version 9.0.0
      * @private
      *
-     * @see DKTools.Base.prototype._createOptionManager
+     * @see DKTools.Base.prototype._createOptionsManager
      * @see DKTools.Base.prototype._createEventManager
      */
     _createAll() {
-        this._createOptionManager();
-        this._createEventManager();
+        this._createOptionsManager();
+        this._createEventsManager();
     }
 
     /**
      * Creates the event manager
      *
-     * @since 2.0.0
+     * @since 9.0.0
      * @private
      *
-     * @see DKTools.EventManager
+     * @see DKTools.EventsManager
      */
-    _createEventManager() {
+    _createEventsManager() {
         /**
          * @private
          * @readonly
-         * @type {DKTools.EventManager}
+         * @type {DKTools.EventsManager}
          */
-        this._eventManager = new DKTools.EventManager(this);
+        this._eventsManager = new DKTools.EventsManager(this);
     }
 
     /**
      * Creates the option manager
      *
-     * @since 2.0.0
+     * @since 9.0.0
      * @private
      *
-     * @see DKTools.OptionManager
+     * @see DKTools.OptionsManager
      */
-    _createOptionManager() {
+    _createOptionsManager() {
         /**
          * @private
          * @readonly
-         * @type {DKTools.OptionManager}
+         * @type {DKTools.OptionsManager}
          */
-        this._optionManager = new DKTools.OptionManager();
+        this._optionsManager = new DKTools.OptionsManager();
     }
 
     /**
@@ -490,10 +491,10 @@ DKTools.Base = class {
      *
      * @param {String[] | String} object Array with event types or event type
      *
-     * @see DKTools.EventManager.prototype.clearEvents
+     * @see DKTools.EventsManager.prototype.clearEvents
      */
     clearEvents(object) {
-        this._eventManager.clearEvents(object);
+        this._eventsManager.clearEvents(object);
     }
 
     /**
@@ -527,10 +528,10 @@ DKTools.Base = class {
      *
      * @since 2.0.0
      *
-     * @see DKTools.OptionManager.prototype.clear
+     * @see DKTools.OptionsManager.prototype.clear
      */
     clearOptions() {
-        this._optionManager.clear();
+        this._optionsManager.clear();
     }
 
     /**
@@ -609,7 +610,7 @@ DKTools.Base = class {
         }
 
         if (options.cloneOptions) {
-            clone.enableOptions(this._optionManager.options);
+            clone.enableOptions(this._optionsManager.options);
         }
 
         if (!options.blockStart) {
@@ -702,29 +703,14 @@ DKTools.Base = class {
     /**
      * Turns off the option
      *
-     * @deprecated 8.3.0
      * @version 2.0.0
      *
      * @param {String} option - Name of the option
      *
-     * @see DKTools.OptionManager.prototype.disableOption
+     * @see DKTools.OptionsManager.prototype.disableOption
      */
     disableOption(option) {
-        this._optionManager.disableOption(option);
-    }
-
-    /**
-     * Turns off the options
-     *
-     * @deprecated 8.3.0
-     * @version 2.0.0
-     *
-     * @param {String[] | ...String} object - Names of the options
-     *
-     * @see DKTools.OptionManager.prototype.disableOptions
-     */
-    disableOptions(object) {
-        this._optionManager.disableOptions.apply(this._optionManager, arguments);
+        this._optionsManager.disableOption(option);
     }
 
     /**
@@ -1673,29 +1659,27 @@ DKTools.Base = class {
     /**
      * Turns on the option
      *
-     * @deprecated 8.3.0
      * @version 2.0.0
      *
      * @param {String} option - Name of the option
      *
-     * @see DKTools.OptionManager.prototype.enableOption
+     * @see DKTools.OptionsManager.prototype.enableOption
      */
     enableOption(option) {
-        this._optionManager.enableOption(option);
+        this._optionsManager.enableOption(option);
     }
 
     /**
      * Turns on the options
      *
-     * @deprecated 8.3.0
      * @version 2.0.0
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.enableOptions
+     * @see DKTools.OptionsManager.prototype.enableOptions
      */
     enableOptions(object) {
-        this._optionManager.enableOptions.apply(this._optionManager, arguments);
+        this._optionsManager.enableOptions.apply(this._optionsManager, arguments);
     }
 
     // F methods
@@ -1875,12 +1859,12 @@ DKTools.Base = class {
      * @param {Number | String | *} id - ID of the animation
      * @param {String} [type] - Type of the animation
      *
-     * @see DKTools.EventManager.prototype.findAnimation
+     * @see DKTools.EventsManager.prototype.findAnimation
      *
      * @returns {DKTools.Animation | undefined} Animation
      */
     findAnimation(id, type) {
-        return this._eventManager.findAnimation(id, type);
+        return this._eventsManager.findAnimation(id, type);
     }
 
     /**
@@ -1891,12 +1875,12 @@ DKTools.Base = class {
      * @param {Number | String | *} id - ID of the event
      * @param {String} [type] - Type of the event
      *
-     * @see DKTools.EventManager.prototype.findEvent
+     * @see DKTools.EventsManager.prototype.findEvent
      *
      * @returns {DKTools.Event | DKTools.Animation | undefined} Event
      */
     findEvent(id, type) {
-        return this._eventManager.findEvent(id, type);
+        return this._eventsManager.findEvent(id, type);
     }
 
     /**
@@ -1907,10 +1891,10 @@ DKTools.Base = class {
      * @param {String} type - Type of the events
      * @param {Boolean} [forcedSuccess] - Forced success for the finish of the events
      *
-     * @see DKTools.EventManager.prototype.finishEvents
+     * @see DKTools.EventsManager.prototype.finishEvents
      */
     finishEvents(type, forcedSuccess = false) {
-        this._eventManager.finishEvents(type, forcedSuccess);
+        this._eventsManager.finishEvents(type, forcedSuccess);
     }
 
     // G methods
@@ -1922,12 +1906,12 @@ DKTools.Base = class {
      *
      * @param {String} [type] - Type of animation
      *
-     * @see DKTools.EventManager.prototype.getAnimations
+     * @see DKTools.EventsManager.prototype.getAnimations
      *
      * @returns {Array} Array with the animations
      */
     getAnimations(type) {
-        return this._eventManager.getAnimations(type);
+        return this._eventsManager.getAnimations(type);
     }
 
     /**
@@ -1947,12 +1931,12 @@ DKTools.Base = class {
      *
      * @param {DKTools.Event | DKTools.Animation} event - Event
      *
-     * @see DKTools.EventManager.prototype.getEventIndex
+     * @see DKTools.EventsManager.prototype.getEventIndex
      *
      * @returns {Number} Index of the event in its container
      */
     getEventIndex(event) {
-        return this._eventManager.getEventIndex(event);
+        return this._eventsManager.getEventIndex(event);
     }
 
     /**
@@ -1962,12 +1946,12 @@ DKTools.Base = class {
      *
      * @param {String} [type] - Type of the events
      *
-     * @see DKTools.EventManager.prototype.getEvents
+     * @see DKTools.EventsManager.prototype.getEvents
      *
      * @returns {Array} Array with the events
      */
     getEvents(type) {
-        return this._eventManager.getEvents(type);
+        return this._eventsManager.getEvents(type);
     }
 
     /**
@@ -1977,12 +1961,12 @@ DKTools.Base = class {
      *
      * @param {DKTools.Event | DKTools.Animation} event - Event
      *
-     * @see DKTools.EventManager.prototype.getEventsContainer
+     * @see DKTools.EventsManager.prototype.getEventsContainer
      *
      * @returns {Array} Container for the events
      */
     getEventsContainer(event) {
-        return this._eventManager.getEventsContainer(event);
+        return this._eventsManager.getEventsContainer(event);
     }
 
     /**
@@ -1992,12 +1976,12 @@ DKTools.Base = class {
      *
      * @param {String} type - Type of the events
      *
-     * @see DKTools.EventManager.prototype.getEventsContainerByType
+     * @see DKTools.EventsManager.prototype.getEventsContainerByType
      *
      * @returns {Array} Container for the events
      */
     getEventsContainerByType(type) {
-        return this._eventManager.getEventsContainerByType(type);
+        return this._eventsManager.getEventsContainerByType(type);
     }
 
     /**
@@ -2418,12 +2402,12 @@ DKTools.Base = class {
      *
      * @param {DKTools.Animation} animation - Animation
      *
-     * @see DKTools.EventManager.prototype.hasAnimation
+     * @see DKTools.EventsManager.prototype.hasAnimation
      *
      * @returns {Boolean} Animation exists
      */
     hasAnimation(animation) {
-        return this._eventManager.hasAnimation(animation);
+        return this._eventsManager.hasAnimation(animation);
     }
 
     /**
@@ -2434,12 +2418,12 @@ DKTools.Base = class {
      *
      * @param {String} [type] - Type of the animations
      *
-     * @see DKTools.EventManager.prototype.hasAnimations
+     * @see DKTools.EventsManager.prototype.hasAnimations
      *
      * @returns {Boolean} Animations exists
      */
     hasAnimations(type) {
-        return this._eventManager.hasAnimations(type);
+        return this._eventsManager.hasAnimations(type);
     }
 
     /**
@@ -2455,32 +2439,34 @@ DKTools.Base = class {
      * Checks for existence of the event in the object
      * Returns true if the event exists
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {DKTools.Event | DKTools.Animation} event - Event
      *
-     * @see DKTools.EventManager.prototype.hasEvent
+     * @see DKTools.EventsManager.prototype.hasEvent
      *
      * @returns {Boolean} Event exists
      */
     hasEvent(event) {
-        return this._eventManager.hasEvent(event);
+        return this._eventsManager.hasEvent(event);
     }
 
     /**
      * Checks for existence of the events of a certain type
      * Returns true if the events exists
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String} [type] - Type of the Events
      *
-     * @see DKTools.EventManager.prototype.hasEvents
+     * @see DKTools.EventsManager.prototype.hasEvents
      *
      * @returns {Boolean} Events exists
      */
     hasEvents(type) {
-        return this._eventManager.hasEvents(type);
+        return this._eventsManager.hasEvents(type);
     }
 
     /**
@@ -2614,16 +2600,17 @@ DKTools.Base = class {
      * Checks the events for pause
      * Returns the conjunction of pauses of the events
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String} type - Type of the events
      *
-     * @see DKTools.EventManager.prototype.isEventsPaused
+     * @see DKTools.EventsManager.prototype.isEventsPaused
      *
      * @returns {Boolean} Conjunction of pauses of the events
      */
     isEventsPaused(type) {
-        return this._eventManager.isEventsPaused(type);
+        return this._eventsManager.isEventsPaused(type);
     }
 
     /**
@@ -2685,61 +2672,65 @@ DKTools.Base = class {
     /**
      * Returns true if the option is disabled
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String} option - Name of the option
      *
-     * @see DKTools.OptionManager.prototype.isOptionDisabled
+     * @see DKTools.OptionsManager.prototype.isOptionDisabled
      *
      * @returns {Boolean} Option is disabled
      */
     isOptionDisabled(option) {
-        return this._optionManager.isOptionDisabled(option);
+        return this._optionsManager.isOptionDisabled(option);
     }
 
     /**
      * Returns true if the option is enabled
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String} option - Name of the option
      *
-     * @see DKTools.OptionManager.prototype.isOptionEnabled
+     * @see DKTools.OptionsManager.prototype.isOptionEnabled
      *
      * @returns {Boolean} Option is enabled
      */
     isOptionEnabled(option) {
-        return this._optionManager.isOptionEnabled(option);
+        return this._optionsManager.isOptionEnabled(option);
     }
 
     /**
      * Returns conjunction of the options
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isOptionsDisabled
+     * @see DKTools.OptionsManager.prototype.isOptionsDisabled
      *
      * @returns {Boolean} Conjunction of the options
      */
     isOptionsDisabled(object) {
-        return this._optionManager.isOptionsDisabled.apply(this._optionManager, arguments);
+        return this._optionsManager.isOptionsDisabled.apply(this._optionsManager, arguments);
     }
 
     /**
      * Returns conjunction of the options
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isOptionsEnabled
+     * @see DKTools.OptionsManager.prototype.isOptionsEnabled
      *
      * @returns {Boolean} Conjunction of the options
      */
     isOptionsEnabled(object) {
-        return this._optionManager.isOptionsEnabled.apply(this._optionManager, arguments);
+        return this._optionsManager.isOptionsEnabled.apply(this._optionsManager, arguments);
     }
 
     /**
@@ -2790,44 +2781,47 @@ DKTools.Base = class {
     /**
      * Returns true if some option is enabled
      *
+     * @deprecated 9.0.0
      * @since 2.0.0
      *
-     * @see DKTools.OptionManager.prototype.isSomeOptionEnabled
+     * @see DKTools.OptionsManager.prototype.isSomeOptionEnabled
      *
      * @returns {Boolean} Some option is enabled
      */
     isSomeOptionEnabled() {
-        return this._optionManager.isSomeOptionEnabled();
+        return this._optionsManager.isSomeOptionEnabled();
     }
 
     /**
      * Returns disjunction of the options
      *
+     * @deprecated 9.0.0
      * @since 2.0.0
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isSomeOptionsDisabled
+     * @see DKTools.OptionsManager.prototype.isSomeOptionsDisabled
      *
      * @returns {Boolean} Disjunction of the options
      */
     isSomeOptionsDisabled(object) {
-        return this._optionManager.isSomeOptionsDisabled.apply(this._optionManager, arguments);
+        return this._optionsManager.isSomeOptionsDisabled.apply(this._optionsManager, arguments);
     }
 
     /**
      * Returns disjunction of the options
      *
+     * @deprecated 9.0.0
      * @since 2.0.0
      *
      * @param {String[] | ...String} object - Names of the options
      *
-     * @see DKTools.OptionManager.prototype.isSomeOptionsEnabled
+     * @see DKTools.OptionsManager.prototype.isSomeOptionsEnabled
      *
      * @returns {Boolean} Disjunction of the options
      */
     isSomeOptionsEnabled(object) {
-        return this._optionManager.isSomeOptionsEnabled.apply(this._optionManager, arguments);
+        return this._optionsManager.isSomeOptionsEnabled.apply(this._optionsManager, arguments);
     }
 
     /**
@@ -2846,6 +2840,17 @@ DKTools.Base = class {
      */
     isStarted() {
         return this._started;
+    }
+
+    /**
+     * Returns true if the touch is inside the object
+     *
+     * @see DKTools.Base.prototype.isInside
+     *
+     * @returns {Boolean} Touch is inside the object
+     */
+    isTouchInside() {
+        return this.isInside(TouchInput.x, TouchInput.y);
     }
 
     /**
@@ -2894,7 +2899,7 @@ DKTools.Base = class {
      * @param {Function} callback - Function for the child objects
      */
     iterateChildren(callback) {
-        _.forEach(this.children, callback);
+        this.children.forEach(callback);
     }
 
     /**
@@ -2905,10 +2910,10 @@ DKTools.Base = class {
      * @param {String} type - Type of the events
      * @param {Function} callback - Event processing function
      *
-     * @see DKTools.EventManager.prototype.iterateEventsContainer
+     * @see DKTools.EventsManager.prototype.iterateEventsContainer
      */
     iterateEventsContainer(type, callback) {
-        this._eventManager.iterateEventsContainer(type, callback);
+        this._eventsManager.iterateEventsContainer(type, callback);
     }
 
     // M methods
@@ -3012,10 +3017,10 @@ DKTools.Base = class {
      * @param {String} type - Type of the events
      * @param {Number} duration - Duration of pause
      *
-     * @see DKTools.EventManager.prototype.pauseEvents
+     * @see DKTools.EventsManager.prototype.pauseEvents
      */
     pauseEvents(type, duration) {
-        this._eventManager.pauseEvents(type, duration);
+        this._eventsManager.pauseEvents(type, duration);
     }
 
     /**
@@ -3027,8 +3032,10 @@ DKTools.Base = class {
      * @see DKTools.Base.prototype.processWheel
      */
     processAll() {
-        this.processMouse();
-        this.processWheel();
+        if (!DKTools.Utils.isMobileDevice()) {
+            this.processMouse();
+            this.processWheel();
+        }
     }
 
     /**
@@ -3090,8 +3097,8 @@ DKTools.Base = class {
      * @since 2.0.0
      */
     processMouse() {
-        if (this.isOptionEnabled('process-mouse') && this.isVisible() &&
-            (this.isActive() || this.isOptionEnabled('process-mouse-ignore-active'))) {
+        if (this._optionsManager.isOptionEnabled('process-mouse') && this.isVisible() &&
+            (this.isActive() || this._optionsManager.isOptionEnabled('process-mouse-ignore-active'))) {
                 if (this.isMouseInside()) {
                     if (this._mouseEnterTime === 0) {
                         this.updateMouseEnterEvents();
@@ -3251,12 +3258,12 @@ DKTools.Base = class {
      *
      * @param {DKTools.Event | DKTools.Animation} event - Event
      *
-     * @see DKTools.EventManager.prototype.removeEvent
+     * @see DKTools.EventsManager.prototype.removeEvent
      *
      * @returns {Boolean} Event was removed
      */
     removeEvent(event) {
-        return this._eventManager.removeEvent(event);
+        return this._eventsManager.removeEvent(event);
     }
 
     /**
@@ -3308,28 +3315,30 @@ DKTools.Base = class {
     /**
      * Removes the listener of change of the option
      *
+     * @deprecated 9.0.0
      * @since 2.0.0
      *
      * @param {String} option - Name of the option
      * @param {Function} listener - Listener
      *
-     * @see DKTools.OptionManager.prototype.removeOptionChangeListener
+     * @see DKTools.OptionsManager.prototype.removeOptionChangeListener
      */
     removeOptionChangeListener(option, listener) {
-        this._optionManager.removeOptionChangeListener(option, listener);
+        this._optionsManager.removeOptionChangeListener(option, listener);
     }
 
     /**
      * Resumes the events
      *
+     * @deprecated 9.0.0
      * @version 2.0.0
      *
      * @param {String} type - Type of the events
      *
-     * @see DKTools.EventManager.prototype.resumeEvents
+     * @see DKTools.EventsManager.prototype.resumeEvents
      */
     resumeEvents(type) {
-        this._eventManager.resumeEvents(type);
+        this._eventsManager.resumeEvents(type);
     }
 
     // S methods
@@ -3980,10 +3989,10 @@ DKTools.Base = class {
      * @param {String} type - Type of the events
      * @param {Boolean} [forcedSuccess] - Forced success for the finish of the events
      *
-     * @see DKTools.EventManager.prototype.stopEvents
+     * @see DKTools.EventsManager.prototype.stopEvents
      */
     stopEvents(type, forcedSuccess = false) {
-        this._eventManager.stopEvents(type, forcedSuccess);
+        this._eventsManager.stopEvents(type, forcedSuccess);
     }
 
     /**
@@ -4132,34 +4141,6 @@ DKTools.Base = class {
         return true;
     }
 
-    /**
-     * Switches the option
-     *
-     * @deprecated 8.3.0
-     * @version 2.0.0
-     *
-     * @param {String} option - Name of the option
-     *
-     * @see DKTools.OptionManager.prototype.switchOption
-     */
-    switchOption(option) {
-        this._optionManager.switchOption(option);
-    }
-
-    /**
-     * Switches the options
-     *
-     * @deprecated 8.3.0
-     * @version 2.0.0
-     *
-     * @param {String[] | ...String} object - Names of the options
-     *
-     * @see DKTools.OptionManager.prototype.switchOptions
-     */
-    switchOptions(object) {
-        this._optionManager.switchOptions.apply(this._optionManager, arguments);
-    }
-
     // T methods
 
     /**
@@ -4296,7 +4277,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: activate
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateActivateEvents() {
         this.updateEventsContainer('activate');
@@ -4307,7 +4288,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateAddAllChildrenEvents() {
         this.updateEventsContainer('add-all-children');
@@ -4318,7 +4299,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateCheckAllEvents() {
         this.updateEventsContainer('check-all');
@@ -4347,7 +4328,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateCreateAllEvents() {
         this.updateEventsContainer('create-all');
@@ -4356,7 +4337,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: deactivate
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateDeactivateEvents() {
         this.updateEventsContainer('deactivate');
@@ -4367,10 +4348,10 @@ DKTools.Base = class {
      *
      * @param {DKTools.Event | DKTools.Animation} event - Event
      *
-     * @see DKTools.EventManager.prototype.updateEvent
+     * @see DKTools.EventsManager.prototype.updateEvent
      */
     updateEvent(event) {
-        this._eventManager.updateEvent(event);
+        this._eventsManager.updateEvent(event);
     }
 
     /**
@@ -4378,14 +4359,15 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.update
+     * @see DKTools.EventsManager.prototype.update
      * @see DKTools.Base.protoype.updateReadyEvents
      * @see DKTools.Base.protoype.updateUpdateEvents
      * @see DKTools.Base.protoype.updateQueueEvents
      * @see DKTools.Base.protoype.updateWheelEvents
      */
     updateEvents() {
-        this._eventManager.update();
+        this._eventsManager.update();
+
         this.updateReadyEvents();
         this.updateUpdateEvents();
         this.updateQueueEvents();
@@ -4398,16 +4380,16 @@ DKTools.Base = class {
      *
      * @param {String} type - Type of the events
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateEventsContainer(type) {
-        this._eventManager.updateEventsContainer(type);
+        this._eventsManager.updateEventsContainer(type);
     }
 
     /**
      * Updates the events with type: hide
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateHideEvents() {
         this.updateEventsContainer('hide');
@@ -4427,7 +4409,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseEnterEvents() {
         this.updateEventsContainer('mouse-enter');
@@ -4438,7 +4420,7 @@ DKTools.Base = class {
      *
      * @since 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseInsideEvents() {
         this.updateEventsContainer('mouse-inside');
@@ -4449,7 +4431,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseLeaveEvents() {
         this.updateEventsContainer('mouse-leave');
@@ -4460,7 +4442,7 @@ DKTools.Base = class {
      *
      * @since 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseMoveEvents() {
         this.updateEventsContainer('mouse-move');
@@ -4471,7 +4453,7 @@ DKTools.Base = class {
      *
      * @since 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseOutsideEvents() {
         this.updateEventsContainer('mouse-outside');
@@ -4487,7 +4469,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: queue
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateQueueEvents() {
         const container = this.getEventsContainerByType('queue');
@@ -4499,7 +4481,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: ready
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateReadyEvents() {
         if (this.isReady()) {
@@ -4512,7 +4494,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateRedrawAllEvents() {
         this.updateEventsContainer('redraw-all');
@@ -4523,7 +4505,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateRefreshAllEvents() {
         this.updateEventsContainer('refresh-all');
@@ -4534,7 +4516,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateRemoveAllChildrenEvents() {
         this.updateEventsContainer('remove-all-children');
@@ -4545,7 +4527,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateRemoveAllEvents() {
         this.updateEventsContainer('remove-all');
@@ -4554,7 +4536,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: show
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateShowEvents() {
         this.updateEventsContainer('show');
@@ -4565,7 +4547,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateStartAllEvents() {
         this.updateEventsContainer('start-all');
@@ -4574,7 +4556,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: start
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateStartEvents() {
         if (this.isStarted()) {
@@ -4587,7 +4569,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateTerminateAllEvents() {
         this.updateEventsContainer('terminate-all-children');
@@ -4598,7 +4580,7 @@ DKTools.Base = class {
      *
      * @version 2.0.0
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateUpdateAllEvents() {
         this.updateEventsContainer('update-all');
@@ -4607,7 +4589,7 @@ DKTools.Base = class {
     /**
      * Updates the events with type: update
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateUpdateEvents() {
         this.updateEventsContainer('update');
@@ -4620,7 +4602,7 @@ DKTools.Base = class {
      *
      * @param {String} type Type of the wheel event (inside or outside)
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateWheelXEvents(type) {
         this.updateEventsContainer('wheel-X-' + type);
@@ -4633,7 +4615,7 @@ DKTools.Base = class {
      *
      * @param {String} type - Type of the wheel event (inside or outside)
      *
-     * @see DKTools.EventManager.prototype.updateEventsContainer
+     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateWheelYEvents(type) {
         this.updateEventsContainer('wheel-Y-' + type);
@@ -4660,44 +4642,9 @@ Object.defineProperties(DKTools.Base.prototype, {
     },
 
     /**
-     * The X coordinate of mouse inside the object
-     *
-     * @deprecated 8.0.0
-     * @version 8.0.0
-     *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Base.prototype
-     */
-    mouseX : {
-        get: function() {
-            return this.mouse.x;
-        },
-        configurable: true
-    },
-
-    /**
-     * The Y coordinate of mouse inside the object
-     *
-     * @deprecated 8.0.0
-     * @version 8.0.0
-     *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Base.prototype
-     */
-    mouseY : {
-        get: function() {
-            return this.mouse.y;
-        },
-        configurable: true
-    },
-
-    /**
      * The coordinates of mouse inside the object
      *
      * @since 8.0.0
-     *
      * @readonly
      * @type {Number}
      * @memberof DKTools.Base.prototype
@@ -4705,6 +4652,35 @@ Object.defineProperties(DKTools.Base.prototype, {
     mouse: {
         get: function() {
             return this.getLocalPoint(TouchInput.mouseX, TouchInput.mouseY);
+        },
+        configurable: true
+    },
+
+    /**
+     * Time of mouse enter inside the object
+     *
+     * @readonly
+     * @type {Number}
+     * @memberof DKTools.Base.prototype
+     */
+    mouseEnterTime: {
+        get: function() {
+            return this._mouseEnterTime;
+        },
+        configurable: true
+    },
+
+    /**
+     * The coordinates of touch inside the object
+     *
+     * @since 9.0.0
+     * @readonly
+     * @type {Number}
+     * @memberof DKTools.Base.prototype
+     */
+    touch: {
+        get: function() {
+            return this.getLocalPoint(TouchInput.x, TouchInput.y);
         },
         configurable: true
     },
@@ -4738,15 +4714,31 @@ Object.defineProperties(DKTools.Base.prototype, {
     },
 
     /**
-     * Time of mouse enter inside the object
+     * Events manager
      *
+     * @since 9.0.0
      * @readonly
-     * @type {Number}
+     * @type {DKTools.EventsManager}
      * @memberof DKTools.Base.prototype
      */
-    mouseEnterTime: {
+    eventsManager: {
         get: function() {
-            return this._mouseEnterTime;
+            return this._eventsManager;
+        },
+        configurable: true
+    },
+
+    /**
+     * Options manager
+     *
+     * @since 9.0.0
+     * @readonly
+     * @type {DKTools.OptionsManager}
+     * @memberof DKTools.Base.prototype
+     */
+    optionsManager: {
+        get: function() {
+            return this._optionsManager;
         },
         configurable: true
     }
