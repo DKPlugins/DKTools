@@ -1,125 +1,15 @@
-**Author**: DK
+**Author**: DKPlugins
 
-**Version**: Public 9.0.0
- 
-**Description**: Library for RPG Maker MV. Contains many tools for developing.
+**MV Version**: Public 9.2.0
 
-**Documentation**: https://dk-plugins.ru/documentation/DKTools/index.html
+**MZ Version**: Coming soon
 
-**Dependencies**: RPG Maker MV 1.6+
- 
-## **4 steps to use DKTools**
-1. Create element
+**Description**: Advanced project testing and various functions.
 
-Create element from DKTools through "new" operator, like: var object = new DKTools.Sprite(x, y, width);
- 
-2. Set parameters through "setup" functions
+**Dependencies (MV Version)**: RPG Maker MV 1.6+ and project 1.6+
 
-Each element contain "setup" functions, which set the parameters. All functions have default parameters.
- 
-3. Start element
+**Dependencies (MZ Version)**: None
 
-Call start function of element.
- 
-4. Add element to your scene
+**Documentation (MV Version)**: https://dk-plugins.ru/documentation/mv/DKTools/index.html
 
-Use "addChild" function for add element to your scene.
- 
-## **List of elements:**
-DKTools.Utils
-
-DKTools.Utils.Object
-
-DKTools.Utils.Number
-
-DKTools.Utils.String
-
-DKTools.Utils.Array
-
-DKTools.Utils.Point
-
-DKTools.Utils.Rectangle
-
-DKTools.Utils.WebAudio
-
-DKTools.Utils.Bitmap
-
-DKTools.Utils.Event
-
-DKTools.Utils.Random
-
-DKTools.IO
-
-DKTools.IO.Entity
-
-DKTools.IO.File
-
-DKTools.IO.Directory
-
-DKTools.IO.WebStorage
-
-DKTools.Network
-
-DKTools.ParameterManager
-
-DKTools.PluginManager
-
-DKTools.PluginCommandManager
-
-DKTools.PreloadManager
-
-DKTools.StartupManager
-
-DKTools.Audio
-
-DKTools.Event
-
-DKTools.Animation
-
-DKTools.Animation.Action
-
-DKTools.OptionsManager
-
-DKTools.EventsManager
-
-DKTools.Unit
-
-DKTools.Unit.Property
-
-DKTools.Unit.Properties
-
-DKTools.Unit.Function
-
-DKTools.Base
-
-DKTools.Sprite
-
-DKTools.Sprite.Button
-
-DKTools.Sprite.Cursor
-
-DKTools.Sprite.Arrow
-
-DKTools.Sprite.Selectable
-
-DKTools.Sprite.ProgressBar
-
-DKTools.Sprite.ProgressBar.Rectangle
-
-DKTools.Sprite.ProgressBar.Circle
-
-DKTools.Sprite.ProgressBar.SemiCircle
-
-DKTools.Sprite.CheckBox
-
-DKTools.Viewport
-
-DKTools.Layout
-
-DKTools.Window
-
-DKTools.Window.Selectable
-
-DKTools.Scene
-
-DKTools.Scene.Preloader
+**Documentation (MZ Version)**: Coming soon
