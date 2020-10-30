@@ -4,9 +4,8 @@
 
 /**
  * Plugin command manager class
- *
  * @since 3.0.0
- * @class DKTools.PluginCommandManager
+ * @class
  * @memberof DKTools
  */
 DKTools.PluginCommandManager = class {
@@ -19,12 +18,9 @@ DKTools.PluginCommandManager = class {
 
     /**
      * Returns true if the command has the handler
-     *
      * @static
-     *
      * @param {String} pluginCommand - Name of the command
-     *
-     * @returns {Boolean} Command has the handler
+     * @return {Boolean} Command has the handler
      */
     static has(pluginCommand) {
         return !!this._pluginCommands[pluginCommand.toLowerCase()];
@@ -34,10 +30,8 @@ DKTools.PluginCommandManager = class {
 
     /**
      * Processes the handler of the command
-     *
      * @version 9.0.0
      * @static
-     *
      * @param {Game_Interpreter} gameInterpreter - Interpreter
      * @param {String} pluginCommand - Name of the command
      * @param {Array} args - Arguments of the command
@@ -58,9 +52,7 @@ DKTools.PluginCommandManager = class {
 
     /**
      * Sets the handler of the plugin command
-     *
      * @static
-     *
      * @param {String} pluginCommand - Name of the command
      * @param {Function} handler - Handler of the command
      */
@@ -85,8 +77,5 @@ Object.defineProperties(DKTools.PluginCommandManager, {
     _pluginCommands: { value: {} }
 
 });
-
-
-
 
 

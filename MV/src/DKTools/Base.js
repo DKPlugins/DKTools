@@ -5,9 +5,9 @@
 /**
  * Abstract base class for sprite and window
  *
- * @class DKTools.Base
- *
- * @memberof DKTools
+ * @class
+ * @abstract
+ * @mixin
  *
  * @param {Number | Graphics | Object | *} [object] - The X coordinate or Graphics or object with parameters
  * @param {Number} [y] - The Y coordinate (if object is Number)
@@ -18,14 +18,64 @@
  * @param {Number} [object.y] - The Y coordinate
  * @param {Number} [object.width] - The width of the object
  * @param {Number} [object.height] - The height of the object
- *
- * @see DKTools.Base.prototype.initialize
- * @see DKTools.Base.prototype.setupAll
  */
 DKTools.Base = class {
 
     constructor() {
         throw new Error('This is an abstract class!');
+    }
+
+    // properties
+
+    /**
+     * Gets the coordinates of mouse inside the object
+     * @since 8.0.0
+     * @return {PIXI.Point} Coordinates of mouse inside the object
+     */
+    get mouse() {
+        return this.getLocalPoint(TouchInput.mouseX, TouchInput.mouseY);
+    }
+
+    /**
+     * Gets time of mouse enter inside the object
+     * @return {Number} Time of mouse enter inside the object
+     */
+    get mouseEnterTime() {
+        return this._mouseEnterTime;
+    }
+
+    /**
+     * Gets the coordinates of touch inside the object
+     * @since 9.0.0
+     * @return {Point} Coordinates of touch inside the object
+     */
+    get touch() {
+        return this.getLocalPoint(TouchInput.x, TouchInput.y);
+    }
+
+    /**
+     * Gets number of pixels scrolling mouse on X axis
+     * @return {Number} Number of pixels scrolling mouse on X axis
+     */
+    get wheelX() {
+        return this._wheelX;
+    }
+
+    /**
+     * Gets number of pixels scrolling mouse on Y axis
+     * @return {Number} Number of pixels scrolling mouse on Y axis
+     */
+    get wheelY() {
+        return this._wheelY;
+    }
+
+    /**
+     * Gets events manager
+     * @since 9.0.0
+     * @return {DKTools.EventsManager} Events manager
+     */
+    get eventsManager() {
+        return this._eventsManager;
     }
 
     // initialize methods
@@ -41,7 +91,7 @@ DKTools.Base = class {
      * @param {Number} [object.x] - The X coordinate
      * @param {Number} [object.y] - The Y coordinate
      * @param {Number} [object.width] - The width of the object
-     * @param {Number} [object.height] - The height of the object
+     * @param {Number | String} [object.height] - The height of the object
      *
      * @example
      * const sprite = new DKTools.Sprite(0, 0, 100, 100);
@@ -54,8 +104,6 @@ DKTools.Base = class {
      * @example
      * const sprite = new DKTools.Sprite({ x: 0, y: 0, width: 100, height: 100 });
      * => x = 0; y = 0; width = 100; height = 100;
-     *
-     * @see DKTools.Base.prototype.setupAll
      */
     initialize(object, y, width, height) {
         let x;
@@ -72,31 +120,18 @@ DKTools.Base = class {
             x = object;
         }
 
+        this._clearAll();
+        this._createEventsManager();
+
         this.move(x, y);
         this.setupSize(width, height);
-        this._clearAll();
-        this._createAll();
-        this._setupAll();
-        this._addAllChildren();
-        this.setupAll(object);
+        this.setupAll();
     }
 
     // A methods
 
     /**
-     * Adds children objects to processing
-     *
-     * @private
-     */
-    _addAllChildren() {
-        // to be overridden by plugins
-    }
-
-    /**
      * Activates the object
-     *
-     * @see DKTools.Base.prototype.setActive
-     * @see DKTools.Base.prototype.updateActivateEvents
      */
     activate() {
         if (this.setActive(true)) {
@@ -106,38 +141,21 @@ DKTools.Base = class {
 
     /**
      * Returns the name of the actor
-     *
      * @param {Number} n - Number of the actor
-     * @returns {String} Name of the actor
+     * @return {String} Name of the actor
      */
     actorName(n) {
-        const actor = n >= 1 ? $gameActors.actor(n) : null;
-
-        return actor ? actor.name() : '';
-    }
-
-    /**
-     * Adds children objects to processing
-     *
-     * @version 2.0.0
-     *
-     * @see DKTools.Base.prototype.updateAddAllChildrenEvents
-     */
-    addAllChildren() {
-        this.updateAddAllChildrenEvents();
+        return Window_Base.prototype.actorName.apply(this, arguments);
     }
 
     /**
      * Adds the animation
-     *
-     * @version 2.0.0
-     *
+     * @version 10.0.0
      * @param {DKTools.Animation} animation - Animation to add
-     *
-     * @see DKTools.EventsManager.addAnimation
+     * @return {DKTools.Animation} Animation
      */
     addAnimation(animation) {
-        this._eventsManager.addAnimation(animation);
+        return this._eventsManager.addAnimation(animation);
     }
 
     /**
@@ -160,10 +178,29 @@ DKTools.Base = class {
      * @param {Function} [object.onSuccess] - Handler of the event success
      * @param {Function} [object.onFail] - Handler of the event fail
      *
-     * @see DKTools.Event
-     * @see DKTools.EventsManager.prototype.addEvent
+     * @example
+     * const sprite = new DKTools.Sprite();
      *
-     * @returns {DKTools.Event} Added event
+     * sprite.addEvent({
+     *      type: 'update',
+     *      onUpdate: () => {
+     *          // code
+     *      }
+     * });
+     *
+     * @example
+     * const sprite = new DKTools.Sprite();
+     *
+     * sprite.addEvent({
+     *      type: 'update',
+     *      repeats: 0,
+     *      repeatTime: 60,
+     *      onSuccess: () => {
+     *          // code
+     *      }
+     * });
+     *
+     * @return {DKTools.Event} Added event
      */
     addEvent(object) {
         return this._eventsManager.addEvent(object);
@@ -187,33 +224,15 @@ DKTools.Base = class {
      * @param {Function} [object.onSuccess] - Handler of the event success
      * @param {Function} [object.onFail] - Handler of the event fail
      *
-     * @see DKTools.Event
-     * @see DKTools.EventsManager.prototype.addOneTimeEvent
-     *
-     * @returns {DKTools.Event} Added event
+     * @return {DKTools.Event} Added event
      */
     addOneTimeEvent(object) {
         return this._eventsManager.addOneTimeEvent(object);
     }
 
     /**
-     * Adds a listener of change of the option
-     *
-     * @deprecated 9.0.0
-     * @version 9.2.0
-     *
-     * @param {String} option - Name of the option
-     * @param {Function} listener - Listener
-     *
-     * @see DKTools.OptionsManager.prototype.addOptionChangeListener
-     */
-    addOptionChangeListener(option, listener) {}
-
-    /**
      * Adds the filter
-     *
      * @since 6.2.0
-     *
      * @param {*} filter - Filter
      */
     addFilter(filter) {
@@ -221,8 +240,13 @@ DKTools.Base = class {
             return;
         }
 
-        if (this.filters && this.filters.length > 0) {
-            this.filters.push(filter);
+        // pixi v4 property returns sliced array
+        const filters = this.filters;
+
+        if (filters && filters.length > 0) {
+            filters.push(filter);
+
+            this.filters = filters;
         } else {
             this.filters = [filter];
         }
@@ -232,237 +256,41 @@ DKTools.Base = class {
 
     /**
      * Clears all data
-     *
      * @version 9.2.0
      * @private
-     *
-     * @see DKTools.Base.prototype._clearOptions
-     * @see DKTools.Base.prototype._clearMouseEnterTime
-     * @see DKTools.Base.prototype._clearWheel
      */
     _clearAll() {
-        this._clearOptions();
-        this._clearMouseEnterTime();
-        this._clearWheel();
-    }
-
-    /**
-     * Clears the options
-     *
-     * @since 9.2.0
-     * @private
-     */
-    _clearOptions() {
-        /**
-         * @since 9.2.0
-         * @private
-         * @type {String[]}
-         */
-        this.__options__ = [];
-    }
-
-    /**
-     * Clears time of mouse enter inside the object
-     *
-     * @since 2.0.0
-     * @private
-     */
-    _clearMouseEnterTime() {
-        /**
-         * @private
-         * @readonly
-         * @type {Number}
-         */
         this._mouseEnterTime = 0;
-    }
-
-    /**
-     * Clears scrolling of mouse wheel
-     *
-     * @private
-     *
-     * @see DKTools.Base.prototype._clearWheelX
-     * @see DKTools.Base.prototype._clearWheelY
-     */
-    _clearWheel() {
-        this._clearWheelX();
-        this._clearWheelY();
-    }
-
-    /**
-     * Clears scrolling of mouse wheel on X axis
-     *
-     * @private
-     */
-    _clearWheelX() {
-        /**
-         * @private
-         * @readonly
-         * @type {Number}
-         */
         this._wheelX = 0;
-    }
-
-    /**
-     * Clears scrolling of mouse wheel on Y axis
-     *
-     * @private
-     */
-    _clearWheelY() {
-        /**
-         * @private
-         * @readonly
-         * @type {Number}
-         */
         this._wheelY = 0;
     }
 
     /**
-     * Creates all
-     *
-     * @version 9.0.0
-     * @private
-     *
-     * @see DKTools.Base.prototype._createOptionsManager
-     * @see DKTools.Base.prototype._createEventManager
-     */
-    _createAll() {
-        this._createOptionsManager();
-        this._createEventsManager();
-    }
-
-    /**
      * Creates the event manager
-     *
      * @since 9.0.0
      * @private
-     *
-     * @see DKTools.EventsManager
      */
     _createEventsManager() {
-        /**
-         * @private
-         * @readonly
-         * @type {DKTools.EventsManager}
-         */
         this._eventsManager = new DKTools.EventsManager(this);
-    }
-
-    /**
-     * Creates the option manager
-     *
-     * @deprecated 9.2.0
-     * @since 9.0.0
-     * @private
-     *
-     * @see DKTools.OptionsManager
-     */
-    _createOptionsManager() {
-        /**
-         * @private
-         * @readonly
-         * @type {DKTools.OptionsManager}
-         */
-        this._optionsManager = new DKTools.OptionsManager();
-    }
-
-    /**
-     * Checks the height with the minimum height
-     * Returns the normalized height of the object
-     *
-     * @private
-     *
-     * @param {Number} height - Height of the object
-     *
-     * @see DKTools.Base.prototype.getMinHeight
-     *
-     * @returns {Number} Normalized height of the object
-     */
-    _checkHeight(height) {
-        const minHeight = this.getMinHeight();
-
-        return height ? Math.max(minHeight, height) : minHeight;
-    }
-
-    /**
-     * Checks the width with the minimum width
-     * Returns the normalized width of the object
-     *
-     * @private
-     *
-     * @param {Number} width - Width of the object
-     *
-     * @see DKTools.Base.prototype.getMinWidth
-     *
-     * @returns {Number} Normalized width of the object
-     */
-    _checkWidth(width) {
-        const minWidth = this.getMinWidth();
-
-        return width ? Math.max(minWidth, width) : minWidth;
     }
 
     /**
      * @param {Object} textState - Text state
      * @param {Boolean} [all=false] - All lines
-     *
-     * @param {String} textState.text - Text
-     * @param {Number} textState.index - Index
-     *
-     * @see DKTools.Base.prototype.hasBitmap
-     *
-     * @returns {Number} Text height
+     * @return {Number} Text height
      */
     calcTextHeight(textState, all = false) {
         if (!this.hasBitmap() || !textState) {
             return 0;
         }
 
-        const lastFontSize = this.bitmap.fontSize;
-        const lines = textState.text.slice(textState.index).split('\n');
-        const maxLines = all ? lines.length : 1;
-        let textHeight = 0;
-
-        for (let i = 0; i < maxLines; i++) {
-            const regExp = /\x1b[\{\}]/g;
-            let maxFontSize = this.bitmap.fontSize;
-
-            for (;;) {
-                const array = regExp.exec(lines[i]);
-
-                if (array) {
-                    if (array[0] === '\x1b{') {
-                        this.makeFontBigger();
-                    }
-
-                    if (array[0] === '\x1b}') {
-                        this.makeFontSmaller();
-                    }
-
-                    if (maxFontSize < this.bitmap.fontSize) {
-                        maxFontSize = this.bitmap.fontSize;
-                    }
-                } else {
-                    break;
-                }
-            }
-
-            textHeight += maxFontSize + 8;
-        }
-
-        this.bitmap.fontSize = lastFontSize;
-
-        return textHeight;
+        return Window_Base.prototype.calcTextHeight.apply(this, arguments);
     }
 
     /**
      * Returns true if the object can be updated and redrawn
-     *
      * @since 1.1.0
-     *
-     * @see DKTools.Base.prototype.hasBitmap
-     *
-     * @returns {Boolean} Object can be updated and redrawn
+     * @return {Boolean} Object can be updated and redrawn
      */
     canRedrawAll() {
         return this.hasBitmap();
@@ -470,86 +298,19 @@ DKTools.Base = class {
 
     /**
      * Checks all
-     *
-     * @version 1.1.0
-     *
-     * @see DKTools.Base.prototype.updateCheckAllEvents
-     * @see DKTools.Base.prototype.checkSize
+     * @version 10.0.0
      */
     checkAll() {
         this.updateCheckAllEvents();
-        this.checkSize();
-    }
-
-    /**
-     * Checks the size of the object
-     */
-    checkSize() {
-        // to be overridden by plugins
     }
 
     /**
      * Clears the bitmap
      * Returns true if successfully completed
-     *
-     * @see DKTools.Base.prototype.clearRect
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     clear() {
         return this.clearRect();
-    }
-
-    /**
-     * Clears the events
-     *
-     * @version 2.0.0
-     *
-     * @param {String[] | String} object Array with event types or event type
-     *
-     * @see DKTools.EventsManager.prototype.clearEvents
-     */
-    clearEvents(object) {
-        this._eventsManager.clearEvents(object);
-    }
-
-    /**
-     * Clears the filters
-     *
-     * @since 6.2.0
-     */
-    clearFilters() {
-        this.filters = null;
-    }
-
-    /**
-     * Clears a line in the bitmap
-     * Returns true if successfully completed
-     *
-     * @since 5.0.0
-     *
-     * @param {Number} line - Line to clear
-     *
-     * @see DKTools.Base.prototype.getLineRect
-     * @see DKTools.Base.prototype.clearRect
-     *
-     * @returns {Boolean} Successfully completed
-     */
-    clearLine(line) {
-        return this.clearRect(this.getLineRect(line));
-    }
-
-    /**
-     * Clears the options
-     *
-     * @deprecated 9.2.0
-     * @version 9.2.0
-     * @since 2.0.0
-     *
-     * @see DKTools.OptionsManager.prototype.clear
-     */
-    clearOptions() {
-        this.__options__ = [];
     }
 
     /**
@@ -558,7 +319,7 @@ DKTools.Base = class {
      *
      * @version 6.0.0
      *
-     * @param {Number | PIXI.Rectangle | Rectangle | Object} [object] - The X coordinate or Rectangle or object with parameters
+     * @param {Number | Rectangle | Object} [object] - The X coordinate or Rectangle or object with parameters
      * @param {Number | String} [y] - The Y coordinate or line number (String) (if object is Number)
      * @param {Number} [width] - Width of the rectangle (if object is Number)
      * @param {Number | String} [height] - Height of the rectangle or number of lines (String) (if object is Number)
@@ -568,7 +329,7 @@ DKTools.Base = class {
      * @param {Number} [object.width] - Width of the rectangle
      * @param {Number | String} [object.height] - Height of the rectangle or number of lines (String)
      *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     clearRect(object, y, width, height) {
         if (!this.hasBitmap()) {
@@ -585,11 +346,11 @@ DKTools.Base = class {
         }
 
         if (DKTools.Utils.isString(y)) { // line number
-            y = this.getLineHeight() * parseFloat(y);
+            y = this.lineHeight() * parseFloat(y);
         }
 
         if (DKTools.Utils.isString(height)) { // number of lines
-            y = this.getLineHeight() * parseFloat(height);
+            y = this.lineHeight() * parseFloat(height);
         }
 
         x = x || 0;
@@ -603,51 +364,14 @@ DKTools.Base = class {
     }
 
     /**
-     * Clones the object
-     *
-     * @deprecated
-     * @version 9.2.0
-     *
-     * @param {Object} [options={}] - Options for clone
-     *
-     * @param {Boolean} [options.cloneTexts] - Clone texts
-     * @param {Boolean} [options.blockStart] - Blocking the call of the "start" function of cloned object
-     * @param {Boolean} [options.activate] - Activate a cloned object
-     *
-     * @returns {DKTools.Sprite | DKTools.Window | *} Cloned object
-     */
-    clone(options = {}) {
-        options = options || {};
-
-        const clone = new (this.constructor)(this);
-
-        if (options.cloneTexts) {
-            _.forEach(this._texts, (textObj) => {
-                clone.addText(textObj.text, { ...textObj.options });
-            });
-        }
-
-        if (!options.blockStart) {
-            clone.start();
-        }
-
-        if (options.activate) {
-            clone.activate();
-        }
-
-        return clone;
-    }
-
-    /**
      * Converts the escape characters
      * Returns the text with converted the escaped characters
-     *
      * @param {String} text - Text
-     * @returns {String} Text with converted the escaped characters
+     * @return {String} Text with converted the escaped characters
      */
     convertEscapeCharacters(text) {
         try {
-            return Window_Base.prototype.convertEscapeCharacters.call(this, text);
+            return Window_Base.prototype.convertEscapeCharacters.apply(this, arguments);
         } catch(e) {
             text = text.replace(/\\/g, '\x1b');
 
@@ -677,10 +401,7 @@ DKTools.Base = class {
 
     /**
      * Creates all objects
-     *
      * @version 2.0.0
-     *
-     * @see DKTools.Base.prototype.updateCreateAllEvents
      */
     createAll() {
         this.updateCreateAllEvents();
@@ -690,9 +411,6 @@ DKTools.Base = class {
 
     /**
      * Deactivates the object
-     *
-     * @see DKTools.Base.prototype.setActive
-     * @see DKTools.Base.prototype.updateDeactivateEvents
      */
     deactivate() {
         if (this.setActive(false)) {
@@ -701,73 +419,11 @@ DKTools.Base = class {
     }
 
     /**
-     * Destroys the object
-     *
-     * @since 8.0.0
-     *
-     * @param {Object} [options] - Destroy options
-     */
-    destroy(options = {}) {
-        this._clearAll();
-
-        this.clearEvents();
-        this.hide();
-    }
-
-    /**
-     * Turns off the option
-     *
-     * @deprecated 9.2.0
-     * @version 9.2.0
-     *
-     * @param {String} option - Name of the option
-     *
-     * @see DKTools.OptionsManager.prototype.disableOption
-     */
-    disableOption(option) {
-        DKTools.Utils.Array.remove(this.__options__, option);
-    }
-
-    /**
      * Draws all
+     * @version 10.0.0
      */
     drawAll() {
-        // to be overridden by plugins
-    }
-
-    /**
-     * Draws an arrow
-     * Returns true if successfully completed
-     *
-     * @since 6.0.0
-     *
-     * @param {String} arrowType - Type of the arrow
-     * @param {Object} [options={}] - Options for drawing
-     *
-     * @param {Function | PIXI.Rectangle | Rectangle | Object} [options.destination] - Destination to bitmap. Function or Rectangle or object with parameters
-     * @param {Number} [options.paintOpacity] - Change paint opacity
-     * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
-     *
-     * @param {Number} [options.destination.x] - The X coordinate
-     * @param {Number | String} [options.destination.y] - The Y coordinate or line number (String)
-     * @param {Number} [options.destination.width] - Width of the rectangle
-     * @param {Number | String} [options.destination.height] - Height of the rectangle or number of lines (String)
-     *
-     * @see DKTools.Base.prototype.drawBitmap
-     *
-     * @returns {Boolean} Successfully completed
-     */
-    drawArrow(arrowType, options = {}) {
-        if (!this.hasBitmap() || !arrowType) {
-            return false;
-        }
-
-        options = options || {};
-
-        const bitmap = ImageManager.loadSystem(this.standardWindowskin());
-        const source = DKTools.Sprite.Arrow.getRect(arrowType);
-
-        return this.drawBitmap(bitmap, { ...options, source });
+        this.updateDrawAllEvents();
     }
 
     /**
@@ -786,8 +442,8 @@ DKTools.Base = class {
      * @param {Boolean} [object.smooth] - Smooth of bitmap
      *
      * @param {Boolean} [options.sync] - Draw if the bitmap is ready
-     * @param {Function | PIXI.Rectangle | Rectangle | Object} [options.source] - Source from bitmap. Function or Rectangle or object with parameters
-     * @param {Function | PIXI.Rectangle | Rectangle | Object} [options.destination] - Destination to bitmap. Function or  Rectangle or object with parameters
+     * @param {Function | Rectangle | Object} [options.source] - Source from bitmap. Function or Rectangle or object with parameters
+     * @param {Function | Rectangle | Object} [options.destination] - Destination to bitmap. Function or  Rectangle or object with parameters
      * @param {Function} [options.callback] - Callback function, which should return an object with source and destination
      * @param {Number} [options.paintOpacity] - Change paint opacity
      * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
@@ -820,10 +476,7 @@ DKTools.Base = class {
      *      }
      * });
      *
-     * @see DKTools.Base.prototype.hasBitmap
-     * @see DKTools.Utils.Bitmap.load
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     drawBitmap(object, options = {}) {
         if (!this.hasBitmap() || !object) {
@@ -843,7 +496,7 @@ DKTools.Base = class {
         bitmap.addLoadListener(() => {
             const isFunction = DKTools.Utils.isFunction;
             const isString = DKTools.Utils.isString;
-            const lineHeight = this.getLineHeight();
+            const lineHeight = this.lineHeight();
             const { paintOpacity, resetPaintOpacity } = options;
             let { source, destination } = options;
             let callbackResult = {};
@@ -927,8 +580,8 @@ DKTools.Base = class {
      * @param {Number} [object.hue] - Hue of bitmap
      * @param {Boolean} [object.smooth] - Smooth of bitmap
      *
-     * @param {Function | PIXI.Rectangle | Rectangle | Object} [options.source] - Source from bitmap. Function or Rectangle or object with parameters
-     * @param {Function | PIXI.Rectangle | Rectangle | Object} [options.destination] - Destination to bitmap. Function or Rectangle or object with parameters
+     * @param {Function | Rectangle | Object} [options.source] - Source from bitmap. Function or Rectangle or object with parameters
+     * @param {Function | Rectangle | Object} [options.destination] - Destination to bitmap. Function or Rectangle or object with parameters
      * @param {Function} [options.callback] - Callback function, which should return an object with source and destination
      *
      * @param {Number} [options.source.x] - The X coordinate
@@ -941,9 +594,7 @@ DKTools.Base = class {
      * @param {Number} [options.destination.width] - Width of the rectangle
      * @param {Number | String} [options.destination.height] - Height of the rectangle or number of lines (String)
      *
-     * @see DKTools.Base.prototype.drawBitmap
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     async drawBitmapAsync(object, options = {}) {
         if (!object) {
@@ -967,17 +618,14 @@ DKTools.Base = class {
      *
      * @param {Number} [options.x] - The X coordinate
      * @param {Number | String} [options.y] - The Y coordinate or line number (String)
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
+     * @param {Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
      * @param {Number} [options.paintOpacity] - Change paint opacity
      * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
      *
      * @param {Number} [options.pos.x] - The X coordinate
      * @param {Number | String} [options.pos.y] - The Y coordinate or line number (String)
      *
-     * @see DKTools.Base.prototype.hasBitmap
-     * @see DKTools.Base.prototype.drawBitmap
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     drawCharacter(characterName, characterIndex, options = {}) {
         if (!this.hasBitmap() || characterName == null || characterIndex == null) {
@@ -1017,7 +665,7 @@ DKTools.Base = class {
      *
      * @param {Number} [options.x] - The X coordinate
      * @param {Number | String} [options.y] - The Y coordinate or line number (String)
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
+     * @param {Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
      * @param {Number} [options.radius] - Radius of the circle
      * @param {String} [options.color] - Color of the circle
      * @param {Number} [options.paintOpacity] - Change paint opacity
@@ -1026,9 +674,7 @@ DKTools.Base = class {
      * @param {Number} [options.pos.x] - The X coordinate
      * @param {Number | String} [options.pos.y] - The Y coordinate or line number (String)
      *
-     * @see DKTools.Base.prototype.hasBitmap
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     drawCircle(options = {}) {
         if (!this.hasBitmap()) {
@@ -1050,7 +696,7 @@ DKTools.Base = class {
         }
 
         if (DKTools.Utils.isString(y)) { // line number
-            y = this.getLineHeight() * parseFloat(y);
+            y = this.lineHeight() * parseFloat(y);
         }
 
         if (Number.isFinite(paintOpacity)) {
@@ -1080,8 +726,8 @@ DKTools.Base = class {
      * @param {Number | String} [options.y] - The Y coordinate or line number (String)
      * @param {Number} [options.width] - Width of the face
      * @param {Number | String} [options.height] - Height of the face or number of lines (String)
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
-     * @param {PIXI.Rectangle | Rectangle | Object} [options.rect] - Rectangle for drawing (ignores other parameters of position: x, y, pos)
+     * @param {Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
+     * @param {Rectangle | Object} [options.rect] - Rectangle for drawing (ignores other parameters of position: x, y, pos)
      * @param {Number} [options.paintOpacity] - Change paint opacity
      * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
      *
@@ -1093,10 +739,7 @@ DKTools.Base = class {
      * @param {Number} [options.rect.width] - Width of the face
      * @param {Number | String} [options.rect.height] -  Height of the face or number of lines (String)
      *
-     * @see DKTools.Base.prototype.hasBitmap
-     * @see DKTools.Base.prototype.drawBitmap
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     drawFace(faceName, faceIndex, options = {}) {
         if (!this.hasBitmap() || faceName == null || faceIndex == null) {
@@ -1150,8 +793,8 @@ DKTools.Base = class {
      * @param {Number | String} [options.y] - The Y coordinate or line number (String)
      * @param {Number} [options.width] - Width of the rectangle
      * @param {Number | String} [options.height] - Height of the rectangle or number of lines (String)
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
-     * @param {PIXI.Rectangle | Rectangle | Object} [options.rect] - Rectangle for drawing (ignores other parameters of position: x, y, width, height, pos)
+     * @param {Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
+     * @param {Rectangle | Object} [options.rect] - Rectangle for drawing (ignores other parameters of position: x, y, width, height, pos)
      * @param {Number} [options.rate] - Gauge width rate
      * @param {String} [options.type] - Gauge type (horizontal or vertical)
      * @param {Boolean} [options.reversed] - Reversed gauge
@@ -1171,13 +814,7 @@ DKTools.Base = class {
      * @param {Number} [options.rect.width] - Width of the rectangle
      * @param {Number | String} [options.rect.height] - Height of the rectangle or number of lines (String)
      *
-     * @see DKTools.Base.prototype.hasBitmap
-     * @see DKTools.Base.prototype.standardDrawingWidth
-     * @see DKTools.Base.prototype.standardDrawingHeight
-     * @see DKTools.Base.prototype.fillRect
-     * @see DKTools.Base.prototype.gradientFillRect
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     drawGauge(options = {}) {
         if (!this.hasBitmap()) {
@@ -1200,11 +837,11 @@ DKTools.Base = class {
         }
 
         if (DKTools.Utils.isString(y)) { // line number
-            y = this.getLineHeight() * parseFloat(y);
+            y = this.lineHeight() * parseFloat(y);
         }
 
         if (DKTools.Utils.isString(height)) { // number of lines
-            height = this.getLineHeight() * parseFloat(height);
+            height = this.lineHeight() * parseFloat(height);
         }
 
         if (width === 0 || height === 0) {
@@ -1266,16 +903,14 @@ DKTools.Base = class {
      *
      * @param {Number} [options.x] - The X coordinate
      * @param {Number | String} [options.y] - The Y coordinate or line number (String)
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
+     * @param {Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
      * @param {Number} [options.paintOpacity] - Change paint opacity
      * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
      *
      * @param {Number} [options.pos.x] - The X coordinate
      * @param {Number | String} [options.pos.y] - The Y coordinate or line number (String)
      *
-     * @see DKTools.Base.prototype.hasBitmap
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     drawIcon(iconIndex, options = {}) {
         if (!this.hasBitmap() || iconIndex == null) {
@@ -1310,10 +945,10 @@ DKTools.Base = class {
      *
      * @param {Number} [options.x] - The X coordinate
      * @param {Number | String} [options.y] - The Y coordinate or line number (String)
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
+     * @param {Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
      * @param {Number} [options.iconX] - The X coordinate of the icon
      * @param {Number | String} [options.iconY] - The Y coordinate of the icon or line number (String)
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.iconPos] - Position of the icon (ignores other parameters of position: iconX, iconY)
+     * @param {Point | Object} [options.iconPos] - Position of the icon (ignores other parameters of position: iconX, iconY)
      * @param {Number} [options.width] - Width of the item name
      * @param {Number} [options.paintOpacity] - Change paint opacity
      * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
@@ -1324,10 +959,7 @@ DKTools.Base = class {
      * @param {Number} [options.iconPos.x] - The X coordinate
      * @param {Number | String} [options.iconPos.y] - The Y coordinate or line number (String)
      *
-     * @see DKTools.Base.prototype.drawIcon
-     * @see DKTools.Base.prototype.drawText
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     drawItemName(item, options = {}) {
         if (!this.hasBitmap() || !item) {
@@ -1351,7 +983,7 @@ DKTools.Base = class {
         }
 
         if (DKTools.Utils.isString(y)) { // line number
-            y = this.getLineHeight() * parseFloat(y);
+            y = this.lineHeight() * parseFloat(y);
         }
 
         x = x || 0;
@@ -1409,9 +1041,7 @@ DKTools.Base = class {
      * @param {Number} [options.pos2.x] - The X coordinate of start of the line
      * @param {Number | String} [options.pos2.y] - The Y coordinate of start of the line or line number (String)
      *
-     * @see DKTools.Base.prototype.hasBitmap
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     drawLine(options = {}) {
         if (!this.hasBitmap()) {
@@ -1438,11 +1068,11 @@ DKTools.Base = class {
         }
 
         if (DKTools.Utils.isString(y1)) { // line number
-            y1 = this.getLineHeight() * parseFloat(y1);
+            y1 = this.lineHeight() * parseFloat(y1);
         }
 
         if (DKTools.Utils.isString(y2)) { // line number
-            y2 = this.getLineHeight() * parseFloat(y2);
+            y2 = this.lineHeight() * parseFloat(y2);
         }
 
         if (Number.isFinite(paintOpacity)) {
@@ -1467,7 +1097,7 @@ DKTools.Base = class {
      *
      * @param {Object} options - Options for drawing
      *
-     * @param {PIXI.Point[] | PIXI.ObservablePoint[] | Point[] | Object[]} [options.points] - Points or objects with parameters
+     * @param {Point[] | Object[]} [options.points] - Points or objects with parameters
      * @param {String} [options.color] - Line color
      * @param {Number} [options.lineWidth] - Line width
      * @param {Number} [options.paintOpacity] - Change paint opacity
@@ -1476,9 +1106,7 @@ DKTools.Base = class {
      * @param {Number} [options.points[].x] - The X coordinate
      * @param {Number | String} [options.points[].y] - The Y coordinate or line number (String)
      *
-     * @see DKTools.Base.prototype.drawLine
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     drawPolygon(options) {
         if (!this.hasBitmap()) {
@@ -1522,7 +1150,7 @@ DKTools.Base = class {
      * @param {Object} [options.wrap] - Options for text wrap
      * @param {Number} [options.x] - The X coordinate
      * @param {Number | String} [options.y] - The Y coordinate or line number (String)
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position of the text (ignores other parameters of position: x, y)
+     * @param {Point | Object} [options.pos] - Position of the text (ignores other parameters of position: x, y)
      * @param {Number} [options.index] - Index of the text
      * @param {Number} [options.left] - Left padding
      *
@@ -1532,13 +1160,7 @@ DKTools.Base = class {
      * @param {Number} [options.pos.x] - The X coordinate
      * @param {Number | String} [options.pos.y] - The Y coordinate or line number (String)
      *
-     * @see DKTools.Base.prototype.hasBitmap
-     * @see DKTools.Base.prototype.textWrap
-     * @see DKTools.Base.prototype.convertEscapeCharacters
-     * @see DKTools.Base.prototype.calcTextHeight
-     * @see DKTools.Base.prototype.processCharacter
-     *
-     * @returns {Number} Width of the text
+     * @return {Number} Width of the text
      */
     drawTextEx(text, options = {}) {
         if (!this.hasBitmap() || text === '' || text == null) {
@@ -1561,7 +1183,7 @@ DKTools.Base = class {
         }
 
         if (DKTools.Utils.isString(y)) { // line number
-            y = this.getLineHeight() * parseFloat(y);
+            y = this.lineHeight() * parseFloat(y);
         }
 
         x     = _.defaultTo(x, 0);
@@ -1581,218 +1203,16 @@ DKTools.Base = class {
         return textState.width || textState.x - x;
     }
 
-    /**
-     * Draws a window skin background
-     * Returns true if successfully completed
-     *
-     * @since 6.0.0
-     *
-     * @param {Object} [options={}] - Options for drawing
-     *
-     * @param {Number} [options.x] - The X coordinate
-     * @param {Number | String} [options.y] - The Y coordinate or line number (String)
-     * @param {Number} [options.width] - Width of the rectangle
-     * @param {Number | String} [options.height] - Height of the rectangle or number of lines (String)
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
-     * @param {PIXI.Rectangle | Rectangle | Object} [options.rect] - Rectangle for drawing (ignores other parameters of position: x, y, width, height, pos)
-     * @param {Number[]} [options.tone] - Tone of the window skin background
-     * @param {Number} [options.paintOpacity] - Change paint opacity
-     * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
-     *
-     * @param {Number} [options.pos.x] - The X coordinate
-     * @param {Number | String} [options.pos.y] - The Y coordinate or line number (String)
-     *
-     * @param {Number} [options.rect.x] - The X coordinate
-     * @param {Number | String} [options.rect.y] - The Y coordinate or line number (String)
-     * @param {Number} [options.rect.width] - Width of the rectangle
-     * @param {Number | String} [options.rect.height] - Height of the rectangle or number of lines (String)
-     *
-     * @returns {Boolean} Successfully completed
-     */
-    drawWindowskinBack(options = {}) {
-        if (!this.hasBitmap()) {
-            return false;
-        }
-
-        options = options || {};
-
-        const windowskin = ImageManager.loadSystem(this.standardWindowskin());
-
-        if (!windowskin) {
-            return false;
-        }
-
-        const p = 96;
-        const { pos, rect } = options;
-        let { x, y, width, height, tone } = options;
-
-        if (pos instanceof Object) {
-            x = pos.x;
-            y = pos.y;
-        }
-
-        if (rect instanceof Object) {
-            x = rect.x;
-            y = rect.y;
-            width = rect.width;
-            height = rect.height;
-        }
-
-        if (width === 0 || height === 0) {
-            return false;
-        }
-
-        try {
-            tone = tone || $gameSystem.windowTone();
-        } catch (e) { // eslint-disable-line no-empty
-        }
-
-        x = x || 0;
-        y = y || 0;
-        width = width || this.standardDrawingWidth();
-        height = height || this.standardDrawingHeight();
-        tone = tone || [0, 0, 0];
-
-        const temp = new Bitmap(width, height);
-
-        temp.blt(windowskin, 0, 0, p, p, 0, 0, width, height);
-
-        for (let _y = 0; _y < height; _y += p) {
-            for (let _x = 0; _x < width; _x += p) {
-                temp.blt(windowskin, 0, p, p, p, _x, _y, p, p);
-            }
-        }
-
-        temp.adjustTone(...tone);
-
-        return this.drawBitmap(temp, { ...options, source: { width, height }, destination: { x, y } });
-    }
-
-    // E methods
-
-    /**
-     * Enables mouse processing
-     *
-     * @since 9.2.0
-     */
-    enableMouse() {
-        this.enableOption('process-mouse');
-    }
-
-    /**
-     * Turns on the option
-     *
-     * @deprecated 9.2.0
-     * @version 2.0.0
-     *
-     * @param {String} option - Name of the option
-     *
-     * @see DKTools.OptionsManager.prototype.enableOption
-     */
-    enableOption(option) {
-        if (!this.__options__.includes(option)) {
-            this.__options__.push(option);
-        }
-    }
-
-    /**
-     * Turns on the options
-     *
-     * @deprecated 9.2.0
-     * @version 2.0.0
-     *
-     * @param {String[] | ...String} object - Names of the options
-     *
-     * @see DKTools.OptionsManager.prototype.enableOptions
-     */
-    enableOptions(object) {
-        const options = (arguments.length > 1 ? arguments : object);
-
-        _.forEach(options, this.enableOption.bind(this));
-    }
-
     // F methods
 
     /**
      * Fills the bitmap with color
      * Returns true if successfully completed
-     *
      * @param {String} [color] - Color of fill
-     *
-     * @see DKTools.Base.prototype.fillRect
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     fillAll(color) {
         return this.fillRect({ color });
-    }
-
-    /**
-     * Draws an arc and fills it with color
-     * Returns true if successfully completed
-     *
-     * @version 6.0.0
-     *
-     * @param {Object} [options={}] - Options for drawing
-     *
-     * @param {Number} [options.radius] - Radius of the arc
-     * @param {Number} [options.startAngle] - Starting angle
-     * @param {Number} [options.endAngle] - End angle
-     * @param {String} [options.color] - Fill color
-     * @param {Boolean} [options.anticlockwise] - Draws an anticlockwise
-     * @param {Number} [options.x] - The X coordinate
-     * @param {Number | String} [options.y] - The Y coordinate or line number (String)
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position of the arc (ignores other parameters of position: x, y)
-     * @param {Number} [options.paintOpacity] - Change paint opacity
-     * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
-     *
-     * @param {Number} [options.pos.x] - The X coordinate
-     * @param {Number | String} [options.pos.y] - The Y coordinate or line number (String)
-     *
-     * @see DKTools.Base.prototype.hasBitmap
-     * @see DKTools.Utils.Bitmap.fillArc
-     *
-     * @returns {Boolean} Successfully completed
-     */
-    fillArc(options = {}) {
-        if (!this.hasBitmap()) {
-            return false;
-        }
-
-        options = options || {};
-
-        const { pos, radius, color, lineWidth, anticlockwise, paintOpacity, resetPaintOpacity } = options;
-        let { x, y, startAngle, endAngle } = options;
-
-        if (Number.isFinite(startAngle) && Number.isFinite(endAngle) && startAngle === endAngle) {
-            return false;
-        }
-
-        if (pos instanceof Object) {
-            x = pos.x;
-            y = pos.y;
-        }
-
-        if (DKTools.Utils.isString(y)) { // line number
-            y = this.getLineHeight() * parseFloat(y);
-        }
-
-        x = x || 0;
-        y = y || 0;
-        startAngle = startAngle || 0;
-        endAngle = _.defaultTo(endAngle, Math.PI * 2);
-
-        if (Number.isFinite(paintOpacity)) {
-            this.changePaintOpacity(paintOpacity);
-        }
-
-        DKTools.Utils.Bitmap.fillArc(this.bitmap, x, y, radius, startAngle, endAngle, color, anticlockwise);
-
-        if (resetPaintOpacity) {
-            this.resetPaintOpacity();
-        }
-
-        return true;
     }
 
     /**
@@ -1807,8 +1227,8 @@ DKTools.Base = class {
      * @param {Number | String} [options.y] - The Y coordinate or line number (String)
      * @param {Number} [options.width] - Width of the rectangle
      * @param {Number | String} [options.height] - Height of the rectangle or number of lines (String)
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
-     * @param {PIXI.Rectangle | Rectangle | Object} [options.rect] - Rectangle for drawing (ignores other parameters of position: x, y, width, height, pos)
+     * @param {Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
+     * @param {Rectangle | Object} [options.rect] - Rectangle for drawing (ignores other parameters of position: x, y, width, height, pos)
      * @param {String} [options.color] - Fill color
      * @param {Number} [options.paintOpacity] - Change paint opacity
      * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
@@ -1821,11 +1241,7 @@ DKTools.Base = class {
      * @param {Number} [options.rect.width] - Width of the rectangle
      * @param {Number | String} [options.rect.height] - Height of the rectangle or number of lines (String)
      *
-     * @see DKTools.Base.prototype.hasBitmap
-     * @see DKTools.Base.prototype.standardDrawingWidth
-     * @see DKTools.Base.prototype.standardDrawingHeight
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     fillRect(options = {}) {
         if (!this.hasBitmap()) {
@@ -1850,11 +1266,11 @@ DKTools.Base = class {
         }
 
         if (DKTools.Utils.isString(y)) { // line number
-            y = this.getLineHeight() * parseFloat(y);
+            y = this.lineHeight() * parseFloat(y);
         }
 
         if (DKTools.Utils.isString(height)) { // number of lines
-            height = this.getLineHeight() * parseFloat(height);
+            height = this.lineHeight() * parseFloat(height);
         }
 
         if (width === 0 || height === 0) {
@@ -1881,440 +1297,49 @@ DKTools.Base = class {
     }
 
     /**
-     * Returns the found animation
-     *
-     * @deprecated 9.2.0
-     * @since 6.0.0
-     *
-     * @param {Number | String | *} id - ID of the animation
-     * @param {String} [type] - Type of the animation
-     *
-     * @see DKTools.EventsManager.prototype.findAnimation
-     *
-     * @returns {DKTools.Animation | undefined} Animation
-     */
-    findAnimation(id, type) {
-        return this._eventsManager.findAnimation(id, type);
-    }
-
-    /**
-     * Returns the found event
-     *
-     * @deprecated 9.2.0
-     * @since 6.0.0
-     *
-     * @param {Number | String | *} id - ID of the event
-     * @param {String} [type] - Type of the event
-     *
-     * @see DKTools.EventsManager.prototype.findEvent
-     *
-     * @returns {DKTools.Event | DKTools.Animation | undefined} Event
-     */
-    findEvent(id, type) {
-        return this._eventsManager.findEvent(id, type);
-    }
-
-    /**
-     * Finishes the events
-     *
-     * @deprecated 9.2.0
-     * @version 2.0.0
-     *
-     * @param {String} type - Type of the events
-     * @param {Boolean} [forcedSuccess] - Forced success for the finish of the events
-     *
-     * @see DKTools.EventsManager.prototype.finishEvents
-     */
-    finishEvents(type, forcedSuccess = false) {
-        this._eventsManager.finishEvents(type, forcedSuccess);
-    }
-
-    // G methods
-
-    /**
-     * Returns an array with the all animations or animations of a certain type
-     *
-     * @deprecated 9.2.0
-     * @version 2.0.0
-     *
-     * @param {String} [type] - Type of animation
-     *
-     * @see DKTools.EventsManager.prototype.getAnimations
-     *
-     * @returns {Array} Array with the animations
-     */
-    getAnimations(type) {
-        return this._eventsManager.getAnimations(type);
-    }
-
-    /**
-     * Returns a child object by its ID
-     *
-     * @deprecated 9.2.0
-     * @param {Number | String | *} id - ID of an object
-     * @returns {* | undefined} Child object
-     */
-    getChildById(id) {
-        return _.find(this.children, { id });
-    }
-
-    /**
-     * Returns an index of the event in its container
-     *
-     * @deprecated 9.2.0
-     * @version 2.0.0
-     *
-     * @param {DKTools.Event | DKTools.Animation} event - Event
-     *
-     * @see DKTools.EventsManager.prototype.getEventIndex
-     *
-     * @returns {Number} Index of the event in its container
-     */
-    getEventIndex(event) {
-        return this._eventsManager.getEventIndex(event);
-    }
-
-    /**
-     * Returns an array with the all events or events of a certain type
-     *
-     * @deprecated 9.2.0
-     * @version 2.0.0
-     *
-     * @param {String} [type] - Type of the events
-     *
-     * @see DKTools.EventsManager.prototype.getEvents
-     *
-     * @returns {Array} Array with the events
-     */
-    getEvents(type) {
-        return this._eventsManager.getEvents(type);
-    }
-
-    /**
-     * Returns a container for the events by event
-     *
-     * @deprecated 9.2.0
-     * @version 2.0.0
-     *
-     * @param {DKTools.Event | DKTools.Animation} event - Event
-     *
-     * @see DKTools.EventsManager.prototype.getEventsContainer
-     *
-     * @returns {Array} Container for the events
-     */
-    getEventsContainer(event) {
-        return this._eventsManager.getEventsContainer(event);
-    }
-
-    /**
-     * Returns a container for the events by event type
-     *
-     * @deprecated 9.2.0
-     * @version 2.0.0
-     *
-     * @param {String} type - Type of the events
-     *
-     * @see DKTools.EventsManager.prototype.getEventsContainerByType
-     *
-     * @returns {Array} Container for the events
-     */
-    getEventsContainerByType(type) {
-        return this._eventsManager.getEventsContainerByType(type);
-    }
-
-    /**
      * Returns the font height for the line height
-     *
+     * @since 10.0.0
      * @param {Number} [lineHeight] - Line height
-     *
-     * @see DKTools.Base.prototype.getLineHeight
-     * @see DKTools.Base.prototype.hasBitmap
-     *
-     * @returns {Number} Font height for the line height
+     * @return {Number} Font height for the line height
      */
-    getFontHeight(lineHeight) {
+    fontHeight(lineHeight) {
         let fontSize;
 
-        lineHeight = lineHeight || this.getLineHeight();
+        lineHeight = lineHeight || this.lineHeight();
 
         if (this.hasBitmap()) {
             fontSize = this.bitmap.fontSize;
         } else {
-            fontSize = this._font.fontSize;
+            fontSize = this._font.fontSize || this.standardFontSize();
         }
 
         return lineHeight - (lineHeight - fontSize * 0.7) / 2;
     }
 
-    /**
-     * Returns the height of the line
-     *
-     * @returns {Number} Height of the line
-     */
-    getLineHeight() {
-        try {
-            return Window_Base.prototype.lineHeight.call(this);
-        } catch (e) {
-            return 36;
-        }
-    }
-
-    /**
-     * Returns a rectangle of the line
-     *
-     * @version 8.0.0
-     *
-     * @param {Number | String} line - Line number
-     *
-     * @see DKTools.Base.prototype.getLineHeight
-     *
-     * @returns {Rectangle} Rectangle of the line
-     */
-    getLineRect(line) {
-        const lineHeight = this.getLineHeight();
-
-        return new Rectangle(0, lineHeight * parseInt(line), this.width, lineHeight);
-    }
-
-    /**
-     * Returns the maximum of lines
-     *
-     * @version 8.0.0
-     *
-     * @see DKTools.Base.prototype.getLineHeight
-     *
-     * @returns {Number} Maximum of lines
-     */
-    getLines() {
-        return this.height / this.getLineHeight();
-    }
+    // G methods
 
     /**
      * Returns the local point (coordinates inside the object)
      *
+     * @version 10.0.1
      * @since 8.0.0
      *
-     * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - The X coordinate or Point or object with parameters
+     * @param {Number | Point} [object] - The X coordinate or Point
      * @param {Number} [y] - The Y coordinate (if object is Number)
      *
-     * @param {Number} [object.x] - The X coordinate
-     * @param {Number} [object.y] - The Y coordinate
-     *
-     * @see DKTools.Utils.Point.toPoint
-     * @see PIXI.Matrix.applyInverse
-     *
-     * @returns {PIXI.Point} Local point (coordinates inside the object)
+     * @return {PIXI.Point} Local point (coordinates inside the object)
      */
     getLocalPoint(object, y) {
-        const point = DKTools.Utils.Point.toPoint(object, y);
+        const point = arguments.length === 2 ?
+            new Point(object, y) : new Point(object.x, object.y);
 
         return this.worldTransform.applyInverse(point);
     }
 
     /**
-     * Returns the minimum width of the bitmap
-     *
-     * @returns {Number} Minimum width of the bitmap
-     */
-    getMinWidth() {
-        return 0;
-    }
-
-    /**
-     * Returns the minimum height of the bitmap
-     *
-     * @returns {Number} Minimum height of the bitmap
-     */
-    getMinHeight() {
-        return 0;
-    }
-
-    /**
-     * Returns the minimum size of the bitmap
-     *
-     * @returns {{ width: Number, height: Number }} Minimum size of the bitmap
-     */
-    getMinSize() {
-        return { width: this.getMinWidth(), height: this.getMinHeight() };
-    }
-
-    /**
-     * Returns the real center of the object (not including scaling)
-     *
-     * @deprecated 8.0.0
-     * @since 5.0.0
-     *
-     * @see DKTools.Base.prototype.getRealSize
-     *
-     * @returns {Point} Real center of the object (not including scaling)
-     */
-    getRealCenter() {
-        const realSize = this.getRealSize();
-
-        return new Point(realSize.width / 2, realSize.height / 2);
-    }
-
-    /**
-     * Returns the center of the object (taking into account the scaling)
-     *
-     * @deprecated 9.2.0
-     * @since 5.0.0
-     *
-     * @see DKTools.Base.prototype.getSize
-     *
-     * @returns {Point} Center of the object (taking into account the scaling)
-     */
-    getCenter() {
-        const size = this.getSize();
-
-        return new Point(size.width / 2, size.height / 2);
-    }
-
-    /**
-     * Returns the real size of the object (not including scaling)
-     *
-     * @deprecated 8.0.0
-     * @returns {{ width: Number, height: Number }} Real size of the object (not including scaling)
-     */
-    getRealSize() {
-        return { width: this.width, height: this.height };
-    }
-
-    /**
-     * Returns the size of the object (taking into account the scaling)
-     *
-     * @returns {{ width: Number, height: Number }} Size of the object (taking into account the scaling)
-     */
-    getSize() {
-        return { width: this.width, height: this.height };
-    }
-
-    /**
-     * Returns the height of the text
-     *
-     * @param {String | Number} text - Text
-     * @param {Object} [wrap={}] - Wrap options
-     *
-     * @param {Number} [wrap.maxWidth] - Max width of a text line
-     * @param {Number} [wrap.maxLines] - Max lines
-     *
-     * @see DKTools.Base.prototype.getTextLines
-     * @see DKTools.Base.prototype.getLineHeight
-     *
-     * @returns {Number} Height of the text
-     */
-    getTextHeight(text, wrap = {}) {
-        return this.getTextLines(text, wrap) * this.getLineHeight();
-    }
-
-    /**
-     * Returns the height of the text (taking into account the font)
-     *
-     * @since 6.1.0
-     *
-     * @param {String | Number} text - Text
-     * @param {Object} [wrap={}] - Wrap options
-     *
-     * @param {Number} [wrap.maxWidth] - Max width of a text line
-     * @param {Number} [wrap.maxLines] - Max lines
-     *
-     * @see DKTools.Base.prototype.getTextLines
-     * @see DKTools.Base.prototype.getFontHeight
-     *
-     * @returns {Number} Height of the text (taking into account the font)
-     */
-    getTextFontHeight(text, wrap = {}) {
-        return this.getTextLines(text, wrap) * this.getFontHeight();
-    }
-
-    /**
-     * Returns the height of the text (special characters are supported)
-     *
-     * @version 5.0.0
-     *
-     * @param {String} text - Text
-     * @param {Object} [options={}] - Options for drawing
-     *
-     * @param {Object} [options.wrap] - Wrap options
-     *
-     * @param {Number} [options.wrap.maxWidth] - Max width of a text line
-     * @param {Number} [options.wrap.maxLines] - Max lines
-     *
-     * @see DKTools.Base.prototype.textWrap
-     * @see DKTools.Base.prototype.calcTextHeight
-     *
-     * @returns {Number} Height of the text
-     */
-    getTextHeightEx(text, options = {}) {
-        if (options instanceof Object && options.wrap instanceof Object) {
-            text = this.textWrap(text, options.wrap);
-        }
-
-        return this.calcTextHeight({ text, index: 0 }, true);
-    }
-
-    /**
-     * Returns the number of lines of the text
-     *
-     * @param {String | Number} text - Text
-     * @param {Object} [wrap] - Wrap options
-     *
-     * @param {Number} [wrap.maxWidth] - Max width of a text line
-     * @param {Number} [wrap.maxLines] - Max lines
-     *
-     * @see DKTools.Base.prototype.textWrap
-     *
-     * @returns {Number} Number of lines of the text
-     */
-    getTextLines(text, wrap) {
-        if (wrap instanceof Object) {
-            text = this.textWrap(text, wrap);
-        }
-
-        return text.split('\n').length;
-    }
-
-    /**
-     * Returns the width of the text
-     *
-     * @param {String} text - Text
-     * @returns {Number} Width of the text
-     */
-    getTextWidth(text) {
-        if (!this.hasBitmap() || text === '' || text == null) {
-            return 0;
-        }
-
-        return this.bitmap.measureTextWidth(String(text));
-    }
-
-    /**
-     * Returns the width of the text (special characters are supported)
-     *
-     * @param {String} text - Text
-     * @param {Object} [options={}] - Options for drawing
-     *
-     * @see DKTools.Base.prototype.drawTextEx
-     *
-     * @returns {Number} Width of the text
-     */
-    getTextWidthEx(text, options = {}) {
-        try {
-            return this.drawTextEx(text, { ...options, x: -Number.MAX_SAFE_INTEGER, y: -Number.MAX_SAFE_INTEGER });
-        } catch(e) {
-            return 0;
-        }
-    }
-
-    /**
      * Returns the color from the window skin
-     *
      * @param {Number} n - Color number
-     *
-     * @see DKTools.Base.prototype.hasWindowskin
-     * @see DKTools.Base.prototype.standardWindowskin
-     *
-     * @returns {String} Color from the window skin
+     * @return {String} Color from the window skin
      */
     getWindowskinTextColor(n) {
         const px = 96 + (n % 8) * 12 + 6;
@@ -2323,25 +1348,20 @@ DKTools.Base = class {
         if (this.hasWindowskin()) {
             return this.windowskin.getPixel(px, py);
         } else {
-            const windowskin = ImageManager.loadSystem(this.standardWindowskin());
+            this._windowskin = ImageManager.loadSystem(this.standardWindowskin());
 
-            return windowskin.getPixel(px, py);
+            return this.windowskin.getPixel(px, py);
         }
     }
 
     /**
      * Fills the bitmap with gradient
      * Returns true if successfully completed
-     *
      * @version 6.0.0
-     *
      * @param {String} [color1='black'] - First color
      * @param {String} [color2='white'] - Second color
      * @param {Boolean} [vertical=false] - Vertical gradient
-     *
-     * @see DKTools.Base.prototype.gradientFillRect
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     gradientFillAll(color1 = 'black', color2 = 'white', vertical = false) {
         return this.gradientFillRect({ color1, color2, vertical });
@@ -2362,20 +1382,11 @@ DKTools.Base = class {
      * @param {Number | String} [options.y] - The Y coordinate or line number (String)
      * @param {Number} [options.width] - Width of the rectangle
      * @param {Number | String} [options.height] - Height of the rectangle or number of lines (String)
-     * @param {PIXI.Rectangle | Rectangle | Object} [options.rect] - Rectangle for drawing (ignores other parameters of position: x, y, width, height)
+     * @param {Rectangle} [options.rect] - Rectangle for drawing (ignores other parameters of position: x, y, width, height)
      * @param {Number} [options.paintOpacity] - Change paint opacity
      * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
      *
-     * @param {Number} [options.rect.x] - The X coordinate
-     * @param {Number | String} [options.rect.y] - The Y coordinate or line number (String)
-     * @param {Number} [options.rect.width] - Width of the rectangle
-     * @param {Number | String} [options.rect.height] - Height of the rectangle or number of lines (String)
-     *
-     * @see DKTools.Base.prototype.hasBitmap
-     * @see DKTools.Base.prototype.standardDrawingWidth
-     * @see DKTools.Base.prototype.standardDrawingHeight
-     *
-     * @returns {Boolean} Successfully completed
+     * @return {Boolean} Successfully completed
      */
     gradientFillRect(options = {}) {
         if (!this.hasBitmap()) {
@@ -2395,11 +1406,11 @@ DKTools.Base = class {
         }
 
         if (DKTools.Utils.isString(y)) { // line number
-            y = this.getLineHeight() * parseFloat(y);
+            y = this.lineHeight() * parseFloat(y);
         }
 
         if (DKTools.Utils.isString(height)) { // number of lines
-            height = this.getLineHeight() * parseFloat(height);
+            height = this.lineHeight() * parseFloat(height);
         }
 
         if (width === 0 || height === 0) {
@@ -2429,97 +1440,17 @@ DKTools.Base = class {
     // H methods
 
     /**
-     * Checks for existence of the animation in the object
-     * Returns true if the animation exists
-     *
-     * @deprecated 9.2.0
-     * @version 2.0.0
-     *
-     * @param {DKTools.Animation} animation - Animation
-     *
-     * @see DKTools.EventsManager.prototype.hasAnimation
-     *
-     * @returns {Boolean} Animation exists
-     */
-    hasAnimation(animation) {
-        return this._eventsManager.hasAnimation(animation);
-    }
-
-    /**
-     * Checks for existence of the animations of a certain type
-     * Returns true if the animations exists
-     *
-     * @deprecated 9.2.0
-     * @version 2.0.0
-     *
-     * @param {String} [type] - Type of the animations
-     *
-     * @see DKTools.EventsManager.prototype.hasAnimations
-     *
-     * @returns {Boolean} Animations exists
-     */
-    hasAnimations(type) {
-        return this._eventsManager.hasAnimations(type);
-    }
-
-    /**
      * Returns true if the object has the bitmap
-     *
-     * @returns {Boolean} Object has the bitmap
+     * @return {Boolean} Object has the bitmap
      */
     hasBitmap() {
         return !!this.bitmap;
     }
 
     /**
-     * Checks for existence of the event in the object
-     * Returns true if the event exists
-     *
-     * @deprecated 9.0.0
-     * @version 2.0.0
-     *
-     * @param {DKTools.Event | DKTools.Animation} event - Event
-     *
-     * @see DKTools.EventsManager.prototype.hasEvent
-     *
-     * @returns {Boolean} Event exists
-     */
-    hasEvent(event) {
-        return this._eventsManager.hasEvent(event);
-    }
-
-    /**
-     * Checks for existence of the events of a certain type
-     * Returns true if the events exists
-     *
-     * @deprecated 9.0.0
-     * @version 2.0.0
-     *
-     * @param {String} [type] - Type of the Events
-     *
-     * @see DKTools.EventsManager.prototype.hasEvents
-     *
-     * @returns {Boolean} Events exists
-     */
-    hasEvents(type) {
-        return this._eventsManager.hasEvents(type);
-    }
-
-    /**
-     * Returns true if the object has the mask
-     *
-     * @returns {Boolean} Object has the mask
-     */
-    hasMask() {
-        return !!this.mask;
-    }
-
-    /**
      * Returns true if the object has a parent
-     *
      * @since 5.0.0
-     *
-     * @returns {Boolean} Object has a parent
+     * @return {Boolean} Object has a parent
      */
     hasParent() {
         return !!this.parent;
@@ -2527,8 +1458,7 @@ DKTools.Base = class {
 
     /**
      * Returns true if the object has the window skin
-     *
-     * @returns {Boolean} Object has the window skin
+     * @return {Boolean} Object has the window skin
      */
     hasWindowskin() {
         return !!this.windowskin;
@@ -2536,14 +1466,8 @@ DKTools.Base = class {
 
     /**
      * Hides the object
-     *
      * @version 3.0.0
-     *
      * @param {Boolean} [blockDeactivate=false] - Blocking deactivates of the object
-     *
-     * @see DKTools.Base.prototype.setVisible
-     * @see DKTools.Base.prototype.updateHideEvents
-     * @see DKTools.Base.prototype.deactivate
      */
     hide(blockDeactivate = false) {
         if (this.setVisible(false)) {
@@ -2559,8 +1483,7 @@ DKTools.Base = class {
 
     /**
      * Returns true if the object is active
-     *
-     * @returns {Boolean} Object is active
+     * @return {Boolean} Object is active
      */
     isActive() {
         let node = this;
@@ -2578,88 +1501,39 @@ DKTools.Base = class {
 
     /**
      * Returns true if the object is busy
-     *
-     * @see DKTools.Base.prototype.isReady
-     *
-     * @returns {Boolean} Object is busy
+     * @return {Boolean} Object is busy
      */
     isBusy() {
         return !this.isReady();
     }
 
     /**
-     * Returns true if the object is based on DKTools.Sprite.Button
-     *
-     * @returns {Boolean} Object is based on DKTools.Sprite.Button
-     */
-    isButton() {
-        return this instanceof DKTools.Sprite.Button;
-    }
-
-    /**
      * Returns true if the object has a parent (if parameter is null or undefined)
      * Returns true if the object (parameter) is child of this object
-     *
-     * @version 2.0.0
-     *
+     * @version 10.0.0
      * @param {Sprite | Window} [object] - Object
-     *
-     * @see DKTools.Base.prototype.hasParent
-     *
-     * @returns {Boolean} Object (parameter) is child of this object or object has a parent (if parameter is null or undefined)
+     * @return {Boolean} Object (parameter) is child of this object or object has a parent (if parameter is null or undefined)
      */
     isChild(object) {
-        return object ? DKTools.Utils.Array.contains(this.children, object) : this.hasParent();
-    }
-
-    /**
-     * Returns true if the object is based on DKTools.Sprite.Cursor
-     *
-     * @returns {Boolean} Object is based on DKTools.Sprite.Cursor
-     */
-    isCursor() {
-        return this instanceof DKTools.Sprite.Cursor;
+        return object ?
+            this.children.includes(object) : this.hasParent();
     }
 
     /**
      * Returns true if the object was destroyed
-     *
      * @since 8.0.0
-     *
-     * @returns {Boolean} Object was destroyed
+     * @return {Boolean} Object was destroyed
      */
     isDestroyed() {
         return this._destroyed;
     }
 
     /**
-     * Checks the events for pause
-     * Returns the conjunction of pauses of the events
-     *
-     * @deprecated 9.0.0
-     * @version 2.0.0
-     *
-     * @param {String} type - Type of the events
-     *
-     * @see DKTools.EventsManager.prototype.isEventsPaused
-     *
-     * @returns {Boolean} Conjunction of pauses of the events
-     */
-    isEventsPaused(type) {
-        return this._eventsManager.isEventsPaused(type);
-    }
-
-    /**
      * Returns true if the coordinates is inside the object
-     *
      * @version 8.0.0
-     *
      * @param {Number} x - The X coordinate
      * @param {Number} y - The Y coordinate
-     *
-     * @see DKTools.Base.prototype.getLocalPoint
-     *
-     * @returns {Boolean} Coordinates is inside the object
+     * @return {Boolean} Coordinates is inside the object
      */
     isInside(x, y) {
         const point = this.getLocalPoint(x, y);
@@ -2686,95 +1560,18 @@ DKTools.Base = class {
     }
 
     /**
-     * Returns true if the object is based on DKTools.Layout
-     *
-     * @deprecated 9.2.0
-     * @returns {Boolean} Object is based on DKTools.Layout
-     */
-    isLayout() {
-        return this instanceof DKTools.Layout;
-    }
-
-    /**
      * Returns true if the mouse is inside the object
-     *
-     * @see DKTools.Base.prototype.isInside
-     *
-     * @returns {Boolean} Mouse is inside the object
+     * @return {Boolean} Mouse is inside the object
      */
     isMouseInside() {
         return this.isInside(TouchInput.mouseX, TouchInput.mouseY);
     }
 
     /**
-     * Returns true if the option is disabled
-     *
-     * @deprecated 9.0.0
-     * @version 9.2.0
-     *
-     * @param {String} option - Name of the option
-     *
-     * @returns {Boolean} Option is disabled
-     */
-    isOptionDisabled(option) {
-        return !this.__options__.includes(option);
-    }
-
-    /**
-     * Returns true if the option is enabled
-     *
-     * @deprecated 9.0.0
-     * @version 9.2.0
-     *
-     * @param {String} option - Name of the option
-     *
-     * @returns {Boolean} Option is enabled
-     */
-    isOptionEnabled(option) {
-        return this.__options__.includes(option);
-    }
-
-    /**
-     * Returns conjunction of the options
-     *
-     * @deprecated 9.0.0
-     * @version 9.2.0
-     *
-     * @param {String[] | ...String} object - Names of the options
-     *
-     * @returns {Boolean} Conjunction of the options
-     */
-    isOptionsDisabled(object) {
-        const options = (arguments.length > 1 ? arguments : object);
-
-        return _.every(options, this.isOptionDisabled.bind(this));
-    }
-
-    /**
-     * Returns conjunction of the options
-     *
-     * @deprecated 9.0.0
-     * @version 9.2.0
-     *
-     * @param {String[] | ...String} object - Names of the options
-     *
-     * @returns {Boolean} Conjunction of the options
-     */
-    isOptionsEnabled(object) {
-        const options = (arguments.length > 1 ? arguments : object);
-
-        return _.every(options, this.isOptionEnabled.bind(this));
-    }
-
-    /**
      * Returns true if the coordinates is not inside the object
-     *
      * @param {Number} x - The X coordinate
      * @param {Number} y - The Y coordinate
-     *
-     * @see DKTools.Base.prototype.isInside
-     *
-     * @returns {Boolean} Coordinates are not inside the object
+     * @return {Boolean} Coordinates are not inside the object
      */
     isOutside(x, y) {
         return !this.isInside(x, y);
@@ -2782,10 +1579,9 @@ DKTools.Base = class {
 
     /**
      * Returns true if the object (parameter) is parent of this object
-     *
      * @since 2.0.0
      * @param {Sprite | Window} object - Object
-     * @returns {Boolean} Object (parameter) is parent of this object
+     * @return {Boolean} Object (parameter) is parent of this object
      */
     isParent(object) {
         return !!object && this.parent === object;
@@ -2793,117 +1589,32 @@ DKTools.Base = class {
 
     /**
      * Returns true if the bitmap is ready
-     *
-     * @see DKTools.Base.prototype.hasBitmap
-     *
-     * @returns {Boolean} Bitmap is ready
+     * @return {Boolean} Bitmap is ready
      */
     isReady() {
         return this.hasBitmap() && this.bitmap.isReady();
     }
 
     /**
-     * Returns true if the object is based on DKTools.Sprite.Selectable or DKTools.Window.Selectable
-     *
-     * @returns {Boolean} Object is based on DKTools.Sprite.Selectable or DKTools.Window.Selectable
-     */
-    isSelectable() {
-        return this instanceof DKTools.Sprite.Selectable || this instanceof DKTools.Window.Selectable;
-    }
-
-    /**
-     * Returns true if some option is enabled
-     *
-     * @deprecated 9.0.0
-     * @version 9.2.0
-     * @since 2.0.0
-     *
-     * @returns {Boolean} Some option is enabled
-     */
-    isSomeOptionEnabled() {
-        return this.__options__.length > 0;
-    }
-
-    /**
-     * Returns disjunction of the options
-     *
-     * @deprecated 9.0.0
-     * @version 9.2.0
-     * @since 2.0.0
-     *
-     * @param {String[] | ...String} object - Names of the options
-     *
-     * @see DKTools.OptionsManager.prototype.isSomeOptionsDisabled
-     *
-     * @returns {Boolean} Disjunction of the options
-     */
-    isSomeOptionsDisabled(object) {
-        const options = (arguments.length > 1 ? arguments : object);
-
-        return _.some(options, this.isOptionDisabled.bind(this));
-    }
-
-    /**
-     * Returns disjunction of the options
-     *
-     * @deprecated 9.0.0
-     * @version 9.2.0
-     * @since 2.0.0
-     *
-     * @param {String[] | ...String} object - Names of the options
-     *
-     * @returns {Boolean} Disjunction of the options
-     */
-    isSomeOptionsEnabled(object) {
-        const options = (arguments.length > 1 ? arguments : object);
-
-        return _.some(options, this.isOptionEnabled.bind(this));
-    }
-
-    /**
-     * Returns true if the object is based on DKTools.Sprite
-     *
-     * @returns {Boolean} Object is based on DKTools.Sprite
-     */
-    isSprite() {
-        return this instanceof DKTools.Sprite;
-    }
-
-    /**
      * Returns true if the object is started
-     *
-     * @returns {Boolean} Object is started
+     * @return {Boolean} Object is started
      */
     isStarted() {
-        return this._started;
+        return this._started || false;
     }
 
     /**
      * Returns true if the touch is inside the object
-     *
-     * @see DKTools.Base.prototype.isInside
-     *
-     * @returns {Boolean} Touch is inside the object
+     * @return {Boolean} Touch is inside the object
      */
     isTouchInside() {
-        return this.isInside(TouchInput.x, TouchInput.y);
-    }
-
-    /**
-     * Returns true if the object is based on DKTools.Viewport
-     *
-     * @deprecated 9.2.0
-     * @returns {Boolean} Object is based on DKTools.Viewport
-     */
-    isViewport() {
-        return this instanceof DKTools.Viewport;
+        return TouchInput.isScreenPressed() && this.isInside(TouchInput.x, TouchInput.y);
     }
 
     /**
      * Returns true if the object is visible
-     *
      * @version 2.0.0
-     * @returns {Boolean} Object is visible
+     * @return {Boolean} Object is visible
      */
     isVisible() {
         return this.visible;
@@ -2911,47 +1622,10 @@ DKTools.Base = class {
 
     /**
      * Returns true if the object is visible and active
-     *
-     * @see DKTools.Base.prototype.isVisible
-     * @see DKTools.Base.prototype.isActive
-     *
-     * @returns {Boolean} Object is visible and active
+     * @return {Boolean} Object is visible and active
      */
     isVisibleAndActive() {
         return this.isVisible() && this.isActive();
-    }
-
-    /**
-     * Returns true if the object is based on DKTools.Window
-     *
-     * @returns {Boolean} Object is based on DKTools.Window
-     */
-    isWindow() {
-        return this instanceof DKTools.Window;
-    }
-
-    /**
-     * Calls the callback function for the child objects
-     *
-     * @param {Function} callback - Function for the child objects
-     */
-    iterateChildren(callback) {
-        this.children.forEach(callback);
-    }
-
-    /**
-     * Performs a callback function for the events
-     *
-     * @deprecated 9.2.0
-     * @version 2.0.0
-     *
-     * @param {String} type - Type of the events
-     * @param {Function} callback - Event processing function
-     *
-     * @see DKTools.EventsManager.prototype.iterateEventsContainer
-     */
-    iterateEventsContainer(type, callback) {
-        this._eventsManager.iterateEventsContainer(type, callback);
     }
 
     // M methods
@@ -2960,8 +1634,8 @@ DKTools.Base = class {
      * Makes the font size bigger
      */
     makeFontBigger() {
-        if (this.hasBitmap() && this.bitmap.fontSize <= 96) {
-            this.bitmap.fontSize += 12;
+        if (this.hasBitmap()) {
+            Window_Base.prototype.makeFontBigger.apply(this, arguments);
         }
     }
 
@@ -2969,126 +1643,80 @@ DKTools.Base = class {
      * Makes the font size smaller
      */
     makeFontSmaller() {
-        if (this.hasBitmap() && this.bitmap.fontSize >= 24) {
-            this.bitmap.fontSize -= 12;
+        if (this.hasBitmap()) {
+            Window_Base.prototype.makeFontSmaller.apply(this, arguments);
         }
     }
 
     /**
      * Moves the object
-     *
-     * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - The X coordinate or Point or object with parameters
-     * @param {Number | String} [y] - The Y coordinate or line number (String) (if object is Number)
-     *
-     * @param {Number} [object.x] - The X coordinate
-     * @param {Number | String} [object.y] - The Y coordinate or line number (String)
-     *
-     * @example
-     * const pos = new Point(100, 100);
-     * const sprite = new DKTools.Sprite();
-     *
-     * sprite.move(pos);
-     *
+     * @version 10.0.0
+     * @param {Number} [x] - The X coordinate
+     * @param {Number | String} [y] - The Y coordinate or line number (String)
      * @example
      * const sprite = new DKTools.Sprite();
-     *
      * sprite.move(100, 100);
-     *
      * @example
      * const sprite = new DKTools.Sprite();
-     *
      * sprite.move(100, '2');
-     *
-     * @see DKTools.Base.prototype.getLineHeight
-     * @see DKTools.Utils.isString
-     * @see DKTools.Utils.Point.toPoint
      */
-    move(object, y) {
-        if (object instanceof Object) {
-            y = object.y;
-        }
-
+    move(x, y) {
         if (DKTools.Utils.isString(y)) { // line number
-            y = this.getLineHeight() * parseFloat(y);
+            y = this.lineHeight() * parseFloat(y);
         }
 
-        const point = DKTools.Utils.Point.toPoint(object, y);
-
-        this.position.copy(point);
+        this.position.set(x || 0, y || 0);
     }
 
     // O methods
 
     /**
      * @param {Object} textState
+     * @return {String}
      */
     obtainEscapeCode(textState) {
-        return Window_Base.prototype.obtainEscapeCode.call(this, textState);
+        return Window_Base.prototype.obtainEscapeCode.apply(this, arguments);
     }
 
     /**
      * @param {Object} textState
+     * @return {Number | String}
      */
     obtainEscapeParam(textState) {
-        return Window_Base.prototype.obtainEscapeParam.call(this, textState);
+        return Window_Base.prototype.obtainEscapeParam.apply(this, arguments);
     }
 
     // P methods
 
     /**
      * Returns the name of the actor
-     *
      * @param {Number} n - Number of the actor in the party
-     * @returns {String} Name of the actor
+     * @return {String | null} Name of the actor
      */
     partyMemberName(n) {
-        const actor = n >= 1 ? $gameParty.members()[n - 1] : null;
-
-        return actor ? actor.name() : '';
-    }
-
-    /**
-     * Pauses the events
-     *
-     * @version 2.0.0
-     *
-     * @param {String} type - Type of the events
-     * @param {Number} duration - Duration of pause
-     *
-     * @see DKTools.EventsManager.prototype.pauseEvents
-     */
-    pauseEvents(type, duration) {
-        this._eventsManager.pauseEvents(type, duration);
+        return Window_Base.prototype.partyMemberName.apply(this, arguments);
     }
 
     /**
      * Processes all
-     *
      * @version 9.1.0
-     *
-     * @see DKTools.Base.prototype.processMouse
-     * @see DKTools.Base.prototype.processWheel
      */
     processAll() {
         if (!Utils.isMobileDevice()) {
-            this.processMouse();
-            this.processWheel();
+            this.processMouseEvents();
+            this.processWheelEvents();
         }
     }
 
     /**
-     * @param {Object} textState - Text state
-     *
-     * @param {String} textState.text - Text
-     * @param {Number} textState.index - Index
+     * @param {Object} textState
      */
     processCharacter(textState) {
-        Window_Base.prototype.processCharacter.call(this, textState);
+        return Window_Base.prototype.processCharacter.apply(this, arguments);
     }
 
     /**
      * @version 8.1.0
-     *
      * @param {Number} iconIndex
      * @param {Object} textState
      */
@@ -3100,7 +1728,6 @@ DKTools.Base = class {
 
     /**
      * @version 8.2.0
-     *
      * @param {String} code
      * @param {Object} textState
      */
@@ -3131,43 +1758,39 @@ DKTools.Base = class {
 
     /**
      * Processes a mouse
-     *
+     * @version 10.0.0
      * @since 2.0.0
      */
-    processMouse() {
-        if (this.isOptionEnabled('process-mouse') && this.isVisible() &&
-            (this.isActive() || this.isOptionEnabled('process-mouse-ignore-active'))) {
-                if (this.isMouseInside()) {
-                    if (this._mouseEnterTime === 0) {
-                        this.updateMouseEnterEvents();
-                    }
-
-                    this.updateMouseInsideEvents();
-
-                    if (TouchInput.isMouseMoved()) {
-                        this.updateMouseMoveEvents();
-                    }
-
-                    this._mouseEnterTime++;
-                } else {
-                    if (this._mouseEnterTime > 0) {
-                        this.updateMouseLeaveEvents();
-                    }
-
-                    this.updateMouseOutsideEvents();
-
-                    this._clearMouseEnterTime();
+    processMouseEvents() {
+        if (this.isVisibleAndActive()) {
+            if (this.isMouseInside()) {
+                if (this._mouseEnterTime === 0) {
+                    this.updateMouseEnterEvents();
                 }
+
+                this.updateMouseInsideEvents();
+
+                if (TouchInput.isMoved()) {
+                    this.updateMouseMoveEvents();
+                }
+
+                this._mouseEnterTime++;
+            } else {
+                if (this._mouseEnterTime > 0) {
+                    this.updateMouseLeaveEvents();
+                }
+
+                this.updateMouseOutsideEvents();
+
+                this._mouseEnterTime = 0;
+            }
         } else {
-            this._clearMouseEnterTime();
+            this._mouseEnterTime = 0;
         }
     }
 
     /**
      * @param {Object} textState
-     *
-     * @param {Number} [textState.width] - Width
-     * @param {Number} textState.x - The X coordinate
      */
     processNewLine(textState) {
         if (!textState.width) {
@@ -3176,28 +1799,22 @@ DKTools.Base = class {
             textState.width = textState.x;
         }
 
-        Window_Base.prototype.processNewLine.call(this, textState);
+        return Window_Base.prototype.processNewLine.call(this, textState);
     }
 
     /**
      * @param {Object} textState
      */
     processNewPage(textState) {
-        Window_Base.prototype.processNewPage.call(this, textState);
+        Window_Base.prototype.processNewPage.apply(this, arguments);
     }
 
     /**
      * @param {Object} textState - Text state
-     *
-     * @param {String} textState.text - Text
-     * @param {Number} textState.index - Index
-     * @param {Number} textState.x - The X coordinate
-     * @param {Number} textState.y - The Y coordinate
-     * @param {Number} textState.height - Height
      */
     processNormalCharacter(textState) {
         const c = textState.text[textState.index++];
-        const w = this.getTextWidth(c);
+        const w = this.textWidth(c);
 
         this.drawText(c, {
             align: 'left',
@@ -3211,10 +1828,9 @@ DKTools.Base = class {
 
     /**
      * Processes a wheel
-     *
      * @since 2.0.0
      */
-    processWheel() {
+    processWheelEvents() {
         this._wheelX = TouchInput.wheelX;
         this._wheelY = TouchInput.wheelY;
 
@@ -3241,20 +1857,17 @@ DKTools.Base = class {
 
     /**
      * Redraws all
+     * @version 10.0.0
      */
     redrawAll() {
-        // to be overridden by plugins
+        this.clear();
+        this.drawAll();
+        this.updateRedrawAllEvents();
     }
 
     /**
      * Updates and redraws all
-     *
      * @version 1.1.0
-     *
-     * @see DKTools.Base.prototype.updateAll
-     * @see DKTools.Base.prototype.canRedrawAll
-     * @see DKTools.Base.prototype.redrawAll
-     * @see DKTools.Base.prototype.updateRefreshAllEvents
      */
     refreshAll() {
         this.updateAll();
@@ -3268,38 +1881,18 @@ DKTools.Base = class {
 
     /**
      * Removes all
-     *
      * @version 2.0.0
-     *
-     * @see DKTools.Base.prototype.updateRemoveAllEvents
      */
     removeAll() {
         this.updateRemoveAllEvents();
     }
 
     /**
-     * Removes children objects from processing
-     *
-     * @version 2.0.0
-     *
-     * @see DKTools.Base.prototype.updateRemoveAllChildrenEvents
-     */
-    removeAllChildren() {
-        this.updateRemoveAllChildrenEvents();
-    }
-
-    /**
      * Removes the event from a container
      * Returns true if the event was removed
-     *
-     * @deprecated 9.2.0
      * @version 2.0.0
-     *
      * @param {DKTools.Event | DKTools.Animation} event - Event
-     *
-     * @see DKTools.EventsManager.prototype.removeEvent
-     *
-     * @returns {Boolean} Event was removed
+     * @return {Boolean} Event was removed
      */
     removeEvent(event) {
         return this._eventsManager.removeEvent(event);
@@ -3307,9 +1900,6 @@ DKTools.Base = class {
 
     /**
      * Removes the filter
-     *
-     * @since 6.2.0
-     *
      * @param {*} filter - Filter
      */
     removeFilter(filter) {
@@ -3317,9 +1907,13 @@ DKTools.Base = class {
             return;
         }
 
-        DKTools.Utils.Array.remove(this.filters, filter);
+        const filters = this.filters;
 
-        if (this.filters.length === 0) {
+        _.pull(filters, filter);
+
+        if (filters.length > 0) {
+            this.filters = filters;
+        } else if (filters.length === 0) {
             this.filters = null;
         }
     }
@@ -3327,12 +1921,8 @@ DKTools.Base = class {
     /**
      * Removes the object from the parent object, if possible
      * Returns true if the deletion was successful
-     *
      * @since 5.0.0
-     *
-     * @see DKTools.Base.prototype.hasParent
-     *
-     * @returns {Boolean} Deletion was successful
+     * @return {Boolean} Deletion was successful
      */
     removeFromParent() {
         if (this.hasParent()) {
@@ -3345,89 +1935,46 @@ DKTools.Base = class {
     }
 
     /**
-     * Removes the mask
+     * Changes the width and height of the object
+     * Returns true if the change occurred
+     * @since 10.0.0
+     * @param {Number} width - Width of the object
+     * @param {Number | String} height - Height of the object or number of lines (String)
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     * @return {Boolean} Change occurred
      */
-    removeMask() {
-        this.mask = null;
-    }
+    resize(width, height, blockStart = false) {
+        if (DKTools.Utils.isString(height)) { // number of lines
+            height = this.lineHeight() * parseFloat(height);
+        }
 
-    /**
-     * Removes the listener of change of the option
-     *
-     * @deprecated 9.0.0
-     * @version 9.2.0
-     * @since 2.0.0
-     *
-     * @param {String} option - Name of the option
-     * @param {Function} listener - Listener
-     *
-     * @see DKTools.OptionsManager.prototype.removeOptionChangeListener
-     */
-    removeOptionChangeListener(option, listener) {}
+        if (this.width === width && this.height === height) {
+            return false;
+        }
 
-    /**
-     * Resumes the events
-     *
-     * @deprecated 9.0.0
-     * @version 2.0.0
-     *
-     * @param {String} type - Type of the events
-     *
-     * @see DKTools.EventsManager.prototype.resumeEvents
-     */
-    resumeEvents(type) {
-        this._eventsManager.resumeEvents(type);
+        const lastWidth = this.width;
+        const lastHeight = this.height;
+
+        this.setupSize(width, height);
+
+        if (this.width === lastWidth && this.height === lastHeight) {
+            return false;
+        }
+
+        if (!blockStart) {
+            this.start();
+        }
+
+        return true;
     }
 
     // S methods
 
-    /**
-     * Sets all data
-     *
-     * @private
-     *
-     * @see DKTools.Base.prototype._setupOptions
-     * @see DKTools.Base.prototype._setupEvents
-     * @see DKTools.Base.prototype._setupAnimations
-     */
-    _setupAll() {
-        this._setupOptions();
-        this._setupEvents();
-        this._setupAnimations();
-    }
-
-    /**
-     * Sets the animations
-     *
-     * @private
-     */
-    _setupAnimations() {
-        // to be overridden by plugins
-    }
-
-    /**
-     * Sets the events
-     *
-     * @private
-     */
-    _setupEvents() {
-        // to be overridden by plugins
-    }
-
-    /**
-     * Sets the options
-     *
-     * @deprecated 9.2.0
-     * @private
-     */
-    _setupOptions() {
-        // to be overridden by plugins
-    }
+    // standard methods
 
     /**
      * Returns the standard activity of the object
-     *
-     * @returns {Boolean} Standard activity of the object
+     * @return {Boolean} Standard activity of the object
      */
     standardActive() {
         return true;
@@ -3435,10 +1982,8 @@ DKTools.Base = class {
 
     /**
      * Returns the standard width of the drawing
-     *
      * @version 8.0.0
-     *
-     * @returns {Number | null} Standard width of the drawing or null
+     * @return {Number} Standard width of the drawing or null
      */
     standardDrawingWidth() {
         if (this.hasBitmap()) {
@@ -3449,32 +1994,38 @@ DKTools.Base = class {
             return this.width;
         }
 
-        return null;
+        return 0;
     }
 
     /**
      * Returns the standard height of the drawing
-     *
      * @version 8.0.0
-     *
-     * @returns {Number | null} Standard height of the drawing or null
+     * @return {Number} Standard height of the drawing or null
      */
     standardDrawingHeight() {
         if (this.hasBitmap()) {
             return this.bitmap.height;
-        } else if (this.isSprite()) {
+        } else if (this instanceof DKTools.Sprite) {
             return this._bitmapHeight;
-        } else if (this.isWindow()) {
+        } else if (this instanceof DKTools.Window) {
             return this.height;
         }
 
-        return null;
+        return 0;
+    }
+
+    /**
+     * Returns the standard opacity of the object
+     * @since 10.0.0
+     * @return {Number} Standard opacity of the object
+     */
+    standardOpacity() {
+        return 255;
     }
 
     /**
      * Returns the standard pivot of the object
-     *
-     * @returns {Point} Standard pivot of the object
+     * @return {Point} Standard pivot of the object
      */
     standardPivot() {
         return new Point(0, 0);
@@ -3482,8 +2033,7 @@ DKTools.Base = class {
 
     /**
      * Returns the standard rotation of the object
-     *
-     * @returns {Number} Standard rotation of the object
+     * @return {Number} Standard rotation of the object
      */
     standardRotation() {
         return 0;
@@ -3491,8 +2041,7 @@ DKTools.Base = class {
 
     /**
      * Returns the standard scale of the object
-     *
-     * @returns {Point} Standard scale of the object
+     * @return {Point} Standard scale of the object
      */
     standardScale() {
         return new Point(1, 1);
@@ -3500,26 +2049,15 @@ DKTools.Base = class {
 
     /**
      * Returns the standard skew of the object
-     *
-     * @returns {Point} Standard skew of the object
+     * @return {Point} Standard skew of the object
      */
     standardSkew() {
         return new Point(0, 0);
     }
 
     /**
-     * Returns the standard tint of the object
-     *
-     * @returns {Number} Standard tint of the object
-     */
-    standardTint() {
-        return 0xFFFFFF;
-    }
-
-    /**
      * Returns the standard visibility of the object
-     *
-     * @returns {Boolean} Standard visibility of the object
+     * @return {Boolean} Standard visibility of the object
      */
     standardVisible() {
         return true;
@@ -3527,52 +2065,41 @@ DKTools.Base = class {
 
     /**
      * Returns the standard window skin
-     *
-     * @returns {String} Standard window skin
+     * @return {String} Standard window skin
      */
     standardWindowskin() {
         return 'Window';
     }
 
+    // setup methods
+
     /**
      * Sets all parameters
-     *
+     * @version 10.0.1
      * @param {Object} [object={}] - Parameters
      *
-     * @param {Number} [object.id] - The object ID
      * @param {Boolean} [object.visible] - Visibility of the object
      * @param {Boolean} [object.active] - Activity of the object
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.scale] - Scale of the object
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.pivot] - Pivot of the object
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.skew] - Skew of the object
+     * @param {Point | Object} [object.scale] - Scale of the object
+     * @param {Point | Object} [object.pivot] - Pivot of the object
+     * @param {Point | Object} [object.skew] - Skew of the object
      * @param {Number} [object.rotation] - Rotation of the object
-     * @param {Number} [object.tint] - Tint of the object
-     *
-     * @param {Number} [object.scale.x] - Scale of the object on X axis
-     * @param {Number} [object.scale.y] - Scale of the object on Y axis
-     *
-     * @param {Number} [object.pivot.x] - Pivot of the object on X axis
-     * @param {Number} [object.pivot.y] - Pivot of the object on Y axis
-     *
-     * @param {Number} [object.skew.x] - Skew of the object on X axis
-     * @param {Number} [object.skew.y] - Skew of the object on Y axis
+     * @param {Number} [object.opacity] - Opacity of the object
      */
     setupAll(object = {}) {
         object = object || {};
 
-        this.setupId(object.id);
         this.setupActive(object.active);
         this.setupVisible(object.visible);
         this.setupScale(object.scale);
         this.setupPivot(object.pivot);
         this.setupSkew(object.skew);
         this.setupRotation(object.rotation);
-        this.setupTint(object.tint);
+        this.setupOpacity(object.opacity);
     }
 
     /**
      * Sets the activity of the object
-     *
      * @param {Boolean} [active] - Activity of the object
      */
     setupActive(active) {
@@ -3583,41 +2110,27 @@ DKTools.Base = class {
     }
 
     /**
-     * Sets the object ID
-     *
-     * @param {Number | String | null} [id] - The object ID
-     */
-    setupId(id) {
-        /**
-         * @private
-         * @readonly
-         * @type {Number | String | null}
-         */
-        this._id = _.defaultTo(id, null);
-    }
-
-    /**
      * Sets the pivot of the object
-     *
-     * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - Pivot of the object on X axis or object with parameters
-     * @param {Number} [y] - Pivot of the object on Y axis (if object is Number)
-     *
-     * @param {Number} [object.x] - Pivot of the object on X axis
-     * @param {Number} [object.y] - Pivot of the object on Y axis
+     * @version 10.0.0
+     * @param {Number | Point} [object] - The X coordinate or Point
+     * @param {Number} [y] - The Y coordinate (if object is Number)
      */
     setupPivot(object, y) {
-        const pivot = DKTools.Utils.Point.tryToPoint(object, y);
-        const newPivot = Object.assign(this.standardPivot(), pivot);
+        let pivot;
 
-        /**
-         * @type {PIXI.ObservablePoint}
-         */
-        this.pivot.copy(newPivot);
+        if (object instanceof Object) {
+            pivot = object;
+        } else if (arguments.length === 2) {
+            pivot = new Point(object, y);
+        } else {
+            pivot = this.standardPivot();
+        }
+
+        this.pivot.copy(pivot);
     }
 
     /**
      * Sets the rotation of the object
-     *
      * @param {Number} [rotation] - Rotation of the object
      */
     setupRotation(rotation) {
@@ -3629,21 +2142,22 @@ DKTools.Base = class {
 
     /**
      * Sets the scale of the object
-     *
-     * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - Scale of the object on X axis or object width parameters
-     * @param {Number} [y] - Scale of the object on Y axis (if object is Number)
-     *
-     * @param {Number} [object.x] - Scale of the object on X axis
-     * @param {Number} [object.y] - Scale of the object on Y axis
+     * @version 10.0.0
+     * @param {Number | Point} [object] - The X coordinate or Point
+     * @param {Number} [y] - The Y coordinate (if object is Number)
      */
     setupScale(object, y) {
-        const scale = DKTools.Utils.Point.tryToPoint(object, y);
-        const newScale = Object.assign(this.standardScale(), scale);
+        let scale;
 
-        /**
-         * @type {PIXI.ObservablePoint}
-         */
-        this.scale.copy(newScale);
+        if (object instanceof Object) {
+            scale = object;
+        } else if (arguments.length === 2) {
+            scale = new Point(object, y);
+        } else {
+            scale = this.standardScale();
+        }
+
+        this.scale.copy(scale);
     }
 
     /**
@@ -3661,38 +2175,26 @@ DKTools.Base = class {
 
     /**
      * Sets the skew of the object
-     *
-     * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - Skew of the object on X axis or object with parameters
-     * @param {Number} [y] - Skew of the object on Y axis (if object is Number)
-     *
-     * @param {Number} [object.x] - Skew of the object on X axis
-     * @param {Number} [object.y] - Skew of the object on Y axis
+     * @version 10.0.0
+     * @param {Number | Point} [object] - The X coordinate or Point
+     * @param {Number} [y] - The Y coordinate (if object is Number)
      */
     setupSkew(object, y) {
-        const skew = DKTools.Utils.Point.tryToPoint(object, y);
-        const newSkew = Object.assign(this.standardSkew(), skew);
+        let skew;
 
-        /**
-         * @type {PIXI.ObservablePoint}
-         */
-        this.skew.copy(newSkew);
-    }
+        if (object instanceof Object) {
+            skew = object;
+        } else if (arguments.length === 2) {
+            skew = new Point(object, y);
+        } else {
+            skew = this.standardSkew();
+        }
 
-    /**
-     * Sets the tint of the object
-     *
-     * @param {Number} [tint] - Tint of the object
-     */
-    setupTint(tint) {
-        /**
-         * @type {Number}
-         */
-        this.tint = _.defaultTo(tint, this.standardTint());
+        this.skew.copy(skew);
     }
 
     /**
      * Sets the visibility of the object
-     *
      * @param {Boolean} [visible] - Visibility of the object
      */
     setupVisible(visible) {
@@ -3703,88 +2205,21 @@ DKTools.Base = class {
     }
 
     /**
-     * Changes all parameters
-     * Returns the number of changed parameters
-     *
-     * @param {Object} [object={}] - Parameters
-     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
-     * @param {Boolean} [activate=false] - Activates the object
-     *
-     * @param {Number} [object.id] - The object ID
-     * @param {Boolean} [object.visible] - Visibility of the object
-     * @param {Boolean} [object.active] - Activity of the object
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.scale] - Scale of the object
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.pivot] - Pivot of the object
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [object.skew] - Skew of the object
-     * @param {Number} [object.rotation] - Rotation of the object
-     * @param {Number} [object.tint] - Tint of the object
-     *
-     * @param {Number} [object.scale.x] - Scale of the object on X axis
-     * @param {Number} [object.scale.y] - Scale of the object on Y axis
-     *
-     * @param {Number} [object.pivot.x] - Pivot of the object on X axis
-     * @param {Number} [object.pivot.y] - Pivot of the object on Y axis
-     *
-     * @param {Number} [object.skew.x] - Skew of the object on X axis
-     * @param {Number} [object.skew.y] - Skew of the object on Y axis
-     *
-     * @returns {Number} Number of changed parameters
+     * Sets the opacity of the object
+     * @since 10.0.0
+     * @param {Number} [opacity] - Opacity of the object
      */
-    setAll(object = {}, blockStart = false, activate = false) {
-        object = object || {};
-
-        let changed = 0;
-
-        if (this.setId(object.id)) {
-            changed++;
-        }
-
-        if (this.setActive(object.active)) {
-            changed++;
-        }
-
-        if (this.setVisible(object.visible)) {
-            changed++;
-        }
-
-        if (this.setScale(object.scale)) {
-            changed++;
-        }
-
-        if (this.setPivot(object.pivot)) {
-            changed++;
-        }
-
-        if (this.setSkew(object.skew)) {
-            changed++;
-        }
-
-        if (this.setRotation(object.rotation)) {
-            changed++;
-        }
-
-        if (this.setTint(object.tint)) {
-            changed++;
-        }
-
-        if (changed > 0) {
-            if (!blockStart) {
-                this.start();
-            }
-
-            if (activate) {
-                this.activate();
-            }
-        }
-
-        return changed;
+    setupOpacity(opacity) {
+        this.opacity = _.defaultTo(opacity, this.standardOpacity());
     }
+
+    // set methods
 
     /**
      * Changes the activity of the object
-     *
+     * Returns true if the change occurred
      * @param {Boolean} [active] - Activity of the object
-     * @returns {Boolean} Change occurred
+     * @return {Boolean} Change occurred
      */
     setActive(active) {
         if (this.active === active) {
@@ -3799,146 +2234,10 @@ DKTools.Base = class {
     }
 
     /**
-     * Changes the object ID
-     * Returns true if the change occurred
-     *
-     * @param {Number | String | null} [id] - The object ID
-     * @returns {Boolean} Change occurred
-     */
-    setId(id) {
-        if (this._id === id) {
-            return false;
-        }
-
-        const lastId = this._id;
-
-        this.setupId(id);
-
-        return this._id !== lastId;
-    }
-
-    /**
-     * Changes the pivot of the object
-     * Returns true if the change occurred
-     *
-     * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - Pivot of the object on X axis or object with parameters
-     * @param {Number} [y] - Pivot of the object on Y axis (if object is Number)
-     *
-     * @param {Number} [object.x] - Pivot of the object on X axis
-     * @param {Number} [object.y] - Pivot of the object on Y axis
-     *
-     * @returns {Boolean} Change occurred
-     */
-    setPivot(object, y) {
-        const newPivot = DKTools.Utils.Point.toPoint(object, y);
-
-        if (DKTools.Utils.Point.equals(this.pivot, newPivot)) {
-            return false;
-        }
-
-        const lastPivot = DKTools.Utils.Point.clone(this.pivot);
-
-        this.setupPivot(newPivot);
-
-        return !DKTools.Utils.Point.equals(this.pivot, lastPivot);
-    }
-
-    /**
-     * Changes the rotation of the object
-     * Returns true if the change occurred
-     *
-     * @param {Number} [rotation] - Rotation of the object
-     * @returns {Boolean} Change occurred
-     */
-    setRotation(rotation) {
-        if (this.rotation === rotation) {
-            return false;
-        }
-
-        const lastRotation = this.rotation;
-
-        this.setupRotation(rotation);
-
-        return this.rotation !== lastRotation;
-    }
-
-    /**
-     * Changes the scale of the object
-     * Returns true if the change occurred
-     *
-     * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - Scale of the object on X axis or object with parameters
-     * @param {Number} [y] - Scale of the object on Y axis (if object is Number)
-     *
-     * @param {Number} [object.x] - Scale of the object on X axis
-     * @param {Number} [object.y] - Scale of the object on Y axis
-     *
-     * @returns {Boolean} Change occurred
-     */
-    setScale(object, y) {
-        const newScale = DKTools.Utils.Point.toPoint(object, y);
-
-        if (DKTools.Utils.Point.equals(this.scale, newScale)) {
-            return false;
-        }
-
-        const lastScale = DKTools.Utils.Point.clone(this.scale);
-
-        this.setupScale(newScale);
-
-        return !DKTools.Utils.Point.equals(this.scale, lastScale);
-    }
-
-    /**
-     * Changes the skew of the object
-     * Returns true if the change occurred
-     *
-     * @param {Number | PIXI.Point | PIXI.ObservablePoint | Point | Object} [object] - Skew of the object on X axis or object with parameters
-     * @param {Number} [y] - Skew of the object on Y axis (if object is Number)
-     *
-     * @param {Number} [object.x] - Skew of the object on X axis
-     * @param {Number} [object.y] - Skew of the object on Y axis
-     *
-     * @returns {Boolean} Change occurred
-     */
-    setSkew(object, y) {
-        const newSkew = DKTools.Utils.Point.toPoint(object, y);
-
-        if (DKTools.Utils.Point.equals(this.skew, newSkew)) {
-            return false;
-        }
-
-        const lastSkew = DKTools.Utils.Point.clone(this.skew);
-
-        this.setupSkew(newSkew);
-
-        return !DKTools.Utils.Point.equals(this.skew, lastSkew);
-    }
-
-    /**
-     * Changes the tint of the object
-     * Returns true if the change occurred
-     *
-     * @param {Number} [tint] - Tint of the object
-     * @returns {Boolean} Change occurred
-     */
-    setTint(tint) {
-        if (this.tint === tint) {
-            return false;
-        }
-
-        const lastTint = this.tint;
-
-        this.setupTint(tint);
-
-        return this.tint !== lastTint;
-    }
-
-    /**
      * Changes the visibility of the object
      * Returns true if the change occurred
-     *
      * @param {Boolean} [visible] - Visibility of the object
-     * @returns {Boolean} Change occurred
+     * @return {Boolean} Change occurred
      */
     setVisible(visible) {
         if (this.visible === visible) {
@@ -3952,16 +2251,12 @@ DKTools.Base = class {
         return this.visible !== lastVisible;
     }
 
+    // other S methods
+
     /**
      * Shows the object
-     *
      * @version 3.0.0
-     *
      * @param {Boolean} [activate=false] - Activates the object
-     *
-     * @see DKTools.Base.prototype.setVisible
-     * @see DKTools.Base.prototype.updateShowEvents
-     * @see DKTools.Base.prototype.activate
      */
     show(activate = false) {
         if (this.setVisible(true)) {
@@ -3975,32 +2270,15 @@ DKTools.Base = class {
 
     /**
      * Starts the object
-     *
-     * @version 1.1.0
-     *
+     * @version 10.0.0
      * @param {Boolean} [activate] - Activates the object
-     *
-     * @see DKTools.Base.prototype.removeAllChildren
-     * @see DKTools.Base.prototype.terminateAll
-     * @see DKTools.Base.prototype.removeAll
-     * @see DKTools.Base.prototype.checkAll
-     * @see DKTools.Base.prototype.createAll
-     * @see DKTools.Base.prototype.addAllChildren
-     * @see DKTools.Base.prototype.startAll
-     * @see DKTools.Base.prototype.refreshAll
-     * @see DKTools.Base.prototype.updateStartEvents
-     * @see DKTools.Base.prototype.activate
      */
     start(activate = false) {
         this._started = true;
 
-        this.removeAllChildren();
-        this.terminateAll();
         this.removeAll();
         this.checkAll();
         this.createAll();
-        this.startAll();
-        this.addAllChildren();
         this.refreshAll();
         this.updateStartEvents();
 
@@ -4009,202 +2287,118 @@ DKTools.Base = class {
         }
     }
 
-    /**
-     * Starts all
-     *
-     * @version 2.0.0
-     *
-     * @see DKTools.Base.prototype.updateStartAllEvents
-     */
-    startAll() {
-        this.updateStartAllEvents();
-    }
-
-    /**
-     * Stops the events
-     *
-     * @deprecated 9.2.0
-     * @version 2.0.0
-     *
-     * @param {String} type - Type of the events
-     * @param {Boolean} [forcedSuccess] - Forced success for the finish of the events
-     *
-     * @see DKTools.EventsManager.prototype.stopEvents
-     */
-    stopEvents(type, forcedSuccess = false) {
-        this._eventsManager.stopEvents(type, forcedSuccess);
-    }
-
-    /**
-     * Draws an arc without fill
-     * Returns true if successfully completed
-     *
-     * @version 6.0.0
-     *
-     * @param {Object} [options={}] - Options for drawing
-     *
-     * @param {Number} [options.radius] - Radius of arc
-     * @param {Number} [options.startAngle] - Starting angle
-     * @param {Number} [options.endAngle] - End angle
-     * @param {String} [options.color] - Line color
-     * @param {Number} [options.lineWidth] - Line width
-     * @param {Boolean} [options.anticlockwise] - Draws an anticlockwise
-     * @param {Number} [options.x] - The X coordinate
-     * @param {Number | String} [options.y] - The Y coordinate or line number (String)
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position of arc (ignores other parameters of position: x, y)
-     * @param {Number} [options.paintOpacity] - Change paint opacity
-     * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
-     *
-     * @param {Number} [options.pos.x] - The X coordinate
-     * @param {Number | String} [options.pos.y] - The Y coordinate or line number (String)
-     *
-     * @see DKTools.Base.prototype.hasBitmap
-     *
-     * @returns {Boolean} Successfully completed
-     */
-    strokeArc(options = {}) {
-        if (!this.hasBitmap()) {
-            return false;
-        }
-
-        options = options || {};
-
-        const { pos, radius,  color, lineWidth, anticlockwise, paintOpacity, resetPaintOpacity } = options;
-        let { x, y, startAngle, endAngle } = options;
-
-        if (pos instanceof Object) {
-            x = pos.x;
-            y = pos.y;
-        }
-
-        if (DKTools.Utils.isString(y)) { // line number
-            y = this.getLineHeight() * parseFloat(y);
-        }
-
-        if (Number.isFinite(paintOpacity)) {
-            this.changePaintOpacity(paintOpacity);
-        }
-
-        x = x || 0;
-        y = y || 0;
-        startAngle = startAngle || 0;
-        endAngle = _.defaultTo(endAngle, Math.PI * 2);
-
-        DKTools.Utils.Bitmap.strokeArc(this.bitmap, x, y, radius, startAngle, endAngle, color, lineWidth, anticlockwise);
-
-        if (resetPaintOpacity) {
-            this.resetPaintOpacity();
-        }
-
-        return true;
-    }
-
-    /**
-     * Draws a rectangle without fill
-     * Returns true if successfully completed
-     *
-     * @version 6.0.0
-     *
-     * @param {Object} [options={}] - Options for drawing
-     *
-     * @param {Number} [options.x] - The X coordinate
-     * @param {Number | String} [options.y] - The Y coordinate or line number (String)
-     * @param {Number} [options.width] - Width of the rectangle
-     * @param {Number | String} [options.height] - Height of the rectangle or number of lines (String)
-     * @param {PIXI.Point | PIXI.ObservablePoint | Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
-     * @param {PIXI.Rectangle | Rectangle | Object} [options.rect] - Rectangle for drawing (ignores other parameters of position: x, y, width, height, pos)
-     * @param {String} [options.color] - Fill color
-     * @param {Number} [options.lineWidth] - Line width
-     * @param {Number} [options.paintOpacity] - Change paint opacity
-     * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
-     *
-     * @param {Number} [options.pos.x] - The X coordinate
-     * @param {Number | String} [options.pos.y] - The Y coordinate or line number (String)
-     *
-     * @param {Number} [options.rect.x] - The X coordinate
-     * @param {Number | String} [options.rect.y] - The Y coordinate or line number (String)
-     * @param {Number} [options.rect.width] - Width of the rectangle
-     * @param {Number | String} [options.rect.height] - Height of the rectangle or number of lines (String)
-     *
-     * @see DKTools.Base.prototype.hasBitmap
-     * @see DKTools.Base.prototype.standardDrawingWidth
-     * @see DKTools.Base.prototype.standardDrawingHeight
-     *
-     * @returns {Boolean} Successfully completed
-     */
-    strokeRect(options = {}) {
-        if (!this.hasBitmap()) {
-            return false;
-        }
-
-        options = options || {};
-
-        const { pos, rect, lineWidth, paintOpacity, resetPaintOpacity } = options;
-        let { x, y, width, height, color } = options;
-
-        if (pos instanceof Object) {
-            x = pos.x;
-            y = pox.y;
-        }
-
-        if (rect instanceof Object) {
-            x = rect.x;
-            y = rect.y;
-            width = rect.width;
-            height = rect.height;
-        }
-
-        if (DKTools.Utils.isString(y)) { // line number
-            y = this.getLineHeight() * parseFloat(y);
-        }
-
-        if (DKTools.Utils.isString(height)) { // number of lines
-            height = this.getLineHeight() * parseFloat(height);
-        }
-
-        if (Number.isFinite(paintOpacity)) {
-            this.changePaintOpacity(paintOpacity);
-        }
-
-        x = x || 0;
-        y = y || 0;
-        width = width || this.standardDrawingWidth();
-        height = height || this.standardDrawingHeight();
-        color = color || 'white';
-
-        DKTools.Utils.Bitmap.strokeRect(this.bitmap, x, y, width, height, color, lineWidth);
-
-        if (resetPaintOpacity) {
-            this.resetPaintOpacity();
-        }
-
-        return true;
-    }
-
     // T methods
 
     /**
-     * Terminates the object
+     * Returns the height of the text (taking into account the font)
+     *
+     * @since 10.0.0
+     *
+     * @param {String | Number} text - Text
+     * @param {Object} [wrap={}] - Wrap options
+     *
+     * @param {Number} [wrap.maxWidth] - Max width of a text line
+     * @param {Number} [wrap.maxLines] - Max lines
+     *
+     * @return {Number} Height of the text (taking into account the font)
      */
-    terminate() {
-        // to be overridden by plugins
+    textFontHeight(text, wrap = {}) {
+        return this.textLines(text, wrap) * this.fontHeight();
     }
 
     /**
-     * Terminates all
+     * Returns the number of lines of the text
      *
-     * @version 2.0.0
+     * @param {String | Number} text - Text
+     * @param {Object} [wrap] - Wrap options
      *
-     * @see DKTools.Base.prototype.updateTerminateAllEvents
+     * @param {Number} [wrap.maxWidth] - Max width of a text line
+     * @param {Number} [wrap.maxLines] - Max lines
+     *
+     * @return {Number} Number of lines of the text
      */
-    terminateAll() {
-        this.updateTerminateAllEvents();
+    textLines(text, wrap) {
+        if (wrap instanceof Object) {
+            text = this.textWrap(text, wrap);
+        }
+
+        return text.split('\n').length;
+    }
+
+    /**
+     * Returns the width of the text
+     * @since 10.0.0
+     * @param {String} text - Text
+     * @return {Number} Width of the text
+     */
+    textWidth(text) {
+        if (!this.hasBitmap() || text === '' || text == null) {
+            return 0;
+        }
+
+        return Window_Base.prototype.textWidth.apply(this, arguments);
+    }
+
+    /**
+     * Returns the width of the text (special characters are supported)
+     * @since 10.0.0
+     * @param {String} text - Text
+     * @param {Object} [options={}] - Options for drawing
+     * @return {Number} Width of the text
+     */
+    textWidthEx(text, options = {}) {
+        try {
+            return this.drawTextEx(text, {
+                ...options, x: -Number.MAX_SAFE_INTEGER, y: -Number.MAX_SAFE_INTEGER });
+        } catch(e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Returns the height of the text
+     *
+     * @since 10.0.0
+     *
+     * @param {String | Number} text - Text
+     * @param {Object} [wrap={}] - Wrap options
+     *
+     * @param {Number} [wrap.maxWidth] - Max width of a text line
+     * @param {Number} [wrap.maxLines] - Max lines
+     *
+     * @return {Number} Height of the text
+     */
+    textHeight(text, wrap = {}) {
+        return this.textLines(text, wrap) * this.lineHeight();
+    }
+
+    /**
+     * Returns the height of the text (special characters are supported)
+     *
+     * @since 10.0.0
+     *
+     * @param {String} text - Text
+     * @param {Object} [options={}] - Options for drawing
+     *
+     * @param {Object} [options.wrap] - Wrap options
+     *
+     * @param {Number} [options.wrap.maxWidth] - Max width of a text line
+     * @param {Number} [options.wrap.maxLines] - Max lines
+     *
+     * @return {Number} Height of the text
+     */
+    textHeightEx(text, options = {}) {
+        if (options instanceof Object && options.wrap instanceof Object) {
+            text = this.textWrap(text, options.wrap);
+        }
+
+        return this.calcTextHeight({ text, index: 0 }, true);
     }
 
     /**
      * Makes a text wrap
      *
-     * @version 9.2.0
+     * @version 10.0.0
      *
      * @param {String} text - Text
      * @param {Object} [options={}] - Wrap options
@@ -4212,10 +2406,7 @@ DKTools.Base = class {
      * @param {Number} [options.maxWidth] - Max width of a text line
      * @param {Number} [options.maxLines] - Max lines
      *
-     * @see DKTools.Base.prototype.hasBitmap
-     * @see DKTools.Base.prototype.getTextWidth
-     *
-     * @returns {String} Wrapped text
+     * @return {String} Wrapped text
      */
     textWrap(text, options = {}) {
         if (!this.hasBitmap() || text === '' || text == null) {
@@ -4227,51 +2418,8 @@ DKTools.Base = class {
 
         const lines = text.split('\n');
         const maxWidth = options.maxWidth || this.bitmap.width;
-        const spaceWidth = this.getTextWidth(' ');
+        const spaceWidth = this.textWidth(' ');
         let result = '', newLines = 1;
-
-        const getWordWidth = (word) => {
-            const iconRegex = /\x1bi\[(\d+)\]/i;
-            let width = 0;
-            let text = word.replace(/\x1bc\[(\d+)\]/gi, '')
-                            .replace(/\x1b{/gi, '')
-                            .replace(/\x1b}/gi, '')
-                            .replace(/\\f/gi, '');
-
-            if (Imported.DKTools_Localization) {
-                text = text.replace(/\x1blanguage/gi, DKTools.Localization.language);
-            }
-
-            if (Imported.YEP_MessageCore) {
-                text = text.replace(/\x1bFR/gi, '')
-                            .replace(/\x1bFB/gi, '')
-                            .replace(/\x1bFI/gi, '');
-            }
-
-            while (text.match(iconRegex)) {
-                width += Window_Base._iconWidth;
-                text = text.replace(iconRegex, '');
-            }
-
-            if (Imported.YEP_Message_Core) {
-                const regex = [
-                    { regex: /\x1bII\[(\d+)\]/i, database: $dataItems },
-                    { regex: /\x1bIW\[(\d+)\]/i, database: $dataWeapons },
-                    { regex: /\x1bIA\[(\d+)\]/i, database: $dataArmors },
-                    { regex: /\x1bIS\[(\d+)\]/i, database: $dataSkills },
-                    { regex: /\x1bIT\[(\d+)\]/i, database: $dataStates },
-                ];
-
-                regex.forEach((data) => {
-                    while (text.match(data.regex)) {
-                        width += Window_Base._iconWidth + this.getTextWidth(data.database[RegExp.$1].name);
-                        text = text.replace(data.regex, '');
-                    }
-                });
-            }
-
-            return this.getTextWidth(text) + width;
-        }
 
         for (let i = 0; i < lines.length; i++) {
             const words = lines[i].split(' ');
@@ -4279,7 +2427,7 @@ DKTools.Base = class {
 
             for (let j = 0; j < words.length; j++) {
                 const word = words[j];
-                const wordWidth = getWordWidth(word);
+                const wordWidth = this.textWidthEx(word);
                 let wordWidthWithSpace = wordWidth + spaceWidth;
 
                 if (wordWidth === 0) {
@@ -4316,120 +2464,67 @@ DKTools.Base = class {
 
     /**
      * Updates the object
-     *
-     * @see DKTools.Base.prototype.updateChildren
-     * @see DKTools.Base.prototype.processAll
-     * @see DKTools.Base.prototype.updateEvents
+     * @version 10.0.0
      */
     update() {
-        this.updateChildren();
         this.processAll();
         this.updateEvents();
     }
 
     /**
      * Updates all
-     *
-     * @version 1.1.0
-     *
-     * @see DKTools.Base.prototype.updateOpacity
-     * @see DKTools.Base.prototype.updateUpdateAllEvents
+     * @version 10.0.0
      */
     updateAll() {
-        this.updateOpacity();
         this.updateUpdateAllEvents();
-    }
-
-    /**
-     * Updates the events with type: activate
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
-     */
-    updateActivateEvents() {
-        this.updateEventsContainer('activate');
-    }
-
-    /**
-     * Updates the events with type: add-all-children
-     *
-     * @version 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
-     */
-    updateAddAllChildrenEvents() {
-        this.updateEventsContainer('add-all-children');
-    }
-
-    /**
-     * Updates the events with type: check-all
-     *
-     * @version 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
-     */
-    updateCheckAllEvents() {
-        this.updateEventsContainer('check-all');
-    }
-
-    /**
-     * Updates the child object
-     *
-     * @param {*} child - Child object
-     */
-    updateChild(child) {
-        if (child && DKTools.Utils.isFunction(child.update)) {
-            child.update();
-        }
     }
 
     /**
      * Updates the child objects
      */
     updateChildren() {
-        this.iterateChildren(this.updateChild);
+        for (const child of this.children) {
+            if (child && child.update) {
+                child.update();
+            }
+        }
+    }
+
+    // events methods
+
+    /**
+     * Updates the events with type: activate
+     */
+    updateActivateEvents() {
+        this._eventsManager.updateEventsContainer('activate');
+    }
+
+    /**
+     * Updates the events with type: check-all
+     * @version 2.0.0
+     */
+    updateCheckAllEvents() {
+        this._eventsManager.updateEventsContainer('check-all');
     }
 
     /**
      * Updates the events with type: create-all
-     *
      * @version 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateCreateAllEvents() {
-        this.updateEventsContainer('create-all');
+        this._eventsManager.updateEventsContainer('create-all');
     }
 
     /**
      * Updates the events with type: deactivate
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateDeactivateEvents() {
-        this.updateEventsContainer('deactivate');
-    }
-
-    /**
-     * Updates the event
-     *
-     * @param {DKTools.Event | DKTools.Animation} event - Event
-     *
-     * @see DKTools.EventsManager.prototype.updateEvent
-     */
-    updateEvent(event) {
-        this._eventsManager.updateEvent(event);
+        this._eventsManager.updateEventsContainer('deactivate');
     }
 
     /**
      * Updates the events
-     *
      * @version 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.update
-     * @see DKTools.Base.protoype.updateReadyEvents
-     * @see DKTools.Base.protoype.updateUpdateEvents
-     * @see DKTools.Base.protoype.updateQueueEvents
-     * @see DKTools.Base.protoype.updateWheelEvents
      */
     updateEvents() {
         this._eventsManager.update();
@@ -4440,379 +2535,154 @@ DKTools.Base = class {
     }
 
     /**
-     * Updates the events from container
-     *
-     * @version 2.0.0
-     *
-     * @param {String} type - Type of the events
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
-     */
-    updateEventsContainer(type) {
-        this._eventsManager.updateEventsContainer(type);
-    }
-
-    /**
      * Updates the events with type: hide
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateHideEvents() {
-        this.updateEventsContainer('hide');
-    }
-
-    /**
-     * Updates input data
-     *
-     * @see SceneManager.updateInputData
-     */
-    updateInputData() {
-        SceneManager.updateInputData();
+        this._eventsManager.updateEventsContainer('hide');
     }
 
     /**
      * Updates the events with type: mouse-enter
-     *
      * @version 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseEnterEvents() {
-        this.updateEventsContainer('mouse-enter');
+        this._eventsManager.updateEventsContainer('mouse-enter');
     }
 
     /**
      * Updates the events with type: mouse-inside
-     *
      * @since 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseInsideEvents() {
-        this.updateEventsContainer('mouse-inside');
+        this._eventsManager.updateEventsContainer('mouse-inside');
     }
 
     /**
      * Updates the events with type: mouse-leave
-     *
      * @version 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseLeaveEvents() {
-        this.updateEventsContainer('mouse-leave');
+        this._eventsManager.updateEventsContainer('mouse-leave');
     }
 
     /**
      * Updates the events with type: mouse-move
-     *
      * @since 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseMoveEvents() {
-        this.updateEventsContainer('mouse-move');
+        this._eventsManager.updateEventsContainer('mouse-move');
     }
 
     /**
      * Updates the events with type: mouse-outside
-     *
      * @since 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateMouseOutsideEvents() {
-        this.updateEventsContainer('mouse-outside');
-    }
-
-    /**
-     * Updates the opacity of the object
-     */
-    updateOpacity() {
-        // to be overridden by plugins
+        this._eventsManager.updateEventsContainer('mouse-outside');
     }
 
     /**
      * Updates the events with type: queue
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateQueueEvents() {
-        const container = this.getEventsContainerByType('queue');
+        const container = this._eventsManager.getEventsContainerByType('queue');
         const event = container[0];
 
-        this.updateEvent(event);
+        if (event) {
+            event.update();
+        }
     }
 
     /**
      * Updates the events with type: ready
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateReadyEvents() {
         if (this.isReady()) {
-            this.updateEventsContainer('ready');
+            this._eventsManager.updateEventsContainer('ready');
         }
     }
 
     /**
      * Updates the events with type: redraw-all
-     *
      * @version 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateRedrawAllEvents() {
-        this.updateEventsContainer('redraw-all');
+        this._eventsManager.updateEventsContainer('redraw-all');
+    }
+
+    /**
+     * Updates the events with type: draw-all
+     * @since 10.0.0
+     */
+    updateDrawAllEvents() {
+        this._eventsManager.updateEventsContainer('draw-all');
     }
 
     /**
      * Updates the events with type: refresh-all
-     *
      * @version 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateRefreshAllEvents() {
-        this.updateEventsContainer('refresh-all');
-    }
-
-    /**
-     * Updates the events with type: remove-all-children
-     *
-     * @version 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
-     */
-    updateRemoveAllChildrenEvents() {
-        this.updateEventsContainer('remove-all-children');
+        this._eventsManager.updateEventsContainer('refresh-all');
     }
 
     /**
      * Updates the events with type: remove-all
-     *
      * @version 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateRemoveAllEvents() {
-        this.updateEventsContainer('remove-all');
+        this._eventsManager.updateEventsContainer('remove-all');
     }
 
     /**
      * Updates the events with type: show
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateShowEvents() {
-        this.updateEventsContainer('show');
-    }
-
-    /**
-     * Updates the events with type: start-all
-     *
-     * @version 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
-     */
-    updateStartAllEvents() {
-        this.updateEventsContainer('start-all');
+        this._eventsManager.updateEventsContainer('show');
     }
 
     /**
      * Updates the events with type: start
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateStartEvents() {
         if (this.isStarted()) {
-            this.updateEventsContainer('start');
+            this._eventsManager.updateEventsContainer('start');
         }
     }
 
     /**
-     * Updates the events with type: terminate-all-children
-     *
-     * @version 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
-     */
-    updateTerminateAllEvents() {
-        this.updateEventsContainer('terminate-all-children');
-    }
-
-    /**
      * Updates the events with type: update-all
-     *
      * @version 2.0.0
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateUpdateAllEvents() {
-        this.updateEventsContainer('update-all');
+        this._eventsManager.updateEventsContainer('update-all');
     }
 
     /**
      * Updates the events with type: update
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateUpdateEvents() {
-        this.updateEventsContainer('update');
+        this._eventsManager.updateEventsContainer('update');
     }
 
     /**
      * Updates the events with type: wheel-X-inside or wheel-X-outside
-     *
      * @version 2.0.0
-     *
-     * @param {String} type Type of the wheel event (inside or outside)
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
+     * @param {String} type - Type of the wheel event (inside or outside)
      */
     updateWheelXEvents(type) {
-        this.updateEventsContainer('wheel-X-' + type);
+        this._eventsManager.updateEventsContainer('wheel-X-' + type);
     }
 
     /**
      * Updates the events with type: wheel-Y-inside or wheel-Y-outside
-     *
      * @version 2.0.0
-     *
      * @param {String} type - Type of the wheel event (inside or outside)
-     *
-     * @see DKTools.EventsManager.prototype.updateEventsContainer
      */
     updateWheelYEvents(type) {
-        this.updateEventsContainer('wheel-Y-' + type);
+        this._eventsManager.updateEventsContainer('wheel-Y-' + type);
     }
 
 };
-
-// properties
-
-Object.defineProperties(DKTools.Base.prototype, {
-
-    /**
-     * The object ID
-     *
-     * @readonly
-     * @type {Number | String | null}
-     * @memberof DKTools.Base.prototype
-     */
-    id : {
-        get: function() {
-            return this._id;
-        },
-        configurable: true
-    },
-
-    /**
-     * The coordinates of mouse inside the object
-     *
-     * @since 8.0.0
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Base.prototype
-     */
-    mouse: {
-        get: function() {
-            return this.getLocalPoint(TouchInput.mouseX, TouchInput.mouseY);
-        },
-        configurable: true
-    },
-
-    /**
-     * Time of mouse enter inside the object
-     *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Base.prototype
-     */
-    mouseEnterTime: {
-        get: function() {
-            return this._mouseEnterTime;
-        },
-        configurable: true
-    },
-
-    /**
-     * The coordinates of touch inside the object
-     *
-     * @since 9.0.0
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Base.prototype
-     */
-    touch: {
-        get: function() {
-            return this.getLocalPoint(TouchInput.x, TouchInput.y);
-        },
-        configurable: true
-    },
-
-    /**
-     * Number of pixels scrolling mouse on X axis
-     *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Base.prototype
-     */
-    wheelX: {
-        get: function() {
-            return this._wheelX;
-        },
-        configurable: true
-    },
-
-    /**
-     * Number of pixels scrolling mouse on Y axis
-     *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Base.prototype
-     */
-    wheelY: {
-        get: function() {
-            return this._wheelY;
-        },
-        configurable: true
-    },
-
-    /**
-     * Events manager
-     *
-     * @since 9.0.0
-     * @readonly
-     * @type {DKTools.EventsManager}
-     * @memberof DKTools.Base.prototype
-     */
-    eventsManager: {
-        get: function() {
-            return this._eventsManager;
-        },
-        configurable: true
-    },
-
-    /**
-     * Options manager
-     *
-     * @deprecated 9.2.0
-     * @version 9.2.0
-     * @since 9.0.0
-     * @readonly
-     * @type {DKTools.OptionsManager}
-     * @memberof DKTools.Base.prototype
-     */
-    optionsManager: {
-        get: function() {
-            return this._optionsManager;
-        },
-        configurable: true
-    }
-
-});
-
-
 
 

@@ -6,15 +6,13 @@
  * Class of plugin parameters
  * Manages plugin parameters (supports all types of parameters)
  *
- * @class DKTools.ParameterManager
+ * @class
  * @memberof DKTools
  *
  * @param {String} pluginName - Name of the plugin
  *
  * @example
- * var params = new DKTools.ParameterManager('DKTools');
- *
- * @see DKTools.ParameterManager.prototype.initialize
+ * const params = new DKTools.ParameterManager('DKTools');
  */
 DKTools.ParameterManager = class {
 
@@ -26,7 +24,6 @@ DKTools.ParameterManager = class {
 
     /**
      * Initializes the manager
-     *
      * @version 6.0.0
      * @param {String} pluginName - Name of the plugin
      */
@@ -51,7 +48,6 @@ DKTools.ParameterManager = class {
 
     /**
      * Initializes plugin parameters
-     *
      * @version 6.0.0
      */
     initializeParams() {
@@ -64,7 +60,6 @@ DKTools.ParameterManager = class {
 
     /**
      * Changes the parameter value
-     *
      * @since 9.2.0
      * @param {String[]} path - Path to parameter
      * @param {*} value - New value
@@ -82,12 +77,12 @@ DKTools.ParameterManager = class {
      *
      * @param {String} parameterName - Name of parameter
      * @param {Number | String | Object} [item] - Index (for an array) or property (for an object) or object with properties to find
-     * @param {Object} [options] - Options for finded item
+     * @param {Object} [options] - Options for found item
      *
      * @param {String} [options.key] - Key (property) of item
      * @param {Number} [options.index] - Index of item
      *
-     * @returns {* | undefined} Parameter by its name or undefined
+     * @return {* | undefined} Parameter by its name or undefined
      */
     get(parameterName, item, options) {
         if (!DKTools.Utils.isString(parameterName)) {
@@ -129,13 +124,10 @@ DKTools.ParameterManager = class {
 
     /**
      * Parse a string (supports escape characters of the RPG Maker 1.5+)
-     *
      * @version 5.0.0
      * @static
-     *
      * @param {String} string - String to parse
-     *
-     * @returns {Object | String} Parsed string
+     * @return {Object | String} Parsed string
      */
     static parse(string) {
         try {
@@ -160,43 +152,5 @@ DKTools.ParameterManager = class {
     }
 
 };
-
-// properties
-
-Object.defineProperties(DKTools.ParameterManager.prototype, {
-
-    /**
-     * Name of the plugin
-     *
-     * @deprecated 9.2.0
-     * @readonly
-     * @type {String}
-     * @memberof DKTools.ParameterManager.prototype
-     */
-    pluginName: {
-        get: function() {
-            return this._pluginName;
-        },
-        configurable: true
-    },
-
-    /**
-     * Parameters of the plugin
-     *
-     * @readonly
-     * @type {Object}
-     * @memberof DKTools.ParameterManager.prototype
-     */
-    params: {
-        get: function() {
-            return this._params;
-        },
-        configurable: true
-    }
-
-});
-
-
-
 
 

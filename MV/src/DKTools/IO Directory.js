@@ -4,12 +4,8 @@
 
 /**
  * Directory class
- *
- * @class DKTools.IO.Directory
+ * @class
  * @extends DKTools.IO.Entity
- *
- * @override
- *
  * @memberof DKTools.IO
  */
 DKTools.IO.Directory = class extends DKTools.IO.Entity {
@@ -28,7 +24,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
      * DKTools.IO.ERROR_DIRECTORY_ALREADY_EXISTS
      *
-     * @version 7.0.0
+     * @version 10.0.0
      *
      * @param {Object} object - Options of an operation
      *
@@ -48,10 +44,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *      console.log('created!');
      * }
      *
-     * @see FileSystem.mkdir
-     * @see FileSystem.mkdirSync
-     *
-     * @returns {Number} Code of the result of an operation
+     * @return {Number} Code of the result of an operation
      */
     create(object) {
         if (!object) {
@@ -62,7 +55,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE;
         }
 
-        if (!DKTools.IO.isLocalMode()) {
+        if (!Utils.isNwjs()) {
             return DKTools.IO.ERROR_NOT_LOCAL_MODE;
         }
 
@@ -123,9 +116,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *      console.log('created!');
      * }
      *
-     * @see DKTools.IO.Directory.prototype.create
-     *
-     * @returns {Promise} Code of the result of an operation
+     * @return {Promise<Number>} Code of the result of an operation
      */
     async createAsync(object = {}) {
         return new Promise((resolve, reject) => {
@@ -174,9 +165,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *      console.log('created!');
      * }
      *
-     * @see DKTools.IO.Directory.prototype.create
-     *
-     * @returns {Number} Code of the result of an operation
+     * @return {Number} Code of the result of an operation
      */
     createDirectory(name, object) {
         const fullPath = DKTools.IO.normalizePath(this.getFullPath() + '/' + name);
@@ -215,9 +204,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *      console.log('created!');
      * }
      *
-     * @see DKTools.IO.Directory.prototype.createAsync
-     *
-     * @returns {Promise}
+     * @return {Promise<Number>} Code of the result of an operation
      */
     async createDirectoryAsync(name, object = {}) {
         const fullPath = DKTools.IO.normalizePath(this.getFullPath() + '/' + name);
@@ -244,7 +231,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
      *
-     * @version 7.0.0
+     * @version 10.0.0
      * @since 4.0.0
      *
      * @param {Object} object - Options of an operation
@@ -264,9 +251,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *     console.log(result.data);
      * }
      *
-     * @see DKTools.IO.Directory.prototype.getAll
-     *
-     * @returns {{ data: Object | null, status: Number }} All files
+     * @return {{ data: Object | null, status: Number }} All files
      */
     findFiles(object) {
         if (!object) {
@@ -277,7 +262,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
-        if (!DKTools.IO.isLocalMode()) {
+        if (!Utils.isNwjs()) {
             return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
 
@@ -363,9 +348,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {RegExp | String} [object.template] - Template for filtering
      * @param {Number} [object.searchLimit] - Search limit
      *
-     * @see DKTools.IO.Directory.prototype.findFiles
-     *
-     * @returns {Promise} All files
+     * @return {Promise<{ status: Number, data: DKTools.IO.File[] | null }>} All files
      */
     async findFilesAsync(object = {}) {
         return new Promise((resolve, reject) => {
@@ -398,7 +381,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
      *
-     * @version 7.0.0
+     * @version 10.0.0
      * @since 4.0.0
      *
      * @param {Object} object - Options of an operation
@@ -418,9 +401,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *     console.log(result.data);
      * }
      *
-     * @see DKTools.IO.Directory.prototype.getDirectories
-     *
-     * @returns {{ data: Object | null, status: Number }} All directories
+     * @return {{ data: DKTools.IO.Directory[] | null, status: Number }} All directories
      */
     findDirectories(object) {
         if (!object) {
@@ -431,7 +412,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
-        if (!DKTools.IO.isLocalMode()) {
+        if (!Utils.isNwjs()) {
             return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
 
@@ -520,9 +501,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {RegExp | String} [object.template] - Template for filtering
      * @param {Number} [object.searchLimit] - Search limit
      *
-     * @see DKTools.IO.Directory.prototype.findDirectories
-     *
-     * @returns {Promise} All directories
+     * @return {Promise<{ status: Number, data: DKTools.IO.Directory[] | null }>} All directories
      */
     async findDirectoriesAsync(object = {}) {
         return new Promise((resolve, reject) => {
@@ -567,10 +546,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
-     * @see FileSystem.readdir
-     * @see FileSystem.readdirSync
-     *
-     * @returns {{ data: Array | null, status: Number }} All files and directories
+     * @return {{ data: DKTools.IO.Entity[] | null, status: Number }} All files and directories
      */
     getAll(object) {
         if (!object) {
@@ -581,7 +557,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
-        if (!DKTools.IO.isLocalMode() && DKTools.IO.mode === DKTools.IO.MODE_NWJS) {
+        if (!Utils.isNwjs() && DKTools.IO.mode === DKTools.IO.MODE_NWJS) {
             return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
 
@@ -613,7 +589,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return { data, status: DKTools.IO.OK };
         };
 
-        if (!DKTools.IO.isLocalMode() && DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
+        if (!Utils.isNwjs() && DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
             const parts = this.getFullPath().split('\\');
             const temp = _.get(DKTools.IO.stamp, parts, {});
             const names = Object.keys(temp);
@@ -674,9 +650,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {String | Object} [object.options] - Options for FileSystem.readdir
      * @param {RegExp | String} [object.template] - Template for filtering
      *
-     * @see DKTools.IO.Directory.prototype.getAll
-     *
-     * @returns {Promise} All files and directories
+     * @return {Promise<{ status: Number, data: DKTools.IO.Entity[] | null }>} All files and directories
      */
     async getAllAsync(object = {}) {
         return new Promise((resolve, reject) => {
@@ -719,11 +693,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
-     * @see DKTools.IO.Directory.prototype.getAll
-     * @see FileSystem.readdir
-     * @see FileSystem.readdirSync
-     *
-     * @returns {{ data: DKTools.IO.File[] | null, status: Number }} All files
+     * @return {{ status: Number, data: DKTools.IO.File[] | null }} All files
      */
     getFiles(object) {
         if (!object) {
@@ -783,9 +753,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {String | Object} [object.options] - Options for FileSystem.readdir
      * @param {RegExp | String} [object.template] - Template for filtering
      *
-     * @see DKTools.IO.Directory.prototype.getAllAsync
-     *
-     * @returns {Promise} All files
+     * @return {Promise<{ status: Number, data: DKTools.IO.File[] | null }>} All files
      */
     async getFilesAsync(object = {}) {
         return this.getAllAsync(object).then((result) => {
@@ -825,11 +793,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
-     * @see DKTools.IO.Directory.prototype.getAll
-     * @see FileSystem.readdir
-     * @see FileSystem.readdirSync
-     *
-     * @returns {{ data: DKTools.IO.Directory[] | null, status: Number }} All directories
+     * @return {{ status: Number, data: DKTools.IO.Directory[] | null }} All directories
      */
     getDirectories(object) {
         if (!object) {
@@ -888,9 +852,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {String | Object} [object.options] - Options for FileSystem.readdir
      * @param {RegExp | String} [object.template] - Template for filtering
      *
-     * @see DKTools.IO.Directory.prototype.getAllAsync
-     *
-     * @returns {Promise} All directories
+     * @return {Promise<{ status: Number, data: DKTools.IO.Directory[] | null }>} All directories
      */
     async getDirectoriesAsync(object = {}) {
         return this.getAllAsync(object).then((result) => {
@@ -930,9 +892,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
-     * @see DKTools.IO.Directory.prototype.getFiles
-     *
-     * @returns {{ data: DKTools.IO.File[] | null, status: Number }} All audio files
+     * @return {{ status: Number, data: DKTools.IO.File[] | null }} All audio files
      */
     getAudioFiles(object) {
         return this.getFiles({ ...object, template: /(.ogg|.rpgmvo)/ });
@@ -960,9 +920,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * @param {String | Object} [object.options] - Options for FileSystem.readdir
      *
-     * @see DKTools.IO.Directory.prototype.getAudioFiles
-     *
-     * @returns {Promise} All audio files
+     * @return {Promise<{ status: Number, data: DKTools.IO.File[] | null }>} All audio files
      */
     async getAudioFilesAsync(object = {}) {
         return new Promise((resolve, reject) => {
@@ -1005,9 +963,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
-     * @see DKTools.IO.Directory.prototype.getFiles
-     *
-     * @returns {{ data: DKTools.IO.File[] | null, status: Number }} All JSON files
+     * @return {{ status: Number, data: DKTools.IO.File[] | null }} All JSON files
      */
     getJsonFiles(object) {
         return this.getFiles({ ...object, template: /(.json)/ });
@@ -1034,9 +990,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * @param {String | Object} [object.options] - Options for FileSystem.readdir
      *
-     * @see DKTools.IO.Directory.prototype.getJsonFiles
-     *
-     * @returns {Promise} All JSON files
+     * @return {Promise<{ status: Number, data: DKTools.IO.File[] | null }>} All JSON files
      */
     async getJsonFilesAsync(object = {}) {
         return new Promise((resolve, reject) => {
@@ -1079,9 +1033,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
-     * @see DKTools.IO.Directory.prototype.getFiles
-     *
-     * @returns {{ data: DKTools.IO.File[] | null, status: Number }} All txt files
+     * @return {{ status: Number, data: DKTools.IO.File[] | null }} All txt files
      */
     getTxtFiles(object) {
         return this.getFiles({ ...object, template: /(.txt)/ });
@@ -1108,9 +1060,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * @param {String | Object} [object.options] - Options for FileSystem.readdir
      *
-     * @see DKTools.IO.Directory.prototype.getTxtFiles
-     *
-     * @returns {Promise} All txt files
+     * @return {Promise<{ status: Number, data: DKTools.IO.File[] | null }>} All txt files
      */
     async getTxtFilesAsync(object = {}) {
         return new Promise((resolve, reject) => {
@@ -1153,9 +1103,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
-     * @see DKTools.IO.Directory.prototype.getFiles
-     *
-     * @returns {{ data: DKTools.IO.File[] | null, status: Number }} All image files
+     * @return {{ status: Number, data: DKTools.IO.File[] | null }} All image files
      */
     getImageFiles(object) {
         return this.getFiles({ ...object, template: /(.png|.webp|.rpgmvp)/ });
@@ -1182,9 +1130,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * @param {String | Object} [object.options] - Options for FileSystem.readdir
      *
-     * @see DKTools.IO.Directory.prototype.getImageFiles
-     *
-     * @returns {Promise} All image files
+     * @return {Promise<{ status: Number, data: DKTools.IO.File[] | null }>} All image files
      */
     async getImageFilesAsync(object = {}) {
         return new Promise((resolve, reject) => {
@@ -1227,9 +1173,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
-     * @see DKTools.IO.Directory.prototype.getFiles
-     *
-     * @returns {{ data: DKTools.IO.File[] | null, status: Number }} All video files
+     * @return {{ data: DKTools.IO.File[] | null, status: Number }} All video files
      */
     getVideoFiles(object) {
         return this.getFiles({ ...object, template: /(.webm|.mp4)/ });
@@ -1256,9 +1200,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * @param {String | Object} [object.options] - Options for FileSystem.readdir
      *
-     * @see DKTools.IO.Directory.prototype.getVideoFiles
-     *
-     * @returns {Promise} All video files
+     * @return {Promise<{ status: Number, data: DKTools.IO.File[] | null }>} All video files
      */
     async getVideoFilesAsync(object = {}) {
         return new Promise((resolve, reject) => {
@@ -1277,12 +1219,8 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
 
     /**
      * Returns the root directory
-     *
      * @since 6.3.0
-     *
-     * @see DKTools.IO.Directory.prototype.getPath
-     *
-     * @returns {DKTools.IO.Directory} Root directory
+     * @return {DKTools.IO.Directory} Root directory
      */
     getRootDirectory() {
         return new DKTools.IO.Directory(this.getPath());
@@ -1292,8 +1230,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
 
     /**
      * Returns true if the directory does not contain files and other directories
-     *
-     * @returns {Boolean} Directory does not contain files and other directories
+     * @return {Boolean} Directory does not contain files and other directories
      */
     isEmpty() {
         const data = this.getAll({ sync: true }).data;
@@ -1305,12 +1242,8 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
 
     /**
      * Loads and returns an audio files
-     *
      * @since 3.0.0
-     *
-     * @see DKTools.IO.Directory.prototype.getAudioFiles
-     *
-     * @returns {WebAudio[]} Loaded audio files
+     * @return {WebAudio[]} Loaded audio files
      */
     loadAudioFiles() {
         const result = this.getAudioFiles({ sync: true });
@@ -1319,21 +1252,17 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return [];
         }
 
-        return _.map(result.data, file => file.loadAudio());
+        return result.data.map(file => file.loadAudio());
     }
 
     /**
      * Loads and returns an audio files
      * Asynchronous version of DKTools.IO.Directory.prototype.loadAudioFiles
      * Promise resolves a loaded audio files (WebAudio[])
-     *
      * @version 5.0.0
      * @since 4.0.0
      * @async
-     *
-     * @see DKTools.IO.Directory.prototype.loadAudioFiles
-     *
-     * @returns {Promise} Loaded audio files
+     * @return {Promise<WebAudio[]>} Loaded audio files
      */
     async loadAudioFilesAsync() {
         const result = await this.getAudioFilesAsync();
@@ -1342,9 +1271,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return [];
         }
 
-        const promises = _.map(result.data, file => file.loadAudioAsync());
-
-        return Promise.all(promises);
+        return Promise.all(result.data.map(file => file.loadAudioAsync()));
     }
 
     /**
@@ -1360,10 +1287,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Number} [object.hue] - Hue of bitmap
      * @param {Boolean} [object.smooth] - Smooth of bitmap
      *
-     * @see DKTools.IO.Directory.prototype.getImageFiles
-     * @see DKTools.Utils.Bitmap.load
-     *
-     * @returns {Bitmap[]} Loaded bitmaps
+     * @return {Bitmap[]} Loaded bitmaps
      */
     loadBitmaps(object, hue, smooth) {
         const result = this.getImageFiles({ sync: true });
@@ -1372,7 +1296,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return [];
         }
 
-        return _.map(result.data, file => file.loadBitmap(object, hue, smooth));
+        return result.data.map(file => file.loadBitmap(object, hue, smooth));
     }
 
     /**
@@ -1391,10 +1315,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Number} [object.hue] - Hue of bitmap
      * @param {Boolean} [object.smooth] - Smooth of bitmap
      *
-     * @see DKTools.IO.Directory.prototype.getImageFilesAsync
-     * @see DKTools.IO.Directory.prototype.loadBitmaps
-     *
-     * @returns {Promise} Loaded bitmaps
+     * @return {Promise<Bitmap[]>} Loaded bitmaps
      */
     async loadBitmapsAsync(object, hue, smooth) {
          const result = await this.getImageFilesAsync();
@@ -1403,9 +1324,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return [];
         }
 
-        const promises = _.map(result.data, file => file.loadBitmapAsync(object, hue, smooth));
-
-        return Promise.all(promises);
+        return Promise.all(result.data.map(file => file.loadBitmapAsync(object, hue, smooth)));
     }
 
     // R methods
@@ -1421,7 +1340,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      * DKTools.IO.ERROR_DIRECTORY_IS_NOT_EMPTY
      *
-     * @version 7.0.0
+     * @version 10.0.0
      *
      * @param {Object} [object={}] - Options of an operation
      *
@@ -1429,16 +1348,10 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
-     * @see DKTools.IO.isLocalMode
-     * @see DKTools.IO.Directory.prototype.exists
-     * @see DKTools.IO.Directory.prototype.isEmpty
-     * @see FileSystem.rmdir
-     * @see FileSystem.rmdirSync
-     *
-     * @returns {Number} Code of the result of an operation
+     * @return {Number} Code of the result of an operation
      */
     remove(object = {}) {
-        if (!DKTools.IO.isLocalMode()) {
+        if (!Utils.isNwjs()) {
             return DKTools.IO.ERROR_NOT_LOCAL_MODE;
         }
 
@@ -1487,12 +1400,9 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *
      * @since 4.0.0
      * @async
-     *
-     * @see DKTools.IO.Directory.prototype.remove
-     *
-     * @returns {Promise} Code of the result of an operation
+     * @return {Promise<Number>} Code of the result of an operation
      */
-    async removeAync() {
+    async removeAsync() {
         return new Promise((resolve, reject) => {
             const status = this.remove({
                 sync: false,
@@ -1521,10 +1431,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Boolean} [object.smooth] - Smooth of bitmap
      * @param {Number} [object.reservationId] - Reservation ID
      *
-     * @see DKTools.IO.Directory.prototype.getImageFiles
-     * @see DKTools.Utils.Bitmap.reserve
-     *
-     * @returns {Bitmap[]} Loaded bitmaps
+     * @return {Bitmap[]} Loaded bitmaps
      */
     reserveBitmaps(object, hue, smooth, reservationId) {
         const result = this.getImageFiles({ sync: true });
@@ -1554,10 +1461,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * @param {Boolean} [object.smooth] - Smooth of bitmap
      * @param {Number} [object.reservationId] - Reservation ID
      *
-     * @see DKTools.IO.Directory.prototype.getImageFilesAsync
-     * @see DKTools.IO.Directory.prototype.reserveBitmaps
-     *
-     * @returns {Promise} Loaded bitmaps
+     * @return {Promise<Bitmap[]>} Loaded bitmaps
      */
     async reserveBitmapsAsync(object, hue, smooth, reservationId) {
         const result = await this.getImageFilesAsync();
@@ -1566,13 +1470,11 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return [];
         }
 
-        const promises = _.map(result.data, file => file.reserveBitmapAsync(object, hue, smooth, reservationId));
-
-        return Promise.all(promises);
+        return Promise.all(
+            result.data.map(file =>
+                file.reserveBitmapAsync(object, hue, smooth, reservationId)));
     }
 
 };
-
-
 
 

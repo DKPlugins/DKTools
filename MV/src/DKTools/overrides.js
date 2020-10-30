@@ -13,8 +13,6 @@ window.onload = function() {
 
 
 
-
-
 //===========================================================================
 // Utils
 //===========================================================================
@@ -61,8 +59,6 @@ Utils.isTest = function() {
 
     return this.__isTest__;
 };
-
-
 
 
 
@@ -141,8 +137,6 @@ ImageCache.prototype._truncateCache = function() {
             }
         });
 };
-
-
 
 
 
@@ -243,8 +237,6 @@ class AudioCache extends ImageCache {
 
 
 
-
-
 //===========================================================================
 // Graphics
 //===========================================================================
@@ -317,66 +309,22 @@ Graphics.printDetailedError = function(error) {
     this._clearUpperCanvas();
 };
 
-Graphics._getErrorReferenceInfo = function() {
-    const scene = SceneManager._scene;
-    const data = {};
+Graphics._makeDetailedErrorHtml = function(name, message, stack) {
+    const params = DKToolsParam.get('Print Detailed Error');
+    const referenceInfo = DKTools.Utils._getErrorLogData();
+    let errorMessage = params['Error Message'];
+    let restartMessage = params['Restart Message'];
+    let text = '';
 
-    if (scene && scene.constructor.name) {
-        data['Scene'] = scene.constructor.name;
+    if (Imported['DKTools_Localization']) {
+        if (errorMessage) {
+            errorMessage = DKTools.Localization.getText(errorMessage);
+        }
 
-        if (SceneManager.isCurrentScene(Scene_Map)) {
-            const interpreter = $gameMap._interpreter;
-
-            if (interpreter) {
-                if (interpreter._mapId > 0) {
-                    data['Map ID'] = interpreter._mapId;
-                }
-
-                if (interpreter._eventId > 0) {
-                    data['Event ID'] = interpreter._eventId;
-
-                    const event = $gameMap.event(interpreter._eventId);
-
-                    if (event) {
-                        data['Event Page'] = event._pageIndex + 1;
-                    }
-                }
-
-                if (interpreter._list && interpreter._list.length > 0) {
-                    let command = interpreter._list[interpreter._index];
-
-                    if (command && command.code === 0 && interpreter._index > 0) {
-                        command = interpreter._list[interpreter._index - 1];
-                    }
-
-                    if (command && command.code > 0) {
-                        data['Last Event Command'] = command.code;
-                    }
-                }
-
-                if (interpreter._params && interpreter._params.length > 0) {
-                    data['Params'] = JSON.stringify(interpreter._params);
-                }
-            }
+        if (restartMessage) {
+            restartMessage = DKTools.Localization.getText(restartMessage);
         }
     }
-
-    return data;
-};
-
-Graphics._getErrorMessageForErrorPrint = function() {
-    return DKToolsParam.get('Print Detailed Error', 'Error Message');
-};
-
-Graphics._getRestartMessageForErrorPrint = function() {
-    return DKToolsParam.get('Print Detailed Error', 'Restart Message');
-};
-
-Graphics._makeDetailedErrorHtml = function(name, message, stack) {
-    const errorMessage = this._getErrorMessageForErrorPrint();
-    const restartMessage = this._getRestartMessageForErrorPrint();
-    const referenceInfo = this._getErrorReferenceInfo();
-    let text = '';
 
     if (errorMessage) {
         text = '<font color="yellow"><b>' + errorMessage + '<br>' + '</b></font><br>';
@@ -407,7 +355,7 @@ Graphics._makeDetailedErrorHtml = function(name, message, stack) {
 
 const DKTools_Graphics_updateErrorPrinter = Graphics._updateErrorPrinter;
 Graphics._updateErrorPrinter = function() {
-    DKTools_Graphics_updateErrorPrinter.call(this);
+    DKTools_Graphics_updateErrorPrinter.apply(this, arguments);
 
     if (!this._errorPrinter || !this._errorShowed) {
         return;
@@ -423,7 +371,13 @@ Graphics._updateErrorPrinter = function() {
     this._centerElement(this._errorPrinter);
 };
 
+Graphics.videoFileExt = function() {
+    if (Graphics.canPlayVideoType('video/webm') && !Utils.isMobileDevice()) {
+        return '.webm';
+    }
 
+    return '.mp4';
+};
 
 
 
@@ -441,15 +395,13 @@ if (Input.keyMapper['36'] === undefined) {
 
 
 
-
-
 //===========================================================================
 // TouchInput
 //===========================================================================
 
 const DKTools_TouchInput_initialize = TouchInput.initialize;
 TouchInput.initialize = function() {
-    DKTools_TouchInput_initialize.call(this);
+    DKTools_TouchInput_initialize.apply(this, arguments);
 
     const param = DKToolsParam.get('Cursor Graphic') || {};
 
@@ -464,14 +416,14 @@ TouchInput.initialize = function() {
 
 const DKTools_TouchInput_clear = TouchInput.clear;
 TouchInput.clear = function() {
-    DKTools_TouchInput_clear.call(this);
+    DKTools_TouchInput_clear.apply(this, arguments);
 
     /**
      * @private
      * @readonly
      * @type {Boolean}
      */
-    this._mouseMoved = false;
+    this._moved = false;
 
     /**
      * @private
@@ -529,7 +481,7 @@ TouchInput.clear = function() {
      */
     this._mouseY = 0;
 
-    this._events.mouseMoved = false;
+    this._events.moved = false;
 
     this._events.leftButtonPressed = false;
     this._events.middleButtonPressed = false;
@@ -542,7 +494,7 @@ TouchInput.clear = function() {
 
 const DKTools_TouchInput_update = TouchInput.update;
 TouchInput.update = function() {
-    this._mouseMoved = this._events.mouseMoved;
+    this._moved = this._events.moved;
 
     this._leftButtonPressed = this._events.leftButtonPressed;
     this._middleButtonPressed = this._events.middleButtonPressed;
@@ -552,32 +504,30 @@ TouchInput.update = function() {
     this._middleButtonReleased = this._events.middleButtonReleased;
     this._rightButtonReleased = this._events.rightButtonReleased;
 
-    this._events.mouseMoved = false;
+    this._events.moved = false;
 
     this._events.leftButtonReleased = false;
     this._events.middleButtonReleased = false;
     this._events.rightButtonReleased = false;
 
-    DKTools_TouchInput_update.call(this);
+    DKTools_TouchInput_update.apply(this, arguments);
 };
 
 // is methods
 
 /**
  * Returns true if the mouse is moving
- *
  * @static
- * @returns {Boolean} Mouse is moving
+ * @return {Boolean} Mouse is moving
  */
-TouchInput.isMouseMoved = function() {
-    return this._mouseMoved;
+TouchInput.isMoved = function() {
+    return this._moved;
 };
 
 /**
  * Returns true if the mouse is pressed (left, middle or right button)
- *
  * @static
- * @returns {Boolean} Mouse is pressed (left, middle or right button)
+ * @return {Boolean} Mouse is pressed (left, middle or right button)
  */
 TouchInput.isMousePressed = function() {
     return this.isLeftButtonPressed() || this.isMiddleButtonPressed() || this.isRightButtonPressed();
@@ -585,9 +535,8 @@ TouchInput.isMousePressed = function() {
 
 /**
  * Returns true if the mouse is released (left, middle or right button is released)
- *
  * @static
- * @returns {Boolean} Mouse is released (left, middle or right button is released)
+ * @return {Boolean} Mouse is released (left, middle or right button is released)
  */
 TouchInput.isMouseReleased = function() {
     return this.isLeftButtonReleased() || this.isMiddleButtonReleased() || this.isRightButtonReleased();
@@ -595,9 +544,8 @@ TouchInput.isMouseReleased = function() {
 
 /**
  * Returns true if the left mouse button is pressed
- *
  * @static
- * @returns {Boolean} Left mouse button is pressed
+ * @return {Boolean} Left mouse button is pressed
  */
 TouchInput.isLeftButtonPressed = function() {
     return this._leftButtonPressed;
@@ -605,9 +553,8 @@ TouchInput.isLeftButtonPressed = function() {
 
 /**
  * Returns true if the left mouse button is released
- *
  * @static
- * @returns {Boolean} Left mouse button is released
+ * @return {Boolean} Left mouse button is released
  */
 TouchInput.isLeftButtonReleased = function() {
     return this._leftButtonReleased;
@@ -615,9 +562,8 @@ TouchInput.isLeftButtonReleased = function() {
 
 /**
  * Returns true if the middle mouse button is pressed
- *
  * @static
- * @returns {Boolean} Middle mouse button is pressed
+ * @return {Boolean} Middle mouse button is pressed
  */
 TouchInput.isMiddleButtonPressed = function() {
     return this._middleButtonPressed;
@@ -625,9 +571,8 @@ TouchInput.isMiddleButtonPressed = function() {
 
 /**
  * Returns true if the middle mouse button is released
- *
  * @static
- * @returns {Boolean} Middle mouse button is released
+ * @return {Boolean} Middle mouse button is released
  */
 TouchInput.isMiddleButtonReleased = function() {
     return this._middleButtonReleased;
@@ -635,9 +580,8 @@ TouchInput.isMiddleButtonReleased = function() {
 
 /**
  * Returns true if the right mouse button is pressed
- *
  * @static
- * @returns {Boolean} Right mouse button is pressed
+ * @return {Boolean} Right mouse button is pressed
  */
 TouchInput.isRightButtonPressed = function() {
     return this._rightButtonPressed;
@@ -645,9 +589,8 @@ TouchInput.isRightButtonPressed = function() {
 
 /**
  * Returns true if the right mouse button is released
- *
  * @static
- * @returns {Boolean} Right mouse button is released
+ * @return {Boolean} Right mouse button is released
  */
 TouchInput.isRightButtonReleased = function() {
     return this._rightButtonReleased;
@@ -655,9 +598,8 @@ TouchInput.isRightButtonReleased = function() {
 
 /**
  * Returns true if the screen is pressed (for mobile devices)
- *
  * @static
- * @returns {Boolean} Screen is pressed (for mobile devices)
+ * @return {Boolean} Screen is pressed (for mobile devices)
  */
 TouchInput.isScreenPressed = function() {
     return this._screenPressed;
@@ -667,10 +609,10 @@ TouchInput.isScreenPressed = function() {
 
 const DKTools_TouchInput_onLeftButtonDown = TouchInput._onLeftButtonDown;
 TouchInput._onLeftButtonDown = function(event) {
+    DKTools_TouchInput_onLeftButtonDown.apply(this, arguments);
+
     const x = Graphics.pageToCanvasX(event.pageX);
     const y = Graphics.pageToCanvasY(event.pageY);
-
-    DKTools_TouchInput_onLeftButtonDown.call(this, event);
 
     if (Graphics.isInsideCanvas(x, y)) {
         this._events.leftButtonPressed = true;
@@ -679,10 +621,10 @@ TouchInput._onLeftButtonDown = function(event) {
 
 const DKTools_TouchInput_onMiddleButtonDown = TouchInput._onMiddleButtonDown;
 TouchInput._onMiddleButtonDown = function(event) {
+    DKTools_TouchInput_onMiddleButtonDown.apply(this, arguments);
+
     const x = Graphics.pageToCanvasX(event.pageX);
     const y = Graphics.pageToCanvasY(event.pageY);
-
-    DKTools_TouchInput_onMiddleButtonDown.call(this, event);
 
     if (Graphics.isInsideCanvas(x, y)) {
         this._events.middleButtonPressed = true;
@@ -691,10 +633,10 @@ TouchInput._onMiddleButtonDown = function(event) {
 
 const DKTools_TouchInput_onRightButtonDown = TouchInput._onRightButtonDown;
 TouchInput._onRightButtonDown = function(event) {
+    DKTools_TouchInput_onRightButtonDown.apply(this, arguments);
+
     const x = Graphics.pageToCanvasX(event.pageX);
     const y = Graphics.pageToCanvasY(event.pageY);
-
-    DKTools_TouchInput_onRightButtonDown.call(this, event);
 
     if (Graphics.isInsideCanvas(x, y)) {
         this._events.rightButtonPressed = true;
@@ -703,13 +645,13 @@ TouchInput._onRightButtonDown = function(event) {
 
 const DKTools_TouchInput_onMouseMove = TouchInput._onMouseMove;
 TouchInput._onMouseMove = function(event) {
+    DKTools_TouchInput_onMouseMove.apply(this, arguments);
+
     const x = Graphics.pageToCanvasX(event.pageX);
     const y = Graphics.pageToCanvasY(event.pageY);
 
-    DKTools_TouchInput_onMouseMove.call(this, event);
-
     if (this._mouseX !== x || this._mouseY !== y) {
-        this._events.mouseMoved = true;
+        this._events.moved = true;
 
         this._date = Date.now();
         this._mouseX = x;
@@ -719,10 +661,10 @@ TouchInput._onMouseMove = function(event) {
 
 const DKTools_TouchInput_onMouseUp = TouchInput._onMouseUp;
 TouchInput._onMouseUp = function(event) {
+    DKTools_TouchInput_onMouseUp.apply(this, arguments);
+
     const x = Graphics.pageToCanvasX(event.pageX);
     const y = Graphics.pageToCanvasY(event.pageY);
-
-    DKTools_TouchInput_onMouseUp.call(this, event);
 
     this._events.leftButtonPressed = false;
     this._events.middleButtonPressed = false;
@@ -775,36 +717,75 @@ Object.defineProperties(TouchInput, {
 
 
 
-
-
-
 //===========================================================================
 // Tilemap
 //===========================================================================
 
 const DKTools_Tilemap_initialize = Tilemap.prototype.initialize;
 Tilemap.prototype.initialize = function() {
-    DKTools_Tilemap_initialize.call(this);
+    DKTools_Tilemap_initialize.apply(this, arguments);
 
     this._tileWidth = Tilemap.TILE_WIDTH || this._tileWidth;
     this._tileHeight = Tilemap.TILE_HEIGHT || this._tileHeight;
 };
 
-const DKTools_Tilemap_createLayers_patch19 = Tilemap.prototype._createLayers;
-Tilemap.prototype._createLayers = function() {
-    // fix possible memory leak
-    if (this._lowerLayer) {
-        this.removeChild(this._lowerLayer);
+
+
+//===========================================================================
+// Sprite
+//===========================================================================
+
+Object.defineProperties(Sprite.prototype, {
+
+    frame: {
+        get: function() {
+            return this._frame;
+        },
+        configurable: true
     }
 
-    if (this._upperLayer) {
-        this.removeChild(this._upperLayer);
+});
+
+
+
+//===========================================================================
+// Window
+//===========================================================================
+
+Object.defineProperties(Window.prototype, {
+
+    innerWidth: {
+        get: function() {
+            return Math.max(0, this._width - this._padding * 2);
+        },
+        configurable: true
+    },
+
+    innerHeight: {
+        get: function() {
+            return Math.max(0, this._height - this._padding * 2);
+        },
+        configurable: true
+    },
+
+    frameOpacity: {
+        get: function() {
+            return this._windowFrameSprite.alpha * 255;
+        },
+        set: function(value) {
+            this._windowFrameSprite.alpha = value.clamp(0, 255) / 255;
+        },
+        configurable: true
+    },
+
+    contentsSprite: {
+        get: function() {
+            return this._windowContentsSprite;
+        },
+        configurable: true
     }
 
-    DKTools_Tilemap_createLayers_patch19.apply(this, arguments);
-};
-
-
+});
 
 
 
@@ -817,7 +798,7 @@ WebAudio.prototype.addLoadListener = function(listener) {
     if (this.isReady()) {
         listener(this);
     } else {
-        DKTools_WebAudio_addLoadListener.call(this, listener);
+        DKTools_WebAudio_addLoadListener.apply(this, arguments);
     }
 };
 
@@ -828,8 +809,6 @@ WebAudio.prototype._onLoad = function() {
         listener(this);
     }
 };
-
-
 
 
 
@@ -858,8 +837,6 @@ DataManager.onDatabaseLoad = function() {
 
 
 
-
-
 //===========================================================================
 // ImageManager
 //===========================================================================
@@ -868,7 +845,6 @@ Object.defineProperties(ImageManager, {
 
     /**
      * Parallaxes folder
-     *
      * @since 8.1.0
      * @readonly
      * @type {String}
@@ -897,7 +873,6 @@ Object.defineProperties(ImageManager, {
 
     /**
      * Tilesets folder
-     *
      * @since 8.1.0
      * @readonly
      * @type {String}
@@ -925,6 +900,12 @@ Object.defineProperties(ImageManager, {
     }
 
 });
+
+// methods
+
+ImageManager.imageFileExt = function() {
+    return  '.png';
+};
 
 ImageManager.loadParallax = function(filename, hue) {
     return this.loadBitmap(ImageManager.PARALLAXES_FOLDER, filename, hue, true);
@@ -984,8 +965,6 @@ ImageManager.releaseBitmap = function(path, hue) {
 
 
 
-
-
 //===========================================================================
 // AudioManager
 //===========================================================================
@@ -1004,7 +983,7 @@ AudioManager._audioCache = new AudioCache();
  * @static
  * @param {String} folder
  * @param {String} name
- * @returns {String}
+ * @return {String}
  */
 AudioManager._generateCacheKey = function(folder, name) {
     return DKTools.IO.reverseSlashes(
@@ -1017,7 +996,7 @@ AudioManager._generateCacheKey = function(folder, name) {
  * @param {String} folder
  * @param {String} name
  * @param {Number} [reservationId]
- * @returns {WebAudio | Html5Audio}
+ * @return {WebAudio | Html5Audio}
  */
 AudioManager.createBuffer = function(folder, name, reservationId) {
     const url = this._generateCacheKey(folder, name);
@@ -1066,7 +1045,7 @@ AudioManager.setDefaultReservationId = function(reservationId) {
  * @static
  * @param {String} folder
  * @param {String} name
- * @returns {Boolean}
+ * @return {Boolean}
  */
 AudioManager.isLoaded = function(folder, name) {
     return this._audioCache.has(this._generateCacheKey(folder, name));
@@ -1078,7 +1057,7 @@ AudioManager.isLoaded = function(folder, name) {
  * @param {String} folder
  * @param {String} name
  * @param {Number} [reservationId]
- * @returns {Boolean}
+ * @return {Boolean}
  */
 AudioManager.isReserved = function(folder, name, reservationId) {
     if (folder === 'se' && this._staticBuffers.some(b => b._reservedSeName === name)) {
@@ -1103,15 +1082,13 @@ AudioManager.releaseBuffer = function(folder, name) {
 
 
 
-
-
 //===========================================================================
 // SceneManager
 //===========================================================================
 
 const DKTools_SceneManager_initialize = SceneManager.initialize;
 SceneManager.initialize = async function() {
-    await DKTools_SceneManager_initialize.call(this);
+    await DKTools_SceneManager_initialize.apply(this, arguments);
     await DKTools.StartupManager.initialize();
 
     const needsShowProgressBar = DKToolsParam.get('Initial Preloading', 'Enabled')
@@ -1139,7 +1116,7 @@ SceneManager.initGraphics = function() {
         this.updateResolution();
     }
 
-    DKTools_SceneManager_initGraphics.call(this);
+    DKTools_SceneManager_initGraphics.apply(this, arguments);
 };
 
 SceneManager.updateResolution = function() {
@@ -1154,7 +1131,7 @@ SceneManager.updateResolution = function() {
 
 const DKTools_SceneManager_onKeyDown = SceneManager.onKeyDown;
 SceneManager.onKeyDown = function(event) {
-    DKTools_SceneManager_onKeyDown.call(this, event);
+    DKTools_SceneManager_onKeyDown.apply(this, arguments);
 
     if (event.ctrlKey || event.altKey) {
         return;
@@ -1190,7 +1167,7 @@ SceneManager.onKeyDown = function(event) {
 
 const DKTools_SceneManager_catchException = SceneManager.catchException;
 SceneManager.catchException = function(error) {
-    DKTools_SceneManager_catchException.call(this, error);
+    DKTools_SceneManager_catchException.apply(this, arguments);
 
     if (error instanceof Error && DKToolsParam.get('Print Detailed Error', 'Enabled')) {
         Graphics.printDetailedError(error);
@@ -1204,10 +1181,10 @@ SceneManager.catchException = function(error) {
 };
 
 const DKTools_SceneManager_onError = SceneManager.onError;
-SceneManager.onError = function(e) {
-    DKTools_SceneManager_onError.call(this, e);
+SceneManager.onError = function(error) {
+    DKTools_SceneManager_onError.apply(this, arguments);
 
-    DKTools.Utils.logError(e);
+    DKTools.Utils.logError(error);
 
     if (DKToolsParam.get('Debugging Console', 'Open On Error')) {
         DKTools.Utils.openConsole();
@@ -1285,8 +1262,7 @@ SceneManager.updateScene = function() {
 /**
  * @version 8.0.0
  * @since 6.1.0
- *
- * @returns {Boolean}
+ * @return {Boolean}
  */
 SceneManager.isCurrentScene = function(sceneClass) {
     return !!this._scene && this._scene.constructor === sceneClass;
@@ -1294,11 +1270,9 @@ SceneManager.isCurrentScene = function(sceneClass) {
 
 const DKTools_SceneManager_goto = SceneManager.goto;
 SceneManager.goto = function(sceneClass) {
-    DKTools_SceneManager_goto.call(this, sceneClass);
+    DKTools_SceneManager_goto.apply(this, arguments);
     DKTools.Utils.__hideGrid();
 };
-
-
 
 
 
@@ -1344,7 +1318,6 @@ Scene_Base.prototype.create = function() {
 
 /**
  * Activates the scene
- *
  * @since 8.0.0
  */
 Scene_Base.prototype.activate = function() {
@@ -1353,7 +1326,6 @@ Scene_Base.prototype.activate = function() {
 
 /**
  * Deactivates the scene
- *
  * @since 8.0.0
  */
 Scene_Base.prototype.deactivate = function() {
@@ -1362,10 +1334,8 @@ Scene_Base.prototype.deactivate = function() {
 
 /**
  * Returns true if the scene is preloaded
- *
  * @since 6.1.0
- *
- * @returns {Boolean} Scene is preloaded
+ * @return {Boolean} Scene is preloaded
  */
 Scene_Base.prototype.isPreloaded = function() {
     return this._preloader.isReady();
@@ -1373,14 +1343,12 @@ Scene_Base.prototype.isPreloaded = function() {
 
 const DKTools_Scene_Base_isReady = Scene_Base.prototype.isReady;
 Scene_Base.prototype.isReady = function() {
-    return DKTools_Scene_Base_isReady.call(this) && this.isPreloaded();
+    return DKTools_Scene_Base_isReady.apply(this, arguments) && this.isPreloaded();
 };
 
 /**
  * Setups for the preloading
- *
  * @since 6.1.0
- *
  * @example
  * var bitmap = ImageManager.loadSystem('Window')
  *
@@ -1392,23 +1360,19 @@ Scene_Base.prototype.setupPreloading = function() {
 
 /**
  * Starts the preloading
- *
  * @since 6.1.0
  */
 Scene_Base.prototype.startPreloading = function() {
     this.setupPreloading();
-
     this._preloader.start();
 };
 
 const DKTools_Scene_Base_terminate = Scene_Base.prototype.terminate;
 Scene_Base.prototype.terminate = function() {
-    DKTools_Scene_Base_terminate.call(this);
+    DKTools_Scene_Base_terminate.apply(this, arguments);
 
     this._preloader.finish();
 };
-
-
 
 
 
@@ -1418,7 +1382,7 @@ Scene_Base.prototype.terminate = function() {
 
 const DKTools_Scene_Boot_isReady = Scene_Boot.prototype.isReady;
 Scene_Boot.prototype.isReady = function() {
-    return DKTools_Scene_Boot_isReady.call(this)
+    return DKTools_Scene_Boot_isReady.apply(this, arguments)
         && DKTools.StartupManager.isReady();
 };
 
@@ -1442,8 +1406,6 @@ Scene_Boot.prototype.start = function() {
         DKTools_Scene_Boot_start.call(this);
     }
 };
-
-
 
 
 
@@ -1534,8 +1496,6 @@ Scene_Map.prototype.terminate = function() {
 
 
 
-
-
 //===========================================================================
 // Game_Map
 //===========================================================================
@@ -1552,8 +1512,6 @@ Game_Map.prototype.tileHeight = function() {
 
 
 
-
-
 //===========================================================================
 // Game_Interpreter
 //===========================================================================
@@ -1563,23 +1521,6 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
     DKTools_Game_Interpreter_pluginCommand.call(this, command, args);
     DKTools.PluginCommandManager.process(this, command, args);
 };
-
-
-
-
-
-//===========================================================================
-// Window_Base
-//===========================================================================
-
-Window_Base.prototype.processNewLine = function(textState) {
-    textState.x = textState.left;
-    textState.y += textState.height;
-    textState.index++; // fix text height
-    textState.height = this.calcTextHeight(textState, false);
-};
-
-
 
 
 
@@ -1605,10 +1546,8 @@ Window_Selectable.prototype.processCursorMove = function() {
         }
     }
 
-    DKTools_Window_Selectable_processCursorMove.call(this);
+    DKTools_Window_Selectable_processCursorMove.apply(this, arguments);
 };
-
-
 
 
 
@@ -1622,36 +1561,12 @@ if (DKToolsParam.get('Font Size', 'Enabled')) {
         return DKToolsParam.get('Font Size', 'Size');
     };
 
-    DKTools.Sprite.prototype.standardFontSize = function() {
-        try {
-            return Window_Base.prototype.standardFontSize.call(this);
-        } catch (e) {
-            return DKToolsParam.get('Font Size', 'Size');
-        }
-    };
-
 }
 
 if (DKToolsParam.get('Line Height', 'Enabled')) {
 
     Window_Base.prototype.lineHeight = function() {
         return DKToolsParam.get('Line Height', 'Height');
-    };
-
-    DKTools.Base.prototype.getLineHeight = function() {
-        try {
-            return Window_Base.prototype.lineHeight.call(this);
-        } catch (e) {
-            return DKToolsParam.get('Line Height', 'Height');
-        }
-    };
-
-    DKTools.Sprite.prototype.getLineHeight = function() {
-        return DKTools.Base.prototype.getLineHeight.call(this);
-    };
-
-    DKTools.Window.prototype.getLineHeight = function() {
-        return DKTools.Base.prototype.getLineHeight.call(this);
     };
 
 }
@@ -1721,6 +1636,8 @@ if (DKToolsParam.get('Title Menu Exit Command', 'Enabled')) {
                 DKToolsParam.get('Title Menu Exit Command', 'Command Name'),
                 'exit');
         }
+
+        this.height = this.windowHeight();
 
         DKTools_Window_TitleCommand_createContents.apply(this, arguments);
     };

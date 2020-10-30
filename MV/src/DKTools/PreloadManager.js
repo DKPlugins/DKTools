@@ -4,10 +4,8 @@
 
 /**
  * Preload manager class
- *
- * @class DKTools.PreloadManager
- *
  * @since 3.0.0
+ * @class
  * @memberof DKTools
  */
 DKTools.PreloadManager = class {
@@ -20,7 +18,6 @@ DKTools.PreloadManager = class {
 
     /**
      * Initializes preloading
-     *
      * @version 9.0.0
      * @static
      */
@@ -80,7 +77,6 @@ DKTools.PreloadManager = class {
 
     /**
      * Clears the cache
-     *
      * @version 5.0.0
      * @static
      */
@@ -95,7 +91,6 @@ DKTools.PreloadManager = class {
 
     /**
      * Clears the preload queue
-     *
      * @version 9.0.0
      * @static
      */
@@ -112,12 +107,9 @@ DKTools.PreloadManager = class {
 
     /**
      * Finishes the preloading
-     *
      * @version 9.0.0
      * @private
      * @static
-     *
-     * @see DKTools.PreloadManager.clearQueue
      */
     static _finish() {
         this._finishTime = new Date();
@@ -160,14 +152,11 @@ DKTools.PreloadManager = class {
 
     /**
      * Generates an audio key
-     *
      * @since 5.0.0
      * @private
      * @static
-     *
      * @param {String} path - Path
-     *
-     * @returns {String} Generated key
+     * @return {String} Generated key
      */
     static _generateAudioKey(path) {
         return DKTools.IO.normalizePath(path, true);
@@ -175,17 +164,12 @@ DKTools.PreloadManager = class {
 
     /**
      * Generates an image key
-     *
      * @since 5.0.0
      * @private
      * @static
-     *
      * @param {String} path - Path
      * @param {Number} [hue=0] - Hue
-     *
-     * @see ImageManager._generateCacheKey
-     *
-     * @returns {String} Generated key
+     * @return {String} Generated key
      */
     static _generateImageKey(path, hue = 0) {
         return DKTools.IO.normalizePath(ImageManager._generateCacheKey(path, hue || 0), true);
@@ -193,13 +177,10 @@ DKTools.PreloadManager = class {
 
     /**
      * Returns a cached audio by key
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {String} key - Key of the cached audio
-     *
-     * @returns {WebAudio | undefined} Cached audio by key
+     * @return {WebAudio | undefined} Cached audio by key
      */
     static getCachedAudioByKey(key) {
         return this._cache.audio[key];
@@ -207,16 +188,10 @@ DKTools.PreloadManager = class {
 
     /**
      * Returns a cached audio by path
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {String} path - Path of the cached audio
-     *
-     * @see DKTools.PreloadManager.getCachedAudioByKey
-     * @see DKTools.PreloadManager._generateAudioKey
-     *
-     * @returns {WebAudio | undefined} Cached audio by path
+     * @return {WebAudio | undefined} Cached audio by path
      */
     static getCachedAudioByPath(path) {
         return this.getCachedAudioByKey(this._generateAudioKey(path));
@@ -224,13 +199,10 @@ DKTools.PreloadManager = class {
 
     /**
      * Returns a cached image by key
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {String} key - Key of the cached image
-     *
-     * @returns {Bitmap | undefined} Cached bitmap or null
+     * @return {Bitmap | undefined} Cached bitmap or null
      */
     static getCachedImageByKey(key) {
         return this._cache.image[key];
@@ -238,16 +210,10 @@ DKTools.PreloadManager = class {
 
     /**
      * Returns a cached image by path
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {String} path - Path of the cached image
-     *
-     * @see DKTools.PreloadManager.getCachedImageByKey
-     * @see DKTools.PreloadManager._generateImageKey
-     *
-     * @returns {Bitmap | undefined} Cached image or null
+     * @return {Bitmap | undefined} Cached image or null
      */
     static getCachedImageByPath(path) {
         return this.getCachedImageByKey(this._generateImageKey(path));
@@ -255,12 +221,9 @@ DKTools.PreloadManager = class {
 
     /**
      * Returns the total amount of resources to preload
-     *
      * @static
-     *
      * @since 8.3.0
-     *
-     * @returns {Number} Total amount of resources to preload
+     * @return {Number} Total amount of resources to preload
      */
     static getTotal() {
         return _.size(this._queue.audio) + _.size(this._queue.image);
@@ -270,13 +233,10 @@ DKTools.PreloadManager = class {
 
     /**
      * Returns true if the audio by key is cached
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {String} key - Key of the cached audio
-     *
-     * @returns {Boolean} Audio by key is cached
+     * @return {Boolean} Audio by key is cached
      */
     static isAudioCachedByKey(key) {
         return !!this._cache.audio[key];
@@ -284,13 +244,10 @@ DKTools.PreloadManager = class {
 
     /**
      * Returns true if the audio by path is cached
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {String} path - Path of the cached audio
-     *
-     * @returns {Boolean} Audio by path is cached
+     * @return {Boolean} Audio by path is cached
      */
     static isAudioCachedByPath(path) {
         return this.isAudioCachedByKey(this._generateAudioKey(path));
@@ -298,11 +255,9 @@ DKTools.PreloadManager = class {
 
     /**
      * Returns true if the preloading is finished
-     *
      * @since 5.0.0
      * @static
-     *
-     * @returns {Boolean} Preloading is finished
+     * @return {Boolean} Preloading is finished
      */
     static isFinished() {
         return !!this._finishTime;
@@ -310,10 +265,8 @@ DKTools.PreloadManager = class {
 
     /**
      * Returns true if the preload manager is ready
-     *
      * @since 6.1.0
-     *
-     * @returns {Boolean} Preload manager is ready
+     * @return {Boolean} Preload manager is ready
      */
     static isReady() {
         return this.isFinished();
@@ -321,13 +274,10 @@ DKTools.PreloadManager = class {
 
     /**
      * Returns true if the image by key is cached
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {String} key - Key of the cached image
-     *
-     * @returns {Boolean} Image by key is cached
+     * @return {Boolean} Image by key is cached
      */
     static isImageCachedByKey(key) {
         return !!this._cache.image[key];
@@ -335,17 +285,11 @@ DKTools.PreloadManager = class {
 
     /**
      * Returns true if the image by path is cached
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {String} path - Path of the cached image
      * @param {Number} [hue=0] - Hue
-     *
-     * @see DKTools.PreloadManager.isImageCachedByKey
-     * @see DKTools.PreloadManager._generateImageKey
-     *
-     * @returns {Boolean} Image by path is cached
+     * @return {Boolean} Image by path is cached
      */
     static isImageCachedByPath(path, hue) {
         return this.isImageCachedByKey(this._generateImageKey(path, hue));
@@ -353,11 +297,9 @@ DKTools.PreloadManager = class {
 
     /**
      * Returns true if the preloading is started
-     *
      * @since 9.0.0
      * @static
-     *
-     * @returns {Boolean} Preloading is started
+     * @return {Boolean} Preloading is started
      */
     static isStarted() {
         return !!this._startTime;
@@ -367,11 +309,9 @@ DKTools.PreloadManager = class {
 
     /**
      * Logs the message in the console
-     *
      * @version 9.0.0
      * @private
      * @static
-     *
      * @param {String} message - Message
      */
     static _log(message) {
@@ -386,12 +326,10 @@ DKTools.PreloadManager = class {
 
     /**
      * Processes the loading of the data
-     *
      * @version 8.3.0
      * @since 5.0.0
      * @private
      * @static
-     *
      * @param {WebAudio | Bitmap} data - Data
      */
     static _onFileLoad(data) {
@@ -417,13 +355,9 @@ DKTools.PreloadManager = class {
      * All callback functions will be cleared after the preload is finished
      * Callback function takes 1 argument - object with following properties:
      * file (WebAudio or Bitmap), loaded, total
-     *
      * @static
-     *
      * @since 8.3.0
-     *
      * @param {Function} callback - Callback
-     *
      * @example
      * DKTools.PreloadManager.onFileLoad(() => {
      *     Graphics.updateLoading();
@@ -442,13 +376,9 @@ DKTools.PreloadManager = class {
      * All callback functions will be cleared after the preload is finished
      * Callback function takes 1 argument - object with following properties:
      * loaded, skipped, preloadingTime (seconds), total
-     *
      * @static
-     *
      * @since 8.3.0
-     *
      * @param {Function} callback - Callback
-     *
      * @example
      * DKTools.PreloadManager.onFinish(() => {
      *     Graphics.endLoading();
@@ -484,7 +414,7 @@ DKTools.PreloadManager = class {
             const entity = new DKTools.IO.Directory(object.path);
 
             if (entity.isDirectory()) {
-                if (DKTools.IO.isLocalMode() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
+                if (Utils.isNwjs() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
                     const options = { sync: true };
                     let files = [];
 
@@ -660,13 +590,11 @@ DKTools.PreloadManager = class {
 
     /**
      * Processes audio loading
-     *
      * @version 9.0.0
      * @since 5.0.0
      * @static
      * @private
-     *
-     * @returns {Promise[]} Loaded audio files
+     * @return {Promise[]} Loaded audio files
      */
     static _processLoadAudioFiles() {
         const buffers = [];
@@ -711,13 +639,11 @@ DKTools.PreloadManager = class {
 
     /**
      * Processes image loading
-     *
      * @version 9.0.0
      * @since 5.0.0
      * @static
      * @private
-     *
-     * @returns {Promise[]} Loaded image files
+     * @return {Promise[]} Loaded image files
      */
     static _processLoadImageFiles() {
         const bitmaps = [];
@@ -773,7 +699,9 @@ DKTools.PreloadManager = class {
             }
         });
 
-        return bitmaps.map(bitmap => DKTools.Utils.Bitmap.loadAsync(bitmap).then(() => this._onFileLoad(bitmap)));
+        return bitmaps.map(bitmap =>
+            DKTools.Utils.Bitmap.loadAsync(bitmap)
+                .then(() => this._onFileLoad(bitmap)));
     }
 
     /**
@@ -784,10 +712,8 @@ DKTools.PreloadManager = class {
      *
      * @param {Object} object - Object with parameters
      *
-     * @param {String} object.path - Path to file or driectory (only for local mode)
+     * @param {String} object.path - Path to file or directory (only for local mode)
      * @param {Boolean} [object.caching] - Caching
-     *
-     * @see DKTools.PreloadManager._preload
      *
      * @example
      * // folder preloading
@@ -824,11 +750,9 @@ DKTools.PreloadManager = class {
      *
      * @param {Object} object - Object with parameters
      *
-     * @param {String} object.path - Path to file or driectory (only for local mode)
+     * @param {String} object.path - Path to file or directory (only for local mode)
      * @param {Number} [object.hue] - Hue
      * @param {Boolean} [object.caching] - Caching
-     *
-     * @see DKTools.PreloadManager._preload
      *
      * @example
      * // folder preloading
@@ -862,10 +786,8 @@ DKTools.PreloadManager = class {
 
     /**
      * Releases the audio by key from a cache
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {String} key - Key of the cached audio
      */
     static releaseAudioByKey(key) {
@@ -874,10 +796,8 @@ DKTools.PreloadManager = class {
 
     /**
      * Releases the audio by path from a cache
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {String} path - Path of the cached audio
      */
     static releaseAudioByPath(path) {
@@ -886,10 +806,8 @@ DKTools.PreloadManager = class {
 
     /**
      * Releases the image by key from a cache
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {String} key - Key of the cached image
      */
     static releaseImageByKey(key) {
@@ -898,15 +816,10 @@ DKTools.PreloadManager = class {
 
     /**
      * Releases the image by path from a cache
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {String} path - Path of the cached image
      * @param {Number} [hue] - Hue
-     *
-     * @see DKTools.PreloadManager.releaseImageByKey
-     * @see DKTools.PreloadManager._generateImageKey
      */
     static releaseImageByPath(path, hue) {
         this.releaseImageByKey(this._generateImageKey(path, hue));
@@ -917,10 +830,8 @@ DKTools.PreloadManager = class {
     /**
      * Sets the output of debugging information to the console
      * Each finish resets debugging
-     *
      * @since 9.0.0
      * @static
-     *
      * @param {Boolean} enabled - Enable output
      */
     static setDebugging(enabled) {
@@ -930,11 +841,9 @@ DKTools.PreloadManager = class {
     /**
      * Starts the preloading
      * Returns the promise
-     *
      * @version 9.0.0
      * @static
-     *
-     * @returns {Promise}
+     * @return {Promise}
      */
     static start() {
         const total = this.getTotal();
@@ -1015,6 +924,7 @@ DKTools.PreloadManager.Scene.prototype.initialize = function() {
     this._params = DKToolsParam.get('Initial Preloading', 'Progress Bar');
     this._total = DKTools.PreloadManager.getTotal();
     this._nextScene = Scene_Boot;
+    this._counter = 0;
 };
 
 // prepare
@@ -1067,15 +977,13 @@ DKTools.PreloadManager.Scene.prototype.create = function() {
 
 DKTools.PreloadManager.Scene.prototype.createBackground = function() {
     this._background = new Sprite(ImageManager.loadSystem(this._params['Background']));
-
     this.addChild(this._background);
 };
 
 DKTools.PreloadManager.Scene.prototype.createProgressBar = function() {
     const params = this._params;
     const style = params['Progress Bar Style'] || 'colors';
-    let width;
-    let height;
+    let width, height;
 
     if (style === 'colors') {
         width = eval(params['Progress Bar Width']);
@@ -1096,39 +1004,49 @@ DKTools.PreloadManager.Scene.prototype.createProgressBar = function() {
     const x = eval(params['Progress Bar X']) || 0;
     const y = eval(params['Progress Bar Y']) || 0;
 
-    this._progressBar = new DKTools.Sprite.ProgressBar.Rectangle(x, y, width, height);
+    this._progressBar = new DKTools.Sprite(x, y, width, height);
 
     this._progressBar.setupFont({ fontSize: params['Progress Bar Text Size'] });
 
     if (style === 'colors') {
-        this._progressBar.setupBackgroundColor(params['Progress Bar Background Color'])
-        this._progressBar.setupProgressColor(params['Progress Bar Progress Color']);
+        this._progressBar.addEvent({
+            type: 'draw-all',
+            onUpdate: () => {
+                this._progressBar.fillAll(params['Progress Bar Background Color']);
+                this._progressBar.fillRect({
+                    width: this._progressBar.width * this._counter / this._total,
+                    color: params['Progress Bar Progress Color']
+                });
+            }
+        });
     } else {
-        this._progressBar._backgroundBitmap = this._backgroundBitmap;
-        this._progressBar._progressBitmap = this._progressBitmap;
-
-        this._progressBar.setupDrawGraphicHandler(function() {
-            this.drawBitmap(this._backgroundBitmap);
-            this.drawBitmap(this._progressBitmap, {
-                source: (bitmap) => ({ width: bitmap.width * this.getPercents() / 100 })
-            });
-        }.bind(this._progressBar));
+        this._progressBar.addEvent({
+            type: 'draw-all',
+            onUpdate: () => {
+                this._progressBar.drawBitmap(this._backgroundBitmap);
+                this._progressBar.drawBitmap(this._progressBitmap, {
+                    source: (bitmap) => ({ width: bitmap.width * this._counter / this._total })
+                });
+            }
+        });
     }
 
     if (params['Progress Bar Text']) {
-        this._progressBar.setupDrawTextHandler(function() {
-            if (!this._data) {
-                return;
+        this._progressBar.addEvent({
+            type: 'draw-all',
+            onUpdate: () => {
+                if (!this._progressBar.progressData) {
+                    return;
+                }
+
+                const text = params['Progress Bar Text'].format(
+                    ...[...this._progressBar.progressData,
+                        Math.floor(this._counter * 100 / this._total).clamp(0, 100)]);
+
+                this._progressBar.drawText(text, { height: this._progressBar.height });
             }
-
-            const text = params['Progress Bar Text'].format(...[...this._data, this.getPercents()]);
-
-            this.drawText(text, { height: this.height });
-        }.bind(this._progressBar));
+        });
     }
-
-    this._progressBar.setupMaxValue(this._total);
-    this._progressBar.setupValue(0);
 
     this._progressBar.start();
 
@@ -1152,34 +1070,23 @@ DKTools.PreloadManager.Scene.prototype.start = function() {
             repeats: 0,
             repeatTime,
             onStart: () => {
-                this._progressBar._data = [data.file.url, data.loaded, data.total];
-                this._progressBar.nextValue();
+                this._counter++;
+                this._progressBar.progressData = [data.file.url, data.loaded, data.total];
+                this._progressBar.refreshAll();
             }
         });
     });
 
-    this._progressBar.addOneTimeEvent({
-        type: 'full',
-        onSuccess: () => {
-            SceneManager.goto(this._nextScene);
+    this._progressBar.addEvent({
+        type: 'update',
+        onUpdate: () => {
+            if (this._counter >= total) {
+                SceneManager.goto(this._nextScene);
+            }
         }
     });
 
     DKTools.PreloadManager.start();
 };
-
-DKTools.PreloadManager.Scene.prototype.terminate = function() {
-    Scene_Base.prototype.terminate.apply(this, arguments);
-
-    if (this._background) {
-        this.removeChild(this._background);
-    }
-
-    if (this._progressBar) {
-        this.removeChild(this._progressBar);
-    }
-};
-
-
 
 

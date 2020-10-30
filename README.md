@@ -1,8 +1,8 @@
 **Author**: DKPlugins
 
-**MV Version**: Public 9.2.0
+**MV Version**: Public 10.0.1
 
-**MZ Version**: Coming soon
+**MZ Version**: Public 1.1.1
 
 **Description**: Advanced project testing and various functions.
 
@@ -12,4 +12,4 @@
 
 **Documentation (MV Version)**: https://dk-plugins.ru/documentation/mv/DKTools/index.html
 
-**Documentation (MZ Version)**: Coming soon
+**Documentation (MZ Version)**: https://dk-plugins.ru/documentation/mz/DKTools/index.html

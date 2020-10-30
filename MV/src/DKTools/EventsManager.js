@@ -4,13 +4,9 @@
 
 /**
  * Event manager class
- *
- * @class DKTools.EventsManager
- *
+ * @class
  * @since 9.0.0
  * @memberof DKTools
- *
- * @see DKTools.EventsManager.prototype.initialize
  */
 DKTools.EventsManager = class {
 
@@ -22,7 +18,6 @@ DKTools.EventsManager = class {
 
     /**
      * Initializes the event manager
-     *
      * @param {DKTools.Sprite | DKTools.Window | DKTools.Scene} target - Target
      */
     initialize(target) {
@@ -51,7 +46,7 @@ DKTools.EventsManager = class {
      *
      * @param {DKTools.Animation} animation - Animation to add
      *
-     * @returns {DKTools.Animation | null} Added animation or null
+     * @return {DKTools.Animation | null} Added animation or null
      */
     addAnimation(animation) {
         return this.addEventToContainer(animation);
@@ -77,7 +72,7 @@ DKTools.EventsManager = class {
      * @param {Function} [object.onSuccess] - Handler of the event success
      * @param {Function} [object.onFail] - Handler of the event fail
      *
-     * @returns {DKTools.Event | DKTools.Animation | null} Added event or null
+     * @return {DKTools.Event | DKTools.Animation | null} Added event or null
      */
     addEvent(object) {
         let event;
@@ -93,12 +88,9 @@ DKTools.EventsManager = class {
 
     /**
      * Adds the event to container
-     *
      * @version 6.0.0
-     *
      * @param {DKTools.Event | DKTools.Animation} event - Event
-     *
-     * @returns {DKTools.Event | DKTools.Animation | null} Added event or null
+     * @return {DKTools.Event | DKTools.Animation | null} Added event or null
      */
     addEventToContainer(event) {
         if (!event) {
@@ -111,7 +103,7 @@ DKTools.EventsManager = class {
 
         event.setManager(this);
 
-        const container = this.getEventsContainer(event);
+        const container = this.getEventsContainerByType(event.type);
 
         container.push(event);
 
@@ -136,10 +128,7 @@ DKTools.EventsManager = class {
      * @param {Function} [object.onSuccess] - Handler of the event success
      * @param {Function} [object.onFail] - Handler of the event fail
      *
-     * @see DKTools.Event
-     * @see DKTools.EventsManager.prototype.addEvent
-     *
-     * @returns {DKTools.Event} Added event
+     * @return {DKTools.Event} Added event
      */
     addOneTimeEvent(object) {
         object.repeatTime = 1;
@@ -152,10 +141,9 @@ DKTools.EventsManager = class {
 
     /**
      * Checks the event
-     *
      * @private
      * @param {DKTools.Event | DKTools.Animation} event - Event
-     * @returns {Boolean}
+     * @return {Boolean}
      */
     _checkEvent(event) {
         return event && !event.isFinished();
@@ -163,7 +151,6 @@ DKTools.EventsManager = class {
 
     /**
      * Checks the events
-     *
      * @private
      */
     _checkEvents() {
@@ -174,24 +161,22 @@ DKTools.EventsManager = class {
 
     /**
      * Checks a container with the events and removes the completed events
-     *
      * @private
      * @param {Array} container - Container for the events
-     * @returns {Array} Filtered array
+     * @return {Array} Filtered array
      */
     _checkEventsContainer(container) {
-        return _.filter(container, this._checkEvent.bind(this));
+        return container.filter(event => this._checkEvent(event));
     }
 
     /**
      * Clears the events
-     *
      * @param {String[] | String} [object] - Array with event types or event type
      */
     clearEvents(object) {
         if (object) {
             if (Array.isArray(object)) {
-                _.forEach(object, type => {
+                object.forEach((type) => {
                     this._events[type] = [];
                 });
             } else { // object - String
@@ -204,10 +189,9 @@ DKTools.EventsManager = class {
 
     /**
      * Creates a container for the events
-     *
      * @version 9.0.0
      * @param {String} type - Type of the events
-     * @returns {Array} Container for the events
+     * @return {Array} Container for the events
      */
     createEventsContainer(type) {
         if (!this._events[type]) {
@@ -221,39 +205,32 @@ DKTools.EventsManager = class {
 
     /**
      * Returns the found animation
-     *
      * @since 6.0.0
-     *
      * @param {Number | String | *} id - ID of the animation
      * @param {String} [type] - Type of the animation
-     *
-     * @returns {DKTools.Animation | undefined} Animation
+     * @return {DKTools.Animation | undefined} Animation
      */
     findAnimation(id, type) {
-        return _.find(this.getAnimations(type), { id });
+        return this.getAnimations(type)
+                    .find(animation => animation.id === id);
     }
 
     /**
      * Returns the found event
-     *
      * @since 6.0.0
-     *
      * @param {Number | String | *} id - ID of the event
      * @param {String} [type] - Type of the event
-     *
-     * @returns {DKTools.Event | DKTools.Animation | undefined} Event
+     * @return {DKTools.Event | DKTools.Animation | undefined} Event
      */
     findEvent(id, type) {
-        return _.find(this.getEvents(type), { id });
+        return this.getEvents(type)
+                    .find(event => event.id === id);
     }
 
     /**
      * Finishes the events
-     *
      * @param {String} type - Type of the events
      * @param {Boolean} [forcedSuccess=false] - Forced success for the finish of the events
-     *
-     * @see DKTools.Event.prototype.finish
      */
     finishEvents(type, forcedSuccess = false) {
         this.iterateEventsContainer(type, (event) => {
@@ -265,29 +242,27 @@ DKTools.EventsManager = class {
 
     /**
      * Returns an array with the all animations or animations of a certain type
-     *
      * @param {String} [type] - Type of animation
-     * @returns {Array} Array with the animations
+     * @return {Array} Array with the animations
      */
     getAnimations(type) {
-        return this.getEvents(type).filter(event => event instanceof DKTools.Animation);
+        return this.getEvents(type)
+                    .filter(event => event instanceof DKTools.Animation);
     }
 
     /**
      * Returns an index of the event in its container
-     *
      * @param {DKTools.Event | DKTools.Animation} event - Event
-     * @returns {Number} Index of the event in its container
+     * @return {Number} Index of the event in its container
      */
     getEventIndex(event) {
-        return this.getEventsContainer(event).indexOf(event);
+        return this.getEventsContainerByType(event.type).indexOf(event);
     }
 
     /**
      * Returns an array with the all events or events of a certain type
-     *
      * @param {String} [type] - Type of the events
-     * @returns {Array} Array with the events
+     * @return {Array} Array with the events
      */
     getEvents(type) {
         if (type) {
@@ -296,7 +271,7 @@ DKTools.EventsManager = class {
 
         let events = [];
 
-        _.forEach(this._events, (container) => {
+        Object.values(this._events).forEach((container) => {
             events = events.concat(container);
         });
 
@@ -304,20 +279,9 @@ DKTools.EventsManager = class {
     }
 
     /**
-     * Returns a container for the events by event
-     *
-     * @param {DKTools.Event | DKTools.Animation} event - Event
-     * @returns {Array} Container for the events
-     */
-    getEventsContainer(event) {
-        return this.getEventsContainerByType(event.type);
-    }
-
-    /**
      * Returns a container for the events by event type
-     *
      * @param {String} type - Type of the events
-     * @returns {Array} Container for the events
+     * @return {Array} Container for the events
      */
     getEventsContainerByType(type) {
         return this._events[type] || this.createEventsContainer(type);
@@ -328,20 +292,19 @@ DKTools.EventsManager = class {
     /**
      * Checks for existence of the animation in the object
      * Returns true if the animation exists
-     *
      * @param {DKTools.Animation} animation - Animation
-     * @returns {Boolean} Animation exists
+     * @return {Boolean} Animation exists
      */
     hasAnimation(animation) {
-        return animation instanceof DKTools.Animation && this.getEventIndex(animation) >= 0;
+        return animation instanceof DKTools.Animation
+            && this.getEventIndex(animation) >= 0;
     }
 
     /**
      * Checks for existence of the animations of a certain type
      * Returns true if the animations exists
-     *
      * @param {String} [type] - Type of the animations
-     * @returns {Boolean} Animations exists
+     * @return {Boolean} Animations exists
      */
     hasAnimations(type) {
         return this.getAnimations(type).length > 0;
@@ -350,9 +313,8 @@ DKTools.EventsManager = class {
     /**
      * Checks for existence of the event in the object
      * Returns true if the event exists
-     *
      * @param {DKTools.Event | DKTools.Animation} event - Event
-     * @returns {Boolean} Event exists
+     * @return {Boolean} Event exists
      */
     hasEvent(event) {
         return this.getEventIndex(event) >= 0;
@@ -361,9 +323,8 @@ DKTools.EventsManager = class {
     /**
      * Checks for existence of the events of a certain type
      * Returns true if the events exists
-     *
      * @param {String} [type] - Type of the events
-     * @returns {Boolean} Events exists
+     * @return {Boolean} Events exists
      */
     hasEvents(type) {
         return this.getEvents(type).length > 0;
@@ -374,40 +335,32 @@ DKTools.EventsManager = class {
     /**
      * Checks the events for pause
      * Returns the conjunction of pauses of the events
-     *
      * @param {String} type - Type of the events
-     * @returns {Boolean} Conjunction of pauses of the events
+     * @return {Boolean} Conjunction of pauses of the events
      */
     isEventsPaused(type) {
-        const container = this.getEventsContainerByType(type);
-
-        return _.every(container, event => event.isPaused());
+        return this.getEventsContainerByType(type)
+                    .every(event => event.isPaused());
     }
 
     /**
      * Performs a callback function for the events
-     *
      * @param {String} type - Type of the events
      * @param {Function} callback - Event processing function
      */
     iterateEventsContainer(type, callback) {
-        const container = this.getEventsContainerByType(type);
-
-        _.forEach(container, callback);
+        this.getEventsContainerByType(type).forEach(callback);
     }
 
     // P methods
 
     /**
      * Pauses the events
-     *
      * @param {String} type - Type of the events
      * @param {Number} [duration=-1] - Duration of the pause
-     *
-     * @see DKTools.Event.prototype.pause
      */
     pauseEvents(type, duration = -1) {
-        this.iterateEventsContainer(type, event => {
+        this.iterateEventsContainer(type, (event) => {
             event.pause(duration);
         });
     }
@@ -417,15 +370,14 @@ DKTools.EventsManager = class {
     /**
      * Removes the event from a container
      * Returns true if the event was removed
-     *
      * @param {DKTools.Event | DKTools.Animation} event - Event
-     * @returns {Boolean} Event was removed
+     * @return {Boolean} Event was removed
      */
     removeEvent(event) {
         const index = this.getEventIndex(event);
 
         if (index >= 0) {
-            const container = this.getEventsContainer(event);
+            const container = this.getEventsContainerByType(event.type);
 
             container[index] = null;
 
@@ -437,13 +389,10 @@ DKTools.EventsManager = class {
 
     /**
      * Resumes the events
-     *
      * @param {String} type - Type of the events
-     *
-     * @see DKTools.Event.prototype.resume
      */
     resumeEvents(type) {
-        this.iterateEventsContainer(type, event => {
+        this.iterateEventsContainer(type, (event) => {
             event.resume();
         });
     }
@@ -452,14 +401,11 @@ DKTools.EventsManager = class {
 
     /**
      * Stops the events
-     *
      * @param {String} type - Type of the events
      * @param {Boolean} [forcedSuccess=false] - Forced success for the finish of the events
-     *
-     * @see DKTools.Event.prototype.stop
      */
     stopEvents(type, forcedSuccess = false) {
-        this.iterateEventsContainer(type, event => {
+        this.iterateEventsContainer(type, (event) => {
             event.stop(forcedSuccess);
         });
     }
@@ -468,57 +414,22 @@ DKTools.EventsManager = class {
 
     /**
      * Updates the manager
-     *
-     * @see DKTools.EventsManager._checkEvents
      */
     update() {
         this._checkEvents();
     }
 
     /**
-     * Updates the event
-     *
-     * @param {DKTools.Event | DKTools.Animation} event - Event
-     *
-     * @see DKTools.Event.prototype.update
-     */
-    updateEvent(event) {
-        if (event) {
-            event.update();
-        }
-    }
-
-    /**
      * Updates the events from container
-     *
      * @param {String} type - Type of the events
+     * @param {*} [data] - Data
      */
-    updateEventsContainer(type) {
-        this.iterateEventsContainer(type, this.updateEvent.bind(this));
+    updateEventsContainer(type, data) {
+        this.iterateEventsContainer(type, (event) => {
+            event.update(data);
+        });
     }
 
 };
-
-// properties
-
-Object.defineProperties(DKTools.EventsManager, {
-
-    /**
-     * Events
-     *
-     * @readonly
-     * @type {Object}
-     * @memberof DKTools.EventsManager.prototype
-     */
-    events: {
-        get: function() {
-            return this._events;
-        },
-        configurable: true
-    }
-
-});
-
-
 
 

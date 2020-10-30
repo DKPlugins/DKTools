@@ -5,8 +5,7 @@
 /**
  * Event class
  *
- * @class DKTools.Event
- *
+ * @class
  * @memberof DKTools
  *
  * @param {Object} [object] - Parameters
@@ -23,13 +22,110 @@
  * @param {Function} [object.onRepeat] - Handler of the event repeat
  * @param {Function} [object.onSuccess] - Handler of the event success
  * @param {Function} [object.onFail] - Handler of the event fail
- *
- * @see DKTools.Event.prototype.initialize
  */
 DKTools.Event = class {
 
     constructor() {
         this.initialize.apply(this, arguments);
+    }
+
+    // properties
+
+    /**
+     * Gets id of the event
+     * @since 6.0.0
+     * @return {Number | String} Id of the event
+     */
+    get id() {
+        return this._id;
+    }
+
+    /**
+     * Gets target of the event
+     * @return {DKTools.Sprite | DKTools.Window | DKTools.Scene} Target of the event
+     */
+    get target() {
+        return this._target;
+    }
+
+    /**
+     * Gets manager of the event
+     * @return {DKTools.EventsManager} Manager of the event
+     */
+    get manager() {
+        return this._manager;
+    }
+
+    /**
+     * Gets type of the event
+     * @return {String} Type of the event
+     */
+    get type() {
+        return this._type;
+    }
+
+    /**
+     * Gets time of one repeat
+     * @return {Number} Time of one repeat
+     */
+    get repeatTime() {
+        return this._repeatTime;
+    }
+
+    /**
+     * Gets amount of repeats
+     * @return {Number} Amount of repeats
+     */
+    get repeats() {
+        return this._repeats;
+    }
+
+    /**
+     * Gets remaining time of current repeat
+     * @return {Number} Remaining time of current repeat
+     */
+    get remainingTime() {
+        return this._remainingTime;
+    }
+
+    /**
+     * Sets remaining time of current repeat
+     * @param {Number} value - Value
+     */
+    set remainingTime(value) {
+        this._remainingTime = value;
+    }
+
+    /**
+     * Remaining amount of repeats
+     * @return {Number} Remaining amount of repeats
+     */
+    get remainingRepeats() {
+        return this._remainingRepeats;
+    }
+
+    /**
+     * Sets remaining amount of repeats
+     * @param {Number} value - Value
+     */
+    set remainingRepeats(value) {
+        this._remainingRepeats = value;
+    }
+
+    /**
+     * Gets remaining time of pause
+     * @return {Number} remaining time of pause
+     */
+    get remainingPauseTime() {
+        return this._remainingPauseTime;
+    }
+
+    /**
+     * Sets remaining time of pause
+     * @param {Number} value - Value
+     */
+    set remainingPauseTime(value) {
+        this._remainingPauseTime = value;
     }
 
     // initialize methods
@@ -41,7 +137,7 @@ DKTools.Event = class {
      *
      * @param {Object} [object] - Parameters
      *
-     * @param {Number | String | *} [object.id] - ID of the event
+     * @param {Number | String} [object.id] - ID of the event
      * @param {DKTools.Sprite | DKTools.Window | *} [object.target] - Target of the event
      * @param {String} [object.type] - Type of the event
      * @param {Number} [object.repeatTime] - Time of one repeat
@@ -160,40 +256,10 @@ DKTools.Event = class {
         this._resetRemainingRepeats();
     }
 
-    // A methods
-
-    /**
-     * Adds the remaining pause time to the event
-     *
-     * @param {Number} [time=1] - Time
-     */
-    addRemainingPauseTime(time = 1) {
-        this._remainingPauseTime += time;
-    }
-
-    /**
-     * Adds the remaining repeats to the event
-     *
-     * @param {Number} [repeats=1] - Repeats
-     */
-    addRemainingRepeats(repeats = 1) {
-        this._remainingRepeats += repeats;
-    }
-
-    /**
-     * Adds the remaining time to the event
-     *
-     * @param {Number} [time=1] - Time
-     */
-    addRemainingTime(time = 1) {
-        this._remainingTime += time;
-    }
-
     // C methods
 
     /**
      * Calls on pause handler
-     *
      * @private
      */
     _callOnPauseHandler() {
@@ -204,7 +270,6 @@ DKTools.Event = class {
 
     /**
      * Calls on repeat handler
-     *
      * @private
      */
     _callOnRepeatHandler() {
@@ -215,7 +280,6 @@ DKTools.Event = class {
 
     /**
      * Calls on reset handler
-     *
      * @private
      */
     _callOnResetHandler() {
@@ -226,7 +290,6 @@ DKTools.Event = class {
 
     /**
      * Calls on start handler
-     *
      * @private
      */
     _callOnStartHandler() {
@@ -239,9 +302,7 @@ DKTools.Event = class {
 
     /**
      * Calls on success handler
-     *
      * @private
-     *
      * @param {Boolean} [forcedSuccess=false]
      */
     _callOnSuccessHandler(forcedSuccess = false) {
@@ -252,31 +313,29 @@ DKTools.Event = class {
 
     /**
      * Calls on update handler
-     *
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnUpdateHandler() {
+    _callOnUpdateHandler(data) {
         if (this._canCallOnUpdateHandler()) {
-            this._onUpdate(this);
+            this._onUpdate(this, data);
         }
     }
 
     /**
      * Calls on failure handler
-     *
      * @private
      */
     _callOnFailHandler() {
-        if (this._canCallonFailHandler()) {
+        if (this._canCallOnFailHandler()) {
             this._onFail(this);
         }
     }
 
     /**
      * Returns true if can call on pause handler
-     *
      * @private
-     * @returns {Boolean} Can call on pause handler
+     * @return {Boolean} Can call on pause handler
      */
     _canCallOnPauseHandler() {
         return this.hasOnPauseHandler() && this.isPaused();
@@ -284,9 +343,8 @@ DKTools.Event = class {
 
     /**
      * Returns true if can call on repeat handler
-     *
      * @private
-     * @returns {Boolean} Can call on repeat handler
+     * @return {Boolean} Can call on repeat handler
      */
     _canCallOnRepeatHandler() {
         return this.hasOnRepeatHandler();
@@ -294,9 +352,8 @@ DKTools.Event = class {
 
     /**
      * Returns true if can call on reset handler
-     *
      * @private
-     * @returns {Boolean} Can call on reset handler
+     * @return {Boolean} Can call on reset handler
      */
     _canCallOnResetHandler() {
         return this.hasOnResetHandler();
@@ -304,9 +361,8 @@ DKTools.Event = class {
 
     /**
      * Returns true if can call on start handler
-     *
      * @private
-     * @returns {Boolean} Can call on start handler
+     * @return {Boolean} Can call on start handler
      */
     _canCallOnStartHandler() {
         return this.hasOnStartHandler() && !this.isStarted();
@@ -314,9 +370,8 @@ DKTools.Event = class {
 
     /**
      * Returns true if can call on success handler
-     *
      * @private
-     * @returns {Boolean} Can call on success handler
+     * @return {Boolean} Can call on success handler
      */
     _canCallOnSuccessHandler() {
         return this.hasOnSuccessHandler() && this.isFinished();
@@ -324,9 +379,8 @@ DKTools.Event = class {
 
     /**
      * Returns true if can call on update handler
-     *
      * @private
-     * @returns {Boolean} Can call on update handler
+     * @return {Boolean} Can call on update handler
      */
     _canCallOnUpdateHandler() {
         return this.hasOnUpdateHandler() && this.isUpdated();
@@ -334,18 +388,15 @@ DKTools.Event = class {
 
     /**
      * Returns true if can call on failure handler
-     *
      * @private
-     * @returns {Boolean} Can call on failure handler
+     * @return {Boolean} Can call on failure handler
      */
-    _canCallonFailHandler() {
-        return this.hasonFailHandler();
+    _canCallOnFailHandler() {
+        return this.hasOnFailHandler();
     }
 
     /**
      * Clears the remaining time of the event repeat
-     *
-     * @since 1.1.0
      * @private
      */
     _clearRemainingRepeats() {
@@ -354,28 +405,16 @@ DKTools.Event = class {
 
     /**
      * Clears the remaining time of the event repeat
-     *
-     * @since 1.1.0
      * @private
      */
     _clearRemainingTime() {
         this._remainingTime = 0;
     }
 
-    /**
-     * Clones the event
-     *
-     * @returns {DKTools.Event | DKTools.Animation | DKTools.Animation.Action} Cloned event
-     */
-    clone() {
-        return new (this.constructor)(this);
-    }
-
     // F methods
 
     /**
      * Finishes the event
-     *
      * @version 1.1.0
      * @param {Boolean} [forcedSuccess=false] - Forced successful completion of the event
      */
@@ -394,8 +433,7 @@ DKTools.Event = class {
 
     /**
      * Returns the elapsed repeats
-     *
-     * @returns {Number} Elapsed repeats
+     * @return {Number} Elapsed repeats
      */
     getElapsedRepeats() {
         return this._repeats - this._remainingRepeats;
@@ -403,8 +441,7 @@ DKTools.Event = class {
 
     /**
      * Returns the elapsed time
-     *
-     * @returns {Number} Elapsed time
+     * @return {Number} Elapsed time
      */
     getElapsedTime() {
         return this._repeatTime - this._remainingTime;
@@ -414,18 +451,25 @@ DKTools.Event = class {
 
     /**
      * Returns true if the event has the manager
-     *
      * @since 5.0.0
-     * @returns {Boolean} Event has the manager
+     * @return {Boolean} Event has the manager
      */
     hasManager() {
         return !!this._manager;
     }
 
     /**
-     * Returns true if the event has the on pause handler
+     * Returns true if the event has the on failure handler
      *
-     * @returns {Boolean} Event has the on pause handler
+     * @return {Boolean} Event has the on failure handler
+     */
+    hasOnFailHandler() {
+        return !!this._onFail;
+    }
+
+    /**
+     * Returns true if the event has the on pause handler
+     * @return {Boolean} Event has the on pause handler
      */
     hasOnPauseHandler() {
         return !!this._onPause;
@@ -433,8 +477,7 @@ DKTools.Event = class {
 
     /**
      * Returns true if the event has the on repeat handler
-     *
-     * @returns {Boolean} Event has the on repeat handler
+     * @return {Boolean} Event has the on repeat handler
      */
     hasOnRepeatHandler() {
         return !!this._onRepeat;
@@ -442,8 +485,7 @@ DKTools.Event = class {
 
     /**
      * Returns true if the event has the on reset handler
-     *
-     * @returns {Boolean} Event has the on reset handler
+     * @return {Boolean} Event has the on reset handler
      */
     hasOnResetHandler() {
         return !!this._onReset;
@@ -451,8 +493,7 @@ DKTools.Event = class {
 
     /**
      * Returns true if the event has the on start handler
-     *
-     * @returns {Boolean} Event has the on start handler
+     * @return {Boolean} Event has the on start handler
      */
     hasOnStartHandler() {
         return !!this._onStart;
@@ -460,8 +501,7 @@ DKTools.Event = class {
 
     /**
      * Returns true if the event has the on success handler
-     *
-     * @returns {Boolean} Event has the on success handler
+     * @return {Boolean} Event has the on success handler
      */
     hasOnSuccessHandler() {
         return !!this._onSuccess;
@@ -469,8 +509,7 @@ DKTools.Event = class {
 
     /**
      * Returns true if the event has the on update handler
-     *
-     * @returns {Boolean} Event has the on update handler
+     * @return {Boolean} Event has the on update handler
      */
     hasOnUpdateHandler() {
         return !!this._onUpdate;
@@ -478,8 +517,7 @@ DKTools.Event = class {
 
     /**
      * Returns true if the event has the target
-     *
-     * @returns {Boolean} Event has the target
+     * @return {Boolean} Event has the target
      */
     hasTarget() {
         return !!this._target;
@@ -487,20 +525,10 @@ DKTools.Event = class {
 
     /**
      * Returns true if the event has the type
-     *
-     * @returns {Boolean} Event has the type
+     * @return {Boolean} Event has the type
      */
     hasType() {
         return !!this._type;
-    }
-
-    /**
-     * Returns true if the event has the on failure handler
-     *
-     * @returns {Boolean} Event has the on failure handler
-     */
-    hasonFailHandler() {
-        return !!this._onFail;
     }
 
     // I methods
@@ -508,7 +536,7 @@ DKTools.Event = class {
     /**
      * Returns true if the event is animation
      *
-     * @returns {Boolean} Event is animation
+     * @return {Boolean} Event is animation
      */
     isAnimation() {
         return this instanceof DKTools.Animation;
@@ -517,7 +545,7 @@ DKTools.Event = class {
     /**
      * Returns true if the event is action of an animation
      *
-     * @returns {Boolean} Event is action of an animation
+     * @return {Boolean} Event is action of an animation
      */
     isAnimationAction() {
         return this instanceof DKTools.Animation.Action;
@@ -526,7 +554,7 @@ DKTools.Event = class {
     /**
      * Returns true if the event if finished
      *
-     * @returns {Boolean} Event if finished
+     * @return {Boolean} Event if finished
      */
     isFinished() {
         return this._remainingTime === 0 && this._remainingRepeats === 0;
@@ -535,7 +563,7 @@ DKTools.Event = class {
     /**
      * Returns true if the event is paused
      *
-     * @returns {Boolean} Event is paused
+     * @return {Boolean} Event is paused
      */
     isPaused() {
         return this._remainingPauseTime !== 0;
@@ -544,7 +572,7 @@ DKTools.Event = class {
     /**
      * Returns true if the event is started
      *
-     * @returns {Boolean} Event is started
+     * @return {Boolean} Event is started
      */
     isStarted() {
         return this._started;
@@ -553,7 +581,7 @@ DKTools.Event = class {
     /**
      * Returns true if the event is updated
      *
-     * @returns {Boolean} Event is updated
+     * @return {Boolean} Event is updated
      */
     isUpdated() {
         return this.isStarted() && !this.isPaused() && !this.isFinished();
@@ -603,10 +631,8 @@ DKTools.Event = class {
     /**
      * Removes the event
      * Returns true if the event was removed
-     *
      * @version 8.0.0
-     *
-     * @returns {Boolean} Event was removed
+     * @return {Boolean} Event was removed
      */
     remove() {
         if (this.hasTarget()) {
@@ -630,7 +656,6 @@ DKTools.Event = class {
 
     /**
      * Resets the event
-     *
      * @version 1.1.0
      */
     reset() {
@@ -650,9 +675,7 @@ DKTools.Event = class {
 
     /**
      * Sets the manager
-     *
      * @since 5.0.0
-     *
      * @param {DKTools.EventsManager} manager - Manager
      */
     setManager(manager) {
@@ -665,8 +688,15 @@ DKTools.Event = class {
     }
 
     /**
+     * Sets the on failure handler
+     * @param {Function} handler - Handler
+     */
+    setOnFailHandler(handler) {
+        this._onFail = handler;
+    }
+
+    /**
      * Sets the on pause handler
-     *
      * @param {Function} handler - Handler
      */
     setOnPauseHandler(handler) {
@@ -675,7 +705,6 @@ DKTools.Event = class {
 
     /**
      * Sets the on repeat handler
-     *
      * @param {Function} handler - Handler
      */
     setOnRepeatHandler(handler) {
@@ -684,7 +713,6 @@ DKTools.Event = class {
 
     /**
      * Sets the on reset handler
-     *
      * @param {Function} handler - Handler
      */
     setOnResetHandler(handler) {
@@ -693,7 +721,6 @@ DKTools.Event = class {
 
     /**
      * Sets the on start handler
-     *
      * @param {Function} handler - Handler
      */
     setOnStartHandler(handler) {
@@ -711,7 +738,6 @@ DKTools.Event = class {
 
     /**
      * Sets the on update handler
-     *
      * @param {Function} handler - Handler
      */
     setOnUpdateHandler(handler) {
@@ -720,7 +746,6 @@ DKTools.Event = class {
 
     /**
      * Sets the target
-     *
      * @param {DKTools.Sprite | DKTools.Window | *} target - Target
      */
     setTarget(target) {
@@ -728,17 +753,7 @@ DKTools.Event = class {
     }
 
     /**
-     * Sets the on failuer handler
-     *
-     * @param {Function} handler - Handler
-     */
-    setonFailHandler(handler) {
-        this._onFail = handler;
-    }
-
-    /**
      * Stops the event
-     *
      * @param {Boolean} [forcedSuccess=false] - Forced successful completion of the event
      */
     stop(forcedSuccess = false) {
@@ -750,18 +765,17 @@ DKTools.Event = class {
 
     /**
      * Updates the event
-     *
      * @private
+     * @param {*} [data] - Data
      */
-    _update() {
-        this._callOnUpdateHandler();
+    _update(data) {
+        this._callOnUpdateHandler(data);
         this._updateRemainingRepeats();
     }
 
     /**
      * Updates the pause
      *
-     * @version 3.1.0
      * @private
      */
     _updatePause() {
@@ -808,11 +822,12 @@ DKTools.Event = class {
 
     /**
      * Updates the event
+     * @param {*} [data] - Data
      */
-    update() {
+    update(data) {
         if (!this.isPaused()) {
             this._callOnStartHandler();
-            this._update();
+            this._update(data);
 
             if (this.isFinished()) {
                 this.finish();
@@ -823,244 +838,5 @@ DKTools.Event = class {
     }
 
 };
-
-// properties
-
-Object.defineProperties(DKTools.Event.prototype, {
-
-    /**
-     * ID of the event
-     *
-     * @since 6.0.0
-     * @readonly
-     * @type {Number | String | *}
-     * @memberof DKTools.Event.prototype
-     */
-    id: {
-        get: function() {
-            return this._id;
-        },
-        configurable: true
-    },
-
-    /**
-     * Target of the event
-     *
-     * @readonly
-     * @type {DKTools.Sprite | DKTools.Window | *}
-     * @memberof DKTools.Event.prototype
-     */
-    target: {
-        get: function() {
-            return this._target;
-        },
-        configurable: true
-    },
-
-    /**
-     * Manager of the event
-     *
-     * @readonly
-     * @type {DKTools.EventsManager}
-     * @memberof DKTools.Event.prototype
-     */
-    manager: {
-        get: function() {
-            return this._manager;
-        },
-        configurable: true
-    },
-
-    /**
-     * Type of the event
-     *
-     * @readonly
-     * @type {String}
-     * @memberof DKTools.Event.prototype
-     */
-    type: {
-        get: function() {
-            return this._type;
-        },
-        configurable: true
-    },
-
-    /**
-     * Time of one repeat
-     *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Event.prototype
-     */
-    repeatTime: {
-        get: function() {
-            return this._duration;
-        },
-        configurable: true
-    },
-
-    /**
-     * Amount of repeats
-     *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Event.prototype
-     */
-    repeats: {
-        get: function() {
-            return this._repeats;
-        },
-        configurable: true
-    },
-
-    /**
-     * Remaining time of current repeat
-     *
-     * @type {Number}
-     * @memberof DKTools.Event.prototype
-     */
-    remainingTime: {
-        get: function() {
-            return this._remainingTime;
-        },
-        set: function(value) {
-            this._remainingTime = value;
-        },
-        configurable: true
-    },
-
-    /**
-     * Remaining amount of repeats
-     *
-     * @type {Number}
-     * @memberof DKTools.Event.prototype
-     */
-    remainingRepeats: {
-        get: function() {
-            return this._remainingRepeats;
-        },
-        set: function(value) {
-            this._remainingRepeats = value;
-        },
-        configurable: true
-    },
-
-    /**
-     * Remaining time of pause
-     *
-     * @type {Number}
-     * @memberof DKTools.Event.prototype
-     */
-    remainingPauseTime: {
-        get: function() {
-            return this._remainingPauseTime;
-        },
-        set: function(value) {
-            this._remainingPauseTime = value;
-        },
-        configurable: true
-    },
-
-    /**
-     * Handler of the event start
-     *
-     * @readonly
-     * @type {Function}
-     * @memberof DKTools.Event.prototype
-     */
-    onStart: {
-        get: function() {
-            return this._onStart;
-        },
-        configurable: true
-    },
-
-    /**
-     * Handler of the event update
-     *
-     * @readonly
-     * @type {Function}
-     * @memberof DKTools.Event.prototype
-     */
-    onUpdate: {
-        get: function() {
-            return this._onUpdate;
-        },
-        configurable: true
-    },
-
-    /**
-     * Handler of the event pause
-     *
-     * @readonly
-     * @type {Function}
-     * @memberof DKTools.Event.prototype
-     */
-    onPause: {
-        get: function() {
-            return this._onPause;
-        },
-        configurable: true
-    },
-
-    /**
-     * Handler of the event reset
-     *
-     * @readonly
-     * @type {Function}
-     * @memberof DKTools.Event.prototype
-     */
-    onReset: {
-        get: function() {
-            return this._onReset;
-        },
-        configurable: true
-    },
-
-    /**
-     * Handler of the event repeat
-     *
-     * @readonly
-     * @type {Function}
-     * @memberof DKTools.Event.prototype
-     */
-    onRepeat: {
-        get: function() {
-            return this._onRepeat;
-        },
-        configurable: true
-    },
-
-    /**
-     * Handler of the event success
-     *
-     * @readonly
-     * @type {Function}
-     * @memberof DKTools.Event.prototype
-     */
-    onSuccess: {
-        get: function() {
-            return this._onSuccess;
-        },
-        configurable: true
-    },
-
-    /**
-     * Handler of the event fail
-     *
-     * @readonly
-     * @type {Function}
-     * @memberof DKTools.Event.prototype
-     */
-    onFail: {
-        get: function() {
-            return this._onFail;
-        },
-        configurable: true
-    }
-
-});
-
-
 
 

@@ -4,8 +4,7 @@
 
 /**
  * The static class that defines utility methods
- *
- * @class DKTools.Utils
+ * @class
  * @memberof DKTools
  */
 DKTools.Utils = class {
@@ -18,13 +17,10 @@ DKTools.Utils = class {
 
     /**
      * Initializes the utils
-     *
-     * @version 9.2.0
+     * @version 10.0.0
      * @static
      */
     static initialize() {
-
-        this._sayHello();
 
         this.__tileSize();
 
@@ -62,7 +58,6 @@ DKTools.Utils = class {
 
     /**
      * Checks the updates
-     *
      * @version 9.2.0
      * @since 3.0.0
      * @private
@@ -77,12 +72,12 @@ DKTools.Utils = class {
         let plugins = [];
 
         try {
-            const body = new FormData();
+            const params = { version: DKTools.VERSION, maker: Utils.RPGMAKER_NAME };
+            const queryParams = Object.entries(params)
+                                       .map(([key, value]) => `${key}=${value}`)
+                                       .join('&');
 
-            body.append('version', DKTools.VERSION);
-            body.append('maker', Utils.RPGMAKER_NAME);
-
-            plugins = await DKTools.Network.fetchJson(`${DKTools.SITE}/plugins.php`, { method: 'POST', body }) || [];
+            plugins = await DKTools.Network.fetchJson(`${DKTools.SITE}/plugins.php?${queryParams}`) || [];
 
             if (plugins.length === 0) {
                 return;
@@ -99,21 +94,27 @@ DKTools.Utils = class {
             const newVersion = plugin.version;
 
             if (DKTools.PluginManager.isRegistered(plugin.name)) {
-                const currentVersion = DKTools.PluginManager.getVersion(plugin.name);
+                if (!DKTools.PluginManager.checkVersion(plugin.name, newVersion)) {
+                    const currentVersion = DKTools.PluginManager.getVersion(plugin.name);
+                    const args = [`Available a new ${plugin.beta ? 'beta ' : ''}version of ${plugin.name}: ${newVersion}\n`,
+                        `Installed: ${currentVersion}\n`,
+                        `Visit site: ${plugin.url}`];
 
-                if (newVersion > currentVersion) {
-                    const args = [`Available a new version of ${plugin.name}: ${newVersion} \n`,
-                        `Visit site: ${plugin.url} \n`,
-                        `Download: ${plugin.download_url}`];
+                    if (plugin.download_url) {
+                        args.push(`\nDownload: ${plugin.download_url}`)
+                    }
 
                     console.log.apply(console, args);
                 }
             } else if (showNewPlugins) {
                 const args = [
-                    `Try the new plugin: ${plugin.name} \n`,
-                    `Description: ${plugin.description} \n`,
-                    `Visit site: ${plugin.url} \n`,
-                    `Download: ${plugin.download_url}`];
+                    `Try the new plugin: ${plugin.name}\n`,
+                    `Description: ${plugin.description}\n`,
+                    `Visit site: ${plugin.url} \n`];
+
+                if (plugin.download_url) {
+                    args.push(`\nDownload: ${plugin.download_url}`)
+                }
 
                 console.log.apply(console, args);
             }
@@ -124,14 +125,10 @@ DKTools.Utils = class {
 
     /**
      * Returns the data for error logging
-     *
      * @since 8.0.0
      * @private
      * @static
-     *
-     * @see DKTools.Utils.logError
-     *
-     * @returns {Object} Data for error logging
+     * @return {Object} Data for error logging
      */
     static _getErrorLogData() {
         const scene = SceneManager._scene;
@@ -211,123 +208,25 @@ DKTools.Utils = class {
     }
 
     /**
-     * Checks whether the browser is Android Chrome
-     *
-     * @deprecated 9.1.0
-     * @static
-     * @returns {Boolean} The browser is Android Chrome
-     */
-    static isAndroidChrome() {
-        return Utils.isAndroidChrome();
-    }
-
-    /**
-     * Returns true if the value is an array or object Arguments
-     *
-     * @since 1.1.0
-     * @static
-     * @param {*} value - Value
-     * @returns {Boolean} Value is an array or object Arguments
-     */
-    static isArrayLike(value) {
-        if (Array.isArray(value)) {
-            return true;
-        }
-
-        return String(value) === '[object Arguments]';
-    }
-
-    /**
-     * Returns true if the value is a boolean
-     *
-     * @since 1.1.0
-     * @static
-     * @param {*} value - Value
-     * @returns {Boolean} Value is a boolean
-     */
-    static isBoolean(value) {
-        return typeof value === 'boolean';
-    }
-
-    /**
      * Returns true if the value is a function
-     *
      * @since 1.1.0
      * @static
      * @param {*} value - Value
-     * @returns {Boolean} Value is a function
+     * @return {Boolean} Value is a function
      */
     static isFunction(value) {
         return typeof value === 'function';
     }
 
     /**
-     * Checks whether the platform is a mobile device.
-     *
-     * @deprecated 9.1.0
-     * @static
-     * @returns {Boolean} The platform is a mobile device
-     */
-    static isMobileDevice() {
-        return Utils.isMobileDevice();
-    }
-
-    /**
-     * Checks whether the browser is Mobile Safari
-     *
-     * @deprecated 9.1.0
-     * @static
-     * @returns {Boolean} The browser is Mobile Safari
-     */
-    static isMobileSafari() {
-        return Utils.isMobileSafari();
-    }
-
-    /**
-     * Returns true if the value is a finite number
-     *
-     * @since 5.0.0
-     * @static
-     * @param {*} value - Value
-     * @returns {Boolean} Value is a finite number
-     */
-    static isNumber(value) {
-        return Number.isFinite(value);
-    }
-
-    /**
-     * Checks whether the platform is NW.js
-     *
-     * @deprecated 9.1.0
-     * @static
-     * @returns {Boolean} The platform is NW.js
-     */
-    static isNwjs() {
-        return Utils.isNwjs();
-    }
-
-    /**
      * Returns true if the value is a string
-     *
      * @since 1.1.0
      * @static
      * @param {*} value - Value
-     * @returns {Boolean} Value is a string
+     * @return {Boolean} Value is a string
      */
     static isString(value) {
         return !!value && typeof value === 'string';
-    }
-
-    /**
-     * Returns true if the game test is running
-     *
-     * @deprecated 9.1.0
-     * @since 3.1.0
-     * @static
-     * @returns {Boolean} Game test is running
-     */
-    static isTest() {
-        return Utils.isTest();
     }
 
     // L methods
@@ -348,8 +247,6 @@ DKTools.Utils = class {
      * @param {String} [error.lineNumber]
      * @param {String} [error.columnNumber]
      * @param {String} [error.stack]
-     *
-     * @see DKTools.Utils._getErrorLogData
      */
     static async logError(error) {
         if (!error || !Utils.isNwjs()) {
@@ -428,7 +325,6 @@ DKTools.Utils = class {
 
     /**
      * Makes a screenshot
-     *
      * @version 9.1.0
      * @static
      */
@@ -438,16 +334,16 @@ DKTools.Utils = class {
         }
 
         const param = DKToolsParam.get('Screenshots');
-        const path = param.Path;
-        const type = param.Type;
-        const quality = param.Quality;
+        const path = param['Path'];
+        const type = param['Type'];
+        const quality = param['Quality'];
         const snap = SceneManager.snap();
         const urlData = snap.canvas.toDataURL('image/' + type, quality);
         const regex = new RegExp(`^data:image\/${type};base64,`);
         const data = urlData.replace(regex, '');
         const date = new Date();
 
-        let filename = param.Filename;
+        let filename = param['Filename'];
 
         filename = filename.replace(/%year/gi, date.getFullYear());
         filename = filename.replace(/%month/gi, date.getMonth() + 1);
@@ -461,30 +357,19 @@ DKTools.Utils = class {
 
         const file = new DKTools.IO.File(fullPath);
 
-        file.save(data, { createDirectory: true, options: 'base64' });
-
-        console.log('The screenshot is saved with the name: ' + fullName);
-    }
-
-    /**
-     * Copies properties of one object to another.
-     * Handles get/set properties correctly.
-     * Doesn't clone sub-objects.
-     *
-     * @static
-     *
-     * @param {Object} target - A target to copy properties
-     * @param {Object} source - The source of properties
-     */
-    static mixin(target, source) {
-        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+        file.save(data, {
+            createDirectory: true,
+            options: 'base64',
+            onSuccess: () => {
+                console.log('The screenshot is saved with the name: ' + fullName);
+            }
+        });
     }
 
     // O methods
 
     /**
      * Opens the debug console
-     *
      * @version 9.1.0
      * @static
      */
@@ -504,102 +389,7 @@ DKTools.Utils = class {
         }
     }
 
-    // T methods
-
-    /**
-     * @since 6.1.0
-     * @private
-     * @static
-     */
-    static __tileSize() {
-        const param = DKToolsParam.get('Tile Size') || {};
-
-        if (param['Enabled']) {
-            Tilemap.TILE_WIDTH = param['Size'];
-            Tilemap.TILE_HEIGHT = param['Size'];
-        }
-    }
-
-    /**
-     * Throws the error
-     *
-     * @since 6.1.0
-     * @static
-     *
-     * @param {*} error - Error
-     */
-    static throwError(error) {
-        setTimeout(() => {
-            throw error;
-        }, 0);
-    }
-
-    // Q methods
-
-    /**
-     * @version 9.1.0
-     * @since 4.0.0
-     * @private
-     * @static
-     */
-    static __quickLoad() {
-        if (!Utils.isTest() || !DKToolsParam.get('Quick Load', 'Enabled')) {
-            return;
-        }
-
-        const savefileId = DKToolsParam.get('Quick Load', 'Savefile ID');
-        const scene = SceneManager._scene;
-
-        if (savefileId > 0) {
-            if (DataManager.loadGame(savefileId)) {
-                SoundManager.playLoad();
-
-                if (scene instanceof Scene_Base) {
-                    scene.fadeOutAll();
-                }
-
-                if ($gameSystem.versionId() !== $dataSystem.versionId) {
-                    $gamePlayer.reserveTransfer($gameMap.mapId(), $gamePlayer.x, $gamePlayer.y);
-                    $gamePlayer.requestMapReload();
-                }
-
-                SceneManager.goto(Scene_Map);
-            }
-        } else if (!(scene instanceof Scene_Load)) {
-            SceneManager.push(Scene_Load);
-        }
-    }
-
     // S methods
-
-    /**
-     * Displays information about the plugin in the debug console
-     *
-     * @version 5.0.0
-     * @private
-     * @static
-     */
-    static _sayHello() {
-        if (this._saidHello) {
-            return;
-        }
-
-        if (navigator.userAgent.toLowerCase().indexOf('chrome') >= 0) {
-            const args = [`%c %c %c DKTools.js ${DKTools.VERSION} %c  %c  ${DKTools.SITE}  %c \n`,
-                'background: #279EE8; padding:5px 0;',
-                'background: #279EE8; padding:5px 0;',
-                'color: #4CCBF5; background: #030307; padding:5px 0;',
-                'background: #279EE8; padding:5px 0;',
-                'background: #BDE5F2; padding:5px 0;',
-                'background: #279EE8; padding:5px 0;'];
-
-            console.log.apply(console, args);
-        } else if (window.console) {
-            console.log(`DKTools.js ${DKTools.VERSION} - ${DKTools.SITE}`);
-        }
-
-        this._saidHello = true;
-    }
 
     /**
      * @version 9.2.0
@@ -707,7 +497,7 @@ DKTools.Utils = class {
                     line = {
                         x: TouchInput.mouseX,
                         y: TouchInput.mouseY,
-                        color: param['Ruler Color'] || DKTools.Utils.Random.getHexColor()
+                        color: param['Ruler Color'] || '#' + (Math.random() * 0xFFFFFF << 0).toString(16)
                     };
                 }
 
@@ -732,8 +522,11 @@ DKTools.Utils = class {
             type: 'draw-all',
             onUpdate: () => {
                 if (line) {
-                    const point2 = { x: TouchInput.mouseX, y: TouchInput.mouseY };
-                    const distance = Math.floor(DKTools.Utils.Point.getDistance(line, point2));
+                    const mouse = { x: TouchInput.mouseX, y: TouchInput.mouseY };
+                    const distance =
+                        Math.floor(
+                            Math.sqrt(
+                                Math.pow(line.x - mouse.x, 2) + Math.pow(line.y - mouse.y, 2)));
 
                     mouseSprite.drawText(`line: ${distance} (${line.x}, ${line.y})`, { y: '0', align: 'left' });
                 }
@@ -746,14 +539,77 @@ DKTools.Utils = class {
         mouseSprite.start();
 
         this._gridSprite.addChild(mouseSprite);
-
         this._gridSprite.updateMouseInsideEvents();
 
         SceneManager._scene.addChild(this._gridSprite);
     }
 
+    // T methods
+
+    /**
+     * @since 6.1.0
+     * @private
+     * @static
+     */
+    static __tileSize() {
+        const param = DKToolsParam.get('Tile Size') || {};
+
+        if (param['Enabled']) {
+            Tilemap.TILE_WIDTH = param['Size'];
+            Tilemap.TILE_HEIGHT = param['Size'];
+        }
+    }
+
+    /**
+     * Throws the error
+     *
+     * @since 6.1.0
+     * @static
+     *
+     * @param {*} error - Error
+     */
+    static throwError(error) {
+        setTimeout(() => {
+            throw error;
+        }, 0);
+    }
+
+    // Q methods
+
+    /**
+     * @version 9.1.0
+     * @since 4.0.0
+     * @private
+     * @static
+     */
+    static __quickLoad() {
+        if (!Utils.isTest() || !DKToolsParam.get('Quick Load', 'Enabled')) {
+            return;
+        }
+
+        const savefileId = DKToolsParam.get('Quick Load', 'Savefile ID');
+        const scene = SceneManager._scene;
+
+        if (savefileId > 0) {
+            if (DataManager.loadGame(savefileId)) {
+                SoundManager.playLoad();
+
+                if (scene instanceof Scene_Base) {
+                    scene.fadeOutAll();
+                }
+
+                if ($gameSystem.versionId() !== $dataSystem.versionId) {
+                    $gamePlayer.reserveTransfer($gameMap.mapId(), $gamePlayer.x, $gamePlayer.y);
+                    $gamePlayer.requestMapReload();
+                }
+
+                SceneManager.goto(Scene_Map);
+            }
+        } else if (!(scene instanceof Scene_Load)) {
+            SceneManager.push(Scene_Load);
+        }
+    }
+
 };
-
-
 
 

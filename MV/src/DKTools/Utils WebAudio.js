@@ -4,10 +4,8 @@
 
 /**
  * The static class that defines utility methods for WebAudio class
- *
  * @since 5.0.0
- *
- * @class DKTools.Utils.WebAudio
+ * @class
  * @memberof DKTools.Utils
  */
 DKTools.Utils.WebAudio = class {
@@ -27,19 +25,17 @@ DKTools.Utils.WebAudio = class {
      * @param {String} object.filename - Name of file
      * @param {Function} [object.listener] - Function of processing after loading an audio file
      *
-     * @see WebAudio.prototype.addLoadListener
-     *
-     * @returns {WebAudio | null} Loaded audio file or null
+     * @return {WebAudio | null} Loaded audio file or null
      */
     static load(object, filename, listener) {
         if (!object) {
             return null;
         } else if (object instanceof WebAudio) {
             return object;
-        } else if (DKTools.Utils.isArrayLike(object)) {
+        } else if (Array.isArray(object) || String(object) === '[object Arguments]') {
             return this.load.apply(this, object);
         } else if (object instanceof Object) {
-            return this.load(object.folder, object.filename, object.listener, object.hue, object.smooth);
+            return this.load(object.folder, object.filename, object.listener);
         } else if (!DKTools.Utils.isString(object)) {
             return null;
         }
@@ -70,12 +66,10 @@ DKTools.Utils.WebAudio = class {
      * @param {String} object.filename - Name of file
      * @param {Function} [object.listener] - Function of processing after loading an audio file
      *
-     * @see DKTools.Utils.WebAudio.load
-     *
-     * @returns {Promise} Loaded audio file or null
+     * @return {Promise<WebAudio | null>} Loaded audio file or null
      */
     static async loadAsync(object, filename, listener) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             const buffer = this.load(object, filename, listener);
 
             if (buffer) {
@@ -110,15 +104,13 @@ DKTools.Utils.WebAudio = class {
      * DKTools.Utils.WebAudio.loadBuffers(buffers, function(allBuffers) {
      *     // all loaded buffers
      * });
-     *
-     * @see DKTools.Utils.WebAudio.load
      */
     static loadBuffers(buffers, onLoadAllBuffers, onLoadSomeBuffer) {
         if (!DKTools.Utils.isFunction(onLoadAllBuffers)) {
             return;
         }
 
-        buffers = _.map(buffers, buffer => this.load(buffer));
+        buffers = buffers.map(buffer => this.load(buffer));
 
         const loadedBuffers = [];
         let loaded = 0;
@@ -142,7 +134,7 @@ DKTools.Utils.WebAudio = class {
             }
         };
 
-        _.forEach(buffers, (buffer, index) => {
+        buffers.forEach((buffer, index) => {
             if (buffer instanceof WebAudio) {
                 buffer.addLoadListener(buffer => loadListener(index, buffer));
             } else {
@@ -164,18 +156,12 @@ DKTools.Utils.WebAudio = class {
      * @param {String} object[].filename - Name of file
      * @param {Function} [object[].listener] - Function of processing after loading an audio file
      *
-     * @see DKTools.Utils.WebAudio.loadAsync
-     *
-     * @returns {Promise} Loaded audio files
+     * @return {Promise<WebAudio[]>} Loaded audio files
      */
     static async loadBuffersAsync(buffers) {
-        const promises = _.map(buffers, buffer => this.loadAsync(buffer));
-
-        return Promise.all(promises);
+        return Promise.all(buffers.map(buffer => this.loadAsync(buffer)));
     }
 
 };
-
-
 
 

@@ -4,86 +4,53 @@
 
 /**
  * Button class
- *
- * @class DKTools.Sprite.Button
+ * @class
  * @extends DKTools.Sprite
- *
  * @memberof DKTools.Sprite
- *
- * @see DKTools.Sprite.Button.prototype.initialize
  */
 DKTools.Sprite.Button = class extends DKTools.Sprite {
 
-    // C methods
+    // properties
 
     /**
-     * Clears all data
-     *
-     * @version 9.1.0
-     * @private
-     * @override
-     *
-     * @see DKTools.Sprite.prototype._clearAll
-     * @see DKTools.Sprite.Button.prototype._clearMousePressTime
-     * @see DKTools.Sprite.Button.prototype._clearTouchPressTime
+     * Gets interval of long pressing
+     * @return {Number} Interval of long pressing
      */
-    _clearAll() {
-        super._clearAll();
-
-        if (Utils.isMobileDevice()) {
-            this._clearTouchPressTime();
-        } else {
-            this._clearMousePressTime();
-        }
+    get longPressInterval() {
+        return this._longPressInterval;
     }
 
     /**
-     * Clears pressed time (mouse)
-     *
-     * @since 2.0.0
-     * @private
+     * Gets mouse press time
+     * @return {Number} Mouse press time
      */
-    _clearMousePressTime() {
-        /**
-         * @private
-         * @readonly
-         * @type {Number}
-         */
-        this._mousePressTime = 0;
+    get mousePressTime() {
+        return this._mousePressTime;
     }
 
     /**
-     * Clears pressed time (touch devices)
-     *
+     * Gets touch press time
      * @since 9.0.0
-     * @private
+     * @return {Number} Touch press time
      */
-    _clearTouchPressTime() {
-        /**
-         * @private
-         * @readonly
-         * @type {Number}
-         */
-        this._touchPressTime = 0;
+    get touchPressTime() {
+        return this._touchPressTime;
     }
 
     // I methods
 
     /**
      * Returns true if the button is pressed longer than the long press interval
-     *
-     * @returns {Boolean} Button is pressed longer than the long press interval
+     * @return {Boolean} Button is pressed longer than the long press interval
      */
     isLongPressed() {
         return this._mousePressTime >= this._longPressInterval;
     }
 
     /**
-     * Returns true if toched longer than the long press interval
-     *
+     * Returns true if touched longer than the long press interval
      * @since 9.0.0
-     *
-     * @returns {Boolean} Toched longer than the long press interval
+     * @return {Boolean} Touched longer than the long press interval
      */
     isLongTouched() {
         return this._touchPressTime >= this._longPressInterval;
@@ -91,10 +58,7 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
 
     /**
      * Returns true if the button is pressed
-     *
-     * @see DKTools.Sprite.Button.prototype.isLongPressed
-     *
-     * @returns {Boolean} Button is pressed
+     * @return {Boolean} Button is pressed
      */
     isPressed() {
         return this._mousePressTime > 0 && !this.isLongPressed();
@@ -102,12 +66,8 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
 
     /**
      * Returns true if touched
-     *
      * @since 9.0.0
-     *
-     * @see DKTools.Sprite.Button.prototype.isLongTouched
-     *
-     * @returns {Boolean} Touched
+     * @return {Boolean} Touched
      */
     isTouched() {
         return this._touchPressTime > 0 && !this.isLongTouched();
@@ -115,72 +75,12 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
 
     // S methods
 
-    /**
-     * Sets the events
-     *
-     * @version 2.0.0
-     * @private
-     * @override
-     *
-     * @see DKTools.Sprite.prototype._setupEvents
-     * @see DKTools.Sprite.Button.prototype._setupUpdateButtonStateEvent
-     */
-    _setupEvents() {
-        super._setupEvents();
-        this._setupUpdateButtonStateEvent();
-    }
-
-    /**
-     * Sets the options
-     *
-     * @version 9.1.0
-     * @private
-     * @override
-     *
-     * @see DKTools.Sprite.prototype._setupOptions
-     * @see DKTools.Sprite.Button.prototype._setupProcessMouseOption
-     */
-    _setupOptions() {
-        super._setupOptions();
-
-        if (!Utils.isMobileDevice()) {
-            this._setupProcessMouseOption();
-        }
-    }
-
-    /**
-     * Sets the update event
-     *
-     * @since 2.0.0
-     * @private
-     *
-     * @see DKTools.Sprite.Button.prototype.addEvent
-     * @see DKTools.Sprite.Button.prototype.updateButtonState
-     */
-    _setupUpdateButtonStateEvent() {
-        this.addEvent({
-            type: 'update',
-            onUpdate: this.updateButtonState.bind(this)
-        });
-    }
-
-    /**
-     * Sets the option process-mouse
-     *
-     * @since 2.0.0
-     * @private
-     *
-     * @see DKTools.Sprite.Button.prototype.enableOption
-     */
-    _setupProcessMouseOption() {
-        this.enableOption('process-mouse');
-    }
+    // standard methods
 
     /**
      * Returns the standard activity of the button
-     *
      * @override
-     * @returns {Boolean} Standard activity of the button
+     * @return {Boolean} Standard activity of the button
      */
     standardActive() {
         return false;
@@ -188,24 +88,19 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
 
     /**
      * Returns the standard interval of long pressing
-     *
-     * @returns {Number} Standard interval of long pressing
+     * @return {Number} Standard interval of long pressing
      */
     standardLongPressInterval() {
         return 18;
     }
 
+    // setup methods
+
     /**
      * Sets all parameters
-     *
      * @override
-     *
      * @param {Object} [object={}] - Parameters
-     *
      * @param {Number} [object.longPressInterval] - Interval of long pressing
-     *
-     * @see DKTools.Sprite.prototype.setupAll
-     * @see DKTools.Sprite.Button.prototype.setupLongPressInterval
      */
     setupAll(object = {}) {
         object = object || {};
@@ -217,10 +112,7 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
 
     /**
      * Sets the interval of long pressing
-     *
      * @param {Number} [interval=this.standardLongPressInterval()] - Interval of long pressing
-     *
-     * @see DKTools.Sprite.Button.prototype.standardLongPressInterval
      */
     setupLongPressInterval(interval) {
         /**
@@ -231,79 +123,12 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
         this._longPressInterval = interval || this.standardLongPressInterval();
     }
 
-    /**
-     * Changes all parameters
-     * Returns the number of changed parameters
-     *
-     * @version 2.0.0
-     * @override
-     *
-     * @param {Object} [object={}] - Parameters
-     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
-     * @param {Boolean} [activate=false] - Activates the button
-     *
-     * @param {Number} [object.longPressInterval] - Interval of long pressing
-     *
-     * @see DKTools.Sprite.prototype.setAll
-     * @see DKTools.Sprite.Button.prototype.setLongPressInterval
-     *
-     * @returns {Number} Number of changed parameters
-     */
-    setAll(object = {}, blockStart = false, activate = false) {
-        object = object || {};
-
-        const block = true;
-        let changed = super.setAll(object, block);
-
-        if (this.setLongPressInterval(object.longPressInterval)) {
-            changed++;
-        }
-
-        if (changed > 0) {
-            if (!blockStart) {
-                this.start();
-            }
-
-            if (activate) {
-                this.activate();
-            }
-        }
-
-        return changed;
-    }
-
-    /**
-     * Changes the interval of long pressing
-     * Returns true if the change occurred
-     *
-     * @param {Number} [interval] - Interval of long pressing
-     *
-     * @see DKTools.Sprite.Button.prototype.setupLongPressInterval
-     *
-     * @returns {Boolean} Change occurred
-     */
-    setLongPressInterval(interval) {
-        if (this._longPressInterval === interval) {
-            return false;
-        }
-
-        const lastInterval = this._longPressInterval;
-
-        this.setupLongPressInterval(interval);
-
-        return this._longPressInterval !== lastInterval;
-    }
-
     // P methods
 
     /**
      * Processes all
-     *
      * @version 9.1.0
      * @override
-     *
-     * @see DKTools.Sprite.prototype.processAll
-     * @see DKTools.Sprite.Button.prototype.processMousePress
      */
     processAll() {
         super.processAll();
@@ -317,25 +142,10 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
 
     /**
      * Processes a mouse press
-     *
      * @version 2.0.0
-     *
-     * @see DKTools.Sprite.Button.prototype.isVisible
-     * @see DKTools.Sprite.Button.prototype.isActive
-     * @see DKTools.Sprite.Button.prototype.isMouseInside
-     * @see DKTools.Sprite.Button.prototype.isLongPressed
-     * @see DKTools.Sprite.Button.prototype.updateMouseLongPressEvents
-     * @see DKTools.Sprite.Button.prototype.isPressed
-     * @see DKTools.Sprite.Button.prototype.updateMouseClickEvents
-     * @see DKTools.Sprite.Button.prototype._clearMousePressTime
-     * @see TouchInput.isMousePressed
-     * @see TouchInput.isLeftButtonPressed
-     * @see TouchInput.isMiddleButtonPressed
-     * @see TouchInput.isRightButtonPressed
      */
     processMousePress() {
-        if (this.isVisible() && this.isMouseInside() &&
-            (this.isActive() || this._optionsManager.isOptionEnabled('process-mouse-press-ignore-active'))) {
+        if (this.isVisibleAndActive() && this.isMouseInside()) {
             if (TouchInput.isMousePressed()) {
                 this._mousePressTime++;
 
@@ -383,35 +193,19 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
                     }
                 }
 
-                this._clearMousePressTime();
+                this._mousePressTime = 0;
             }
         } else {
-            this._clearMousePressTime();
+            this._mousePressTime = 0;
         }
     }
 
     /**
      * Processes a touches
-     *
      * @since 9.0.0
-     *
-     * @see DKTools.Sprite.Button.prototype.isVisible
-     * @see DKTools.Sprite.Button.prototype.isActive
-     * @see DKTools.Sprite.Button.prototype.isTouchInside
-     * @see DKTools.Sprite.Button.prototype.isTouched
-     * @see DKTools.Sprite.Button.prototype.isLongTouched
-     * @see DKTools.Sprite.Button.prototype.updateTouchEvents
-     * @see DKTools.Sprite.Button.prototype.updateLongTouchEvents
-     * @see DKTools.Sprite.Button.prototype.updateTouchDownEvents
-     * @see DKTools.Sprite.Button.prototype.updateTouchUpEvents
-     * @see DKTools.Sprite.Button.prototype.updateLongTouchStartedEvents
-     * @see DKTools.Sprite.Button.prototype.updateLongTouchFinishedEvents
-     * @see DKTools.Sprite.Button.prototype._clearTouchPressTime
-     * @see TouchInput.isScreenPressed
      */
     processTouch() {
-        if (this.isVisible() && this.isTouchInside() &&
-            (this.isActive() || this._optionsManager.isOptionEnabled('process-touch-ignore-active'))) {
+        if (this.isVisibleAndActive() && this.isTouchInside()) {
             if (TouchInput.isScreenPressed()) {
                 this._touchPressTime++;
 
@@ -435,22 +229,28 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
                     this.updateTouchUpEvents();
                 }
 
-                this._clearTouchPressTime();
+                this._touchPressTime = 0;
             }
         } else {
-            this._clearTouchPressTime();
+            this._touchPressTime = 0;
         }
     }
 
     // U methods
 
     /**
+     * Updates the button
+     * @version 10.0.0
+     * @override
+     */
+    update() {
+        super.update.apply(this, arguments);
+        this.updateButtonState();
+    }
+
+    /**
      * Updates the button state
-     *
      * @version 9.1.0
-     *
-     * @see DKTools.Sprite.Button.prototype.updateStatePressedEvents
-     * @see DKTools.Sprite.Button.prototype.updateStateNormalEvents
      */
     updateButtonState() {
         if (Utils.isMobileDevice()) {
@@ -468,223 +268,126 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
         }
     }
 
+    // events methods
+
     /**
      * Updates the events with type: long-touch
-     *
      * @since 9.0.0
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateLongTouchEvents() {
-        this.updateEventsContainer('long-touch');
+        this._eventsManager.updateEventsContainer('long-touch');
     }
 
     /**
      * Updates the events with type: mouse-long-press-finished
-     *
      * @since 9.0.0
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateLongTouchFinishedEvents() {
-        this.updateEventsContainer('long-touch-finished');
+        this._eventsManager.updateEventsContainer('long-touch-finished');
     }
 
     /**
      * Updates the events with type: mouse-long-press-started
-     *
      * @since 9.0.0
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateLongTouchStartedEvents() {
-        this.updateEventsContainer('long-touch-started');
+        this._eventsManager.updateEventsContainer('long-touch-started');
     }
 
     /**
      * Updates the events with type: mouse-down-button
-     *
      * @since 2.0.0
-     *
      * @param {String} button - Mouse button (left, middle or right)
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateMouseDownEvents(button) {
-        this.updateEventsContainer('mouse-down-' + button);
+        this._eventsManager.updateEventsContainer('mouse-down-' + button);
     }
 
     /**
      * Updates the events with type: mouse-up-button
-     *
      * @since 2.0.0
-     *
      * @param {String} button - Mouse button (left, middle or right)
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateMouseUpEvents(button) {
-        this.updateEventsContainer('mouse-up-' + button);
+        this._eventsManager.updateEventsContainer('mouse-up-' + button);
     }
 
     /**
      * Updates the events with type: mouse-click-button
-     *
      * @since 2.0.0
-     *
      * @param {String} button - Mouse button (left, middle or right)
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateMouseClickEvents(button) {
-        this.updateEventsContainer('mouse-click-' + button);
+        this._eventsManager.updateEventsContainer('mouse-click-' + button);
     }
 
     /**
      * Updates the events with type: mouse-long-press-button
-     *
      * @since 2.0.0
-     *
      * @param {String} button - Mouse button (left, middle or right)
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateMouseLongPressEvents(button) {
-        this.updateEventsContainer('mouse-long-press-' + button);
+        this._eventsManager.updateEventsContainer('mouse-long-press-' + button);
     }
 
     /**
      * Updates the events with type: mouse-long-press-button-started
-     *
      * @since 2.0.0
-     *
      * @param {String} button - Mouse button (left, middle or right)
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateMouseLongPressStartedEvents(button) {
-        this.updateEventsContainer(`mouse-long-press-${button}-started`);
+        this._eventsManager.updateEventsContainer(`mouse-long-press-${button}-started`);
     }
 
     /**
      * Updates the events with type: mouse-long-press-button-finished
-     *
      * @since 2.0.0
-     *
      * @param {String} button - Mouse button (left, middle or right)
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateMouseLongPressFinishedEvents(button) {
-        this.updateEventsContainer(`mouse-long-press-${button}-finished`);
+        this._eventsManager.updateEventsContainer(`mouse-long-press-${button}-finished`);
     }
 
     /**
      * Updates the events with type: state-normal
-     *
      * @since 2.0.0
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateStateNormalEvents() {
-        this.updateEventsContainer('state-normal');
+        this._eventsManager.updateEventsContainer('state-normal');
     }
 
     /**
      * Updates the events with type: state-pressed
-     *
      * @since 2.0.0
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateStatePressedEvents() {
-        this.updateEventsContainer('state-pressed');
+        this._eventsManager.updateEventsContainer('state-pressed');
     }
 
     /**
      * Updates the events with type: touch
-     *
      * @since 9.0.0
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateTouchEvents() {
-        this.updateEventsContainer('touch');
+        this._eventsManager.updateEventsContainer('touch');
     }
 
     /**
      * Updates the events with type: touch-down
-     *
      * @since 9.0.0
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateTouchDownEvents() {
-        this.updateEventsContainer('touch-down');
+        this._eventsManager.updateEventsContainer('touch-down');
     }
 
     /**
      * Updates the events with type: touch-up
-     *
      * @since 9.0.0
-     *
-     * @see DKTools.Sprite.Button.prototype.updateEventsContainer
      */
     updateTouchUpEvents() {
-        this.updateEventsContainer('touch-up');
+        this._eventsManager.updateEventsContainer('touch-up');
     }
 
 };
-
-// properties
-
-Object.defineProperties(DKTools.Sprite.Button.prototype, {
-
-    /**
-     * Interval of long pressing
-     *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Sprite.Button.prototype
-     */
-    longPressInterval: {
-        get: function() {
-            return this._longPressInterval;
-        },
-        configurable: true
-    },
-
-    /**
-     * Mouse press time
-     *
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Sprite.Button.prototype
-     */
-    mousePressTime: {
-        get: function() {
-            return this._mousePressTime;
-        },
-        configurable: true
-    },
-
-    /**
-     * Touch press time
-     *
-     * @since 9.0.0
-     * @readonly
-     * @type {Number}
-     * @memberof DKTools.Sprite.Button.prototype
-     */
-    touchPressTime: {
-        get: function() {
-            return this._touchPressTime;
-        },
-        configurable: true
-    }
-
-});
-
-
 
 

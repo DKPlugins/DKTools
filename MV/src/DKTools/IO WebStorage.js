@@ -4,8 +4,7 @@
 
 /**
  * Web storage class
- *
- * @class DKTools.IO.WebStorage
+ * @class
  * @memberof DKTools.IO
  */
 DKTools.IO.WebStorage = class {
@@ -17,7 +16,7 @@ DKTools.IO.WebStorage = class {
      *
      * @static
      * @param {String} key - Key
-     * @returns {Boolean} Key exists
+     * @return {Boolean} Key exists
      */
     static exists(key) {
         return localStorage.hasOwnProperty(key);
@@ -51,7 +50,7 @@ DKTools.IO.WebStorage = class {
      *
      * @param {Function} [object.parse.reviver] - A function that transforms the results
      *
-     * @returns {{ data: String | Object | null, status: Number, error: Error | undefined }} Loaded data
+     * @return {{ data: String | Object | null, status: Number, error: Error | undefined }} Loaded data
      */
     static load(key, object = {}) {
         if (!this.exists(key)) {
@@ -93,7 +92,7 @@ DKTools.IO.WebStorage = class {
      *
      * @static
      * @param {String} key - Key
-     * @returns {Number} Code of the result of an operation
+     * @return {Number} Code of the result of an operation
      */
     static remove(key) {
         if (!this.exists(key)) {
@@ -121,9 +120,7 @@ DKTools.IO.WebStorage = class {
      * @param {String} newKey - New key
      * @param {Boolean} [overwrite=false] - Overwrite the data
      *
-     * @see DKTools.IO.WebStorage.exists
-     *
-     * @returns {Number} Code of the result of an operation
+     * @return {Number} Code of the result of an operation
      */
     static rename(oldKey, newKey, overwrite = false) {
         if (!this.exists(oldKey)) {
@@ -163,7 +160,7 @@ DKTools.IO.WebStorage = class {
      * @param {Boolean} [object.stringify] - Use JSON.stringify for the data
      * @param {Boolean} [object.compress] - Use LZString.compressToBase64 for the data
      *
-     * @returns {Number} Code of the result of an operation
+     * @return {Number} Code of the result of an operation
      */
     static save(key, data, object = {}) {
         object = object || {};
@@ -188,8 +185,5 @@ DKTools.IO.WebStorage = class {
     }
 
 };
-
-
-
 
 

@@ -4,12 +4,8 @@
 
 /**
  * File class
- *
- * @class DKTools.IO.File
+ * @class
  * @extends DKTools.IO.Entity
- *
- * @override
- *
  * @memberof DKTools.IO
  */
 DKTools.IO.File = class extends DKTools.IO.Entity {
@@ -59,20 +55,14 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {Boolean} [object.createDirectory.options.recursive] - Parent folders should be created
      * @param {Number | String} [object.createDirectory.options.mode] - Directory permission
      *
-     * @see DKTools.IO.isLocalMode
-     * @see DKTools.IO.File.prototype.exists
-     * @see DKTools.IO.Directory.prototype.create
-     * @see FileSystem.copyFile
-     * @see FileSystem.copyFileSync
-     *
-     * @returns {Number} Code of the result of an operation
+     * @return {Number} Code of the result of an operation
      */
     copy(destination, object = {}) {
         if (!object) {
             return DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE;
         }
 
-        if (!DKTools.IO.isLocalMode()) {
+        if (!Utils.isNwjs()) {
             return DKTools.IO.ERROR_NOT_LOCAL_MODE;
         }
 
@@ -143,9 +133,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {Boolean} [object.createDirectory.options.recursive] - Parent folders should be created
      * @param {Number | String} [object.createDirectory.options.mode] - Directory permission
      *
-     * @see DKTools.IO.File.prototype.copy
-     *
-     * @returns {Promise} Code of the result of an operation
+     * @return {Promise<Number>} Code of the result of an operation
      */
     async copyAsync(destination, object = {}) {
         return new Promise((resolve, reject) => {
@@ -166,8 +154,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Detects the extension
-     *
-     * @version 9.1.0
+     * @version 10.0.0
      * @since 5.0.0
      * @private
      */
@@ -177,13 +164,9 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
         if (this.isAudio()) {
             newExtension = AudioManager.audioFileExt();
         } else if (this.isImage()) {
-            newExtension = '.png';
+            newExtension = ImageManager.imageFileExt();
         } else if (this.isVideo()) {
-            if (Graphics.canPlayVideoType('video/webm') && !Utils.isMobileDevice()) {
-                newExtension = '.webm';
-            } else {
-                newExtension = '.mp4';
-            }
+            newExtension = Graphics.videoFileExt();
         }
 
         this._extension = newExtension;
@@ -193,11 +176,9 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Returns true if the file exists
-     *
      * @version 8.0.0
      * @override
-     *
-     * @returns {Boolean} File exists
+     * @return {Boolean} File exists
      */
     exists() {
         if (Decrypter.hasEncryptedAudio && this.isAudio() || Decrypter.hasEncryptedImages && this.isImage()) {
@@ -213,8 +194,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Returns the directory of the file
-     *
-     * @returns {DKTools.IO.Directory} Directory of the file
+     * @return {DKTools.IO.Directory} Directory of the file
      */
     getDirectory() {
         return new DKTools.IO.Directory(this._path);
@@ -222,45 +202,47 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Returns the directory name
-     *
      * @since 6.1.0
-     *
-     * @see DKTools.IO.File.prototype.getDirectory
-     *
-     * @returns {String} Directory name
+     * @return {String} Directory name
      */
     getDirectoryName() {
-        const directory = this.getDirectory();
-
-        return directory.getName();
+        return this.getDirectory().getName();
     }
 
     // I methods
 
     /**
      * Returns true if an extension of the file is equal to .ogg or .m4a or .rpgmvo
-     *
      * @version 3.0.0
-     * @returns {Boolean} Extension of the file is equal to .ogg or .m4a or .rpgmvo
+     * @return {Boolean} Extension of the file is equal to .ogg or .m4a or .rpgmvo
      */
     isAudio() {
-        return this._extension === '.ogg' || this._extension === '.m4a' || this._extension === '.rpgmvo';
+        return this._extension === '.ogg'
+            || this._extension === '.m4a'
+            || this._extension === '.rpgmvo';
     }
 
     /**
      * Returns true if an extension of the file is equal to .json
-     *
-     * @returns {Boolean} Extension of the file is equal to .json
+     * @return {Boolean} Extension of the file is equal to .json
      */
     isJson() {
         return this._extension === '.json';
     }
 
     /**
+     * Returns true if an extension of the file is equal to .dds
+     * @since 10.0.1
+     * @return {Boolean} Extension of the file is equal to .dds
+     */
+    isTexture() {
+        return this._extension === '.dds';
+    }
+
+    /**
      * Returns true if an extension of the file is equal to .txt
-     *
      * @since 5.0.0
-     * @returns {Boolean} Extension of the file is equal to .txt
+     * @return {Boolean} Extension of the file is equal to .txt
      */
     isTxt() {
         return this._extension === '.txt';
@@ -268,27 +250,18 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Returns true if an extension of the file is equal to .png, .rpgmvp or .webp
-     *
      * @version 6.2.1
-     * @returns {Boolean} Extension of the file is equal to .png, .rpgmvp or .webp
+     * @return {Boolean} Extension of the file is equal to .png, .rpgmvp or .webp
      */
     isImage() {
-        return this._extension === '.png' || this._extension === '.rpgmvp' || this._extension === '.webp';
-    }
-
-    /**
-     * Returns true if an extension of the file is equal to .js
-     *
-     * @returns {Boolean} Extension of the file is equal to .js
-     */
-    isScript() {
-        return this._extension === '.js';
+        return this._extension === '.png'
+            || this._extension === '.rpgmvp'
+            || this._extension === '.webp';
     }
 
     /**
      * Returns true if an extension of the file is equal to .mp4 or .webm
-     *
-     * @returns {Boolean} Extension of the file is equal to .mp4 or .webm
+     * @return {Boolean} Extension of the file is equal to .mp4 or .webm
      */
     isVideo() {
         return this._extension === '.webm' || this._extension === '.mp4';
@@ -296,8 +269,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Returns true if an extension of the file is equal to .rpgsave
-     *
-     * @returns {Boolean} Extension of the file is equal to .rpgsave
+     * @return {Boolean} Extension of the file is equal to .rpgsave
      */
     isSave() {
         return this._extension === '.rpgsave';
@@ -361,10 +333,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      *      }
      * });
      *
-     * @see FileSystem.readFile
-     * @see FileSystem.readFileSync
-     *
-     * @returns {{ data: String | Buffer | Object | null, status: Number, error: Error | undefined }} Loaded data
+     * @return {{ data: String | Buffer | Object | null, status: Number, error: Error | undefined }} Loaded data
      */
     load(object) {
         if (!object) {
@@ -394,7 +363,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
             return { data, status: DKTools.IO.OK };
         };
 
-        if (DKTools.IO.isLocalMode()) {
+        if (Utils.isNwjs()) {
             if (!this.exists()) {
                 return { data: null, status: DKTools.IO.ERROR_PATH_DOES_NOT_EXIST };
             }
@@ -492,9 +461,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      *
      * @param {Function} [object.parse.reviver] - A function that transforms the results
      *
-     * @see DKTools.IO.File.prototype.load
-     *
-     * @returns {Promise} Loaded data
+     * @return {Promise<{ status: Number, data: * | null }>} Loaded data
      */
     async loadAsync(object = {}) {
         return new Promise((resolve, reject) => {
@@ -512,35 +479,31 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     }
 
     /**
-     * Loads the audio file
-     *
-     * @version 8.2.0
+     * Loads an audio file and returns a WebAudio
+     * @version 10.0.0
      * @since 3.0.0
-     * @returns {WebAudio | null} Audio file or null
+     * @return {WebAudio | null} Audio file or null
      */
     loadAudio() {
         if (!this.isAudio()) {
             return null;
         }
 
-        if ((DKTools.IO.isLocalMode() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) && !this.exists()) {
+        if ((Utils.isNwjs() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) && !this.exists()) {
             return null;
         }
 
-        return DKTools.Utils.WebAudio.load(this.getDirectoryName(), this.getName());
+        return DKTools.Utils.WebAudio.load(
+            DKTools.IO.normalizePath(this.getDirectoryName() + '/'), this.getName());
     }
 
     /**
-     * Loads the audio file
+     * Loads an audio file and returns a WebAudio
      * Asynchronous version of DKTools.IO.File.prototype.loadAudio
      * Promise resolves a loaded audio file or null
-     *
      * @since 5.0.0
      * @async
-     *
-     * @see DKTools.IO.File.prototype.loadAudio
-     *
-     * @returns {Promise} Loaded audio file or null
+     * @return {Promise<WebAudio | null>} Loaded audio file or null
      */
     async loadAudioAsync() {
         return DKTools.Utils.WebAudio.loadAsync(this.loadAudio());
@@ -601,9 +564,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      *      }
      * });
      *
-     * @see DKTools.IO.File.prototype.load
-     *
-     * @returns {{ data: Object | null, status: Number, error: Error | undefined }} Loaded data
+     * @return {{ data: Object | null, status: Number, error: Error | undefined }} Loaded data
      */
     loadJson(object) {
         if (!object) {
@@ -652,9 +613,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * const file = new DKTools.IO.File('data/System.json');
      * const data = await file.loadJsonAsync();
      *
-     * @see DKTools.IO.File.prototype.loadJson
-     *
-     * @returns {Promise} Loaded data
+     * @return {Promise<{ status: Number, data: * | null, error: Error | undefined }>} Loaded data
      */
     async loadJsonAsync(object = {}) {
         return new Promise((resolve, reject) => {
@@ -689,11 +648,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * const file = new DKTools.IO.File('img/system/Window.png');
      * const bitmap = file.loadBitmap();
      *
-     * @see DKTools.IO.File.prototype.isImage
-     * @see DKTools.IO.File.prototype.exists
-     * @see DKTools.Utils.Bitmap.load
-     *
-     * @returns {Bitmap | null} Loaded bitmap or null
+     * @return {Bitmap | null} Loaded bitmap or null
      */
     loadBitmap(object, hue, smooth) {
         if (object instanceof Object) {
@@ -704,7 +659,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
             return null;
         }
 
-        if ((DKTools.IO.isLocalMode() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) && !this.exists()) {
+        if ((Utils.isNwjs() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) && !this.exists()) {
             return null;
         }
 
@@ -738,10 +693,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * const file = new DKTools.IO.File('img/system/Window.png');
      * const bitmap = await file.loadBitmapAsync();
      *
-     * @see DKTools.IO.File.prototype.loadBitmap
-     * @see DKTools.Utils.Bitmap.loadAsync
-     *
-     * @returns {Promise} Loaded bitmap or null
+     * @return {Promise<Bitmap>} Loaded bitmap or null
      */
     async loadBitmapAsync(object, hue, smooth) {
         return DKTools.Utils.Bitmap.loadAsync(this.loadBitmap(object, hue, smooth));
@@ -767,15 +719,12 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
-     * @see FileSystem.unlink
-     * @see FileSystem.unlinkSync
-     *
-     * @returns {Number} Code of the result of an operation
+     * @return {Number} Code of the result of an operation
      */
     remove(object = {}) {
         object = object || {};
 
-        if (!DKTools.IO.isLocalMode()) {
+        if (!Utils.isNwjs()) {
             return DKTools.IO.ERROR_NOT_LOCAL_MODE;
         }
 
@@ -820,10 +769,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @version 7.0.0
      * @since 4.0.0
      * @async
-     *
-     * @see DKTools.IO.File.prototype.remove
-     *
-     * @returns {Promise} Code of the result of an operation
+     * @return {Promise<Number>} Code of the result of an operation
      */
     async removeAsync() {
         return new Promise((resolve, reject) => {
@@ -854,11 +800,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {Boolean} [object.smooth] - Smooth of bitmap
      * @param {Number} [object.reservationId] - Reservation ID
      *
-     * @see DKTools.IO.File.prototype.isImage
-     * @see DKTools.IO.File.prototype.exists
-     * @see DKTools.Utils.Bitmap.reserve
-     *
-     * @returns {Bitmap | null} Loaded bitmap or null
+     * @return {Bitmap | null} Loaded bitmap or null
      */
     reserveBitmap(object, hue, smooth, reservationId) {
         if (object instanceof Object) {
@@ -897,12 +839,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {Boolean} [object.smooth] - Smooth of bitmap
      * @param {Number} [object.reservationId] - Reservation ID
      *
-     * @see DKTools.IO.File.prototype.isImage
-     * @see DKTools.IO.File.prototype.exists
-     * @see DKTools.IO.File.prototype.reserveBitmap
-     * @see DKTools.Utils.Bitmap.reserveAsync
-     *
-     * @returns {Promise} Loaded bitmap or null
+     * @return {Promise<Bitmap | null>} Loaded bitmap or null
      */
     async reserveBitmapAsync(object, hue, smooth, reservationId) {
         if (object instanceof Object) {
@@ -976,15 +913,10 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      *      }
      * });
      *
-     * @see DKTools.IO.Directory.create
-     * @see FileSystem.writeFile
-     * @see FileSystem.writeFileSync
-     * @see JSON.stringify
-     *
-     * @returns {Number} Code of the result of an operation
+     * @return {Number} Code of the result of an operation
      */
     save(data, object = {}) {
-        if (!DKTools.IO.isLocalMode()) {
+        if (!Utils.isNwjs()) {
             return DKTools.IO.ERROR_NOT_LOCAL_MODE;
         }
 
@@ -1061,9 +993,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {Function | Array} [object.stringify.replacer] - A function that transforms the results
      * @param {Number | String} [object.stringify.space] - Insert white space into the output JSON string for readability purposes
      *
-     * @see DKTools.IO.File.prototype.save
-     *
-     * @returns {Promise} Code of the result of an operation
+     * @return {Promise<Number>} Code of the result of an operation
      */
     async saveAsync(data, object = {}) {
         return new Promise((resolve, reject) => {
@@ -1128,9 +1058,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      *      }
      * });
      *
-     * @see DKTools.IO.File.prototype.save
-     *
-     * @returns {Number} Code of the result of an operation
+     * @return {Number} Code of the result of an operation
      */
     saveJson(data, object = {}) {
         object = object || {};
@@ -1166,9 +1094,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      * @param {Function | Array} [object.stringify.replacer] - A function that transforms the results
      * @param {Number | String} [object.stringify.space] - Insert white space into the output JSON string for readability purposes
      *
-     * @see DKTools.IO.File.prototype.saveJson
-     *
-     * @returns {Promise} Code of the result of an operation
+     * @return {Promise<Number>} Code of the result of an operation
      */
     async saveJsonAsync(data, object = {}) {
         return new Promise((resolve, reject) => {
@@ -1186,7 +1112,5 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     }
 
 };
-
-
 
 

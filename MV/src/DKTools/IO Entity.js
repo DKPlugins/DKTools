@@ -5,11 +5,12 @@
 /**
  * Abstract class of entity (file or directory)
  *
- * @class DKTools.IO.Entity
+ * @class
+ * @abstract
  * @memberof DKTools.IO
  *
  * @example
- * var file = new DKTools.IO.File('/index.html');
+ * var file = new DKTools.IO.File('index.html');
  *
  * @example
  * var directory = new DKTools.IO.Directory('img/system/');
@@ -18,6 +19,43 @@ DKTools.IO.Entity = class {
 
     constructor() {
         this.initialize.apply(this, arguments);
+    }
+
+    // properties
+
+    /**
+     * Gets path of the entity
+     * @since 3.0.0
+     * @return {String} Path of the entity
+     */
+    get path() {
+        return this._path;
+    }
+
+    /**
+     * Gets name of the entity
+     * @return {String} Name of the entity
+     */
+    get name() {
+        return this._name;
+    }
+
+    /**
+     * Gets initial extension of the entity
+     * @since 5.0.0
+     * @return {String} Initial extension of the entity
+     */
+    get initialExtension() {
+        return this._initialExtension;
+    }
+
+    /**
+     * Gets extension of the entity
+     * @since 3.0.0
+     * @return {String} Extension of the entity
+     */
+    get extension() {
+        return this._extension;
     }
 
     // initialize
@@ -66,10 +104,8 @@ DKTools.IO.Entity = class {
 
     /**
      * Returns true if the entity exists
-     *
      * @version 3.0.0
-     *
-     * @returns {Boolean} Entity exists
+     * @return {Boolean} Entity exists
      */
     exists() {
         return DKTools.IO.absolutePathExists(this.getAbsolutePath());
@@ -79,10 +115,8 @@ DKTools.IO.Entity = class {
 
     /**
      * Returns the path
-     *
      * @since 3.0.0
-     *
-     * @returns {String} Path
+     * @return {String} Path
      */
     getPath() {
         return this._path;
@@ -90,10 +124,8 @@ DKTools.IO.Entity = class {
 
     /**
      * Returns the name of the entity without an extension
-     *
      * @since 3.0.0
-     *
-     * @returns {String} Name of the entity without an extension
+     * @return {String} Name of the entity without an extension
      */
     getName() {
         return this._name;
@@ -101,10 +133,8 @@ DKTools.IO.Entity = class {
 
     /**
      * Returns the extension of the entity
-     *
      * @since 3.0.0
-     *
-     * @returns {String} Extension of the entity
+     * @return {String} Extension of the entity
      */
     getExtension() {
         return this._extension;
@@ -112,10 +142,8 @@ DKTools.IO.Entity = class {
 
     /**
      * Returns the full path
-     *
      * @version 3.0.0
-     *
-     * @returns {String} Full Path
+     * @return {String} Full Path
      */
     getFullPath() {
         return DKTools.IO.joinPath(this.getPath(), '/', this.getFullName());
@@ -123,10 +151,8 @@ DKTools.IO.Entity = class {
 
     /**
      * Returns the full name
-     *
      * @since 3.0.0
-     *
-     * @returns {String} Full name
+     * @return {String} Full name
      */
     getFullName() {
         return this._name + this._extension;
@@ -134,10 +160,8 @@ DKTools.IO.Entity = class {
 
     /**
      * Returns the absolute path
-     *
      * @since 3.0.0
-     *
-     * @returns {String} Absolute path
+     * @return {String} Absolute path
      */
     getAbsolutePath() {
         return DKTools.IO.getAbsolutePath(this.getFullPath());
@@ -168,10 +192,7 @@ DKTools.IO.Entity = class {
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
-     * @see FileSystem.stat
-     * @see FileSystem.statSync
-     *
-     * @returns {{ data: Object, status: Number }} Loaded stats
+     * @return {{ status: Number, data: Object }} Loaded stats
      */
     getStats(object) {
         if (!object) {
@@ -182,7 +203,7 @@ DKTools.IO.Entity = class {
             return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
-        if (!DKTools.IO.isLocalMode() && DKTools.IO.mode === DKTools.IO.MODE_NWJS) {
+        if (!Utils.isNwjs() && DKTools.IO.mode === DKTools.IO.MODE_NWJS) {
             return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
 
@@ -190,7 +211,7 @@ DKTools.IO.Entity = class {
             return { data: null, status: DKTools.IO.ERROR_PATH_DOES_NOT_EXIST };
         }
 
-        if (!DKTools.IO.isLocalMode() && DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
+        if (!Utils.isNwjs() && DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
             const parts = this.getFullPath().split('\\').filter(part => !!part);
             const data = _.get(DKTools.IO.stamp, parts.concat('__stats__'), {});
 
@@ -239,9 +260,7 @@ DKTools.IO.Entity = class {
      * @since 4.0.0
      * @async
      *
-     * @see DKTools.IO.Entity.prototype.getStats
-     *
-     * @return {Promise} Loaded stats
+     * @return {Promise<Object>} Loaded stats
      */
     async getStatsAsync() {
         return new Promise((resolve, reject) => {
@@ -264,7 +283,7 @@ DKTools.IO.Entity = class {
      *
      * @since 5.0.0
      *
-     * @returns {Boolean} Entity has an extension
+     * @return {Boolean} Entity has an extension
      */
     hasExtension() {
         return !!this._extension;
@@ -278,11 +297,11 @@ DKTools.IO.Entity = class {
      * @version 6.2.1
      * @since 2.0.0
      *
-     * @returns {Boolean} Entity is a file
+     * @return {Boolean} Entity is a file
      */
     isFile() {
         if (this instanceof DKTools.IO.File) {
-            if (DKTools.IO.isLocalMode()) {
+            if (Utils.isNwjs()) {
                 if (Decrypter.hasEncryptedAudio && this.isAudio() || Decrypter.hasEncryptedImages && this.isImage()) {
                     const path = DKTools.IO.normalizePath(this.getPath() + '/' + Decrypter.extToEncryptExt(this.getFullName()));
 
@@ -304,11 +323,11 @@ DKTools.IO.Entity = class {
      * @version 5.0.0
      * @since 2.0.0
      *
-     * @returns {Boolean} Entity is a directory
+     * @return {Boolean} Entity is a directory
      */
     isDirectory() {
         if (this instanceof DKTools.IO.Directory) {
-            if (DKTools.IO.isLocalMode()) {
+            if (Utils.isNwjs()) {
                 return DKTools.IO.isDirectory(this.getFullPath());
             } else {
                 return !this.hasExtension();
@@ -358,15 +377,12 @@ DKTools.IO.Entity = class {
      * @param {Function} [object.onSuccess] - Callback function upon completion of an operation (only for object.sync == false)
      * @param {Function} [object.onError] - Callback function upon completion of an operation with error (only for object.sync == false)
      *
-     * @see FileSystem.rename
-     * @see FileSystem.renameSync
-     *
-     * @returns {Number} Code of the result of an operation
+     * @return {Number} Code of the result of an operation
      */
     rename(newName, object = {}) {
         object = object || {};
 
-        if (!DKTools.IO.isLocalMode()) {
+        if (!Utils.isNwjs()) {
             return DKTools.IO.ERROR_NOT_LOCAL_MODE;
         }
 
@@ -430,9 +446,7 @@ DKTools.IO.Entity = class {
      *
      * @param {Boolean} [object.overwrite] - Overwrite existing entity
      *
-     * @see DKTools.IO.Entity.prototype.rename
-     *
-     * @returns {Promise} Code of the result of an operation
+     * @return {Promise<Number>} Code of the result of an operation
      */
     async renameAsync(newName, object = {}) {
         return new Promise((resolve, reject) => {
@@ -450,72 +464,5 @@ DKTools.IO.Entity = class {
     }
 
 };
-
-// properties
-
-Object.defineProperties(DKTools.IO.Entity.prototype, {
-
-    /**
-     * Path of the entity
-     *
-     * @since 3.0.0
-     * @readonly
-     * @type {String}
-     * @memberof DKTools.IO.Entity.prototype
-     */
-    path: {
-        get: function() {
-            return this._path;
-        },
-        configurable: true
-    },
-
-    /**
-     * Name of the entity
-     *
-     * @readonly
-     * @type {String}
-     * @memberof DKTools.IO.Entity.prototype
-     */
-    name: {
-        get: function() {
-            return this._name;
-        },
-        configurable: true
-    },
-
-    /**
-     * Initial extension of the entity
-     *
-     * @since 5.0.0
-     * @readonly
-     * @type {String}
-     * @memberof DKTools.IO.Entity.prototype
-     */
-    initialExtension: {
-        get: function() {
-            return this._initialExtension;
-        },
-        configurable: true
-    },
-
-    /**
-     * Extension of the entity
-     *
-     * @since 3.0.0
-     * @readonly
-     * @type {String}
-     * @memberof DKTools.IO.Entity.prototype
-     */
-    extension: {
-        get: function() {
-            return this._extension;
-        },
-        configurable: true
-    }
-
-});
-
-
 
 

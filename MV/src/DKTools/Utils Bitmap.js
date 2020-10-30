@@ -4,42 +4,15 @@
 
 /**
  * The static class that defines utility methods for Bitmap class
- *
- * @class DKTools.Utils.Bitmap
+ * @class
  * @memberof DKTools.Utils
  */
 DKTools.Utils.Bitmap = class {
-
-    // C methods
-
-    /**
-     * Clones the bitmap
-     *
-     * @static
-     * @param {Bitmap} bitmap - The bitmap to be cloned
-     * @returns {Bitmap | null} Cloned bitmap
-     */
-    static clone(bitmap) {
-        if (!bitmap || bitmap.url) {
-            return bitmap;
-        }
-
-        const canvas = bitmap.canvas;
-        const newBitmap = new Bitmap(canvas.width, canvas.height);
-        const newContext = newBitmap.context;
-
-        newContext.drawImage(canvas, 0, 0);
-
-        return newBitmap;
-    }
-
     // D methods
 
     /**
      * Draws the line to the bitmap
-     *
      * @static
-     *
      * @param {Bitmap} bitmap - Bitmap
      * @param {Number} x1 - The X coordinate of start of the line
      * @param {Number} y1 - The Y coordinate of start of the line
@@ -47,8 +20,6 @@ DKTools.Utils.Bitmap = class {
      * @param {Number} y2 - The Y coordinate of end of the line
      * @param {String} [color='white'] - Line color
      * @param {Number} [lineWidth=1] - Line width
-     *
-     * @see CanvasRenderingContext2D.lineTo
      */
     static drawLine(bitmap, x1, y1, x2, y2, color = 'white', lineWidth = 1) {
         const context = bitmap.context;
@@ -65,48 +36,14 @@ DKTools.Utils.Bitmap = class {
         bitmap._setDirty();
     }
 
-    // F methods
-
-    /**
-     * Draws an arc and fills it with color
-     *
-     * @static
-     *
-     * @param {Bitmap} bitmap - Bitmap
-     * @param {Number} x - The X coordinate
-     * @param {Number} y - The Y coordinate
-     * @param {Number} radius - Radius of the arc
-     * @param {Number} startAngle - Starting angle
-     * @param {Number} endAngle - End angle
-     * @param {String} [color='white'] - Fill color
-     * @param {Boolean} [anticlockwise=false] - Anticlockwise
-     *
-     * @see CanvasRenderingContext2D.arc
-     */
-    static fillArc(bitmap, x, y, radius, startAngle, endAngle, color = 'white', anticlockwise = false) {
-        const context = bitmap.context;
-
-        context.save();
-        context.fillStyle = color;
-        context.beginPath();
-        context.arc(x, y, radius, startAngle, endAngle, anticlockwise);
-        context.fill();
-        context.restore();
-
-        bitmap._setDirty();
-    }
-
     // G methods
 
     /**
      * Returns base64 of the bitmap
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {Bitmap} bitmap - Bitmap
-     *
-     * @returns {String | null} Base64 of the bitmap
+     * @return {String | null} Base64 of the bitmap
      */
     static getBase64(bitmap) {
         if (!bitmap || !bitmap.canvas) {
@@ -136,19 +73,18 @@ DKTools.Utils.Bitmap = class {
      * @param {Number} [object.hue] - Hue of bitmap
      * @param {Boolean} [object.smooth] - Smooth of bitmap
      *
-     * @see Bitmap.prototype.addLoadListener
-     *
-     * @returns {Bitmap | null} Loaded bitmap or null
+     * @return {Bitmap | null} Loaded bitmap or null
      */
     static load(object, filename, listener, hue, smooth) {
         if (!object) {
             return null;
         } else if (object instanceof Bitmap) {
             return object;
-        } else if (DKTools.Utils.isArrayLike(object)) {
+        } else if (Array.isArray(object) || String(object) === '[object Arguments]') {
             return this.load.apply(this, object);
         } else if (object instanceof Object) {
-            return this.load(object.folder, object.filename, object.listener, object.hue, object.smooth);
+            return this.load(
+                object.folder, object.filename, object.listener, object.hue, object.smooth);
         } else if (!DKTools.Utils.isString(object)) {
             return null;
         }
@@ -185,9 +121,7 @@ DKTools.Utils.Bitmap = class {
      * @param {Number} [object.hue] - Hue of bitmap
      * @param {Boolean} [object.smooth] - Smooth of bitmap
      *
-     * @see DKTools.Utils.Bitmap.load
-     *
-     * @returns {Promise} Loaded bitmap or null
+     * @return {Promise<Bitmap | null>} Loaded bitmap or null
      */
     static async loadAsync(object, filename, listener, hue, smooth) {
         return new Promise((resolve) => {
@@ -225,18 +159,16 @@ DKTools.Utils.Bitmap = class {
      *  filename: 'IconSet'
      * };
      *
-     * DKTools.Utils.Bitmap.loadBitmaps(bitmaps, function(allBitmaps) {
+     * DKTools.Utils.Bitmap.loadBitmaps(bitmaps, (allBitmaps) => {
      *     // all loaded bitmaps
      * });
-     *
-     * @see DKTools.Utils.Bitmap.load
      */
     static loadBitmaps(bitmaps, onLoadAllBitmaps, onLoadSomeBitmap) {
         if (!DKTools.Utils.isFunction(onLoadAllBitmaps)) {
             return;
         }
 
-        bitmaps = _.map(bitmaps, bitmap => this.load(bitmap));
+        bitmaps = bitmaps.map(bitmap => this.load(bitmap));
 
         const loadedBitmaps = [];
         let loaded = 0;
@@ -260,7 +192,7 @@ DKTools.Utils.Bitmap = class {
             }
         };
 
-        _.forEach(bitmaps, (bitmap, index) => {
+        bitmaps.forEach((bitmap, index) => {
             if (bitmap instanceof Bitmap) {
                 bitmap.addLoadListener(bitmap => loadListener(index, bitmap));
             } else {
@@ -285,18 +217,10 @@ DKTools.Utils.Bitmap = class {
      * @param {Number} [bitmaps[].hue] - Hue of bitmap
      * @param {Boolean} [bitmaps[].smooth] - Smooth of bitmap
      *
-     * @see DKTools.Utils.Bitmap.loadAsync
-     *
-     * @returns {Promise} Loaded bitmaps
+     * @return {Promise<Bitmap[]>} Loaded bitmaps
      */
     static async loadBitmapsAsync(bitmaps) {
-        if (!Array.isArray(bitmaps)) {
-            bitmaps = [bitmaps];
-        }
-
-        const promises = _.map(bitmaps, bitmap => this.loadAsync(bitmap));
-
-        return Promise.all(promises);
+        return Promise.all(bitmaps.map(bitmap => this.loadAsync(bitmap)));
     }
 
     // R methods
@@ -322,17 +246,18 @@ DKTools.Utils.Bitmap = class {
      * @param {Boolean} [object.smooth] - Smooth of bitmap
      * @param {Number} [object.reservationId] - Reservation ID
      *
-     * @returns {Bitmap | null} Loaded bitmap or null
+     * @return {Bitmap | null} Loaded bitmap or null
      */
     static reserve(object, filename, listener, hue, smooth, reservationId) {
         if (!object) {
             return null;
         } else if (object instanceof Bitmap) {
             return object;
-        } else if (DKTools.Utils.isArrayLike(object)) {
+        } else if (Array.isArray(object) || String(object) === '[object Arguments]') {
             return this.reserve.apply(this, object);
         } else if (object instanceof Object) {
-            return this.reserve(object.folder, object.filename, object.listener, object.hue, object.smooth, object.reservationId);
+            return this.reserve(
+                object.folder, object.filename, object.listener, object.hue, object.smooth, object.reservationId);
         } else if (!DKTools.Utils.isString(object)) {
             return null;
         }
@@ -371,9 +296,7 @@ DKTools.Utils.Bitmap = class {
      * @param {Boolean} [object.smooth] - Smooth of bitmap
      * @param {Number} [object.reservationId] - Reservation ID
      *
-     * @see DKTools.Utils.Bitmap.reserve
-     *
-     * @returns {Promise} Loaded bitmap or null
+     * @return {Promise<Bitmap | null>} Loaded bitmap or null
      */
     static async reserveAsync(object, filename, listener, hue, smooth, reservationId) {
         return new Promise(resolve => {
@@ -415,15 +338,13 @@ DKTools.Utils.Bitmap = class {
      * DKTools.Utils.Bitmap.reserveBitmaps(bitmaps, function(allBitmaps) {
      *     // all loaded bitmaps
      * });
-     *
-     * @see DKTools.Utils.Bitmap.reserve
      */
     static reserveBitmaps(bitmaps, onLoadAllBitmaps, onLoadSomeBitmap) {
         if (!DKTools.Utils.isFunction(onLoadAllBitmaps)) {
             return;
         }
 
-        bitmaps = _.map(bitmaps, bitmap => this.reserve(bitmap));
+        bitmaps = bitmaps.map(bitmap => this.reserve(bitmap));
 
         const loadedBitmaps = [];
         let loaded = 0;
@@ -446,7 +367,7 @@ DKTools.Utils.Bitmap = class {
             }
         };
 
-        _.forEach(bitmaps, (bitmap, index) => {
+        bitmaps.forEach((bitmap, index) => {
             if (bitmap instanceof Bitmap) {
                 bitmap.addLoadListener(bitmap => loadListener(index, bitmap));
             } else {
@@ -472,82 +393,12 @@ DKTools.Utils.Bitmap = class {
      * @param {Boolean} [object[].smooth] - Smooth of bitmap
      * @param {Number} [object[].reservationId] - Reservation ID
      *
-     * @see DKTools.Utils.Bitmap.reserveAsync
-     *
-     * @returns {Promise} Loaded bitmaps
+     * @return {Promise<Bitmap[]>} Loaded bitmaps
      */
     static async reserveBitmapsAsync(bitmaps) {
-        if (!Array.isArray(bitmaps)) {
-            bitmaps = [bitmaps];
-        }
-
-        const promises = _.map(bitmaps, bitmap => this.reserveAsync(bitmap));
-
-        return Promise.all(promises);
-    }
-
-    // S methods
-
-    /**
-     * Draws an arc without fill
-     *
-     * @static
-     *
-     * @param {Bitmap} bitmap - Bitmap
-     * @param {Number} x - The X coordinate
-     * @param {Number} y - The Y coordinate
-     * @param {Number} radius - Radius of the arc
-     * @param {Number} startAngle - Starting angle
-     * @param {Number} endAngle - End angle
-     * @param {String} [color='white'] - Line color
-     * @param {Number} [lineWidth=1] - Line width
-     * @param {Boolean} [anticlockwise=false] - Anticlockwise
-     *
-     * @see CanvasRenderingContext2D.arc
-     */
-    static strokeArc(bitmap, x, y, radius, startAngle, endAngle, color = 'white', lineWidth = 1, anticlockwise = false) {
-        const context = bitmap.context;
-
-        context.save();
-        context.strokeStyle = color;
-        context.lineWidth = lineWidth;
-        context.beginPath();
-        context.arc(x, y, radius, startAngle, endAngle, anticlockwise);
-        context.stroke();
-        context.restore();
-
-        bitmap._setDirty();
-    }
-
-    /**
-     * Draws a rectangle without fill
-     *
-     * @static
-     *
-     * @param {Bitmap} bitmap - Bitmap
-     * @param {Number} x - The X coordinate
-     * @param {Number} y - The Y coordinate
-     * @param {Number} width - Width of the rectangle
-     * @param {Number} height - Height of the rectangle
-     * @param {String} [color='white'] - Line color
-     * @param {Number} [lineWidth=1] - Line width
-     *
-     * @see CanvasRenderingContext2D.strokeRect
-     */
-    static strokeRect(bitmap, x, y, width, height, color = 'white', lineWidth = 1) {
-        const context = bitmap.context;
-
-        context.save();
-        context.strokeStyle = color;
-        context.lineWidth = lineWidth;
-        context.strokeRect(x, y, width, height);
-        context.restore();
-
-        bitmap._setDirty();
+        return Promise.all(bitmaps.map(bitmap => this.reserveAsync(bitmap)));
     }
 
 };
-
-
 
 

@@ -4,9 +4,8 @@
 
 /**
  * Network class
- *
  * @since 4.0.0
- * @class DKTools.Network
+ * @class
  * @memberof DKTools
  */
 DKTools.Network = class {
@@ -20,16 +19,11 @@ DKTools.Network = class {
     /**
      * Executes the request
      * Promise resolves an ArrayBuffer
-     *
      * @static
      * @async
-     *
      * @param {String | Request} url - URL or Request
      * @param {Object} [options={}] - Options of request
-     *
-     * @see fetch
-     *
-     * @returns {Promise} ArrayBuffer
+     * @return {Promise<ArrayBuffer | null>} ArrayBuffer
      */
     static async fetchFile(url, options = {}) {
         return fetch(url, options).then((response) => {
@@ -44,16 +38,11 @@ DKTools.Network = class {
     /**
      * Executes the request
      * Promise resolves a JSON data
-     *
      * @static
      * @async
-     *
      * @param {String | Request} url - URL or Request
      * @param {Object} [options={}] - Options of request
-     *
-     * @see fetch
-     *
-     * @returns {Promise} JSON data
+     * @return {Promise<* | null>} JSON data
      */
     static async fetchJson(url, options = {}) {
         if (!options.headers) {
@@ -75,14 +64,11 @@ DKTools.Network = class {
 
     /**
      * Promise resolves an ArrayBuffer
-     *
      * @private
      * @static
      * @async
-     *
      * @param {Response} response - Response
-     *
-     * @returns {Promise} ArrayBuffer
+     * @return {Promise<ArrayBuffer | null>} ArrayBuffer
      */
     static async _toFile(response) {
         return response.arrayBuffer().catch(() => null);
@@ -90,21 +76,16 @@ DKTools.Network = class {
 
     /**
      * Promise resolves a JSON data
-     *
      * @private
      * @static
      * @async
-     *
      * @param {Response} response - Response
-     *
-     * @returns {Promise} JSON data
+     * @return {Promise<* | null>} JSON data
      */
     static async _toJson(response) {
         return response.json().catch(() => null);
     }
 
 };
-
-
 
 

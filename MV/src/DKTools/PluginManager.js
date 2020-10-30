@@ -4,8 +4,7 @@
 
 /**
  * Plugin manager class
- *
- * @class DKTools.PluginManager
+ * @class
  * @memberof DKTools
  */
 DKTools.PluginManager = class {
@@ -17,18 +16,11 @@ DKTools.PluginManager = class {
     // initialize methods
 
     /**
-     * Registers a plugins from Imported, which have a version and checks the requirements for the versions of plugins
-     *
+     * Checks the requirements for the plugins
      * @version 9.2.0
      * @static
      */
     static initialize() {
-        _.forEach(Imported, (version, pluginName) => {
-            if (!DKTools.Utils.isBoolean(version) && !this._plugins.hasOwnProperty(pluginName)) {
-                this._plugins[pluginName] = String(version);
-            }
-        });
-
         this._checkRequirements();
     }
 
@@ -36,21 +28,21 @@ DKTools.PluginManager = class {
 
     /**
      * Checks the requirements for plugins
-     *
+     * @version 10.0.0
      * @private
      * @static
      */
     static _checkRequirements() {
-        _.forEach(this._requirements, (pluginInfo, pluginName) => {
-            const maxVersion = _.max(pluginInfo);
+        Object.keys(this._requirements).forEach((pluginName) => {
             const pluginVersion = this.getVersion(pluginName);
+            const maxVersion = this._getMaxVersion(pluginName);
 
-            if (pluginVersion === undefined) {
+            if (pluginVersion === null) {
                 const error = 'Required to install the plugin "%1". Minimal version: %2'
                     .format(pluginName, maxVersion);
 
                 throw new Error(error);
-            } else if (pluginVersion < maxVersion) {
+            } else if (!this._compareVersions(pluginVersion, maxVersion)) {
                 const error = 'Required to update the plugin "%1" to minimal version %2 (Installed: %3)'
                     .format(pluginName, maxVersion, pluginVersion);
 
@@ -59,141 +51,126 @@ DKTools.PluginManager = class {
         });
     }
 
+    /**
+     * @private
+     * @static
+     * @param {String} v1 - First version
+     * @param {String} v2 - Second version
+     * @return {Boolean}
+     */
+    static _compareVersions(v1, v2) {
+        if (v1 === v2) {
+            return true;
+        }
+
+        const array1 = v1.split('.');
+        const array2 = v2.split('.');
+
+        for (let i = 0; i < array1.length; i++) {
+            const v1 = parseInt(array1[i]);
+            const v2 = parseInt(array2[i]);
+
+            if (v1 > v2) {
+                return true;
+            } else if (v1 < v2) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks the plugin version
+     * Returns true if the current version is greater than or equal to the given version
+     * @static
+     * @param {String} pluginName - Plugin name
+     * @param {String} version - Plugin version
+     * @return {Boolean} Current version is greater than or equal to the given version
+     */
+    static checkVersion(pluginName, version) {
+        return this._compareVersions(this.getVersion(pluginName), version);
+    }
     // G methods
 
     /**
+     * @private
+     * @static
+     * @param {String} pluginName - Plugin name
+     * @return {String | undefined}
+     */
+    static _getMaxVersion(pluginName) {
+        return (this._requirements[pluginName] || [])
+            .slice()
+            .sort((a, b) => (this._compareVersions(a, b) ? -1 : 1))[0];
+    }
+
+    /**
      * Returns a version of plugin
-     *
-     * @deprecated 9.2.0
-     * @version 9.2.0
+     * @version 10.0.0
      * @since 3.1.0
      * @static
-     *
-     * @param {String} pluginName - Name of plugin
-     *
+     * @param {String} pluginName - Plugin name
      * @example
      * DKTools.PluginManager.getVersion('DKTools');
-     *
-     * @returns {String | undefined} Version of plugin
+     * @return {String | undefined} Version of plugin
      */
     static getVersion(pluginName) {
-        return this._plugins[pluginName];
+        const version = Imported[pluginName];
+
+        return DKTools.Utils.isString(version) ?
+            version : null;
     }
 
     // I methods
 
     /**
      * Returns true if plugin is registered
-     *
-     * @deprecated 9.2.0
+     * @version 10.0.0
      * @static
      * @param {String} pluginName - Name of plugin
-     * @returns {Boolean} Plugin is registered
+     * @return {Boolean} Plugin is registered
      */
     static isRegistered(pluginName) {
-        return !!this._plugins[pluginName];
-    }
-
-    /**
-     * Returns true if plugin requirement is registered
-     *
-     * @deprecated 9.2.0
-     * @static
-     * @param {String} pluginName - Name of plugin
-     * @returns {Boolean} Requirement is registered
-     */
-    static isRequired(pluginName) {
-        return !!this._requirements[pluginName];
+        return DKTools.Utils.isString(this.getVersion(pluginName));
     }
 
     // R methods
 
     /**
-     * Registers a plugin
-     *
-     * @deprecated 9.2.0
-     * @version 9.2.0
-     * @static
-     * @param {String} pluginName - Name of plugin
-     * @param {String} version - Version of plugin
-     */
-    static registerPlugin(pluginName, version) {
-        if (!version || this.isRegistered(pluginName)) {
-            return;
-        }
-
-        this._plugins[pluginName] = String(version);
-    }
-
-    /**
-     * Registers a several plugins
-     *
-     * @deprecated 9.2.0
-     * @static
-     * @param {Object} plugins - Plugins
-     *
-     * @see DKTools.PluginManager.registerPlugin
-     */
-    static registerPlugins(plugins) {
-        _.forEach(plugins, (version, pluginName) => {
-            this.registerPlugin(pluginName, version);
-        });
-    }
-
-    /**
      * Registers a requirement of minimum version of plugin
-     * Returns true if the plugin version matches the requirement
-     * Returns null if the plugin is not registered
-     *
-     * @version 9.2.0
+     * @version 10.0.0
      * @static
      * @param {String} pluginName - Name of plugin
-     * @param {Object} versions - Plugin versions
-     *
+     * @param {String | Object} data - Plugin versions or versions (RPG Maker MV and MZ)
      * @example
+     * // Plugin only for RPG Maker MV
+     * DKTools.PluginManager.requirePlugin('DKTools', '10.0.0');
+     * @example
+     * // Plugin for RPG Maker MV and MZ
      * DKTools.PluginManager.requirePlugin('DKTools', {
-     *     MV: '9.2.0',
-     *     MZ: '1.0.0'
+     *     MV: '10.0.0',
+     *     MZ: '1.0.2'
      * });
-     *
-     * @returns {Boolean | null} Plugin version matches the requirement
      */
-    static requirePlugin(pluginName, versions) {
-        let minVersion;
-
-        if (versions instanceof Object) {
-            minVersion = versions[Utils.RPGMAKER_NAME];
-        } else if (DKTools.Utils.isString(versions) || DKTools.Utils.isNumber(versions)) {
-            // compatibility with old versions
-            minVersion = String(versions);
-        } else {
-            console.error('Unknown versions type');
-
-            return (Imported.hasOwnProperty(pluginName) ? false : null);
-        }
-
+    static requirePlugin(pluginName, data) {
         if (!this._requirements[pluginName]) {
             this._requirements[pluginName] = [];
         }
 
+        let minVersion;
+
+        if (data instanceof Object) {
+            minVersion = data[Utils.RPGMAKER_NAME];
+        } else if (DKTools.Utils.isString(data)) {
+            minVersion = data;
+        } else {
+            console.error(`Unknown version type (${pluginName}): ${typeof data}`);
+
+            return;
+        }
+
         this._requirements[pluginName].push(minVersion);
-
-        return (Imported.hasOwnProperty(pluginName) ? Imported[pluginName] >= minVersion : null);
-    }
-
-    /**
-     * Registers a several requirements of minimum version of plugins
-     *
-     * @deprecated 9.2.0
-     * @static
-     * @param {Object} plugins - Plugins
-     *
-     * @see DKTools.PluginManager.requirePlugin
-     */
-    static requirePlugins(plugins) {
-        _.forEach(plugins, (version, pluginName) => {
-            this.requirePlugin(pluginName, version);
-        });
     }
 
 };
@@ -203,58 +180,14 @@ DKTools.PluginManager = class {
 Object.defineProperties(DKTools.PluginManager, {
 
     /**
-     * List of registered plugins
-     *
+     * List of registered requirements
      * @private
      * @readonly
      * @type {Object}
      * @memberof DKTools.PluginManager
      */
-    _plugins: { value: {} },
-
-    /**
-     * List of registered requirements
-     *
-     * @private
-     * @readonly
-     * @type {Object}
-     * @memberof DKTools.PluginManager
-     */
-    _requirements: { value: {} },
-
-    /**
-     * List of registered plugins
-     *
-     * @deprecated 9.2.0
-     * @readonly
-     * @type {Object}
-     * @memberof DKTools.PluginManager
-     */
-    plugins: {
-        get: function() {
-            return this._plugins;
-        },
-        configurable: true
-    },
-
-    /**
-     * List of registered requirements
-     *
-     * @deprecated 9.2.0
-     * @readonly
-     * @type {Object}
-     * @memberof DKTools.PluginManager
-     */
-    requirements: {
-        get: function() {
-            return this._requirements;
-        },
-        configurable: true
-    }
+    _requirements: { value: {} }
 
 });
-
-
-
 
 

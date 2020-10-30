@@ -4,10 +4,8 @@
 
 /**
  * Scene preloader class
- *
- * @class DKTools.Scene.Preloader
- *
  * @since 6.1.0
+ * @class
  * @memberof DKTools.Scene
  */
 DKTools.Scene.Preloader = class {
@@ -56,7 +54,6 @@ DKTools.Scene.Preloader = class {
 
     /**
      * Adds the resource to preloading
-     *
      * @param {Promise | Bitmap | WebAudio} resource - Resource
      */
     add(resource) {
@@ -71,20 +68,10 @@ DKTools.Scene.Preloader = class {
         }
     }
 
-    /**
-     * Adds many resources to preloading
-     *
-     * @param {Promise[] | Bitmap[] | WebAudio[]} resources - Resources
-     */
-    addMany(resources) {
-        resources.forEach(resource => this.add(resource));
-    }
-
     // F methods
 
     /**
      * Finishes the preloading
-     *
      * @version 9.1.0
      */
     finish() {
@@ -97,8 +84,7 @@ DKTools.Scene.Preloader = class {
 
     /**
      * Returns true if the preloader has errors
-     *
-     * @returns {Boolean} Preloader has errors
+     * @return {Boolean} Preloader has errors
      */
     hasErrors() {
         return this._errors > 0;
@@ -108,9 +94,8 @@ DKTools.Scene.Preloader = class {
 
     /**
      * Returns true if the preloader is running
-     *
      * @since 9.1.0
-     * @returns {Boolean} Preloader is running
+     * @return {Boolean} Preloader is running
      */
     isRunning() {
         return this._running;
@@ -118,8 +103,7 @@ DKTools.Scene.Preloader = class {
 
     /**
      * Returns true if the preloader is ready
-     *
-     * @returns {Boolean} Preloader is ready
+     * @return {Boolean} Preloader is ready
      */
     isReady() {
         return this._finished;
@@ -129,7 +113,6 @@ DKTools.Scene.Preloader = class {
 
     /**
      * Processes the loading error
-     *
      * @private
      */
     _onError() {
@@ -140,7 +123,6 @@ DKTools.Scene.Preloader = class {
 
     /**
      * Starts the preloading
-     *
      * @version 9.1.0
      */
     start() {
@@ -165,7 +147,5 @@ DKTools.Scene.Preloader = class {
     }
 
 };
-
-
 
 

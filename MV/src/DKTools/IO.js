@@ -4,8 +4,7 @@
 
 /**
  * File system class
- *
- * @class DKTools.IO
+ * @class
  * @memberof DKTools
  */
 DKTools.IO = class {
@@ -23,7 +22,7 @@ DKTools.IO = class {
     static initialize() {
         let projectPath = '';
 
-        if (this.isLocalMode()) {
+        if (Utils.isNwjs()) {
             /**
              * @private
              * @readonly
@@ -79,19 +78,14 @@ DKTools.IO = class {
 
     /**
      * Returns true if the absolute path exists
-     *
      * @version 8.0.0
      * @since 3.0.0
      * @static
-     *
      * @param {String} path - Path
-     *
-     * @see FileSystem.existsSync
-     *
-     * @returns {Boolean} Absolute path exists
+     * @return {Boolean} Absolute path exists
      */
     static absolutePathExists(path) {
-        if (this.isLocalMode()) {
+        if (Utils.isNwjs()) {
             return this._fs.existsSync(path);
         } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP && path.startsWith(this._projectPath)) {
             if (this.isFile(path)) {
@@ -108,68 +102,57 @@ DKTools.IO = class {
 
     /**
      * Creates the file system stamp
-     *
+     * @version 10.0.0
      * @since 8.0.0
+     * @async
      * @private
      * @static
      */
-    static _createStamp() {
-        if (!Utils.isTest() || !this.isLocalMode() || this.mode === DKTools.IO.MODE_NWJS) {
+    static async _createStamp() {
+        if (!Utils.isTest() || !Utils.isNwjs() || this.mode === DKTools.IO.MODE_NWJS) {
             return;
         }
 
         const ignoredDirectories = DKToolsParam.get('File System', 'Ignored Directories')
-                                                        .map(path => new DKTools.IO.Directory(path));
+                                                .map(path => new DKTools.IO.Directory(path));
         const directory = DKTools.IO.getRootDirectory();
-        const stamp = this._stamp;
-        let timeout = null;
+        const file = new DKTools.IO.File('data/Stamp.json');
+        const stamp = {};
 
-        const processDirectory = (directory) => {
-            if (ignoredDirectories.some(dir => dir.getFullPath() === directory.getFullPath())) {
-                return;
-            }
+        const processDirectory = async (directory) => {
+            const entities = await directory.getAllAsync().then(result => result.data);
 
-            directory.getAllAsync().then(result => result.data).then((data) => {
-                data.forEach((entity) => {
-                    entity.getStatsAsync().then(result => result.data).then((stats) => {
-                        const fullPath = entity.getFullPath().substring(1).split('\\');
+            for (const entity of entities) {
+                const stats = await entity.getStatsAsync().then(result => result.data);
+                const fullPath = entity.getFullPath().substring(1).split('\\');
 
-                        if (entity.isFile()) {
-                            _.set(stamp, fullPath, { __stats__: { ...stats, type: 'file' } });
-                        } else {
-                            _.set(stamp, fullPath, { __stats__: { ...stats, type: 'directory' } });
-                        }
+                if (entity.isFile()) {
+                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'file' } });
+                } else {
+                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'directory' } });
+                }
 
-                        if (timeout) {
-                            clearTimeout(timeout);
-                        }
-
-                        timeout = setTimeout(() => {
-                            const file = new DKTools.IO.File('data/Stamp.json');
-
-                            file.saveJsonAsync(stamp, { compress: true });
-                        });
-                    });
-
-                    if (entity.isDirectory()) {
-                        processDirectory(entity);
+                if (entity.isDirectory()) {
+                    if (!ignoredDirectories.some(dir => dir.getFullPath() === directory.getFullPath())) {
+                        await processDirectory(entity);
                     }
-                });
-            });
+                }
+            }
         };
 
-        processDirectory(directory);
+        await processDirectory(directory);
+        await file.saveJsonAsync(stamp, { compress: true });
+
+        this._stamp = stamp;
     }
 
     // G methods
 
     /**
      * Returns the project directory
-     *
      * @since 4.0.0
      * @static
-     *
-     * @returns {DKTools.IO.Directory} Project directory
+     * @return {DKTools.IO.Directory} Project directory
      */
     static getRootDirectory() {
         return new DKTools.IO.Directory();
@@ -177,13 +160,10 @@ DKTools.IO = class {
 
     /**
      * Returns the absolute path to file or directory
-     *
      * @since 3.0.0
      * @static
-     *
      * @param {String} path - Path
-     *
-     * @returns {String} Absolute path to file or directory
+     * @return {String} Absolute path to file or directory
      */
     static getAbsolutePath(path) {
         const absolutePath = this.joinPath(this._projectPath, (path || ''));
@@ -194,31 +174,14 @@ DKTools.IO = class {
     // I methods
 
     /**
-     * Returns true if the local mode is used
-     *
-     * @static
-     * @returns {Boolean} Local mode is used
-     */
-    static isLocalMode() {
-        return Utils.isNwjs();
-    }
-
-    /**
      * Returns true if the full path is a file
-     *
      * @version 8.0.0
      * @static
-     *
      * @param {String} fullPath - Path to file
-     *
-     * @see DKTools.IO.getAbsolutePath
-     * @see DKTools.IO.absolutePathExists
-     * @see FileSystem.lstatSync
-     *
-     * @returns {Boolean} Full path is a file
+     * @return {Boolean} Full path is a file
      */
     static isFile(fullPath) {
-        if (this.isLocalMode()) {
+        if (Utils.isNwjs()) {
             const absolutePath = this.getAbsolutePath(fullPath);
 
             if (this.absolutePathExists(absolutePath)) {
@@ -238,20 +201,13 @@ DKTools.IO = class {
 
     /**
      * Returns true if the full path is a directory
-     *
      * @version 8.0.0
      * @static
-     *
      * @param {String} fullPath - Path to directory
-     *
-     * @see DKTools.IO.getAbsolutePath
-     * @see DKTools.IO.absolutePathExists
-     * @see FileSystem.lstatSync
-     *
-     * @returns {Boolean} Full path is a directory
+     * @return {Boolean} Full path is a directory
      */
     static isDirectory(fullPath) {
-        if (this.isLocalMode()) {
+        if (Utils.isNwjs()) {
             const absolutePath = this.getAbsolutePath(fullPath);
 
             if (this.absolutePathExists(absolutePath)) {
@@ -274,20 +230,13 @@ DKTools.IO = class {
     /**
      * Joins all given path segments together using the platform specific separator as a delimiter,
      * then normalizes the resulting path.
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {...String} paths - Path segments
-     *
-     * @see DKTools.IO.isLocalMode
-     * @see DKTools.IO.normalizePath
-     * @see Path.join
-     *
-     * @returns {String}
+     * @return {String}
      */
     static joinPath() {
-        if (this.isLocalMode()) {
+        if (Utils.isNwjs()) {
             return this._path.join(...arguments);
         }
 
@@ -305,13 +254,12 @@ DKTools.IO = class {
 
     /**
      * Loads the file system stamp
-     *
      * @since 8.0.0
      * @private
      * @static
      */
     static _loadStamp() {
-        if (this.isLocalMode() || this.mode === DKTools.IO.MODE_NWJS) {
+        if (Utils.isNwjs() || this.mode === DKTools.IO.MODE_NWJS) {
             return;
         }
 
@@ -330,19 +278,14 @@ DKTools.IO = class {
 
     /**
      * Returns a normalized path
-     *
      * @version 6.1.0
      * @static
-     *
      * @param {String} path - Path for normalize
      * @param {Boolean} [reverseSlash=false] - Reversing slash
-     *
-     * @see Path.normalize
-     *
-     * @returns {String} Normalized path
+     * @return {String} Normalized path
      */
     static normalizePath(path, reverseSlash = false) {
-        if (this.isLocalMode()) {
+        if (Utils.isNwjs()) {
             const normalizedPath = this._path.normalize(path);
 
             if (!reverseSlash) {
@@ -403,19 +346,13 @@ DKTools.IO = class {
     /**
      * Returns an object whose properties represent significant elements of the path.
      * Trailing directory separators are ignored.
-     *
      * @since 5.0.0
      * @static
-     *
      * @param {String} path - Path
-     *
-     * @see DKTools.IO._splitPath
-     * @see Path.parse
-     *
-     * @returns {{ root: String, dir: String, base: String, ext: String, name: String }}
+     * @return {{ root: String, dir: String, base: String, ext: String, name: String }}
      */
     static parsePath(path) {
-        if (this.isLocalMode()) {
+        if (Utils.isNwjs()) {
             return this._path.parse(path);
         }
 
@@ -441,10 +378,7 @@ DKTools.IO = class {
      * @example
      * DKTools.IO.pathExists('img/system/'); // => true
      *
-     * @see DKTools.IO.getAbsolutePath
-     * @see DKTools.IO.absolutePathExists
-     *
-     * @returns {Boolean} Path exists
+     * @return {Boolean} Path exists
      */
     static pathExists(path) {
         return this.absolutePathExists(this.getAbsolutePath(path));
@@ -454,11 +388,10 @@ DKTools.IO = class {
 
     /**
      * Reverses slashes on "/"
-     *
      * @since 9.0.0
      * @static
      * @param {String} path - Path
-     * @returns {String} Path with reversed slashes "/"
+     * @return {String} Path with reversed slashes "/"
      */
     static reverseSlashes(path) {
         return path.replace(/\\/g, '/');
@@ -468,14 +401,11 @@ DKTools.IO = class {
 
     /**
      * Returns the stats of the path
-     *
      * @since 5.0.0
      * @private
      * @static
-     *
      * @param {String} path - Path
-     *
-     * @returns {{ device: String, isUnc: Boolean, isAbsolute: Boolean, tail: String }}
+     * @return {{ device: String, isUnc: Boolean, isAbsolute: Boolean, tail: String }}
      */
     static _statPath(path) {
         const deviceRegex = /^([a-zA-Z]:|[\\\/]{2}[^\\\/]+[\\\/]+[^\\\/]+)?([\\\/])?([\s\S]*?)$/,
@@ -488,14 +418,11 @@ DKTools.IO = class {
 
     /**
      * Splits the path
-     *
      * @since 5.0.0
      * @private
      * @static
-     *
      * @param {String} path - Path
-     *
-     * @returns {String[]} Splitted path
+     * @return {String[]} Splitted path
      */
     static _splitPath(path) {
         const deviceRegex = /^([a-zA-Z]:|[\\\/]{2}[^\\\/]+[\\\/]+[^\\\/]+)?([\\\/])?([\s\S]*?)$/,
@@ -521,7 +448,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * File system
-     *
      * @readonly
      * @type {Object}
      * @memberof DKTools.IO
@@ -535,7 +461,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * OS
-     *
      * @readonly
      * @type {Object}
      * @memberof DKTools.IO
@@ -549,7 +474,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * Path
-     *
      * @readonly
      * @type {Object}
      * @memberof DKTools.IO
@@ -563,8 +487,7 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * Provides the platform-specific path segment separator
-     * For mobile phones and browsers always returns '/'
-     *
+     * For mobile phones and browsers always return '/'
      * @since 7.0.0
      * @readonly
      * @type {String}
@@ -572,14 +495,13 @@ Object.defineProperties(DKTools.IO, {
      */
     sep: {
         get: function() {
-            return this.isLocalMode() ? this._path.sep : '/';
+            return Utils.isNwjs() ? this._path.sep : '/';
         },
         configurable: true
     },
 
     /**
      * Path to the project folder
-     *
      * @readonly
      * @type {String}
      * @memberof DKTools.IO
@@ -593,7 +515,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * File system mode
-     *
      * @since 8.0.0
      * @readonly
      * @type {Number}
@@ -608,7 +529,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * File system stamp
-     *
      * @since 8.0.0
      * @readonly
      * @type {Object}
@@ -623,7 +543,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * Operation completed successfully
-     *
      * @constant
      * @type {Number}
      * @memberof DKTools.IO
@@ -632,7 +551,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * Expect until an asynchronous operation calls the callback function
-     *
      * @since 7.0.0
      * @constant
      * @type {Number}
@@ -642,7 +560,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * Platform is not equal to NW.js
-     *
      * @constant
      * @type {Number}
      * @memberof DKTools.IO
@@ -651,7 +568,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * Path does not exist
-     *
      * @constant
      * @type {Number}
      * @memberof DKTools.IO
@@ -660,7 +576,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * The callback function is not available for an asynchronous operation
-     *
      * @constant
      * @type {Number}
      * @memberof DKTools.IO
@@ -669,7 +584,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * Directory already exists
-     *
      * @constant
      * @type {Number}
      * @memberof DKTools.IO
@@ -678,7 +592,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * Directory is not empty
-     *
      * @constant
      * @type {Number}
      * @memberof DKTools.IO
@@ -687,7 +600,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * Overwriting is not available
-     *
      * @since 7.0.0
      * @constant
      * @type {Number}
@@ -697,7 +609,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * The options are not available for an operation
-     *
      * @since 7.0.0
      * @constant
      * @type {Number}
@@ -707,7 +618,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * Failed decompressing data
-     *
      * @since 7.0.0
      * @constant
      * @type {Number}
@@ -717,7 +627,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * Failed parsing data
-     *
      * @since 7.0.0
      * @constant
      * @type {Number}
@@ -727,7 +636,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * Nwjs + Stamp file system mode
-     *
      * @since 8.0.0
      * @constant
      * @type {Number}
@@ -737,7 +645,6 @@ Object.defineProperties(DKTools.IO, {
 
     /**
      * Nwjs file system mode
-     *
      * @since 8.0.0
      * @constant
      * @type {Number}
@@ -746,7 +653,5 @@ Object.defineProperties(DKTools.IO, {
     MODE_NWJS: { value: 1 }
 
 });
-
-
 
 

@@ -3,8 +3,8 @@ Title: DKTools
 Author: DKPlugins
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 9.2.0
-Release: 10.08.2020
+Version: 10.0.1
+Release: 23.10.2020
 First release: 13.01.2016
 */
 
@@ -13,13 +13,13 @@ First release: 13.01.2016
 Автор: DKPlugins
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 9.2.0
-Релиз: 10.08.2020
+Версия: 10.0.1
+Релиз: 23.10.2020
 Первый релиз: 13.01.2016
 */
 
 /*:
-* @plugindesc v.9.2.0 Advanced project testing and various functions. Made with ♥ by DKPlugins
+* @plugindesc v.10.0.1 Advanced project testing and various functions. Made with ♥ by DKPlugins
 * @author DKPlugins
 * @help
 
@@ -27,13 +27,19 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DKPlugins
  Site: https://dk-plugins.ru
- Version: 9.2.0
- Release: 10.08.2020
+ Version: 10.0.1
+ Release: 23.10.2020
  First release: 13.01.2016
 
- ### Support ###
+ ###===========================================================================
+ ## Support
+ ###===========================================================================
  Donate: https://dk-plugins.ru/donate
  Become a patron: https://www.patreon.com/dkplugins
+
+ ###===========================================================================
+ ## Links
+ ###===========================================================================
 
  ### DKTools on DKPlugins ###
  https://dk-plugins.ru/mv/dktools/
@@ -42,9 +48,11 @@ E-mail: kuznetsovdenis96@gmail.com
  https://github.com/DKPlugins/DKTools
 
  ### Online documentation ###
- https://dk-plugins.ru/documentation/DKTools/index.html
+ https://dk-plugins.ru/documentation/mv/DKTools/index.html
 
- ### Requirements and dependencies ###
+ ###===========================================================================
+ ## Requirements and dependencies
+ ###===========================================================================
  RPG Maker and project version 1.6+
 
  ###===========================================================================
@@ -240,29 +248,35 @@ E-mail: kuznetsovdenis96@gmail.com
  Allows you to add an exit command to the command window on the title screen.
  The command is added to the end of the list.
 
+ ###=========================================================================
+ ## Hidden functions
+ ###=========================================================================
+ 1. You can select the first and last item in the list using the home and end keys
+
  ###===========================================================================
  ## Plugin commands
  ###===========================================================================
- 1. Checks for plugins updates from DKPlugins
- DKPluginsCheckUpdates
-
- 2. Update file system stamp
- UpdateFileSystemStamp
+ 1. UpdateFileSystemStamp
+ Scans project folders (excluding ignored directories) and builds a tree view
+ of project folders and files. This is necessary so that browsers and
+ mobile devices can check for the existence of folders and files.
 
  ###===========================================================================
  ## License and terms of use
  ###===========================================================================
  DKTools uses a third-party library "lodash": https://lodash.com/license
 
- Recent information about the terms of use: https://dk-plugins.ru/terms-of-use
-
  You can:
- -Free to use the plugin for your commercial and non commercial projects.
- -Translate the plugin to other languages (inform if you do this)
- -Change the plugin code, but you must specify a link to the original plugin
+ -To use the plugin for your non-commercial projects
+ -Change code of the plugin
 
- You can't:
- -Delete or change any information about the plugin (Title, authorship, contact information, version and release)
+ You cannot:
+ -Delete or change any information about the plugin
+ -Distribute the plugin and its modifications
+
+ ## Commercial license ##
+ To use the plugin in commercial projects, you must be my subscriber on patreon
+ https://www.patreon.com/dkplugins
 
  * @param System
  * @default ---------------------------------
@@ -299,7 +313,7 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Max Savefiles
  * @parent System
- * @desc Maximum number of save slots.
+ * @desc Maximum number of save slots
  * @type struct<MaxSavefiles>
  * @default {"Enabled":"false","Max Savefiles": "20"}
 
@@ -413,7 +427,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Screenshots
  * @type struct<Screenshots>
- * @default {"Enabled":"false","Key Code":"44","Path":"screenshots/","Filename":"%year_%month_%day_%hours_%minutes_%seconds.png","Type":"png","Quality":"0.9"}
+ * @default {"Enabled":"false","Key Code":"122","Path":"screenshots/","Filename":"%year_%month_%day_%hours_%minutes_%seconds.png","Type":"png","Quality":"0.9"}
 
  * @param Title Menu
  * @default ---------------------------------
@@ -433,7 +447,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.9.2.0 Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins
+* @plugindesc v.10.0.1 Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins
 * @author DKPlugins
 * @help
 
@@ -441,13 +455,19 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DKPlugins
  Сайт: https://dk-plugins.ru
- Версия: 9.2.0
- Релиз: 10.08.2020
+ Версия: 10.0.1
+ Релиз: 23.10.2020
  Первый релиз: 13.01.2016
 
- ### Поддержка ###
+ ###===========================================================================
+ ## Поддержка
+ ###===========================================================================
  Поддержать: https://dk-plugins.ru/donate
  Стать патроном: https://www.patreon.com/dkplugins
+
+ ###===========================================================================
+ ## Ссылки
+ ###===========================================================================
 
  ### DKTools на DKPlugins ###
  https://dk-plugins.ru/mv/dktools/
@@ -458,7 +478,9 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Онлайн документация ###
  https://dk-plugins.ru/documentation/DKTools/index.html
 
- ### Требования и зависимости ###
+ ###===========================================================================
+ ## Требования и зависимости
+ ###===========================================================================
  Версия мейкера и проекта 1.6+
 
  ###===========================================================================
@@ -652,29 +674,36 @@ E-mail: kuznetsovdenis96@gmail.com
  Позволяет вам добавить команду выхода в окно команд на титульном экране.
  Команда добавляется в конец списка.
 
+ ###=========================================================================
+ ## Скрытые функции
+ ###=========================================================================
+ 1. Вы можете выбрать первый и последний элемент списка с помощью клавиш home и end
+
  ###===========================================================================
  ## Команды плагина
  ###===========================================================================
- 1. Проверить обновления плагинов от DKPlugins
- DKPluginsCheckUpdates
-
- 2. Обновить штамп файловой системы
- UpdateFileSystemStamp
+ 1. UpdateFileSystemStamp
+ Сканирует папки проекта (за исключением игнорируемых директорий) и
+ составляет древовидное представление папок и файлов проекта.
+ Это необходимо, чтобы браузеры и мобильные устройства могли проверять
+ существование папок и файлов.
 
  ###===========================================================================
  ## Лицензии и правила использования плагина
  ###===========================================================================
  DKTools использует стороннюю библиотеку "lodash": https://lodash.com/license
 
- Актуальная информация о правилах использования: https://dk-plugins.ru/terms-of-use
-
  Вы можете:
- -Бесплатно использовать данный плагин в некоммерческих и коммерческих проектах
- -Переводить плагин на другие языки (сообщите мне, если Вы перевели плагин на другой язык)
- -Изменять код плагина, но Вы обязаны указать ссылку на оригинальный плагин
+ -Использовать плагин в некоммерческих проектах
+ -Изменять код плагина
 
  Вы не можете:
- -Убирать или изменять любую информацию о плагине (Название, авторство, контактная информация, версия и дата релиза)
+ -Удалять или изменять любую информацию о плагине
+ -Распространять плагин и его модификации
+
+ ## Коммерческая лицензия ##
+ Для использования плагина в коммерческих проектах необходимо быть моим подписчиком на патреоне
+ https://www.patreon.com/dkplugins
 
  * @param System
  * @text Система
@@ -845,7 +874,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Functions
  * @desc Скриншоты
  * @type struct<Screenshots>
- * @default {"Enabled":"false","Key Code":"44","Path":"screenshots/","Filename":"%year_%month_%day_%hours_%minutes_%seconds.png","Type":"png","Quality":"0.9"}
+ * @default {"Enabled":"false","Key Code":"122","Path":"screenshots/","Filename":"%year_%month_%day_%hours_%minutes_%seconds.png","Type":"png","Quality":"0.9"}
 
  * @param Title Menu
  * @text Титульный экран
@@ -854,7 +883,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @param Title Menu Command Window
  * @text Окно команд титульного экрана
  * @parent Title Menu
- * @desc Параметра окна команд титульного экрана
+ * @desc Параметры окна команд титульного экрана
  * @type struct<TitleMenuCommandWindow>
  * @default {"Enabled":"false","X":"(Graphics.boxWidth - this.width) / 2","Y":"Graphics.boxHeight - this.height - 96","Width":"240"}
 
@@ -916,7 +945,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @text Show new plugins
  * @desc Show new plugins ? Information is displayed in the console during the game test
  * @type boolean
- * @default false
+ * @default true
 
  */
 
@@ -932,7 +961,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @text Показать новые плагины
  * @desc Показывать новые плагины ? Информация выводится в консоль при тесте игры
  * @type boolean
- * @default false
+ * @default true
 
  */
 
