@@ -1,6 +1,6 @@
 {
   "parserOptions": {
-    "ecmaVersion": 2018
+    "ecmaVersion": 2020
   },
   "plugins": ["lodash"],
   "extends": ["eslint:recommended"],
@@ -19,6 +19,7 @@
     "no-useless-escape": "off",
     "no-console": "off",
     "no-control-regex": "off",
+    "no-prototype-builtins": "off",
     "no-irregular-whitespace": ["error", { "skipComments": true }],
     "no-template-curly-in-string": "error",
     "require-atomic-updates": "error",
