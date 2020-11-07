@@ -3,8 +3,8 @@ Title: DKTools
 Author: DKPlugins
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 1.1.1
-Release: 23.10.2020
+Version: 1.1.2
+Release: 07.11.2020
 First release: 21.08.2020
 */
 
@@ -13,13 +13,13 @@ First release: 21.08.2020
 Автор: DKPlugins
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 1.1.1
-Релиз: 23.10.2020
+Версия: 1.1.2
+Релиз: 07.11.2020
 Первый релиз: 21.08.2020
 */
 
 /*:
-* @plugindesc v.1.1.1 Advanced project testing and various settings. Made with ♥ by DKPlugins
+* @plugindesc v.1.1.2 Advanced project testing and various settings. Made with ♥ by DKPlugins
 * @author DKPlugins
 * @url https://dk-plugins.ru
 * @target MZ
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DKPlugins
  Site: https://dk-plugins.ru
- Version: 1.1.1
- Release: 23.10.2020
+ Version: 1.1.2
+ Release: 07.11.2020
  First release: 21.08.2020
 
  ###=========================================================================
@@ -241,8 +241,7 @@ E-mail: kuznetsovdenis96@gmail.com
  -Distribute the plugin and its modifications
 
  ## Commercial license ##
- To use the plugin in commercial projects, you must be my subscriber on patreon
- https://www.patreon.com/dkplugins
+ Visit the page: https://dk-plugins.ru/commercial-license/
 
  ###=========================================================================
  ## Support
@@ -287,7 +286,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Preloading
  * @desc Initial preloading of resources
  * @type struct<InitialPreloading>
- * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]","Progress Bar":"{\"Enabled\":\"false\",\"Background\":\"\",\"Progress Bar X\":\"(Graphics.boxWidth - width) * 2 / 4\",\"Progress Bar Y\":\"(Graphics.boxHeight - height) * 2 / 4\",\"Progress Bar Text\":\"Loading: %1\",\"Progress Bar Text Size\":\"28\",\"Progress Bar Style\":\"colors\",\"Colors Style\":\"\",\"Progress Bar Width\":\"Graphics.boxWidth * 2 / 4\",\"Progress Bar Height\":\"48\",\"Progress Bar Background Color\":\"grey\",\"Progress Bar Progress Color\":\"#33ccff\",\"Images Style\":\"\",\"Progress Bar Background Image\":\"\",\"Progress Bar Progress Image\":\"\"}"}
+ * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]"}
 
  * @param Maps Preloading
  * @parent Preloading
@@ -398,7 +397,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.1.1.1 Расширенное тестирование проекта и различные настройки. Сделано с ♥ от DKPlugins
+* @plugindesc v.1.1.2 Расширенное тестирование проекта и различные настройки. Сделано с ♥ от DKPlugins
 * @author DKPlugins
 * @url https://dk-plugins.ru
 * @target MZ
@@ -408,8 +407,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DKPlugins
  Сайт: https://dk-plugins.ru
- Версия: 1.1.1
- Релиз: 23.10.2020
+ Версия: 1.1.2
+ Релиз: 07.11.2020
  Первый релиз: 21.08.2020
 
  ###=========================================================================
@@ -619,8 +618,7 @@ E-mail: kuznetsovdenis96@gmail.com
  -Распространять плагин и его модификации
 
  ## Коммерческая лицензия ##
- Для использования плагина в коммерческих проектах необходимо быть моим подписчиком на патреоне
- https://www.patreon.com/dkplugins
+ Посетите страницу: https://dk-plugins.ru/commercial-license/
 
  ###=========================================================================
  ## Поддержка
@@ -672,7 +670,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent Preloading
  * @desc Начальная предзагрузка
  * @type struct<InitialPreloading>
- * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]","Progress Bar":"{\"Enabled\":\"false\",\"Background\":\"\",\"Progress Bar X\":\"(Graphics.boxWidth - width) * 2 / 4\",\"Progress Bar Y\":\"(Graphics.boxHeight - height) * 2 / 4\",\"Progress Bar Text\":\"Загрузка: %1\",\"Progress Bar Text Size\":\"28\",\"Progress Bar Style\":\"colors\",\"Colors Style\":\"\",\"Progress Bar Width\":\"Graphics.boxWidth * 2 / 4\",\"Progress Bar Height\":\"48\",\"Progress Bar Background Color\":\"grey\",\"Progress Bar Progress Color\":\"#33ccff\",\"Images Style\":\"\",\"Progress Bar Background Image\":\"\",\"Progress Bar Progress Image\":\"\"}"}
+ * @default {"Enabled":"false","Debugging":"false","Audio Files":"[]","Image Files":"[]"}
 
  * @param Maps Preloading
  * @text Предзагрузка карт
@@ -1712,7 +1710,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 window.Imported = window.Imported || {};
-window.Imported.DKTools = '1.1.1';
+window.Imported.DKTools = '1.1.2';
 
 
 
@@ -1990,6 +1988,14 @@ DKTools.Utils = class {
                     console.log.apply(console, args);
                 }
             } else if (showNewPlugins) {
+                const requirementsMet = plugin.requirements.length === 0 ||
+                    plugin.requirements.every(
+                        pluginName => DKTools.PluginManager.isRegistered(pluginName));
+
+                if (!requirementsMet) {
+                    return;
+                }
+
                 const args = [
                     `Try the new plugin: ${plugin.name}\n`,
                     `Description: ${plugin.description}\n`,
@@ -5832,11 +5838,8 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      *
      * @async
-     *
      * @param {Object} [object={}] - Options of an operation
-     *
      * @param {String | Object} [object.options] - Options for FileSystem.readdir
-     *
      * @return {Promise<{ status: Number, data: DKTools.IO.File[] | null }>} All JSON files
      */
     async getJsonFilesAsync(object = {}) {
@@ -14455,6 +14458,19 @@ DKTools.Window.Selectable.prototype.callOkHandler = function() {
 };
 
 /**
+ * Changes the paint opacity
+ * @override
+ * @param {Boolean | Number} paintOpacity - Paint opacity
+ */
+DKTools.Window.Selectable.prototype.changePaintOpacity = function(paintOpacity) {
+    if (typeof paintOpacity === 'boolean') {
+        Window_Selectable.prototype.changePaintOpacity.apply(this, arguments);
+    } else {
+        this.contents.paintOpacity = paintOpacity;
+    }
+};
+
+/**
  * Returns the current column
  * @since 1.1.0
  * @return {Number} Current column
@@ -15156,7 +15172,7 @@ DKTools.Window.Selectable.prototype.standardContentsSprite = function() {
  * @return {Object[]} Standard items
  */
 DKTools.Window.Selectable.prototype.standardItems = function() {
-    return []
+    return [];
 };
 
 /**
@@ -15255,7 +15271,7 @@ DKTools.Window.Selectable.prototype.setupMaxCols = function(cols = 1) {
  * @param {Function} [items[].okHandler] - Item ok handler
  * @param {Function} [items[].cancelHandler] - Item cancel handler
  */
-DKTools.Window.Selectable.prototype.setupItems = function(items = []) {
+DKTools.Window.Selectable.prototype.setupItems = function(items) {
     this._list = [];
 
     (items || this.standardItems()).forEach((item) => {

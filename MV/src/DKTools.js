@@ -3,8 +3,8 @@ Title: DKTools
 Author: DKPlugins
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 10.0.1
-Release: 23.10.2020
+Version: 10.0.2
+Release: 07.11.2020
 First release: 13.01.2016
 */
 
@@ -13,13 +13,13 @@ First release: 13.01.2016
 Автор: DKPlugins
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 10.0.1
-Релиз: 23.10.2020
+Версия: 10.0.2
+Релиз: 07.11.2020
 Первый релиз: 13.01.2016
 */
 
 /*:
-* @plugindesc v.10.0.1 Advanced project testing and various functions. Made with ♥ by DKPlugins
+* @plugindesc v.10.0.2 Advanced project testing and various functions. Made with ♥ by DKPlugins
 * @author DKPlugins
 * @help
 
@@ -27,8 +27,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DKPlugins
  Site: https://dk-plugins.ru
- Version: 10.0.1
- Release: 23.10.2020
+ Version: 10.0.2
+ Release: 07.11.2020
  First release: 13.01.2016
 
  ###===========================================================================
@@ -275,8 +275,7 @@ E-mail: kuznetsovdenis96@gmail.com
  -Distribute the plugin and its modifications
 
  ## Commercial license ##
- To use the plugin in commercial projects, you must be my subscriber on patreon
- https://www.patreon.com/dkplugins
+ Visit the page: https://dk-plugins.ru/commercial-license/
 
  * @param System
  * @default ---------------------------------
@@ -447,7 +446,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.10.0.1 Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins
+* @plugindesc v.10.0.2 Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins
 * @author DKPlugins
 * @help
 
@@ -455,8 +454,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DKPlugins
  Сайт: https://dk-plugins.ru
- Версия: 10.0.1
- Релиз: 23.10.2020
+ Версия: 10.0.2
+ Релиз: 07.11.2020
  Первый релиз: 13.01.2016
 
  ###===========================================================================
@@ -702,8 +701,7 @@ E-mail: kuznetsovdenis96@gmail.com
  -Распространять плагин и его модификации
 
  ## Коммерческая лицензия ##
- Для использования плагина в коммерческих проектах необходимо быть моим подписчиком на патреоне
- https://www.patreon.com/dkplugins
+ Посетите страницу: https://dk-plugins.ru/commercial-license/
 
  * @param System
  * @text Система

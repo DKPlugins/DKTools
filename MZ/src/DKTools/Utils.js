@@ -87,6 +87,14 @@ DKTools.Utils = class {
                     console.log.apply(console, args);
                 }
             } else if (showNewPlugins) {
+                const requirementsMet = plugin.requirements.length === 0 ||
+                    plugin.requirements.every(
+                        pluginName => DKTools.PluginManager.isRegistered(pluginName));
+
+                if (!requirementsMet) {
+                    return;
+                }
+
                 const args = [
                     `Try the new plugin: ${plugin.name}\n`,
                     `Description: ${plugin.description}\n`,

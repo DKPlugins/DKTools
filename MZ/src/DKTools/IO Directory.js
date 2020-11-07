@@ -946,11 +946,8 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_PATH_DOES_NOT_EXIST
      *
      * @async
-     *
      * @param {Object} [object={}] - Options of an operation
-     *
      * @param {String | Object} [object.options] - Options for FileSystem.readdir
-     *
      * @return {Promise<{ status: Number, data: DKTools.IO.File[] | null }>} All JSON files
      */
     async getJsonFilesAsync(object = {}) {

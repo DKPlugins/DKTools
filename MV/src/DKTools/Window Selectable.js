@@ -114,6 +114,19 @@ DKTools.Window.Selectable.prototype.callOkHandler = function() {
 };
 
 /**
+ * Changes the paint opacity
+ * @override
+ * @param {Boolean | Number} paintOpacity - Paint opacity
+ */
+DKTools.Window.Selectable.prototype.changePaintOpacity = function(paintOpacity) {
+    if (typeof paintOpacity === 'boolean') {
+        Window_Selectable.prototype.changePaintOpacity.apply(this, arguments);
+    } else {
+        this.contents.paintOpacity = paintOpacity;
+    }
+};
+
+/**
  * Returns the current column
  * @return {Number} Current column
  */
@@ -906,7 +919,7 @@ DKTools.Window.Selectable.prototype.setupMaxCols = function(cols = 1) {
  * @param {Function} [items[].okHandler] - Item ok handler
  * @param {Function} [items[].cancelHandler] - Item cancel handler
  */
-DKTools.Window.Selectable.prototype.setupItems = function(items = []) {
+DKTools.Window.Selectable.prototype.setupItems = function(items) {
     this._list = [];
 
     (items || this.standardItems()).forEach((item) => {
