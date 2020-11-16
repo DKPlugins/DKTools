@@ -987,7 +987,8 @@ AudioManager._audioCache = new AudioCache();
  */
 AudioManager._generateCacheKey = function(folder, name) {
     return DKTools.IO.reverseSlashes(
-        this._path + folder + '/' + encodeURIComponent(name) + this.audioFileExt());
+        (this._path || this._basePath) +
+        folder + '/' + encodeURIComponent(name) + this.audioFileExt());
 };
 
 /**

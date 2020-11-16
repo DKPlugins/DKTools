@@ -821,7 +821,7 @@ DKTools.Window.Selectable.prototype.standardContentsSprite = function() {
  * @return {Object[]} Standard items
  */
 DKTools.Window.Selectable.prototype.standardItems = function() {
-    return []
+    return [];
 };
 
 /**
@@ -1110,29 +1110,31 @@ DKTools.Window.Selectable.prototype.select = function(index, playCursor = false)
 
 /**
  * Select symbol
+ * @version 10.0.3
  * @param {String} symbol - Symbol
  */
 DKTools.Window.Selectable.prototype.selectSymbol = function(symbol) {
     const index = this.findSymbol(symbol);
 
     if (index >= 0) {
-        this.forceSelect(index);
+        this.select(index);
     } else {
-        this.forceSelect(0);
+        this.select(0);
     }
 };
 
 /**
  * Selects ext
+ * @version 10.0.3
  * @param {*} ext - Ext
  */
 DKTools.Window.Selectable.prototype.selectExt = function(ext) {
     const index = this.findExt(ext);
 
     if (index >= 0) {
-        this.forceSelect(index);
+        this.select(index);
     } else {
-        this.forceSelect(0);
+        this.select(0);
     }
 };
 

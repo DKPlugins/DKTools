@@ -114,7 +114,7 @@ DKTools.Utils = class {
                 if (!requirementsMet) {
                     return;
                 }
-                
+
                 const args = [
                     `Try the new plugin: ${plugin.name}\n`,
                     `Description: ${plugin.description}\n`,

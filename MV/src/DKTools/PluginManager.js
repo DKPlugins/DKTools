@@ -63,6 +63,10 @@ DKTools.PluginManager = class {
             return true;
         }
 
+        if (!v1 || !v2) {
+            return false;
+        }
+
         const array1 = v1.split('.');
         const array2 = v2.split('.');
 
@@ -126,13 +130,14 @@ DKTools.PluginManager = class {
 
     /**
      * Returns true if plugin is registered
-     * @version 10.0.0
+     * @version 10.0.3
      * @static
      * @param {String} pluginName - Name of plugin
      * @return {Boolean} Plugin is registered
      */
     static isRegistered(pluginName) {
-        return DKTools.Utils.isString(this.getVersion(pluginName));
+        return DKTools.Utils.isString(this.getVersion(pluginName)) ||
+            $plugins.some(plugin => plugin.name === pluginName && plugin.status);
     }
 
     // R methods

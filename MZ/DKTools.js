@@ -3,8 +3,8 @@ Title: DKTools
 Author: DKPlugins
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 1.1.2
-Release: 07.11.2020
+Version: 1.1.3
+Release: 15.11.2020
 First release: 21.08.2020
 */
 
@@ -13,13 +13,13 @@ First release: 21.08.2020
 Автор: DKPlugins
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 1.1.2
-Релиз: 07.11.2020
+Версия: 1.1.3
+Релиз: 15.11.2020
 Первый релиз: 21.08.2020
 */
 
 /*:
-* @plugindesc v.1.1.2 Advanced project testing and various settings. Made with ♥ by DKPlugins
+* @plugindesc v.1.1.3 Advanced project testing and various settings. Made with ♥ by DKPlugins
 * @author DKPlugins
 * @url https://dk-plugins.ru
 * @target MZ
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DKPlugins
  Site: https://dk-plugins.ru
- Version: 1.1.2
- Release: 07.11.2020
+ Version: 1.1.3
+ Release: 15.11.2020
  First release: 21.08.2020
 
  ###=========================================================================
@@ -397,7 +397,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.1.1.2 Расширенное тестирование проекта и различные настройки. Сделано с ♥ от DKPlugins
+* @plugindesc v.1.1.3 Расширенное тестирование проекта и различные настройки. Сделано с ♥ от DKPlugins
 * @author DKPlugins
 * @url https://dk-plugins.ru
 * @target MZ
@@ -407,8 +407,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DKPlugins
  Сайт: https://dk-plugins.ru
- Версия: 1.1.2
- Релиз: 07.11.2020
+ Версия: 1.1.3
+ Релиз: 15.11.2020
  Первый релиз: 21.08.2020
 
  ###=========================================================================
@@ -1710,7 +1710,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 window.Imported = window.Imported || {};
-window.Imported.DKTools = '1.1.2';
+window.Imported.DKTools = '1.1.3';
 
 
 
@@ -6732,6 +6732,10 @@ DKTools.PluginManager = class {
             return true;
         }
 
+        if (!v1 || !v2) {
+            return false;
+        }
+
         const array1 = v1.split('.');
         const array2 = v2.split('.');
 
@@ -6794,12 +6798,14 @@ DKTools.PluginManager = class {
 
     /**
      * Returns true if plugin is registered
+     * @version 1.1.3
      * @static
      * @param {String} pluginName - Name of plugin
      * @return {Boolean} Plugin is registered
      */
     static isRegistered(pluginName) {
-        return DKTools.Utils.isString(this.getVersion(pluginName));
+        return DKTools.Utils.isString(this.getVersion(pluginName)) ||
+            $plugins.some(plugin => plugin.name === pluginName && plugin.status);
     }
 
     // R methods

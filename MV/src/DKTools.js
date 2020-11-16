@@ -3,8 +3,8 @@ Title: DKTools
 Author: DKPlugins
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 10.0.2
-Release: 07.11.2020
+Version: 10.0.3
+Release: 15.11.2020
 First release: 13.01.2016
 */
 
@@ -13,13 +13,13 @@ First release: 13.01.2016
 Автор: DKPlugins
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 10.0.2
-Релиз: 07.11.2020
+Версия: 10.0.3
+Релиз: 15.11.2020
 Первый релиз: 13.01.2016
 */
 
 /*:
-* @plugindesc v.10.0.2 Advanced project testing and various functions. Made with ♥ by DKPlugins
+* @plugindesc v.10.0.3 Advanced project testing and various functions. Made with ♥ by DKPlugins
 * @author DKPlugins
 * @help
 
@@ -27,15 +27,9 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DKPlugins
  Site: https://dk-plugins.ru
- Version: 10.0.2
- Release: 07.11.2020
+ Version: 10.0.3
+ Release: 15.11.2020
  First release: 13.01.2016
-
- ###===========================================================================
- ## Support
- ###===========================================================================
- Donate: https://dk-plugins.ru/donate
- Become a patron: https://www.patreon.com/dkplugins
 
  ###===========================================================================
  ## Links
@@ -277,6 +271,12 @@ E-mail: kuznetsovdenis96@gmail.com
  ## Commercial license ##
  Visit the page: https://dk-plugins.ru/commercial-license/
 
+ ###===========================================================================
+ ## Support
+ ###===========================================================================
+ Donate: https://dk-plugins.ru/donate
+ Become a patron: https://www.patreon.com/dkplugins
+
  * @param System
  * @default ---------------------------------
 
@@ -446,7 +446,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.10.0.2 Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins
+* @plugindesc v.10.0.3 Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins
 * @author DKPlugins
 * @help
 
@@ -454,15 +454,9 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DKPlugins
  Сайт: https://dk-plugins.ru
- Версия: 10.0.2
- Релиз: 07.11.2020
+ Версия: 10.0.3
+ Релиз: 15.11.2020
  Первый релиз: 13.01.2016
-
- ###===========================================================================
- ## Поддержка
- ###===========================================================================
- Поддержать: https://dk-plugins.ru/donate
- Стать патроном: https://www.patreon.com/dkplugins
 
  ###===========================================================================
  ## Ссылки
@@ -702,6 +696,12 @@ E-mail: kuznetsovdenis96@gmail.com
 
  ## Коммерческая лицензия ##
  Посетите страницу: https://dk-plugins.ru/commercial-license/
+
+ ###===========================================================================
+ ## Поддержка
+ ###===========================================================================
+ Поддержать: https://dk-plugins.ru/donate
+ Стать патроном: https://www.patreon.com/dkplugins
 
  * @param System
  * @text Система
@@ -1830,7 +1830,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @default ["64","48","32","16"]
 
  * @param Grid Color
- * @desc Grid line color in Web format
+ * @desc Grid line color in hex format
  * @default white
 
  * @param Grid Width
@@ -1874,7 +1874,7 @@ E-mail: kuznetsovdenis96@gmail.com
 
  * @param Grid Color
  * @text Цвет сетки
- * @desc Цвет сетки в Web формате
+ * @desc Цвет сетки в hex формате
  * @default white
 
  * @param Grid Width

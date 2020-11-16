@@ -7,6 +7,6 @@
  * @type {Object}
  */
 window.Imported = window.Imported || {};
-window.Imported.DKTools = '1.1.2';
+window.Imported.DKTools = '1.1.3';
 
 

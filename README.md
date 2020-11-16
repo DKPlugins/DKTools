@@ -1,8 +1,8 @@
 **Author**: DKPlugins
 
-**MV Version**: Public 10.0.2
+**MV Version**: Public 10.0.3
 
-**MZ Version**: Public 1.1.2
+**MZ Version**: Public 1.1.3
 
 **Description**: Advanced project testing and various functions.
 
