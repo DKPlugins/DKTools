@@ -90,6 +90,18 @@ DKTools.Utils = class {
 
         const showNewPlugins = DKToolsParam.get('Check Updates', 'Show New Plugins');
 
+        plugins = plugins.sort((a, b) => {
+            if (DKTools.PluginManager.isRegistered(a.name)) {
+                if (DKTools.PluginManager.isRegistered(b.name)) {
+                    return 0;
+                }
+
+                return -1;
+            }
+
+            return 1;
+        });
+
         plugins.forEach((plugin) => {
             const newVersion = plugin.version;
 

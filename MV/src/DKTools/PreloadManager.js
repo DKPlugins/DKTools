@@ -326,7 +326,7 @@ DKTools.PreloadManager = class {
 
     /**
      * Processes the loading of the data
-     * @version 8.3.0
+     * @version 10.0.4
      * @since 5.0.0
      * @private
      * @static
@@ -340,7 +340,7 @@ DKTools.PreloadManager = class {
         if (this._fileLoadListeners) {
             const obj = {
                 file: data,
-                loadded: this._loaded,
+                loaded: this._loaded,
                 total: this.getTotal()
             };
 
@@ -397,7 +397,7 @@ DKTools.PreloadManager = class {
     /**
      * Adds the object to preload queue
      *
-     * @version 9.0.0
+     * @version 10.0.4
      * @since 5.0.0
      * @private
      * @static
@@ -431,14 +431,23 @@ DKTools.PreloadManager = class {
                     }
 
                     files.forEach((file) => {
-                        const fullPath = file.getFullPath();
+                        let fullPath = file.getFullPath();
+
+                        if (type === 'audio') {
+                            const basePath = DKTools.IO.normalizePath(
+                                AudioManager._basePath || AudioManager._path);
+
+                            if (fullPath.startsWith(basePath)) {
+                                fullPath = fullPath.slice(basePath.length);
+                            }
+                        }
 
                         if (this._queue[type][fullPath]) {
                             return;
                         }
 
                         if (type === 'audio') {
-                            this._processAudioFile(file, object);
+                            this._processAudioFile(new DKTools.IO.File(fullPath), object);
                         } else if (type === 'image') {
                             this._processImageFile(file, object);
                         }
@@ -458,7 +467,16 @@ DKTools.PreloadManager = class {
                 }
 
                 const file = new DKTools.IO.File(path);
-                const fullPath = file.getFullPath();
+                let fullPath = file.getFullPath();
+
+                if (type === 'audio') {
+                    const basePath = DKTools.IO.normalizePath(
+                        AudioManager._basePath || AudioManager._path);
+
+                    if (fullPath.startsWith(basePath)) {
+                        fullPath = fullPath.slice(basePath.length);
+                    }
+                }
 
                 if (this._queue[type][fullPath]) {
                     return;
@@ -466,7 +484,7 @@ DKTools.PreloadManager = class {
 
                 if (file.isFile()) {
                     if (type === 'audio') {
-                        this._processAudioFile(file, object);
+                        this._processAudioFile(new DKTools.IO.File(fullPath), object);
                     } else if (type === 'image') {
                         this._processImageFile(file, object);
                     }
@@ -478,6 +496,7 @@ DKTools.PreloadManager = class {
     }
 
     /**
+     * @version 10.0.4
      * @since 9.0.0
      * @private
      * @param {DKTools.IO.File} file
@@ -534,7 +553,9 @@ DKTools.PreloadManager = class {
             }
         }
 
-        this._queue.audio[normalizedPath] = { ...object, path: normalizedPath };
+        const basePath = AudioManager._basePath || AudioManager._path;
+
+        this._queue.audio[normalizedPath] = { ...object, path: basePath + normalizedPath };
     }
 
     /**
@@ -1036,6 +1057,10 @@ DKTools.PreloadManager.Scene.prototype.createProgressBar = function() {
             type: 'draw-all',
             onUpdate: () => {
                 if (!this._progressBar.progressData) {
+                    const preparingText = params['Preparation Text'] || 'Preparing...';
+
+                    this._progressBar.drawText(preparingText, { height: this._progressBar.height });
+
                     return;
                 }
 

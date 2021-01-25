@@ -3,8 +3,8 @@ Title: DKTools
 Author: DKPlugins
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 10.0.3
-Release: 15.11.2020
+Version: 10.0.4
+Release: 05.12.2020
 First release: 13.01.2016
 */
 
@@ -13,13 +13,13 @@ First release: 13.01.2016
 Автор: DKPlugins
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 10.0.3
-Релиз: 15.11.2020
+Версия: 10.0.4
+Релиз: 05.12.2020
 Первый релиз: 13.01.2016
 */
 
 /*:
-* @plugindesc v.10.0.3 Advanced project testing and various functions. Made with ♥ by DKPlugins
+* @plugindesc v.10.0.4 Advanced project testing and various functions. Made with ♥ by DKPlugins
 * @author DKPlugins
 * @help
 
@@ -27,8 +27,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DKPlugins
  Site: https://dk-plugins.ru
- Version: 10.0.3
- Release: 15.11.2020
+ Version: 10.0.4
+ Release: 05.12.2020
  First release: 13.01.2016
 
  ###===========================================================================
@@ -446,7 +446,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.10.0.3 Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins
+* @plugindesc v.10.0.4 Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins
 * @author DKPlugins
 * @help
 
@@ -454,8 +454,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DKPlugins
  Сайт: https://dk-plugins.ru
- Версия: 10.0.3
- Релиз: 15.11.2020
+ Версия: 10.0.4
+ Релиз: 05.12.2020
  Первый релиз: 13.01.2016
 
  ###===========================================================================
@@ -1216,9 +1216,9 @@ E-mail: kuznetsovdenis96@gmail.com
  * @param Progress Bar
  * @desc Preloading process display
  * @type struct<PreloadManagerProgressBar>
- * @default {"Enabled":"false","Background":"","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Text":"Loading: %1","Progress Bar Text Size":"28","Progress Bar Style":"colors","Colors Style":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Images Style":"","Progress Bar Background Image":"","Progress Bar Progress Image":""}
+ * @default {"Enabled":"false","Background":"","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Text":"Loading: %1","Progress Bar Text Size":"28","Progress Bar Style":"colors","Colors Style":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Preparation Text":"Preparing...","Images Style":"","Progress Bar Background Image":"","Progress Bar Progress Image":""}
 
- */
+*/
 
 /*~struct~PreloadManager:ru
 
@@ -1251,9 +1251,9 @@ E-mail: kuznetsovdenis96@gmail.com
  * @text Прогресс
  * @desc Отображение процесса предзагрузки
  * @type struct<PreloadManagerProgressBar>
- * @default {"Enabled":"false","Background":"","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Text":"Загрузка: %1","Progress Bar Text Size":"28","Progress Bar Style":"colors","Colors Style":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Images Style":"","Progress Bar Background Image":"","Progress Bar Progress Image":""}
+ * @default {"Enabled":"false","Background":"","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Text":"Загрузка: %1","Progress Bar Text Size":"28","Progress Bar Style":"colors","Colors Style":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Preparation Text":"Подготовка...","Images Style":"","Progress Bar Background Image":"","Progress Bar Progress Image":""}
 
- */
+*/
 
 /*~struct~PreloadManagerProgressBar:
 
@@ -1342,6 +1342,11 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type combo
  * @option #33ccff
  * @default #33ccff
+
+ * @param Preparation Text
+ * @parent Colors Style
+ * @desc Preparation text for preloading
+ * @default Preparing...
 
  * @param Images Style
  * @text Style "images"
@@ -1460,6 +1465,12 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type combo
  * @option #33ccff
  * @default #33ccff
+
+ * @param Preparation Text
+ * @text Текст подготовки
+ * @parent Colors Style
+ * @desc Текст подготовки для предварительной нагрузки
+ * @default Подготовка...
 
  * @param Images Style
  * @text Стиль "изображения"
@@ -2261,7 +2272,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 window.Imported = window.Imported || {};
-window.Imported.DKTools = '10.0.3';
+window.Imported.DKTools = '10.0.4';
 
 
 
@@ -2542,6 +2553,18 @@ DKTools.Utils = class {
         }
 
         const showNewPlugins = DKToolsParam.get('Check Updates', 'Show New Plugins');
+
+        plugins = plugins.sort((a, b) => {
+            if (DKTools.PluginManager.isRegistered(a.name)) {
+                if (DKTools.PluginManager.isRegistered(b.name)) {
+                    return 0;
+                }
+
+                return -1;
+            }
+
+            return 1;
+        });
 
         plugins.forEach((plugin) => {
             const newVersion = plugin.version;
@@ -5257,7 +5280,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Loads an audio file and returns a WebAudio
-     * @version 10.0.0
+     * @version 10.0.4
      * @since 3.0.0
      * @return {WebAudio | null} Audio file or null
      */
@@ -5270,8 +5293,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
             return null;
         }
 
-        return DKTools.Utils.WebAudio.load(
-            DKTools.IO.normalizePath(this.getDirectoryName() + '/'), this.getName());
+        return DKTools.Utils.WebAudio.load(this.getDirectoryName(), this.getName());
     }
 
     /**
@@ -7925,7 +7947,7 @@ DKTools.PluginManager = class {
 
     /**
      * Returns a version of plugin
-     * @version 10.0.0
+     * @version 10.0.4
      * @since 3.1.0
      * @static
      * @param {String} pluginName - Plugin name
@@ -7936,8 +7958,13 @@ DKTools.PluginManager = class {
     static getVersion(pluginName) {
         const version = Imported[pluginName];
 
-        return DKTools.Utils.isString(version) ?
-            version : null;
+        if (DKTools.Utils.isString(version)) {
+            return version;
+        } else if (Number.isFinite(version)) {
+            return String(version);
+        }
+
+        return null;
     }
 
     // I methods
@@ -8421,7 +8448,7 @@ DKTools.PreloadManager = class {
 
     /**
      * Processes the loading of the data
-     * @version 8.3.0
+     * @version 10.0.4
      * @since 5.0.0
      * @private
      * @static
@@ -8435,7 +8462,7 @@ DKTools.PreloadManager = class {
         if (this._fileLoadListeners) {
             const obj = {
                 file: data,
-                loadded: this._loaded,
+                loaded: this._loaded,
                 total: this.getTotal()
             };
 
@@ -8492,7 +8519,7 @@ DKTools.PreloadManager = class {
     /**
      * Adds the object to preload queue
      *
-     * @version 9.0.0
+     * @version 10.0.4
      * @since 5.0.0
      * @private
      * @static
@@ -8526,14 +8553,23 @@ DKTools.PreloadManager = class {
                     }
 
                     files.forEach((file) => {
-                        const fullPath = file.getFullPath();
+                        let fullPath = file.getFullPath();
+
+                        if (type === 'audio') {
+                            const basePath = DKTools.IO.normalizePath(
+                                AudioManager._basePath || AudioManager._path);
+
+                            if (fullPath.startsWith(basePath)) {
+                                fullPath = fullPath.slice(basePath.length);
+                            }
+                        }
 
                         if (this._queue[type][fullPath]) {
                             return;
                         }
 
                         if (type === 'audio') {
-                            this._processAudioFile(file, object);
+                            this._processAudioFile(new DKTools.IO.File(fullPath), object);
                         } else if (type === 'image') {
                             this._processImageFile(file, object);
                         }
@@ -8553,7 +8589,16 @@ DKTools.PreloadManager = class {
                 }
 
                 const file = new DKTools.IO.File(path);
-                const fullPath = file.getFullPath();
+                let fullPath = file.getFullPath();
+
+                if (type === 'audio') {
+                    const basePath = DKTools.IO.normalizePath(
+                        AudioManager._basePath || AudioManager._path);
+
+                    if (fullPath.startsWith(basePath)) {
+                        fullPath = fullPath.slice(basePath.length);
+                    }
+                }
 
                 if (this._queue[type][fullPath]) {
                     return;
@@ -8561,7 +8606,7 @@ DKTools.PreloadManager = class {
 
                 if (file.isFile()) {
                     if (type === 'audio') {
-                        this._processAudioFile(file, object);
+                        this._processAudioFile(new DKTools.IO.File(fullPath), object);
                     } else if (type === 'image') {
                         this._processImageFile(file, object);
                     }
@@ -8573,6 +8618,7 @@ DKTools.PreloadManager = class {
     }
 
     /**
+     * @version 10.0.4
      * @since 9.0.0
      * @private
      * @param {DKTools.IO.File} file
@@ -8629,7 +8675,9 @@ DKTools.PreloadManager = class {
             }
         }
 
-        this._queue.audio[normalizedPath] = { ...object, path: normalizedPath };
+        const basePath = AudioManager._basePath || AudioManager._path;
+
+        this._queue.audio[normalizedPath] = { ...object, path: basePath + normalizedPath };
     }
 
     /**
@@ -9131,6 +9179,10 @@ DKTools.PreloadManager.Scene.prototype.createProgressBar = function() {
             type: 'draw-all',
             onUpdate: () => {
                 if (!this._progressBar.progressData) {
+                    const preparingText = params['Preparation Text'] || 'Preparing...';
+
+                    this._progressBar.drawText(preparingText, { height: this._progressBar.height });
+
                     return;
                 }
 
@@ -9202,7 +9254,7 @@ DKTools.StartupManager = class {
 
     /**
      * Initializes the manager
-     * @version 7.0.0
+     * @version 10.0.4
      * @static
      * @async
      */
@@ -9217,6 +9269,7 @@ DKTools.StartupManager = class {
 
         await this.checkErrors();
         await this.initializeModules();
+        await DKTools.PreloadManager.initialize();
 
         this._isReady = true;
     }
@@ -9228,7 +9281,7 @@ DKTools.StartupManager = class {
      * @async
      */
     static async initializeModules() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     // C methods
@@ -11247,10 +11300,7 @@ DKTools.Base = class {
     initialize(object, y, width, height) {
         let x;
 
-        if (object instanceof Graphics) {
-            width = Graphics.boxWidth;
-            height = Graphics.boxHeight;
-        } else if (object instanceof Object) {
+        if (object instanceof Object) {
             x = object.x;
             y = object.y;
             width = object.width;
@@ -17814,7 +17864,6 @@ const DKTools_window_onload = window.onload;
 window.onload = function() {
     DKTools.Utils.initialize();
     DKTools.IO.initialize();
-    DKTools.PreloadManager.initialize();
     DKTools_window_onload.call(this);
     DKTools.PluginManager.initialize();
 };

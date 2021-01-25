@@ -480,7 +480,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Loads an audio file and returns a WebAudio
-     * @version 10.0.0
+     * @version 10.0.4
      * @since 3.0.0
      * @return {WebAudio | null} Audio file or null
      */
@@ -493,8 +493,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
             return null;
         }
 
-        return DKTools.Utils.WebAudio.load(
-            DKTools.IO.normalizePath(this.getDirectoryName() + '/'), this.getName());
+        return DKTools.Utils.WebAudio.load(this.getDirectoryName(), this.getName());
     }
 
     /**

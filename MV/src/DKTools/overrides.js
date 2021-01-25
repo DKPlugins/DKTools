@@ -6,7 +6,6 @@ const DKTools_window_onload = window.onload;
 window.onload = function() {
     DKTools.Utils.initialize();
     DKTools.IO.initialize();
-    DKTools.PreloadManager.initialize();
     DKTools_window_onload.call(this);
     DKTools.PluginManager.initialize();
 };

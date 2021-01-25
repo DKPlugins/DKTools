@@ -14,7 +14,7 @@ DKTools.StartupManager = class {
 
     /**
      * Initializes the manager
-     * @version 7.0.0
+     * @version 10.0.4
      * @static
      * @async
      */
@@ -29,6 +29,7 @@ DKTools.StartupManager = class {
 
         await this.checkErrors();
         await this.initializeModules();
+        await DKTools.PreloadManager.initialize();
 
         this._isReady = true;
     }
@@ -40,7 +41,7 @@ DKTools.StartupManager = class {
      * @async
      */
     static async initializeModules() {
-        // to be overriden by plugins
+        // to be overridden by plugins
     }
 
     // C methods

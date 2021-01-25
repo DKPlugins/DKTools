@@ -3,8 +3,8 @@ Title: DKTools
 Author: DKPlugins
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 10.0.3
-Release: 15.11.2020
+Version: 10.0.4
+Release: 05.12.2020
 First release: 13.01.2016
 */
 
@@ -13,13 +13,13 @@ First release: 13.01.2016
 Автор: DKPlugins
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 10.0.3
-Релиз: 15.11.2020
+Версия: 10.0.4
+Релиз: 05.12.2020
 Первый релиз: 13.01.2016
 */
 
 /*:
-* @plugindesc v.10.0.3 Advanced project testing and various functions. Made with ♥ by DKPlugins
+* @plugindesc v.10.0.4 Advanced project testing and various functions. Made with ♥ by DKPlugins
 * @author DKPlugins
 * @help
 
@@ -27,8 +27,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DKPlugins
  Site: https://dk-plugins.ru
- Version: 10.0.3
- Release: 15.11.2020
+ Version: 10.0.4
+ Release: 05.12.2020
  First release: 13.01.2016
 
  ###===========================================================================
@@ -446,7 +446,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.10.0.3 Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins
+* @plugindesc v.10.0.4 Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins
 * @author DKPlugins
 * @help
 
@@ -454,8 +454,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DKPlugins
  Сайт: https://dk-plugins.ru
- Версия: 10.0.3
- Релиз: 15.11.2020
+ Версия: 10.0.4
+ Релиз: 05.12.2020
  Первый релиз: 13.01.2016
 
  ###===========================================================================
@@ -1216,9 +1216,9 @@ E-mail: kuznetsovdenis96@gmail.com
  * @param Progress Bar
  * @desc Preloading process display
  * @type struct<PreloadManagerProgressBar>
- * @default {"Enabled":"false","Background":"","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Text":"Loading: %1","Progress Bar Text Size":"28","Progress Bar Style":"colors","Colors Style":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Images Style":"","Progress Bar Background Image":"","Progress Bar Progress Image":""}
+ * @default {"Enabled":"false","Background":"","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Text":"Loading: %1","Progress Bar Text Size":"28","Progress Bar Style":"colors","Colors Style":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Preparation Text":"Preparing...","Images Style":"","Progress Bar Background Image":"","Progress Bar Progress Image":""}
 
- */
+*/
 
 /*~struct~PreloadManager:ru
 
@@ -1251,9 +1251,9 @@ E-mail: kuznetsovdenis96@gmail.com
  * @text Прогресс
  * @desc Отображение процесса предзагрузки
  * @type struct<PreloadManagerProgressBar>
- * @default {"Enabled":"false","Background":"","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Text":"Загрузка: %1","Progress Bar Text Size":"28","Progress Bar Style":"colors","Colors Style":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Images Style":"","Progress Bar Background Image":"","Progress Bar Progress Image":""}
+ * @default {"Enabled":"false","Background":"","Progress Bar X":"(Graphics.boxWidth - width) * 2 / 4","Progress Bar Y":"(Graphics.boxHeight - height) * 2 / 4","Progress Bar Text":"Загрузка: %1","Progress Bar Text Size":"28","Progress Bar Style":"colors","Colors Style":"","Progress Bar Width":"Graphics.boxWidth * 2 / 4","Progress Bar Height":"48","Progress Bar Background Color":"grey","Progress Bar Progress Color":"#33ccff","Preparation Text":"Подготовка...","Images Style":"","Progress Bar Background Image":"","Progress Bar Progress Image":""}
 
- */
+*/
 
 /*~struct~PreloadManagerProgressBar:
 
@@ -1342,6 +1342,11 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type combo
  * @option #33ccff
  * @default #33ccff
+
+ * @param Preparation Text
+ * @parent Colors Style
+ * @desc Preparation text for preloading
+ * @default Preparing...
 
  * @param Images Style
  * @text Style "images"
@@ -1460,6 +1465,12 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type combo
  * @option #33ccff
  * @default #33ccff
+
+ * @param Preparation Text
+ * @text Текст подготовки
+ * @parent Colors Style
+ * @desc Текст подготовки для предварительной нагрузки
+ * @default Подготовка...
 
  * @param Images Style
  * @text Стиль "изображения"

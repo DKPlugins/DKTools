@@ -111,7 +111,7 @@ DKTools.PluginManager = class {
 
     /**
      * Returns a version of plugin
-     * @version 10.0.0
+     * @version 10.0.4
      * @since 3.1.0
      * @static
      * @param {String} pluginName - Plugin name
@@ -122,8 +122,13 @@ DKTools.PluginManager = class {
     static getVersion(pluginName) {
         const version = Imported[pluginName];
 
-        return DKTools.Utils.isString(version) ?
-            version : null;
+        if (DKTools.Utils.isString(version)) {
+            return version;
+        } else if (Number.isFinite(version)) {
+            return String(version);
+        }
+
+        return null;
     }
 
     // I methods

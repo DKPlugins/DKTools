@@ -108,10 +108,7 @@ DKTools.Base = class {
     initialize(object, y, width, height) {
         let x;
 
-        if (object instanceof Graphics) {
-            width = Graphics.boxWidth;
-            height = Graphics.boxHeight;
-        } else if (object instanceof Object) {
+        if (object instanceof Object) {
             x = object.x;
             y = object.y;
             width = object.width;
