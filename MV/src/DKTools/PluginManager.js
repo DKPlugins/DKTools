@@ -95,6 +95,7 @@ DKTools.PluginManager = class {
     static checkVersion(pluginName, version) {
         return this._compareVersions(this.getVersion(pluginName), version);
     }
+
     // G methods
 
     /**

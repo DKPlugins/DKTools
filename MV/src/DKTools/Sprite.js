@@ -633,11 +633,13 @@ DKTools.Sprite.prototype.standardFillColor = function() {
 
 /**
  * Returns the standard font
- * @return {{ fontFace: String, fontSize: Number, fontItalic: Boolean }} Standard font
+ * @version 10.0.5
+ * @return {{ fontFace: String, fontSize: Number, fontItalic: Boolean, fontBold: Boolean }} Standard font
  */
 DKTools.Sprite.prototype.standardFont = function() {
     return {
         fontFace: this.standardFontFace(),
+        fontBold: this.standardFontBold(),
         fontItalic: this.standardFontItalic(),
         fontSize: this.standardFontSize()
     };
@@ -654,6 +656,15 @@ DKTools.Sprite.prototype.standardFontFace = function() {
     } catch (e) {
         return 'GameFont';
     }
+};
+
+/**
+ * Returns the standard font bold
+ * @since 10.0.5
+ * @return {Boolean} Standard font bold
+ */
+DKTools.Sprite.prototype.standardFontBold = function() {
+    return false;
 };
 
 /**

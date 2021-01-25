@@ -3,8 +3,8 @@ Title: DKTools
 Author: DKPlugins
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 10.0.4
-Release: 05.12.2020
+Version: 10.0.5
+Release: 21.01.2021
 First release: 13.01.2016
 */
 
@@ -13,13 +13,13 @@ First release: 13.01.2016
 Автор: DKPlugins
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 10.0.4
-Релиз: 05.12.2020
+Версия: 10.0.5
+Релиз: 21.01.2021
 Первый релиз: 13.01.2016
 */
 
 /*:
-* @plugindesc v.10.0.4 Advanced project testing and various functions. Made with ♥ by DKPlugins
+* @plugindesc v.10.0.5 [MV] Advanced project testing and various functions. Made with ♥ by DKPlugins.
 * @author DKPlugins
 * @help
 
@@ -27,8 +27,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DKPlugins
  Site: https://dk-plugins.ru
- Version: 10.0.4
- Release: 05.12.2020
+ Version: 10.0.5
+ Release: 21.01.2021
  First release: 13.01.2016
 
  ###===========================================================================
@@ -44,10 +44,19 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Online documentation ###
  https://dk-plugins.ru/documentation/mv/DKTools/index.html
 
+ ### MZ version ###
+ https://dk-plugins.ru/mz/dktools/
+
  ###===========================================================================
  ## Requirements and dependencies
  ###===========================================================================
  RPG Maker and project version 1.6+
+
+ ###===========================================================================
+ ## Compatibility with other plugins
+ ###===========================================================================
+ Place the following plugins ABOVE in the plugins list (if you are using them):
+ 1. AudioStreaming
 
  ###===========================================================================
  ## Functions and parameters
@@ -61,10 +70,11 @@ E-mail: kuznetsovdenis96@gmail.com
  Nwjs + Stamp - Advanced file system mode (all Platforms)
  Nwjs - standard file system mode (PC only)
 
- In the Nwjs + Stamp mode, each time you start a game test, the plugin scans
+ In the Nwjs + Stamp mode, each time you start a game TEST, the plugin scans
  project files and saves data to the file "data/Stamp.json"
-
- Data can also be updated using the plugin command UpdateFileSystemStamp
+ This function may cause a slight delay (FPS lag) when starting the game TEST, so
+ you can disable this feature using the "Disable auto create stamp" parameter.
+ In this case, the data can be manually updated using the plugin command UpdateFileSystemStamp
 
  Q. Why do I need Nwjs + Stamp file system mode ?
  A. Browsers and old mobile devices do not provide the ability to check for specific files.
@@ -76,6 +86,10 @@ E-mail: kuznetsovdenis96@gmail.com
  ## Ignored directories ##
  Only applicable for Nwjs + Stamp mode.
  Ignores specified (and nested) directories when scanning project files.
+
+ ## Disable auto create stamp ##
+ Disables automatic file system stamp creation.
+ To manually update data use the plugin command UpdateFileSystemStamp
 
  ###===========================================================================
  ### Font size ###
@@ -284,7 +298,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent System
  * @desc File system parameters
  * @type struct<FileSystem>
- * @default {"Mode":"0","Ignored Directories":"[\"node_modules\"]"}
+ * @default {"Mode":"0","Ignored Directories":"[\"node_modules\"]","Disable Auto Create Stamp":"false"}
 
  * @param Font Size
  * @parent System
@@ -446,7 +460,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.10.0.4 Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins
+* @plugindesc v.10.0.5 [MV] Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins.
 * @author DKPlugins
 * @help
 
@@ -454,8 +468,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DKPlugins
  Сайт: https://dk-plugins.ru
- Версия: 10.0.4
- Релиз: 05.12.2020
+ Версия: 10.0.5
+ Релиз: 21.01.2021
  Первый релиз: 13.01.2016
 
  ###===========================================================================
@@ -471,10 +485,19 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Онлайн документация ###
  https://dk-plugins.ru/documentation/DKTools/index.html
 
+ ### MZ версия ###
+ https://dk-plugins.ru/mz/dktools/
+
  ###===========================================================================
  ## Требования и зависимости
  ###===========================================================================
  Версия мейкера и проекта 1.6+
+
+ ###===========================================================================
+ ## Совместимость с другими плагинами
+ ###===========================================================================
+ Разместите следующие плагины ВЫШЕ в списке плагинов (если вы их используете):
+ 1. AudioStreaming
 
  ###===========================================================================
  ## Функции и параметры
@@ -488,10 +511,11 @@ E-mail: kuznetsovdenis96@gmail.com
  Nwjs + Stamp - Расширенный режим работы файловой системы (все платформы)
  Nwjs - стандартный режим работы файловой системы (только PC)
 
- В режиме Nwjs + Stamp каждый раз при запуске теста игры плагин сканирует
- файлы проекта и сохраняет данные в файл "data/Stamp.json"
-
- Данные также могут быть обновлены с помощью команды плагина UpdateFileSystemStamp
+ В режиме Nwjs + Stamp каждый раз при запуске ТЕСТА игры плагин сканирует
+ файлы проекта и сохраняет данные в файл "data/Stamp.json".
+ Эта функция может вызвать небольшую задержку при запуске ТЕСТА игры, поэтому
+ вы можете отключить эту функцию с помощью параметра "Отключить автоматическое создания штампа".
+ В таком случае данные могут быть обновлены вручную с помощью команды плагина UpdateFileSystemStamp
 
  Q. Зачем нужен режим работы Nwjs + Stamp ?
  A. Браузеры и старые мобильные устройства не предоставляют возможность проверять наличие конкретных файлов
@@ -503,6 +527,10 @@ E-mail: kuznetsovdenis96@gmail.com
  ## Игнорируемые директории ##
  Применяется только для режима Nwjs + Stamp.
  Игнорирует указанные (и вложенные) директории при сканировании файлов проекта.
+
+ ## Отключить автоматическое создания штампа ##
+ Отключает автоматическое создание штампа файловой системы.
+ Для ручного обновления данных используйте команду плагина UpdateFileSystemStamp
 
  ###===========================================================================
  ### Размер шрифта ###
@@ -712,7 +740,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent System
  * @desc Параметры файловой системы
  * @type struct<FileSystem>
- * @default {"Mode":"0","Ignored Directories":"[\"node_modules\"]"}
+ * @default {"Mode":"0","Ignored Directories":"[\"node_modules\"]","Disable Auto Create Stamp":"false"}
 
  * @param Font Size
  * @text Размер шрифта
@@ -910,6 +938,11 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type string[]
  * @default ["node_modules"]
 
+ * @param Disable Auto Create Stamp
+ * @desc Disable auto create stamp
+ * @type boolean
+ * @default false
+
 */
 
 /*~struct~FileSystem:ru
@@ -929,6 +962,12 @@ E-mail: kuznetsovdenis96@gmail.com
  * @desc Игнорируемые директории
  * @type string[]
  * @default ["node_modules"]
+
+ * @param Disable Auto Create Stamp
+ * @text Отключить автоматическое создания штампа
+ * @desc Отключить автоматическое создания штампа
+ * @type boolean
+ * @default false
 
 */
 

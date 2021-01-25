@@ -16,35 +16,14 @@ DKTools.IO = class {
     // initialize methods
 
     /**
-     * @version 8.0.0
+     * @version 10.0.5
      * @static
      */
     static initialize() {
         let projectPath = '';
 
         if (Utils.isNwjs()) {
-            /**
-             * @private
-             * @readonly
-             * @type {Object}
-             */
-            this._fs = require('fs');
-
-            /**
-             * @private
-             * @readonly
-             * @type {Object}
-             */
-            this._os = require('os');
-
-            /**
-             * @private
-             * @readonly
-             * @type {Object}
-             */
-            this._path = require('path');
-
-            projectPath = this.joinPath(this._path.dirname(process.mainModule.filename), '/');
+            projectPath = this.joinPath(this.path.dirname(process.mainModule.filename), '/');
         }
 
         /**
@@ -71,7 +50,10 @@ DKTools.IO = class {
         this._stamp = {};
 
         this._loadStamp();
-        this._createStamp();
+
+        if (!DKToolsParam.get('File System', 'Disable Auto Create Stamp')) {
+            this._createStamp();
+        }
     }
 
     // A methods
@@ -86,7 +68,7 @@ DKTools.IO = class {
      */
     static absolutePathExists(path) {
         if (Utils.isNwjs()) {
-            return this._fs.existsSync(path);
+            return this.fs.existsSync(path);
         } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP && path.startsWith(this._projectPath)) {
             if (this.isFile(path)) {
                 return true;
@@ -185,7 +167,7 @@ DKTools.IO = class {
             const absolutePath = this.getAbsolutePath(fullPath);
 
             if (this.absolutePathExists(absolutePath)) {
-                return this._fs.lstatSync(absolutePath).isFile();
+                return this.fs.lstatSync(absolutePath).isFile();
             }
         } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP) {
             const parts = this.normalizePath(fullPath).split('\\');
@@ -211,7 +193,7 @@ DKTools.IO = class {
             const absolutePath = this.getAbsolutePath(fullPath);
 
             if (this.absolutePathExists(absolutePath)) {
-                return this._fs.lstatSync(absolutePath).isDirectory();
+                return this.fs.lstatSync(absolutePath).isDirectory();
             }
         } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP) {
             const parts = this.normalizePath(fullPath).split('\\').filter(part => !!part);
@@ -237,7 +219,7 @@ DKTools.IO = class {
      */
     static joinPath() {
         if (Utils.isNwjs()) {
-            return this._path.join(...arguments);
+            return this.path.join(...arguments);
         }
 
         const paths = _.filter(arguments, arg => DKTools.Utils.isString(arg));
@@ -286,7 +268,7 @@ DKTools.IO = class {
      */
     static normalizePath(path, reverseSlash = false) {
         if (Utils.isNwjs()) {
-            const normalizedPath = this._path.normalize(path);
+            const normalizedPath = this.path.normalize(path);
 
             if (!reverseSlash) {
                 return normalizedPath;
@@ -353,7 +335,7 @@ DKTools.IO = class {
      */
     static parsePath(path) {
         if (Utils.isNwjs()) {
-            return this._path.parse(path);
+            return this.path.parse(path);
         }
 
         const allParts = this._splitPath(path);
@@ -454,7 +436,7 @@ Object.defineProperties(DKTools.IO, {
      */
     fs: {
         get: function() {
-            return this._fs;
+            return require('fs');
         },
         configurable: true
     },
@@ -467,7 +449,7 @@ Object.defineProperties(DKTools.IO, {
      */
     os: {
         get: function() {
-            return this._os;
+            return require('os');
         },
         configurable: true
     },
@@ -480,7 +462,7 @@ Object.defineProperties(DKTools.IO, {
      */
     path: {
         get: function() {
-            return this._path;
+            return require('path');
         },
         configurable: true
     },
@@ -495,7 +477,7 @@ Object.defineProperties(DKTools.IO, {
      */
     sep: {
         get: function() {
-            return Utils.isNwjs() ? this._path.sep : '/';
+            return Utils.isNwjs() ? this.path.sep : '/';
         },
         configurable: true
     },

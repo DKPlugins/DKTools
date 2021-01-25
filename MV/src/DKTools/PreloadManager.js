@@ -76,6 +76,26 @@ DKTools.PreloadManager = class {
     // C methods
 
     /**
+     * Returns true if can preload audio files
+     * @since 10.0.5
+     * @static
+     * @return {Boolean} Can preload audio files
+     */
+    static canPreloadAudioFiles() {
+        return !DKTools.PluginManager.isRegistered('AudioStreaming');
+    }
+
+    /**
+     * Returns true if Can preload image files
+     * @since 10.0.5
+     * @static
+     * @return {Boolean} Can preload image files
+     */
+    static canPreloadImageFiles() {
+        return true;
+    }
+
+    /**
      * Clears the cache
      * @version 5.0.0
      * @static
@@ -397,7 +417,7 @@ DKTools.PreloadManager = class {
     /**
      * Adds the object to preload queue
      *
-     * @version 10.0.4
+     * @version 10.0.5
      * @since 5.0.0
      * @private
      * @static
@@ -412,6 +432,36 @@ DKTools.PreloadManager = class {
     static _preload(type, object) {
         if (object instanceof Object && DKTools.Utils.isString(object.path)) {
             const entity = new DKTools.IO.Directory(object.path);
+            const processFile = (file) => {
+                let fullPath = file.getFullPath();
+
+                if (type === 'audio') {
+                    const basePath = DKTools.IO.normalizePath(
+                        AudioManager._basePath || AudioManager._path);
+
+                    if (fullPath.startsWith(basePath)) {
+                        fullPath = fullPath.slice(basePath.length);
+                    }
+                }
+
+                if (this._queue[type][fullPath]) {
+                    return;
+                }
+
+                if (file.isFile()) {
+                    if (type === 'audio') {
+                        if (!Imported['DKTools_Localization']) {
+                            file = new DKTools.IO.File(fullPath);
+                        }
+
+                        this._processAudioFile(file, object);
+                    } else if (type === 'image') {
+                        this._processImageFile(file, object);
+                    }
+                } else {
+                    console.error('This is not a file: ' + fullPath);
+                }
+            };
 
             if (entity.isDirectory()) {
                 if (Utils.isNwjs() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
@@ -430,28 +480,7 @@ DKTools.PreloadManager = class {
                         this._files[object.path] = files;
                     }
 
-                    files.forEach((file) => {
-                        let fullPath = file.getFullPath();
-
-                        if (type === 'audio') {
-                            const basePath = DKTools.IO.normalizePath(
-                                AudioManager._basePath || AudioManager._path);
-
-                            if (fullPath.startsWith(basePath)) {
-                                fullPath = fullPath.slice(basePath.length);
-                            }
-                        }
-
-                        if (this._queue[type][fullPath]) {
-                            return;
-                        }
-
-                        if (type === 'audio') {
-                            this._processAudioFile(new DKTools.IO.File(fullPath), object);
-                        } else if (type === 'image') {
-                            this._processImageFile(file, object);
-                        }
-                    });
+                    files.forEach(file => processFile(file));
                 } else {
                     throw new Error('Web browsers and mobile phones cannot load directories!');
                 }
@@ -466,31 +495,7 @@ DKTools.PreloadManager = class {
                     }
                 }
 
-                const file = new DKTools.IO.File(path);
-                let fullPath = file.getFullPath();
-
-                if (type === 'audio') {
-                    const basePath = DKTools.IO.normalizePath(
-                        AudioManager._basePath || AudioManager._path);
-
-                    if (fullPath.startsWith(basePath)) {
-                        fullPath = fullPath.slice(basePath.length);
-                    }
-                }
-
-                if (this._queue[type][fullPath]) {
-                    return;
-                }
-
-                if (file.isFile()) {
-                    if (type === 'audio') {
-                        this._processAudioFile(new DKTools.IO.File(fullPath), object);
-                    } else if (type === 'image') {
-                        this._processImageFile(file, object);
-                    }
-                } else {
-                    console.error('This is not a file: ' + fullPath);
-                }
+                processFile(new DKTools.IO.File(path));
             }
         }
     }
@@ -728,6 +733,7 @@ DKTools.PreloadManager = class {
     /**
      * Adds the audio to preload queue
      *
+     * @version 10.0.5
      * @since 5.0.0
      * @static
      *
@@ -760,12 +766,15 @@ DKTools.PreloadManager = class {
      * DKTools.PreloadManager.start();
      */
     static preloadAudio(object) {
-        this._preload('audio', object);
+        if (this.canPreloadAudioFiles()) {
+            this._preload('audio', object);
+        }
     }
 
     /**
      * Adds the image to preload queue
      *
+     * @version 10.0.5
      * @since 5.0.0
      * @static
      *
@@ -800,7 +809,9 @@ DKTools.PreloadManager = class {
      * DKTools.PreloadManager.start();
      */
     static preloadImage(object) {
-        this._preload('image', object);
+        if (this.canPreloadImageFiles()) {
+            this._preload('image', object);
+        }
     }
 
     // R methods

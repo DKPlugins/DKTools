@@ -421,6 +421,7 @@ DKTools.Window.prototype.updateContents = function() {
 /**
  * Updates the opening of the window
  * @override
+ * @version 10.0.5
  */
 DKTools.Window.prototype.updateOpen = function() {
     if (!this._opening) {
@@ -431,7 +432,8 @@ DKTools.Window.prototype.updateOpen = function() {
 
     if (this.isOpen()) {
         this._opening = false;
-
+        this._eventsManager.finishEvents('open', true);
+    } else {
         this.updateOpenEvents();
     }
 };
@@ -439,6 +441,7 @@ DKTools.Window.prototype.updateOpen = function() {
 /**
  * Updates the closing of the window
  * @override
+ * @version 10.0.5
  */
 DKTools.Window.prototype.updateClose = function() {
     if (!this._closing) {
@@ -449,7 +452,8 @@ DKTools.Window.prototype.updateClose = function() {
 
     if (this.isClosed()) {
         this._closing = false;
-
+        this._eventsManager.finishEvents('close', true);
+    } else {
         this.updateCloseEvents();
     }
 };

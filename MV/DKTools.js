@@ -3,8 +3,8 @@ Title: DKTools
 Author: DKPlugins
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 10.0.4
-Release: 05.12.2020
+Version: 10.0.5
+Release: 21.01.2021
 First release: 13.01.2016
 */
 
@@ -13,13 +13,13 @@ First release: 13.01.2016
 Автор: DKPlugins
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 10.0.4
-Релиз: 05.12.2020
+Версия: 10.0.5
+Релиз: 21.01.2021
 Первый релиз: 13.01.2016
 */
 
 /*:
-* @plugindesc v.10.0.4 Advanced project testing and various functions. Made with ♥ by DKPlugins
+* @plugindesc v.10.0.5 [MV] Advanced project testing and various functions. Made with ♥ by DKPlugins.
 * @author DKPlugins
 * @help
 
@@ -27,8 +27,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DKPlugins
  Site: https://dk-plugins.ru
- Version: 10.0.4
- Release: 05.12.2020
+ Version: 10.0.5
+ Release: 21.01.2021
  First release: 13.01.2016
 
  ###===========================================================================
@@ -44,10 +44,19 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Online documentation ###
  https://dk-plugins.ru/documentation/mv/DKTools/index.html
 
+ ### MZ version ###
+ https://dk-plugins.ru/mz/dktools/
+
  ###===========================================================================
  ## Requirements and dependencies
  ###===========================================================================
  RPG Maker and project version 1.6+
+
+ ###===========================================================================
+ ## Compatibility with other plugins
+ ###===========================================================================
+ Place the following plugins ABOVE in the plugins list (if you are using them):
+ 1. AudioStreaming
 
  ###===========================================================================
  ## Functions and parameters
@@ -61,10 +70,11 @@ E-mail: kuznetsovdenis96@gmail.com
  Nwjs + Stamp - Advanced file system mode (all Platforms)
  Nwjs - standard file system mode (PC only)
 
- In the Nwjs + Stamp mode, each time you start a game test, the plugin scans
+ In the Nwjs + Stamp mode, each time you start a game TEST, the plugin scans
  project files and saves data to the file "data/Stamp.json"
-
- Data can also be updated using the plugin command UpdateFileSystemStamp
+ This function may cause a slight delay (FPS lag) when starting the game TEST, so
+ you can disable this feature using the "Disable auto create stamp" parameter.
+ In this case, the data can be manually updated using the plugin command UpdateFileSystemStamp
 
  Q. Why do I need Nwjs + Stamp file system mode ?
  A. Browsers and old mobile devices do not provide the ability to check for specific files.
@@ -76,6 +86,10 @@ E-mail: kuznetsovdenis96@gmail.com
  ## Ignored directories ##
  Only applicable for Nwjs + Stamp mode.
  Ignores specified (and nested) directories when scanning project files.
+
+ ## Disable auto create stamp ##
+ Disables automatic file system stamp creation.
+ To manually update data use the plugin command UpdateFileSystemStamp
 
  ###===========================================================================
  ### Font size ###
@@ -284,7 +298,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent System
  * @desc File system parameters
  * @type struct<FileSystem>
- * @default {"Mode":"0","Ignored Directories":"[\"node_modules\"]"}
+ * @default {"Mode":"0","Ignored Directories":"[\"node_modules\"]","Disable Auto Create Stamp":"false"}
 
  * @param Font Size
  * @parent System
@@ -446,7 +460,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.10.0.4 Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins
+* @plugindesc v.10.0.5 [MV] Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins.
 * @author DKPlugins
 * @help
 
@@ -454,8 +468,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DKPlugins
  Сайт: https://dk-plugins.ru
- Версия: 10.0.4
- Релиз: 05.12.2020
+ Версия: 10.0.5
+ Релиз: 21.01.2021
  Первый релиз: 13.01.2016
 
  ###===========================================================================
@@ -471,10 +485,19 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Онлайн документация ###
  https://dk-plugins.ru/documentation/DKTools/index.html
 
+ ### MZ версия ###
+ https://dk-plugins.ru/mz/dktools/
+
  ###===========================================================================
  ## Требования и зависимости
  ###===========================================================================
  Версия мейкера и проекта 1.6+
+
+ ###===========================================================================
+ ## Совместимость с другими плагинами
+ ###===========================================================================
+ Разместите следующие плагины ВЫШЕ в списке плагинов (если вы их используете):
+ 1. AudioStreaming
 
  ###===========================================================================
  ## Функции и параметры
@@ -488,10 +511,11 @@ E-mail: kuznetsovdenis96@gmail.com
  Nwjs + Stamp - Расширенный режим работы файловой системы (все платформы)
  Nwjs - стандартный режим работы файловой системы (только PC)
 
- В режиме Nwjs + Stamp каждый раз при запуске теста игры плагин сканирует
- файлы проекта и сохраняет данные в файл "data/Stamp.json"
-
- Данные также могут быть обновлены с помощью команды плагина UpdateFileSystemStamp
+ В режиме Nwjs + Stamp каждый раз при запуске ТЕСТА игры плагин сканирует
+ файлы проекта и сохраняет данные в файл "data/Stamp.json".
+ Эта функция может вызвать небольшую задержку при запуске ТЕСТА игры, поэтому
+ вы можете отключить эту функцию с помощью параметра "Отключить автоматическое создания штампа".
+ В таком случае данные могут быть обновлены вручную с помощью команды плагина UpdateFileSystemStamp
 
  Q. Зачем нужен режим работы Nwjs + Stamp ?
  A. Браузеры и старые мобильные устройства не предоставляют возможность проверять наличие конкретных файлов
@@ -503,6 +527,10 @@ E-mail: kuznetsovdenis96@gmail.com
  ## Игнорируемые директории ##
  Применяется только для режима Nwjs + Stamp.
  Игнорирует указанные (и вложенные) директории при сканировании файлов проекта.
+
+ ## Отключить автоматическое создания штампа ##
+ Отключает автоматическое создание штампа файловой системы.
+ Для ручного обновления данных используйте команду плагина UpdateFileSystemStamp
 
  ###===========================================================================
  ### Размер шрифта ###
@@ -712,7 +740,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @parent System
  * @desc Параметры файловой системы
  * @type struct<FileSystem>
- * @default {"Mode":"0","Ignored Directories":"[\"node_modules\"]"}
+ * @default {"Mode":"0","Ignored Directories":"[\"node_modules\"]","Disable Auto Create Stamp":"false"}
 
  * @param Font Size
  * @text Размер шрифта
@@ -910,6 +938,11 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type string[]
  * @default ["node_modules"]
 
+ * @param Disable Auto Create Stamp
+ * @desc Disable auto create stamp
+ * @type boolean
+ * @default false
+
 */
 
 /*~struct~FileSystem:ru
@@ -929,6 +962,12 @@ E-mail: kuznetsovdenis96@gmail.com
  * @desc Игнорируемые директории
  * @type string[]
  * @default ["node_modules"]
+
+ * @param Disable Auto Create Stamp
+ * @text Отключить автоматическое создания штампа
+ * @desc Отключить автоматическое создания штампа
+ * @type boolean
+ * @default false
 
 */
 
@@ -2272,7 +2311,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 window.Imported = window.Imported || {};
-window.Imported.DKTools = '10.0.4';
+window.Imported.DKTools = '10.0.5';
 
 
 
@@ -3689,35 +3728,14 @@ DKTools.IO = class {
     // initialize methods
 
     /**
-     * @version 8.0.0
+     * @version 10.0.5
      * @static
      */
     static initialize() {
         let projectPath = '';
 
         if (Utils.isNwjs()) {
-            /**
-             * @private
-             * @readonly
-             * @type {Object}
-             */
-            this._fs = require('fs');
-
-            /**
-             * @private
-             * @readonly
-             * @type {Object}
-             */
-            this._os = require('os');
-
-            /**
-             * @private
-             * @readonly
-             * @type {Object}
-             */
-            this._path = require('path');
-
-            projectPath = this.joinPath(this._path.dirname(process.mainModule.filename), '/');
+            projectPath = this.joinPath(this.path.dirname(process.mainModule.filename), '/');
         }
 
         /**
@@ -3744,7 +3762,10 @@ DKTools.IO = class {
         this._stamp = {};
 
         this._loadStamp();
-        this._createStamp();
+
+        if (!DKToolsParam.get('File System', 'Disable Auto Create Stamp')) {
+            this._createStamp();
+        }
     }
 
     // A methods
@@ -3759,7 +3780,7 @@ DKTools.IO = class {
      */
     static absolutePathExists(path) {
         if (Utils.isNwjs()) {
-            return this._fs.existsSync(path);
+            return this.fs.existsSync(path);
         } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP && path.startsWith(this._projectPath)) {
             if (this.isFile(path)) {
                 return true;
@@ -3858,7 +3879,7 @@ DKTools.IO = class {
             const absolutePath = this.getAbsolutePath(fullPath);
 
             if (this.absolutePathExists(absolutePath)) {
-                return this._fs.lstatSync(absolutePath).isFile();
+                return this.fs.lstatSync(absolutePath).isFile();
             }
         } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP) {
             const parts = this.normalizePath(fullPath).split('\\');
@@ -3884,7 +3905,7 @@ DKTools.IO = class {
             const absolutePath = this.getAbsolutePath(fullPath);
 
             if (this.absolutePathExists(absolutePath)) {
-                return this._fs.lstatSync(absolutePath).isDirectory();
+                return this.fs.lstatSync(absolutePath).isDirectory();
             }
         } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP) {
             const parts = this.normalizePath(fullPath).split('\\').filter(part => !!part);
@@ -3910,7 +3931,7 @@ DKTools.IO = class {
      */
     static joinPath() {
         if (Utils.isNwjs()) {
-            return this._path.join(...arguments);
+            return this.path.join(...arguments);
         }
 
         const paths = _.filter(arguments, arg => DKTools.Utils.isString(arg));
@@ -3959,7 +3980,7 @@ DKTools.IO = class {
      */
     static normalizePath(path, reverseSlash = false) {
         if (Utils.isNwjs()) {
-            const normalizedPath = this._path.normalize(path);
+            const normalizedPath = this.path.normalize(path);
 
             if (!reverseSlash) {
                 return normalizedPath;
@@ -4026,7 +4047,7 @@ DKTools.IO = class {
      */
     static parsePath(path) {
         if (Utils.isNwjs()) {
-            return this._path.parse(path);
+            return this.path.parse(path);
         }
 
         const allParts = this._splitPath(path);
@@ -4127,7 +4148,7 @@ Object.defineProperties(DKTools.IO, {
      */
     fs: {
         get: function() {
-            return this._fs;
+            return require('fs');
         },
         configurable: true
     },
@@ -4140,7 +4161,7 @@ Object.defineProperties(DKTools.IO, {
      */
     os: {
         get: function() {
-            return this._os;
+            return require('os');
         },
         configurable: true
     },
@@ -4153,7 +4174,7 @@ Object.defineProperties(DKTools.IO, {
      */
     path: {
         get: function() {
-            return this._path;
+            return require('path');
         },
         configurable: true
     },
@@ -4168,7 +4189,7 @@ Object.defineProperties(DKTools.IO, {
      */
     sep: {
         get: function() {
-            return Utils.isNwjs() ? this._path.sep : '/';
+            return Utils.isNwjs() ? this.path.sep : '/';
         },
         configurable: true
     },
@@ -7931,6 +7952,7 @@ DKTools.PluginManager = class {
     static checkVersion(pluginName, version) {
         return this._compareVersions(this.getVersion(pluginName), version);
     }
+
     // G methods
 
     /**
@@ -8196,6 +8218,26 @@ DKTools.PreloadManager = class {
     }
 
     // C methods
+
+    /**
+     * Returns true if can preload audio files
+     * @since 10.0.5
+     * @static
+     * @return {Boolean} Can preload audio files
+     */
+    static canPreloadAudioFiles() {
+        return !DKTools.PluginManager.isRegistered('AudioStreaming');
+    }
+
+    /**
+     * Returns true if Can preload image files
+     * @since 10.0.5
+     * @static
+     * @return {Boolean} Can preload image files
+     */
+    static canPreloadImageFiles() {
+        return true;
+    }
 
     /**
      * Clears the cache
@@ -8519,7 +8561,7 @@ DKTools.PreloadManager = class {
     /**
      * Adds the object to preload queue
      *
-     * @version 10.0.4
+     * @version 10.0.5
      * @since 5.0.0
      * @private
      * @static
@@ -8534,6 +8576,36 @@ DKTools.PreloadManager = class {
     static _preload(type, object) {
         if (object instanceof Object && DKTools.Utils.isString(object.path)) {
             const entity = new DKTools.IO.Directory(object.path);
+            const processFile = (file) => {
+                let fullPath = file.getFullPath();
+
+                if (type === 'audio') {
+                    const basePath = DKTools.IO.normalizePath(
+                        AudioManager._basePath || AudioManager._path);
+
+                    if (fullPath.startsWith(basePath)) {
+                        fullPath = fullPath.slice(basePath.length);
+                    }
+                }
+
+                if (this._queue[type][fullPath]) {
+                    return;
+                }
+
+                if (file.isFile()) {
+                    if (type === 'audio') {
+                        if (!Imported['DKTools_Localization']) {
+                            file = new DKTools.IO.File(fullPath);
+                        }
+
+                        this._processAudioFile(file, object);
+                    } else if (type === 'image') {
+                        this._processImageFile(file, object);
+                    }
+                } else {
+                    console.error('This is not a file: ' + fullPath);
+                }
+            };
 
             if (entity.isDirectory()) {
                 if (Utils.isNwjs() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
@@ -8552,28 +8624,7 @@ DKTools.PreloadManager = class {
                         this._files[object.path] = files;
                     }
 
-                    files.forEach((file) => {
-                        let fullPath = file.getFullPath();
-
-                        if (type === 'audio') {
-                            const basePath = DKTools.IO.normalizePath(
-                                AudioManager._basePath || AudioManager._path);
-
-                            if (fullPath.startsWith(basePath)) {
-                                fullPath = fullPath.slice(basePath.length);
-                            }
-                        }
-
-                        if (this._queue[type][fullPath]) {
-                            return;
-                        }
-
-                        if (type === 'audio') {
-                            this._processAudioFile(new DKTools.IO.File(fullPath), object);
-                        } else if (type === 'image') {
-                            this._processImageFile(file, object);
-                        }
-                    });
+                    files.forEach(file => processFile(file));
                 } else {
                     throw new Error('Web browsers and mobile phones cannot load directories!');
                 }
@@ -8588,31 +8639,7 @@ DKTools.PreloadManager = class {
                     }
                 }
 
-                const file = new DKTools.IO.File(path);
-                let fullPath = file.getFullPath();
-
-                if (type === 'audio') {
-                    const basePath = DKTools.IO.normalizePath(
-                        AudioManager._basePath || AudioManager._path);
-
-                    if (fullPath.startsWith(basePath)) {
-                        fullPath = fullPath.slice(basePath.length);
-                    }
-                }
-
-                if (this._queue[type][fullPath]) {
-                    return;
-                }
-
-                if (file.isFile()) {
-                    if (type === 'audio') {
-                        this._processAudioFile(new DKTools.IO.File(fullPath), object);
-                    } else if (type === 'image') {
-                        this._processImageFile(file, object);
-                    }
-                } else {
-                    console.error('This is not a file: ' + fullPath);
-                }
+                processFile(new DKTools.IO.File(path));
             }
         }
     }
@@ -8850,6 +8877,7 @@ DKTools.PreloadManager = class {
     /**
      * Adds the audio to preload queue
      *
+     * @version 10.0.5
      * @since 5.0.0
      * @static
      *
@@ -8882,12 +8910,15 @@ DKTools.PreloadManager = class {
      * DKTools.PreloadManager.start();
      */
     static preloadAudio(object) {
-        this._preload('audio', object);
+        if (this.canPreloadAudioFiles()) {
+            this._preload('audio', object);
+        }
     }
 
     /**
      * Adds the image to preload queue
      *
+     * @version 10.0.5
      * @since 5.0.0
      * @static
      *
@@ -8922,7 +8953,9 @@ DKTools.PreloadManager = class {
      * DKTools.PreloadManager.start();
      */
     static preloadImage(object) {
-        this._preload('image', object);
+        if (this.canPreloadImageFiles()) {
+            this._preload('image', object);
+        }
     }
 
     // R methods
@@ -9600,41 +9633,49 @@ DKTools.Event = class {
 
     /**
      * Calls on pause handler
+     * @version 10.0.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnPauseHandler() {
+    _callOnPauseHandler(data) {
         if (this._canCallOnPauseHandler()) {
-            this._onPause(this);
+            this._onPause(this, data);
         }
     }
 
     /**
      * Calls on repeat handler
+     * @version 10.0.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnRepeatHandler() {
+    _callOnRepeatHandler(data) {
         if (this._canCallOnRepeatHandler()) {
-            this._onRepeat(this);
+            this._onRepeat(this, data);
         }
     }
 
     /**
      * Calls on reset handler
+     * @version 10.0.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnResetHandler() {
+    _callOnResetHandler(data) {
         if (this._canCallOnResetHandler()) {
-            this._onReset(this);
+            this._onReset(this, data);
         }
     }
 
     /**
      * Calls on start handler
+     * @version 10.0.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnStartHandler() {
+    _callOnStartHandler(data) {
         if (this._canCallOnStartHandler()) {
-            this._onStart(this);
+            this._onStart(this, data);
         }
 
         this._started = true;
@@ -9642,12 +9683,14 @@ DKTools.Event = class {
 
     /**
      * Calls on success handler
+     * @version 10.0.5
      * @private
      * @param {Boolean} [forcedSuccess=false]
+     * @param {*} [data] - Data
      */
-    _callOnSuccessHandler(forcedSuccess = false) {
+    _callOnSuccessHandler(forcedSuccess = false, data) {
         if (this._canCallOnSuccessHandler() || forcedSuccess && this.hasOnSuccessHandler()) {
-            this._onSuccess(this);
+            this._onSuccess(this, data);
         }
     }
 
@@ -9664,11 +9707,13 @@ DKTools.Event = class {
 
     /**
      * Calls on failure handler
+     * @version 10.0.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnFailHandler() {
+    _callOnFailHandler(data) {
         if (this._canCallOnFailHandler()) {
-            this._onFail(this);
+            this._onFail(this, data);
         }
     }
 
@@ -9754,15 +9799,27 @@ DKTools.Event = class {
     // F methods
 
     /**
-     * Finishes the event
-     * @version 1.1.0
-     * @param {Boolean} [forcedSuccess=false] - Forced successful completion of the event
+     * Fails the events
+     * @since 10.0.5
+     * @param {*} [data] - Data
      */
-    finish(forcedSuccess = false) {
+    fail(data) {
+        this._callOnFailHandler(data);
+        this._clearRemainingTime();
+        this._clearRemainingRepeats();
+    }
+
+    /**
+     * Finishes the event
+     * @version 10.0.5
+     * @param {Boolean} [forcedSuccess=false] - Forced successful completion of the event
+     * @param {*} [data] - Data
+     */
+    finish(forcedSuccess = false, data) {
         if (this.isFinished() || forcedSuccess) {
-            this._callOnSuccessHandler(forcedSuccess);
+            this._callOnSuccessHandler(forcedSuccess, data);
         } else {
-            this._callOnFailHandler();
+            this._callOnFailHandler(data);
         }
 
         this._clearRemainingTime();
@@ -10960,6 +11017,18 @@ DKTools.EventsManager = class {
     // F methods
 
     /**
+     * Fails the events
+     * @version 10.0.5
+     * @param {String} type - Type of the events
+     * @param {*} [data] - Data
+     */
+    failEvents(type, data) {
+        this.iterateEventsContainer(type, (event) => {
+            event.fail(data);
+        });
+    }
+
+    /**
      * Returns the found animation
      * @since 6.0.0
      * @param {Number | String | *} id - ID of the animation
@@ -10985,12 +11054,14 @@ DKTools.EventsManager = class {
 
     /**
      * Finishes the events
+     * @version 10.0.5
      * @param {String} type - Type of the events
      * @param {Boolean} [forcedSuccess=false] - Forced success for the finish of the events
+     * @param {*} [data] - Data
      */
-    finishEvents(type, forcedSuccess = false) {
+    finishEvents(type, forcedSuccess = false, data) {
         this.iterateEventsContainer(type, (event) => {
-            event.finish(forcedSuccess);
+            event.finish(forcedSuccess, data);
         });
     }
 
@@ -14511,11 +14582,13 @@ DKTools.Sprite.prototype.standardFillColor = function() {
 
 /**
  * Returns the standard font
- * @return {{ fontFace: String, fontSize: Number, fontItalic: Boolean }} Standard font
+ * @version 10.0.5
+ * @return {{ fontFace: String, fontSize: Number, fontItalic: Boolean, fontBold: Boolean }} Standard font
  */
 DKTools.Sprite.prototype.standardFont = function() {
     return {
         fontFace: this.standardFontFace(),
+        fontBold: this.standardFontBold(),
         fontItalic: this.standardFontItalic(),
         fontSize: this.standardFontSize()
     };
@@ -14532,6 +14605,15 @@ DKTools.Sprite.prototype.standardFontFace = function() {
     } catch (e) {
         return 'GameFont';
     }
+};
+
+/**
+ * Returns the standard font bold
+ * @since 10.0.5
+ * @return {Boolean} Standard font bold
+ */
+DKTools.Sprite.prototype.standardFontBold = function() {
+    return false;
 };
 
 /**
@@ -16108,6 +16190,7 @@ DKTools.Window.prototype.updateContents = function() {
 /**
  * Updates the opening of the window
  * @override
+ * @version 10.0.5
  */
 DKTools.Window.prototype.updateOpen = function() {
     if (!this._opening) {
@@ -16118,7 +16201,8 @@ DKTools.Window.prototype.updateOpen = function() {
 
     if (this.isOpen()) {
         this._opening = false;
-
+        this._eventsManager.finishEvents('open', true);
+    } else {
         this.updateOpenEvents();
     }
 };
@@ -16126,6 +16210,7 @@ DKTools.Window.prototype.updateOpen = function() {
 /**
  * Updates the closing of the window
  * @override
+ * @version 10.0.5
  */
 DKTools.Window.prototype.updateClose = function() {
     if (!this._closing) {
@@ -16136,7 +16221,8 @@ DKTools.Window.prototype.updateClose = function() {
 
     if (this.isClosed()) {
         this._closing = false;
-
+        this._eventsManager.finishEvents('close', true);
+    } else {
         this.updateCloseEvents();
     }
 };
@@ -17433,9 +17519,10 @@ DKTools.Window.Selectable.prototype.update = function() {
 
 /**
  * Updates the events with type: select
+ * @version 10.0.5
  */
 DKTools.Window.Selectable.prototype.updateSelectEvents = function() {
-    this._eventsManager.updateEventsContainer('select');
+    this._eventsManager.updateEventsContainer('select', this._index);
 };
 
 
@@ -17862,6 +17949,7 @@ DKTools.PluginCommandManager.set('UpdateFileSystemStamp', () => {
 
 const DKTools_window_onload = window.onload;
 window.onload = function() {
+    DKTools.CompatibilityManager.initialize();
     DKTools.Utils.initialize();
     DKTools.IO.initialize();
     DKTools_window_onload.call(this);
@@ -18660,10 +18748,12 @@ WebAudio.prototype.addLoadListener = function(listener) {
 };
 
 WebAudio.prototype._onLoad = function() {
-    while (this._loadListeners.length > 0) {
-        const listener = this._loadListeners.shift();
+    if (this._autoPlay) {
+        this.play(this._loop, this._offset);
+    }
 
-        listener(this);
+    while (this._loadListeners.length > 0) {
+        this._loadListeners.shift()(this);
     }
 };
 
@@ -18681,7 +18771,6 @@ DataManager.isDatabaseLoaded = function() {
 
     if (!this.__isDatabaseLoaded) {
         this.__isDatabaseLoaded = true;
-
         this.onDatabaseLoad();
     }
 
@@ -18689,7 +18778,7 @@ DataManager.isDatabaseLoaded = function() {
 };
 
 DataManager.onDatabaseLoad = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 
@@ -18848,37 +18937,42 @@ AudioManager._generateCacheKey = function(folder, name) {
         folder + '/' + encodeURIComponent(name) + this.audioFileExt());
 };
 
-/**
- * @override
- * @static
- * @param {String} folder
- * @param {String} name
- * @param {Number} [reservationId]
- * @return {WebAudio | Html5Audio}
- */
-AudioManager.createBuffer = function(folder, name, reservationId) {
-    const url = this._generateCacheKey(folder, name);
+if (!DKTools.PluginManager.isRegistered('AudioStreaming')) {
 
-    if (this.shouldUseHtml5Audio() && folder === 'bgm') {
-        if (this._blobUrl) {
-            Html5Audio.setup(this._blobUrl);
+    /**
+     * @override
+     * @static
+     * @param {String} folder
+     * @param {String} name
+     * @param {Number} [reservationId]
+     * @return {WebAudio | Html5Audio}
+     */
+    AudioManager.createBuffer = function(folder, name, reservationId) {
+        const url = this._generateCacheKey(folder, name);
+
+        if (this.shouldUseHtml5Audio() && folder === 'bgm') {
+            if (this._blobUrl) {
+                Html5Audio.setup(this._blobUrl);
+            } else {
+                Html5Audio.setup(url);
+            }
+
+            return Html5Audio;
         } else {
-            Html5Audio.setup(url);
+            let audio = this._audioCache.get(url);
+
+            if (!audio) {
+                audio = new WebAudio(url);
+
+                this._audioCache.reserve(url, audio,
+                    reservationId || this._defaultReservationId);
+            }
+
+            return audio;
         }
+    };
 
-        return Html5Audio;
-    } else {
-        let audio = this._audioCache.get(url);
-
-        if (!audio) {
-            audio = new WebAudio(url);
-
-            this._audioCache.reserve(url, audio, reservationId || this._defaultReservationId);
-        }
-
-        return audio;
-    }
-};
+}
 
 /**
  * @since 9.0.0
@@ -19249,7 +19343,7 @@ Scene_Boot.prototype.start = function() {
     const quickStart = DKToolsParam.get('Quick Start') || {};
 
     if (quickStart['Enabled']) {
-        DKTools_Scene_Boot_start.call(this);
+        DKTools_Scene_Boot_start.apply(this, arguments);
 
         if (!DataManager.isBattleTest() && !DataManager.isEventTest() &&
             (quickStart['Skip Saves'] || !DataManager.isAnySavefileExists())) {
@@ -19261,7 +19355,7 @@ Scene_Boot.prototype.start = function() {
             SceneManager.goto(window[quickStart['Scene Name']]);
         }
     } else {
-        DKTools_Scene_Boot_start.call(this);
+        DKTools_Scene_Boot_start.apply(this, arguments);
     }
 };
 

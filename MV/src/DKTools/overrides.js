@@ -4,6 +4,7 @@
 
 const DKTools_window_onload = window.onload;
 window.onload = function() {
+    DKTools.CompatibilityManager.initialize();
     DKTools.Utils.initialize();
     DKTools.IO.initialize();
     DKTools_window_onload.call(this);
@@ -802,10 +803,12 @@ WebAudio.prototype.addLoadListener = function(listener) {
 };
 
 WebAudio.prototype._onLoad = function() {
-    while (this._loadListeners.length > 0) {
-        const listener = this._loadListeners.shift();
+    if (this._autoPlay) {
+        this.play(this._loop, this._offset);
+    }
 
-        listener(this);
+    while (this._loadListeners.length > 0) {
+        this._loadListeners.shift()(this);
     }
 };
 
@@ -823,7 +826,6 @@ DataManager.isDatabaseLoaded = function() {
 
     if (!this.__isDatabaseLoaded) {
         this.__isDatabaseLoaded = true;
-
         this.onDatabaseLoad();
     }
 
@@ -831,7 +833,7 @@ DataManager.isDatabaseLoaded = function() {
 };
 
 DataManager.onDatabaseLoad = function() {
-    // to be overriden by plugins
+    // to be overridden by plugins
 };
 
 
@@ -990,37 +992,42 @@ AudioManager._generateCacheKey = function(folder, name) {
         folder + '/' + encodeURIComponent(name) + this.audioFileExt());
 };
 
-/**
- * @override
- * @static
- * @param {String} folder
- * @param {String} name
- * @param {Number} [reservationId]
- * @return {WebAudio | Html5Audio}
- */
-AudioManager.createBuffer = function(folder, name, reservationId) {
-    const url = this._generateCacheKey(folder, name);
+if (!DKTools.PluginManager.isRegistered('AudioStreaming')) {
 
-    if (this.shouldUseHtml5Audio() && folder === 'bgm') {
-        if (this._blobUrl) {
-            Html5Audio.setup(this._blobUrl);
+    /**
+     * @override
+     * @static
+     * @param {String} folder
+     * @param {String} name
+     * @param {Number} [reservationId]
+     * @return {WebAudio | Html5Audio}
+     */
+    AudioManager.createBuffer = function(folder, name, reservationId) {
+        const url = this._generateCacheKey(folder, name);
+
+        if (this.shouldUseHtml5Audio() && folder === 'bgm') {
+            if (this._blobUrl) {
+                Html5Audio.setup(this._blobUrl);
+            } else {
+                Html5Audio.setup(url);
+            }
+
+            return Html5Audio;
         } else {
-            Html5Audio.setup(url);
+            let audio = this._audioCache.get(url);
+
+            if (!audio) {
+                audio = new WebAudio(url);
+
+                this._audioCache.reserve(url, audio,
+                    reservationId || this._defaultReservationId);
+            }
+
+            return audio;
         }
+    };
 
-        return Html5Audio;
-    } else {
-        let audio = this._audioCache.get(url);
-
-        if (!audio) {
-            audio = new WebAudio(url);
-
-            this._audioCache.reserve(url, audio, reservationId || this._defaultReservationId);
-        }
-
-        return audio;
-    }
-};
+}
 
 /**
  * @since 9.0.0
@@ -1391,7 +1398,7 @@ Scene_Boot.prototype.start = function() {
     const quickStart = DKToolsParam.get('Quick Start') || {};
 
     if (quickStart['Enabled']) {
-        DKTools_Scene_Boot_start.call(this);
+        DKTools_Scene_Boot_start.apply(this, arguments);
 
         if (!DataManager.isBattleTest() && !DataManager.isEventTest() &&
             (quickStart['Skip Saves'] || !DataManager.isAnySavefileExists())) {
@@ -1403,7 +1410,7 @@ Scene_Boot.prototype.start = function() {
             SceneManager.goto(window[quickStart['Scene Name']]);
         }
     } else {
-        DKTools_Scene_Boot_start.call(this);
+        DKTools_Scene_Boot_start.apply(this, arguments);
     }
 };
 

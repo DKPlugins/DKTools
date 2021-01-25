@@ -260,41 +260,49 @@ DKTools.Event = class {
 
     /**
      * Calls on pause handler
+     * @version 10.0.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnPauseHandler() {
+    _callOnPauseHandler(data) {
         if (this._canCallOnPauseHandler()) {
-            this._onPause(this);
+            this._onPause(this, data);
         }
     }
 
     /**
      * Calls on repeat handler
+     * @version 10.0.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnRepeatHandler() {
+    _callOnRepeatHandler(data) {
         if (this._canCallOnRepeatHandler()) {
-            this._onRepeat(this);
+            this._onRepeat(this, data);
         }
     }
 
     /**
      * Calls on reset handler
+     * @version 10.0.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnResetHandler() {
+    _callOnResetHandler(data) {
         if (this._canCallOnResetHandler()) {
-            this._onReset(this);
+            this._onReset(this, data);
         }
     }
 
     /**
      * Calls on start handler
+     * @version 10.0.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnStartHandler() {
+    _callOnStartHandler(data) {
         if (this._canCallOnStartHandler()) {
-            this._onStart(this);
+            this._onStart(this, data);
         }
 
         this._started = true;
@@ -302,12 +310,14 @@ DKTools.Event = class {
 
     /**
      * Calls on success handler
+     * @version 10.0.5
      * @private
      * @param {Boolean} [forcedSuccess=false]
+     * @param {*} [data] - Data
      */
-    _callOnSuccessHandler(forcedSuccess = false) {
+    _callOnSuccessHandler(forcedSuccess = false, data) {
         if (this._canCallOnSuccessHandler() || forcedSuccess && this.hasOnSuccessHandler()) {
-            this._onSuccess(this);
+            this._onSuccess(this, data);
         }
     }
 
@@ -324,11 +334,13 @@ DKTools.Event = class {
 
     /**
      * Calls on failure handler
+     * @version 10.0.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnFailHandler() {
+    _callOnFailHandler(data) {
         if (this._canCallOnFailHandler()) {
-            this._onFail(this);
+            this._onFail(this, data);
         }
     }
 
@@ -414,15 +426,27 @@ DKTools.Event = class {
     // F methods
 
     /**
-     * Finishes the event
-     * @version 1.1.0
-     * @param {Boolean} [forcedSuccess=false] - Forced successful completion of the event
+     * Fails the events
+     * @since 10.0.5
+     * @param {*} [data] - Data
      */
-    finish(forcedSuccess = false) {
+    fail(data) {
+        this._callOnFailHandler(data);
+        this._clearRemainingTime();
+        this._clearRemainingRepeats();
+    }
+
+    /**
+     * Finishes the event
+     * @version 10.0.5
+     * @param {Boolean} [forcedSuccess=false] - Forced successful completion of the event
+     * @param {*} [data] - Data
+     */
+    finish(forcedSuccess = false, data) {
         if (this.isFinished() || forcedSuccess) {
-            this._callOnSuccessHandler(forcedSuccess);
+            this._callOnSuccessHandler(forcedSuccess, data);
         } else {
-            this._callOnFailHandler();
+            this._callOnFailHandler(data);
         }
 
         this._clearRemainingTime();

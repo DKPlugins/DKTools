@@ -1272,9 +1272,10 @@ DKTools.Window.Selectable.prototype.update = function() {
 
 /**
  * Updates the events with type: select
+ * @version 10.0.5
  */
 DKTools.Window.Selectable.prototype.updateSelectEvents = function() {
-    this._eventsManager.updateEventsContainer('select');
+    this._eventsManager.updateEventsContainer('select', this._index);
 };
 
 
