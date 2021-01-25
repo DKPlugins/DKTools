@@ -17949,7 +17949,6 @@ DKTools.PluginCommandManager.set('UpdateFileSystemStamp', () => {
 
 const DKTools_window_onload = window.onload;
 window.onload = function() {
-    DKTools.CompatibilityManager.initialize();
     DKTools.Utils.initialize();
     DKTools.IO.initialize();
     DKTools_window_onload.call(this);
