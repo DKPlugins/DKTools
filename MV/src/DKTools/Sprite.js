@@ -1338,7 +1338,31 @@ DKTools.Sprite.prototype.resize = function(width, height, blockStart = false) {
         return false;
     }
 
-    return DKTools.Base.prototype.resize.apply(this, arguments);
+    if (DKTools.Utils.isString(height)) { // number of lines
+        height = this.lineHeight() * parseFloat(height);
+    }
+
+    width = Math.floor(width);
+    height = Math.floor(height);
+
+    if (this.width === width && this.height === height) {
+        return false;
+    }
+
+    const lastWidth = this.width;
+    const lastHeight = this.height;
+
+    this.setupSize(width, height);
+
+    if (this._bitmapWidth === lastWidth && this._bitmapHeight === lastHeight) {
+        return false;
+    }
+
+    if (!blockStart) {
+        this.start();
+    }
+
+    return true;
 };
 
 // U methods

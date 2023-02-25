@@ -14,15 +14,12 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Initializes the file
-     *
      * @version 6.3.0
      * @override
-     *
      * @param {String} fullPath - Path to file
      */
     initialize(fullPath = '') {
         super.initialize(fullPath);
-
         this._detectExtension();
     }
 
@@ -172,24 +169,6 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
         this._extension = newExtension;
     }
 
-    // E methods
-
-    /**
-     * Returns true if the file exists
-     * @version 8.0.0
-     * @override
-     * @return {Boolean} File exists
-     */
-    exists() {
-        if (Decrypter.hasEncryptedAudio && this.isAudio() || Decrypter.hasEncryptedImages && this.isImage()) {
-            const path = DKTools.IO.normalizePath(this.getPath() + '/' + Decrypter.extToEncryptExt(this.getFullName()));
-
-            return DKTools.IO.pathExists(path);
-        }
-
-        return super.exists();
-    }
-
     // G methods
 
     /**
@@ -207,6 +186,23 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      */
     getDirectoryName() {
         return this.getDirectory().getName();
+    }
+
+	/**
+     * Returns the extension of the file
+     * @version 10.0.8
+     * @override
+     * @return {String} Extension of the file
+     */
+    getExtension() {
+		let extension = super.getExtension();
+
+        if (Decrypter.hasEncryptedAudio && extension === AudioManager.audioFileExt()
+			|| Decrypter.hasEncryptedImages && extension === ImageManager.imageFileExt()) {
+				extension = Decrypter.extToEncryptExt(extension);
+        }
+
+        return extension;
     }
 
     // I methods

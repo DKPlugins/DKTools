@@ -89,6 +89,22 @@ DKTools.Window.prototype.activate = function() {
     }
 };
 
+/**
+ * @override
+ * @private
+ */
+DKTools.Window.prototype._createAllParts = function() {
+    Window_Base.prototype._createAllParts.apply(this, arguments);
+    this._createArrowSprites();
+};
+
+/**
+ * @private
+ */
+DKTools.Window.prototype._createArrowSprites = function() {
+    // to be overridden by plugins
+};
+
 // D methods
 
 /**
@@ -204,7 +220,7 @@ DKTools.Window.prototype.hideFrame = function() {
     this._windowFrameSprite.visible = false;
 };
 
-// I method
+// I methods
 
 /**
  * Returns true if the window is open and visible
@@ -220,6 +236,22 @@ DKTools.Window.prototype.isOpenAndVisible = function() {
  */
 DKTools.Window.prototype.isOpenAndActive = function() {
     return this.isOpen() && this.isActive();
+};
+
+// O methods
+
+/**
+ * Handles item change
+ * @override
+ * @param {*} item - Item
+ * @param {*} lastItem - Last item
+ */
+DKTools.Window.prototype.onItemChange = function(item, lastItem) {
+    DKTools.Base.prototype.onItemChange.apply(this, arguments);
+
+    if (DKTools.Utils.isFunction(this._windowContentsSprite.setItem)) {
+        this._windowContentsSprite.setItem(item);
+    }
 };
 
 // R methods

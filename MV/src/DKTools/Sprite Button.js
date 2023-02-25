@@ -106,7 +106,6 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
         object = object || {};
 
         super.setupAll(object);
-
         this.setupLongPressInterval(object.longPressInterval);
     }
 

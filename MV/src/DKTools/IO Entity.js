@@ -62,10 +62,8 @@ DKTools.IO.Entity = class {
 
     /**
      * Initializes the entity
-     *
-     * @version 6.3.0
+     * @version 11.2.3
      * @since 3.0.0
-     *
      * @param {String} fullPath - Path to entity
      */
     initialize(fullPath = '') {
@@ -76,7 +74,7 @@ DKTools.IO.Entity = class {
          * @readonly
          * @type {String}
          */
-        this._path = DKTools.IO.normalizePath(data.dir + '/');
+        this._path = data.dir;
 
         /**
          * @private
@@ -101,6 +99,16 @@ DKTools.IO.Entity = class {
     }
 
     // E methods
+
+    /**
+     * Returns true is the entity is same
+     * @since 11.2.1
+     * @param {DKTools.IO.Entity} entity - Entity
+     * @return {Boolean} Entity is same
+     */
+    equals(entity) {
+        return this.getFullPath() === entity.getFullPath();
+    }
 
     /**
      * Returns true if the entity exists
@@ -151,11 +159,12 @@ DKTools.IO.Entity = class {
 
     /**
      * Returns the full name
+	 * @version 10.0.8
      * @since 3.0.0
      * @return {String} Full name
      */
     getFullName() {
-        return this._name + this._extension;
+        return this.getName() + this.getExtension();
     }
 
     /**

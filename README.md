@@ -1,6 +1,6 @@
 **Author**: DKPlugins
 
-**MV Version**: Public 10.0.5
+**MV Version**: Public 11.2.4
 
 **MZ Version**: Public 1.1.3
 

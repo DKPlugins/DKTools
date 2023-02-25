@@ -3,8 +3,8 @@ Title: DKTools
 Author: DKPlugins
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 10.0.5
-Release: 21.01.2021
+Version: 11.2.4
+Release: 10.02.2023
 First release: 13.01.2016
 */
 
@@ -13,13 +13,13 @@ First release: 13.01.2016
 Автор: DKPlugins
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 10.0.5
-Релиз: 21.01.2021
+Версия: 11.2.4
+Релиз: 10.02.2023
 Первый релиз: 13.01.2016
 */
 
 /*:
-* @plugindesc v.10.0.5 [MV] Advanced project testing and various functions. Made with ♥ by DKPlugins.
+* @plugindesc v.11.2.4 [MV] Advanced project testing and various functions. Made with ♥ by DKPlugins.
 * @author DKPlugins
 * @help
 
@@ -27,8 +27,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DKPlugins
  Site: https://dk-plugins.ru
- Version: 10.0.5
- Release: 21.01.2021
+ Version: 11.2.4
+ Release: 10.02.2023
  First release: 13.01.2016
 
  ###===========================================================================
@@ -255,6 +255,7 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Exit command on the title screen ###
  Allows you to add an exit command to the command window on the title screen.
  The command is added to the end of the list.
+ This function only works on PC.
 
  ###=========================================================================
  ## Hidden functions
@@ -460,7 +461,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.10.0.5 [MV] Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins.
+* @plugindesc v.11.2.4 [MV] Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins.
 * @author DKPlugins
 * @help
 
@@ -468,8 +469,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DKPlugins
  Сайт: https://dk-plugins.ru
- Версия: 10.0.5
- Релиз: 21.01.2021
+ Версия: 11.2.4
+ Релиз: 10.02.2023
  Первый релиз: 13.01.2016
 
  ###===========================================================================
@@ -694,6 +695,7 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Команда выхода на титульном экране ###
  Позволяет вам добавить команду выхода в окно команд на титульном экране.
  Команда добавляется в конец списка.
+ Эта функция работает только на ПК.
 
  ###=========================================================================
  ## Скрытые функции
@@ -2311,7 +2313,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 window.Imported = window.Imported || {};
-window.Imported.DKTools = '10.0.5';
+window.Imported.DKTools = '11.2.4';
 
 
 
@@ -2479,8 +2481,16 @@ window.DKTools = {};
 Object.defineProperties(DKTools, {
 
     /**
+     * DKPlugins Patreon site
+     * @since 11.1.0
+     * @constant
+     * @type {String}
+     * @memberof DKTools
+     */
+    PATREON: { value: 'https://www.patreon.com/dkplugins' },
+
+    /**
      * DKPlugins site url
-     *
      * @since 6.0.0
      * @constant
      * @type {String}
@@ -2490,7 +2500,6 @@ Object.defineProperties(DKTools, {
 
     /**
      * Version of DKTools
-     *
      * @constant
      * @type {String}
      * @memberof DKTools
@@ -2561,7 +2570,7 @@ DKTools.Utils = class {
 
     /**
      * Checks the updates
-     * @version 9.2.0
+     * @version 11.1.0
      * @since 3.0.0
      * @private
      * @static
@@ -2582,7 +2591,7 @@ DKTools.Utils = class {
 
             plugins = await DKTools.Network.fetchJson(`${DKTools.SITE}/plugins.php?${queryParams}`) || [];
 
-            if (plugins.length === 0) {
+            if (!plugins || plugins.length === 0) {
                 return;
             }
         } catch(e) {
@@ -2613,13 +2622,28 @@ DKTools.Utils = class {
                     const currentVersion = DKTools.PluginManager.getVersion(plugin.name);
                     const args = [`Available a new ${plugin.beta ? 'beta ' : ''}version of ${plugin.name}: ${newVersion}\n`,
                         `Installed: ${currentVersion}\n`,
-                        `Visit site: ${plugin.url}`];
+                        `Plugin page: ${plugin.url}`];
 
                     if (plugin.download_url) {
                         args.push(`\nDownload: ${plugin.download_url}`)
                     }
 
                     console.log.apply(console, args);
+                }
+
+                if (DKTools.PluginManager.compareVersions(plugin.patreon_version, newVersion)
+                    && !DKTools.PluginManager.checkVersion(plugin.name, plugin.patreon_version)) {
+                        const currentVersion = DKTools.PluginManager.getVersion(plugin.name);
+                        const args = [`Available a new version of ${plugin.name} on Patreon: ${plugin.patreon_version}\n`,
+                            `Installed: ${currentVersion}\n`,
+                            `Patreon page: ${DKTools.PATREON}\n`,
+                            `Plugin page: ${plugin.url}`];
+
+                        if (plugin.patreon_url) {
+                            args.push(`\nPatreon download: ${plugin.patreon_url}`);
+                        }
+
+                        console.log.apply(console, args);
                 }
             } else if (showNewPlugins) {
                 const requirementsMet = plugin.requirements.length === 0 ||
@@ -2633,7 +2657,7 @@ DKTools.Utils = class {
                 const args = [
                     `Try the new plugin: ${plugin.name}\n`,
                     `Description: ${plugin.description}\n`,
-                    `Visit site: ${plugin.url} \n`];
+                    `Plugin page: ${plugin.url} \n`];
 
                 if (plugin.download_url) {
                     args.push(`\nDownload: ${plugin.download_url}`)
@@ -3086,15 +3110,17 @@ DKTools.Utils = class {
     /**
      * Throws the error
      *
+     * @version 11.1.0
      * @since 6.1.0
      * @static
      *
      * @param {*} error - Error
+     * @param {Number} [timeout=0] - Timeout
      */
-    static throwError(error) {
+    static throwError(error, timeout = 0) {
         setTimeout(() => {
             throw error;
-        }, 0);
+        }, timeout);
     }
 
     // Q methods
@@ -3728,13 +3754,41 @@ DKTools.IO = class {
     // initialize methods
 
     /**
-     * @version 10.0.5
+     * @version 11.2.4
      * @static
      */
     static initialize() {
         let projectPath = '';
 
+        /**
+         * @private
+         * @readonly
+         * @type {Boolean}
+         */
+        this._isReady = false;
+
         if (Utils.isNwjs()) {
+            /**
+             * @private
+             * @readonly
+             * @type {Object}
+             */
+            this._fs = require('fs');
+
+            /**
+             * @private
+             * @readonly
+             * @type {Object}
+             */
+            this._os = require('os');
+
+            /**
+             * @private
+             * @readonly
+             * @type {Object}
+             */
+            this._path = require('path');
+
             projectPath = this.joinPath(this.path.dirname(process.mainModule.filename), '/');
         }
 
@@ -3766,6 +3820,8 @@ DKTools.IO = class {
         if (!DKToolsParam.get('File System', 'Disable Auto Create Stamp')) {
             this._createStamp();
         }
+
+        this._isReady = true;
     }
 
     // A methods
@@ -3796,7 +3852,7 @@ DKTools.IO = class {
 
     /**
      * Creates the file system stamp
-     * @version 10.0.0
+     * @version 11.2.1
      * @since 8.0.0
      * @async
      * @private
@@ -3808,6 +3864,7 @@ DKTools.IO = class {
         }
 
         const ignoredDirectories = DKToolsParam.get('File System', 'Ignored Directories')
+                                                .filter(path => !['locales'].includes(path))
                                                 .map(path => new DKTools.IO.Directory(path));
         const directory = DKTools.IO.getRootDirectory();
         const file = new DKTools.IO.File('data/Stamp.json');
@@ -3817,19 +3874,25 @@ DKTools.IO = class {
             const entities = await directory.getAllAsync().then(result => result.data);
 
             for (const entity of entities) {
-                const stats = await entity.getStatsAsync().then(result => result.data);
-                const fullPath = entity.getFullPath().substring(1).split('\\');
+                const isDirectory = entity.isDirectory();
 
-                if (entity.isFile()) {
-                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'file' } });
-                } else {
-                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'directory' } });
+                if (isDirectory) {
+                    if (ignoredDirectories.some(dir => dir.equals(entity))) {
+                        continue;
+                    }
                 }
 
-                if (entity.isDirectory()) {
-                    if (!ignoredDirectories.some(dir => dir.getFullPath() === directory.getFullPath())) {
-                        await processDirectory(entity);
-                    }
+                const stats = await entity.getStatsAsync().then(result => result.data);
+                const fullPath = entity.getFullPath().substring(1).split(DKTools.IO.sep);
+
+                if (isDirectory) {
+                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'directory' } });
+                } else {
+                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'file' } });
+                }
+
+                if (isDirectory) {
+                    await processDirectory(entity);
                 }
             }
         };
@@ -3869,7 +3932,7 @@ DKTools.IO = class {
 
     /**
      * Returns true if the full path is a file
-     * @version 8.0.0
+     * @version 11.2.3
      * @static
      * @param {String} fullPath - Path to file
      * @return {Boolean} Full path is a file
@@ -3882,7 +3945,7 @@ DKTools.IO = class {
                 return this.fs.lstatSync(absolutePath).isFile();
             }
         } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP) {
-            const parts = this.normalizePath(fullPath).split('\\');
+            const parts = this.normalizePath(fullPath).split(DKTools.IO.sep).filter(part => !!part);
             const extension = _.last(parts);
 
             if (extension.includes('.')) {
@@ -3895,7 +3958,7 @@ DKTools.IO = class {
 
     /**
      * Returns true if the full path is a directory
-     * @version 8.0.0
+     * @version 11.2.3
      * @static
      * @param {String} fullPath - Path to directory
      * @return {Boolean} Full path is a directory
@@ -3908,7 +3971,7 @@ DKTools.IO = class {
                 return this.fs.lstatSync(absolutePath).isDirectory();
             }
         } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP) {
-            const parts = this.normalizePath(fullPath).split('\\').filter(part => !!part);
+            const parts = this.normalizePath(fullPath).split(DKTools.IO.sep).filter(part => !!part);
             const extension = _.last(parts);
 
             if (!extension.includes('.')) {
@@ -3917,6 +3980,16 @@ DKTools.IO = class {
         }
 
         return false;
+    }
+
+    /**
+     * Returns true if the manager is ready
+     * @since 11.2.4
+     * @static
+     * @return {Boolean} Manager is ready
+     */
+    static isReady() {
+        return this._isReady;
     }
 
     // J methods
@@ -3972,7 +4045,7 @@ DKTools.IO = class {
 
     /**
      * Returns a normalized path
-     * @version 6.1.0
+     * @version 11.2.3
      * @static
      * @param {String} path - Path for normalize
      * @param {Boolean} [reverseSlash=false] - Reversing slash
@@ -3990,7 +4063,6 @@ DKTools.IO = class {
         }
 
         const result = this._statPath(path),
-            isUnc = result.isUnc,
             isAbsolute = result.isAbsolute;
 
         let device = result.device,
@@ -4022,17 +4094,19 @@ DKTools.IO = class {
             tail += '\\';
         }
 
-        if (isUnc) {
-            device = '\\\\' + device.replace(/^[\\\/]+/, '').replace(/[\\\/]+/g, '\\');
+        if (result.isUnc) {
+            device = '\\\\' + device.replace(/^[\\\/]+/, '')
+                                     .replace(/[\\\/]+/g, '\\');
         }
 
-        const normalizedPath = device + (isAbsolute ? '\\' : '') + tail;
+        let fullPath = (device + (isAbsolute ? '\\' : '') + tail)
+        .replace(/\\/g, DKTools.IO.sep);
 
-        if (!reverseSlash) {
-            return normalizedPath;
+        if (fullPath[0] === DKTools.IO.sep) {
+            fullPath = fullPath.substring(1);
         }
 
-        return normalizedPath.replace(/\\/g, '/');
+        return fullPath;
     }
 
     // P methods
@@ -4148,7 +4222,7 @@ Object.defineProperties(DKTools.IO, {
      */
     fs: {
         get: function() {
-            return require('fs');
+            return this._fs;
         },
         configurable: true
     },
@@ -4161,7 +4235,7 @@ Object.defineProperties(DKTools.IO, {
      */
     os: {
         get: function() {
-            return require('os');
+            return this._os;
         },
         configurable: true
     },
@@ -4174,7 +4248,7 @@ Object.defineProperties(DKTools.IO, {
      */
     path: {
         get: function() {
-            return require('path');
+            return this._path;
         },
         configurable: true
     },
@@ -4414,10 +4488,8 @@ DKTools.IO.Entity = class {
 
     /**
      * Initializes the entity
-     *
-     * @version 6.3.0
+     * @version 11.2.3
      * @since 3.0.0
-     *
      * @param {String} fullPath - Path to entity
      */
     initialize(fullPath = '') {
@@ -4428,7 +4500,7 @@ DKTools.IO.Entity = class {
          * @readonly
          * @type {String}
          */
-        this._path = DKTools.IO.normalizePath(data.dir + '/');
+        this._path = data.dir;
 
         /**
          * @private
@@ -4453,6 +4525,16 @@ DKTools.IO.Entity = class {
     }
 
     // E methods
+
+    /**
+     * Returns true is the entity is same
+     * @since 11.2.1
+     * @param {DKTools.IO.Entity} entity - Entity
+     * @return {Boolean} Entity is same
+     */
+    equals(entity) {
+        return this.getFullPath() === entity.getFullPath();
+    }
 
     /**
      * Returns true if the entity exists
@@ -4503,11 +4585,12 @@ DKTools.IO.Entity = class {
 
     /**
      * Returns the full name
+	 * @version 10.0.8
      * @since 3.0.0
      * @return {String} Full name
      */
     getFullName() {
-        return this._name + this._extension;
+        return this.getName() + this.getExtension();
     }
 
     /**
@@ -4835,15 +4918,12 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Initializes the file
-     *
      * @version 6.3.0
      * @override
-     *
      * @param {String} fullPath - Path to file
      */
     initialize(fullPath = '') {
         super.initialize(fullPath);
-
         this._detectExtension();
     }
 
@@ -4993,24 +5073,6 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
         this._extension = newExtension;
     }
 
-    // E methods
-
-    /**
-     * Returns true if the file exists
-     * @version 8.0.0
-     * @override
-     * @return {Boolean} File exists
-     */
-    exists() {
-        if (Decrypter.hasEncryptedAudio && this.isAudio() || Decrypter.hasEncryptedImages && this.isImage()) {
-            const path = DKTools.IO.normalizePath(this.getPath() + '/' + Decrypter.extToEncryptExt(this.getFullName()));
-
-            return DKTools.IO.pathExists(path);
-        }
-
-        return super.exists();
-    }
-
     // G methods
 
     /**
@@ -5028,6 +5090,23 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      */
     getDirectoryName() {
         return this.getDirectory().getName();
+    }
+
+	/**
+     * Returns the extension of the file
+     * @version 10.0.8
+     * @override
+     * @return {String} Extension of the file
+     */
+    getExtension() {
+		let extension = super.getExtension();
+
+        if (Decrypter.hasEncryptedAudio && extension === AudioManager.audioFileExt()
+			|| Decrypter.hasEncryptedImages && extension === ImageManager.imageFileExt()) {
+				extension = Decrypter.extToEncryptExt(extension);
+        }
+
+        return extension;
     }
 
     // I methods
@@ -5935,6 +6014,28 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
 
 
+
+/**
+ * Save file class
+ * @class
+ * @extends DKTools.IO.File
+ * @memberof DKTools.IO
+ */
+DKTools.IO.SaveFile = class extends DKTools.IO.File {
+
+    /**
+     * Initializes the save file
+     * @override
+     * @param {String} fullPath - Path to file
+     */
+    initialize(fullPath = '') {
+        super.initialize(`save/${fullPath}.rpgsave`);
+    }
+
+};
+
+
+
 //===========================================================================
 // DKTools.IO.Directory
 //===========================================================================
@@ -6168,7 +6269,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
      *
-     * @version 10.0.0
+     * @version 11.2.1
      * @since 4.0.0
      *
      * @param {Object} object - Options of an operation
@@ -6188,7 +6289,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *     console.log(result.data);
      * }
      *
-     * @return {{ data: Object | null, status: Number }} All files
+     * @return {{ data: DKTools.IO.Entity[] | null, status: Number }} All files
      */
     findFiles(object) {
         if (!object) {
@@ -6199,7 +6300,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
-        if (!Utils.isNwjs()) {
+        if (!Utils.isNwjs() && DKTools.IO.mode === DKTools.IO.MODE_NWJS) {
             return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
 
@@ -6473,7 +6574,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
      *
-     * @version 8.0.1
+     * @version 11.1.0
      *
      * @param {Object} object - Options of an operation
      *
@@ -6527,7 +6628,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
         };
 
         if (!Utils.isNwjs() && DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
-            const parts = this.getFullPath().split('\\');
+            const parts = this.getFullPath().split(DKTools.IO.sep).filter(part => !!part);
             const temp = _.get(DKTools.IO.stamp, parts, {});
             const names = Object.keys(temp);
 
@@ -7899,7 +8000,7 @@ DKTools.PluginManager = class {
                     .format(pluginName, maxVersion);
 
                 throw new Error(error);
-            } else if (!this._compareVersions(pluginVersion, maxVersion)) {
+            } else if (!this.compareVersions(pluginVersion, maxVersion)) {
                 const error = 'Required to update the plugin "%1" to minimal version %2 (Installed: %3)'
                     .format(pluginName, maxVersion, pluginVersion);
 
@@ -7909,13 +8010,15 @@ DKTools.PluginManager = class {
     }
 
     /**
-     * @private
+     * Compares two versions
+     * Returns true if the first version greater than the second
+     * @since 11.1.0
      * @static
      * @param {String} v1 - First version
      * @param {String} v2 - Second version
-     * @return {Boolean}
+     * @return {Boolean} First version greater than the second
      */
-    static _compareVersions(v1, v2) {
+    static compareVersions(v1, v2) {
         if (v1 === v2) {
             return true;
         }
@@ -7950,7 +8053,7 @@ DKTools.PluginManager = class {
      * @return {Boolean} Current version is greater than or equal to the given version
      */
     static checkVersion(pluginName, version) {
-        return this._compareVersions(this.getVersion(pluginName), version);
+        return this.compareVersions(this.getVersion(pluginName), version);
     }
 
     // G methods
@@ -7964,7 +8067,7 @@ DKTools.PluginManager = class {
     static _getMaxVersion(pluginName) {
         return (this._requirements[pluginName] || [])
             .slice()
-            .sort((a, b) => (this._compareVersions(a, b) ? -1 : 1))[0];
+            .sort((a, b) => (this.compareVersions(a, b) ? -1 : 1))[0];
     }
 
     /**
@@ -8001,6 +8104,48 @@ DKTools.PluginManager = class {
     static isRegistered(pluginName) {
         return DKTools.Utils.isString(this.getVersion(pluginName)) ||
             $plugins.some(plugin => plugin.name === pluginName && plugin.status);
+    }
+
+    // O methods
+
+    /**
+     * Checks if the specified plugin is below the required one
+     * Returns true if the specified plugin is below the required one
+     * @since 11.1.0
+     * @static
+     * @param {String} pluginName - Specified plugin
+     * @param {String} orderAfter - Required plugin
+     * @return {Boolean} Specified plugin is below the required one
+     */
+    static orderAfter(pluginName, orderAfter) {
+        const plugins = $plugins.filter(plugin => plugin.status);
+
+        if (plugins.findIndex(plugin => plugin.name === pluginName) < plugins.findIndex(plugin => plugin.name === orderAfter)) {
+            DKTools.Utils.throwError(
+                new Error(`Plugin "${pluginName}" must be located after the plugin "${orderAfter}"`), 500);
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if the specified plugin is higher the required one
+     * Returns true if the specified plugin is higher the required one
+     * @since 11.1.0
+     * @static
+     * @param {String} pluginName - Specified plugin
+     * @param {String} orderAfter - Required plugin
+     * @return {Boolean} Specified plugin is higher the required one
+     */
+    static orderBefore(pluginName, orderBefore) {
+        const plugins = $plugins.filter(plugin => plugin.status);
+
+        if (plugins.findIndex(plugin => plugin.name === pluginName) > plugins.findIndex(plugin => plugin.name === orderBefore)) {
+            DKTools.Utils.throwError(
+                new Error(`Plugin "${pluginName}" must be located before the plugin "${orderBefore}"`), 500);
+        }
+
+        return true;
     }
 
     // R methods
@@ -11346,7 +11491,7 @@ DKTools.Base = class {
     /**
      * Initializes a class object
      *
-     * @param {Number | Graphics | Object | *} [object] - The X coordinate or Graphics or object with parameters
+     * @param {Number | Object | *} [object] - The X coordinate or Graphics or object with parameters
      * @param {Number} [y] - The Y coordinate (if object is Number)
      * @param {Number} [width] - The width of the object (if object is Number)
      * @param {Number | String} [height] - The height of the object (if object is Number)
@@ -11531,7 +11676,9 @@ DKTools.Base = class {
      * @private
      */
     _createEventsManager() {
-        this._eventsManager = new DKTools.EventsManager(this);
+        if (!this._eventsManager) {
+            this._eventsManager = new DKTools.EventsManager(this);
+        }
     }
 
     /**
@@ -12865,10 +13012,11 @@ DKTools.Base = class {
 
     /**
      * Returns true if the touch is inside the object
+     * @version 10.0.6
      * @return {Boolean} Touch is inside the object
      */
     isTouchInside() {
-        return TouchInput.isScreenPressed() && this.isInside(TouchInput.x, TouchInput.y);
+        return this.isInside(TouchInput.x, TouchInput.y);
     }
 
     /**
@@ -12944,6 +13092,16 @@ DKTools.Base = class {
      */
     obtainEscapeParam(textState) {
         return Window_Base.prototype.obtainEscapeParam.apply(this, arguments);
+    }
+
+    /**
+     * Handles item change
+     * @since 11.1.0
+     * @param {*} item - Item
+     * @param {*} lastItem - Last item
+     */
+    onItemChange(item, lastItem) {
+        // to be overridden by plugins
     }
 
     // P methods
@@ -13494,6 +13652,25 @@ DKTools.Base = class {
     }
 
     /**
+     * Sets the item
+     * @since 11.1.0
+     * @param {*} item - Item
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     */
+    setItem(item, blockStart = false) {
+        if (this._item !== item) {
+            const lastItem = this._item;
+
+            this._item = item;
+            this.onItemChange(this._item, lastItem);
+
+            if (!blockStart) {
+                this.start();
+            }
+        }
+    }
+
+    /**
      * Changes the visibility of the object
      * Returns true if the change occurred
      * @param {Boolean} [visible] - Visibility of the object
@@ -13788,7 +13965,6 @@ DKTools.Base = class {
      */
     updateEvents() {
         this._eventsManager.update();
-
         this.updateReadyEvents();
         this.updateUpdateEvents();
         this.updateQueueEvents();
@@ -15287,7 +15463,31 @@ DKTools.Sprite.prototype.resize = function(width, height, blockStart = false) {
         return false;
     }
 
-    return DKTools.Base.prototype.resize.apply(this, arguments);
+    if (DKTools.Utils.isString(height)) { // number of lines
+        height = this.lineHeight() * parseFloat(height);
+    }
+
+    width = Math.floor(width);
+    height = Math.floor(height);
+
+    if (this.width === width && this.height === height) {
+        return false;
+    }
+
+    const lastWidth = this.width;
+    const lastHeight = this.height;
+
+    this.setupSize(width, height);
+
+    if (this._bitmapWidth === lastWidth && this._bitmapHeight === lastHeight) {
+        return false;
+    }
+
+    if (!blockStart) {
+        this.start();
+    }
+
+    return true;
 };
 
 // U methods
@@ -15481,7 +15681,6 @@ DKTools.Sprite.Button = class extends DKTools.Sprite {
         object = object || {};
 
         super.setupAll(object);
-
         this.setupLongPressInterval(object.longPressInterval);
     }
 
@@ -15858,6 +16057,22 @@ DKTools.Window.prototype.activate = function() {
     }
 };
 
+/**
+ * @override
+ * @private
+ */
+DKTools.Window.prototype._createAllParts = function() {
+    Window_Base.prototype._createAllParts.apply(this, arguments);
+    this._createArrowSprites();
+};
+
+/**
+ * @private
+ */
+DKTools.Window.prototype._createArrowSprites = function() {
+    // to be overridden by plugins
+};
+
 // D methods
 
 /**
@@ -15973,7 +16188,7 @@ DKTools.Window.prototype.hideFrame = function() {
     this._windowFrameSprite.visible = false;
 };
 
-// I method
+// I methods
 
 /**
  * Returns true if the window is open and visible
@@ -15989,6 +16204,22 @@ DKTools.Window.prototype.isOpenAndVisible = function() {
  */
 DKTools.Window.prototype.isOpenAndActive = function() {
     return this.isOpen() && this.isActive();
+};
+
+// O methods
+
+/**
+ * Handles item change
+ * @override
+ * @param {*} item - Item
+ * @param {*} lastItem - Last item
+ */
+DKTools.Window.prototype.onItemChange = function(item, lastItem) {
+    DKTools.Base.prototype.onItemChange.apply(this, arguments);
+
+    if (DKTools.Utils.isFunction(this._windowContentsSprite.setItem)) {
+        this._windowContentsSprite.setItem(item);
+    }
 };
 
 // R methods
@@ -16246,6 +16477,601 @@ DKTools.Window.prototype.updateCloseEvents = function() {
 
 
 //===========================================================================
+// DKTools.Window.Scrollable
+//===========================================================================
+
+/**
+ * @class
+ * @since 11.0.0
+ * @extends Window_Base
+ * @mixes DKTools.Window
+ */
+DKTools.Window.Scrollable = function(object, y, width, height) {
+    this.initialize.apply(this, arguments);
+};
+
+DKTools.Window.Scrollable.prototype = Object.create(Window_Base.prototype);
+Object.defineProperties(DKTools.Window.Scrollable.prototype,
+    Object.getOwnPropertyDescriptors(DKTools.Window.prototype));
+DKTools.Window.Scrollable.prototype.constructor = DKTools.Window.Scrollable;
+
+// C methods
+
+/**
+ * Clears all data
+ * @override
+ * @private
+ */
+DKTools.Window.Scrollable.prototype._clearAll = function() {
+    DKTools.Window.prototype._clearAll.apply(this, arguments);
+    this._scrollX = 0;
+    this._scrollY = 0;
+    this._scrollBaseX = 0;
+    this._scrollBaseY = 0;
+    this.clearScrollStatus();
+};
+
+/**
+ * @override
+ * @private
+ */
+DKTools.Window.Scrollable.prototype._createArrowSprites = function() {
+    DKTools.Window.prototype._createArrowSprites.apply(this, arguments);
+
+    this._leftArrowSprite = new Sprite();
+    this._rightArrowSprite = new Sprite();
+
+    this.addChild(this._leftArrowSprite);
+    this.addChild(this._rightArrowSprite);
+};
+
+/**
+ * Clears the scroll status
+ */
+DKTools.Window.Scrollable.prototype.clearScrollStatus = function() {
+    this._scrollTargetX = 0;
+    this._scrollTargetY = 0;
+    this._scrollDuration = 0;
+    this._scrollAccelX = 0;
+    this._scrollAccelY = 0;
+    this._scrollTouching = false;
+    this._scrollLastTouchX = 0;
+    this._scrollLastTouchY = 0;
+};
+
+// I methods
+
+/**
+ * Returns the width of the item
+ * @return {Number} Width of the item
+ */
+DKTools.Window.Scrollable.prototype.itemWidth = function() {
+    if (typeof this._itemWidth === 'function') {
+        return this._itemWidth(this);
+    } else if (Number.isFinite(this._itemWidth)) {
+        return this._itemWidth;
+    }
+
+    return this.innerWidth;
+};
+
+/**
+ * Returns the height of the item
+ * @return {Number} Height of the item
+ */
+DKTools.Window.Scrollable.prototype.itemHeight = function() {
+    if (typeof this._itemHeight === 'function') {
+        return this._itemHeight(this);
+    } else if (Number.isFinite(this._itemHeight)) {
+        return this._itemHeight;
+    } else if (typeof this._itemHeight === 'string') { // number of lines
+        return this.lineHeight() * parseFloat(this._itemHeight);
+    }
+
+    return this.lineHeight();
+};
+
+/**
+ * Returns true if the horizontal scrolling
+ * @return {Boolean} Horizontal scrolling
+ */
+DKTools.Window.Scrollable.prototype.isHorizontal = function() {
+    return this.maxScrollX() > 0;
+};
+
+/**
+ * Returns true if the scroll enabled
+ * @return {Boolean} Scroll enabled
+ */
+DKTools.Window.Scrollable.prototype.isScrollEnabled = function() {
+    return true;
+};
+
+/**
+ * Returns true if touched inside the frame
+ * @return {Boolean} Touched inside the frame
+ */
+DKTools.Window.Scrollable.prototype.isTouchedInsideFrame = function() {
+    const touchPos = new Point(TouchInput.mouseX, TouchInput.mouseY);
+    const localPos = this.worldTransform.applyInverse(touchPos);
+
+    return this.innerRect.contains(localPos.x, localPos.y);
+};
+
+/**
+ * Returns true if the touch scroll enabled
+ * @return {Boolean} Touch scroll enabled
+ */
+DKTools.Window.Scrollable.prototype.isTouchScrollEnabled = function() {
+    return this.isScrollEnabled();
+};
+
+/**
+ * Returns true if the wheel scroll enabled
+ * @return {Boolean} Wheel scroll enabled
+ */
+DKTools.Window.Scrollable.prototype.isWheelScrollEnabled = function() {
+    return this.isScrollEnabled();
+};
+
+// M methods
+
+/**
+ * Returns the max scroll X
+ * @return {Number} Max scroll X
+ */
+DKTools.Window.Scrollable.prototype.maxScrollX = function() {
+    return Math.max(0, this.overallWidth() - this.innerWidth);
+};
+
+/**
+ * Returns the max scroll Y
+ * @return {Number} Max scroll Y
+ */
+DKTools.Window.Scrollable.prototype.maxScrollY = function() {
+    return Math.max(0, this.overallHeight() - this.innerHeight);
+};
+
+// O methods
+
+/**
+ * Handles the start of the scroll
+ */
+DKTools.Window.Scrollable.prototype.onTouchScrollStart = function() {
+    this._scrollTouching = true;
+    this._scrollLastTouchX = TouchInput.mouseX;
+    this._scrollLastTouchY = TouchInput.mouseY;
+    this.setScrollAccel(0, 0);
+};
+
+/**
+ * Handles the scroll
+ */
+DKTools.Window.Scrollable.prototype.onTouchScroll = function() {
+    const accelX = this._scrollLastTouchX - TouchInput.mouseX;
+    const accelY = this._scrollLastTouchY - TouchInput.mouseY;
+
+    this.setScrollAccel(accelX, accelY);
+
+    this._scrollLastTouchX = TouchInput.mouseX;
+    this._scrollLastTouchY = TouchInput.mouseY;
+};
+
+/**
+ * Handles the end of the scroll
+ */
+DKTools.Window.Scrollable.prototype.onTouchScrollEnd = function() {
+    this._scrollTouching = false;
+};
+
+/**
+ * Returns the overall width
+ * @return {Number} Overall width
+ */
+DKTools.Window.Scrollable.prototype.overallWidth = function() {
+    return this.hasBitmap() ?
+        this.contents.width : 0;
+};
+
+/**
+ * Returns the overall width
+ * @return {Number} Overall height
+ */
+DKTools.Window.Scrollable.prototype.overallHeight = function() {
+    return this.hasBitmap() ?
+        this.contents.height : 0;
+};
+
+// P methods
+
+/**
+ * Processes page scroll
+ * @since 11.1.0
+ */
+DKTools.Window.Scrollable.prototype.processPageScroll = function() {
+    if (Input.isRepeated('pageup')) {
+        if (this.isHorizontal()) {
+            this.smoothScrollRight(1);
+        } else {
+            this.smoothScrollUp(1);
+        }
+    }
+
+    if (Input.isRepeated('pagedown')) {
+        if (this.isHorizontal()) {
+            this.smoothScrollLeft(1);
+        } else {
+            this.smoothScrollDown(1);
+        }
+    }
+};
+
+/**
+ * Processes touch scroll
+ */
+DKTools.Window.Scrollable.prototype.processTouchScroll = function() {
+    if (this.isTouchScrollEnabled()) {
+        if (TouchInput.isTriggered() && this.isTouchedInsideFrame()) {
+            this.onTouchScrollStart();
+        }
+
+        if (this._scrollTouching) {
+            if (TouchInput.isReleased()) {
+                this.onTouchScrollEnd();
+            } else if (TouchInput.isMouseMoved()) {
+                this.onTouchScroll();
+            }
+        }
+    }
+};
+
+/**
+ * Processes wheel scroll
+ */
+DKTools.Window.Scrollable.prototype.processWheelScroll = function() {
+    if (this.isWheelScrollEnabled() && this.isTouchedInsideFrame()) {
+        const threshold = 20;
+
+        if (TouchInput.wheelY >= threshold) {
+            if (this.isHorizontal()) {
+                this.smoothScrollLeft(1);
+            } else {
+                this.smoothScrollDown(1);
+            }
+        }
+
+        if (TouchInput.wheelY <= -threshold) {
+            if (this.isHorizontal()) {
+                this.smoothScrollRight(1);
+            } else {
+                this.smoothScrollUp(1);
+            }
+        }
+    }
+};
+
+// R methods
+
+/**
+ * Refreshes arrows
+ * @override
+ */
+DKTools.Window.Scrollable.prototype._refreshArrows = function() {
+    DKTools.Window.prototype._refreshArrows.apply(this, arguments);
+
+    const w = this._width;
+    const h = this._height;
+    const p = 24;
+    const q = p / 2;
+    const sx = 96 + p;
+    const sy = 0 + p;
+
+    this._leftArrowSprite.bitmap = this._windowskin;
+    this._leftArrowSprite.anchor.set(0.5, 0.5);
+    this._leftArrowSprite.setFrame(sx, sy + q, q, p);
+    this._leftArrowSprite.move(q / 2, h / 2);
+
+    this._rightArrowSprite.bitmap = this._windowskin;
+    this._rightArrowSprite.anchor.set(0.5, 0.5);
+    this._rightArrowSprite.setFrame(sx + q + p, sy + q, q, p);
+    this._rightArrowSprite.move(w - q, h / 2);
+};
+
+// S methods
+
+// setup methods
+
+/**
+ * Sets all parameters
+ *
+ * @param {Object} [object={}] - Parameters
+ *
+ * @param {Function | Number} [object.itemWidth] - Width of the item
+ * @param {Function | Number} [object.itemHeight] - Height of the item
+ * @param {Function | Number} [object.scrollBlockWidth] - Width of the scroll block
+ * @param {Function | Number} [object.scrollBlockHeight] - Height of the scroll block
+ */
+DKTools.Window.Scrollable.prototype.setupAll = function(object = {}) {
+    object = object || {};
+
+    DKTools.Window.prototype.setupAll.apply(this, arguments);
+
+    this.setupItemWidth(object.itemWidth);
+    this.setupItemHeight(object.itemHeight);
+};
+
+/**
+ * Sets the width of the item
+ * @param {Function | Number} [width] - Width of the item
+ */
+DKTools.Window.Scrollable.prototype.setupItemWidth = function(width) {
+    this._itemWidth = width;
+};
+
+/**
+ * Sets the height of the item
+ * @param {Function | Number} [height] - Height of the item
+ */
+DKTools.Window.Scrollable.prototype.setupItemHeight = function(height) {
+    this._itemHeight = height;
+};
+
+// set methods
+
+/**
+ * Sets the scroll accel
+ * @param {Number} x - The X coordinate
+ * @param {Number} y - The Y coordinate
+ */
+DKTools.Window.Scrollable.prototype.setScrollAccel = function(x, y) {
+    this._scrollAccelX = x;
+    this._scrollAccelY = y;
+};
+
+// other S methods
+
+/**
+ * Returns the width of the scroll block
+ * @version 11.1.0
+ * @return {Number} Width of the scroll block
+ */
+DKTools.Window.Scrollable.prototype.scrollBlockWidth = function() {
+    return this.itemWidth();
+};
+
+/**
+ * Returns the height of the scroll block
+ * @version 11.1.0
+ * @return {Number} Height of the scroll block
+ */
+DKTools.Window.Scrollable.prototype.scrollBlockHeight = function() {
+    return this.itemHeight();
+};
+
+/**
+ * Returns the scroll base X
+ * @return {Number} Scroll base X
+ */
+DKTools.Window.Scrollable.prototype.scrollBaseX = function() {
+    return this._scrollBaseX;
+};
+
+/**
+ * Returns the scroll base Y
+ * @return {Number} Scroll base Y
+ */
+DKTools.Window.Scrollable.prototype.scrollBaseY = function() {
+    return this._scrollBaseY;
+};
+
+/**
+ * Scrolling by coordinates offset
+ * @param {Number} x - The X coordinate
+ * @param {Number} y - The Y coordinate
+ */
+DKTools.Window.Scrollable.prototype.scrollBy = function(x, y) {
+    this.scrollTo(this._scrollX + x, this._scrollY + y);
+};
+
+/**
+ * Scroll to coordinates
+ * @param {Number} x - The X coordinate
+ * @param {Number} y - The Y coordinate
+ */
+DKTools.Window.Scrollable.prototype.scrollTo = function(x, y) {
+    const scrollX = x.clamp(0, this.maxScrollX());
+    const scrollY = y.clamp(0, this.maxScrollY());
+
+    if (this._scrollX !== scrollX || this._scrollY !== scrollY) {
+        this._scrollX = scrollX;
+        this._scrollY = scrollY;
+        this.updateOrigin();
+    }
+};
+
+/**
+ * Returns the scroll X
+ * @return {Number} Scroll X
+ */
+DKTools.Window.Scrollable.prototype.scrollX = function() {
+    return this._scrollX;
+};
+
+/**
+ * Returns the scroll Y
+ * @return {Number} Scroll Y
+ */
+DKTools.Window.Scrollable.prototype.scrollY = function() {
+    return this._scrollY;
+};
+
+/**
+ * Smooth scrolling by coordinates offset
+ * @param {Number} x - The X coordinate
+ * @param {Number} y - The Y coordinate
+ */
+DKTools.Window.Scrollable.prototype.smoothScrollBy = function(x, y) {
+    if (this._scrollDuration === 0) {
+        this._scrollTargetX = this.scrollX();
+        this._scrollTargetY = this.scrollY();
+    }
+
+    this.smoothScrollTo(this._scrollTargetX + x, this._scrollTargetY + y);
+};
+
+/**
+ * Smooth scrolls to down
+ * @param {Number} rows - Rows to scroll
+ */
+DKTools.Window.Scrollable.prototype.smoothScrollDown = function(rows) {
+    this.smoothScrollBy(0, this.itemHeight() * rows);
+};
+
+/**
+ * Smooth scrolls to left
+ * @param {Number} cols - Cols to scroll
+ */
+DKTools.Window.Scrollable.prototype.smoothScrollLeft = function(cols) {
+    this.smoothScrollBy(this.itemWidth() * cols, 0);
+};
+
+/**
+ * Smooth scrolls to right
+ * @param {Number} cols - Cols to scroll
+ */
+DKTools.Window.Scrollable.prototype.smoothScrollRight = function(cols) {
+    this.smoothScrollBy(-this.itemWidth() * cols, 0);
+};
+
+/**
+ * Smooth scroll to coordinates
+ * @param {Number} x - The X coordinate
+ * @param {Number} y - The Y coordinate
+ */
+DKTools.Window.Scrollable.prototype.smoothScrollTo = function(x, y) {
+    this._scrollTargetX = x.clamp(0, this.maxScrollX());
+    this._scrollTargetY = y.clamp(0, this.maxScrollY());
+    this._scrollDuration = Input.keyRepeatInterval;
+};
+
+/**
+ * Smooth scrolls to up
+ * @param {Number} rows - Rows to scroll
+ */
+DKTools.Window.Scrollable.prototype.smoothScrollUp = function(rows) {
+    this.smoothScrollBy(0, -this.itemHeight() * rows);
+};
+
+// U methods
+
+/**
+ * @override
+ * @private
+ */
+DKTools.Window.Scrollable.prototype._updateArrows = function() {
+    const isOpen = this.isOpen();
+
+    this._leftArrowSprite.visible = isOpen && this.leftArrowVisible;
+    this._rightArrowSprite.visible = isOpen && this.rightArrowVisible;
+    this._downArrowSprite.visible = isOpen && this.downArrowVisible;
+    this._upArrowSprite.visible = isOpen && this.upArrowVisible;
+};
+
+/**
+ * Updates the arrows
+ */
+DKTools.Window.Scrollable.prototype.updateArrows = function() {
+    this.leftArrowVisible = this._scrollX > 0;
+    this.rightArrowVisible = this._scrollX < this.maxScrollX();
+    this.downArrowVisible = this._scrollY < this.maxScrollY();
+    this.upArrowVisible = this._scrollY > 0;
+};
+
+/**
+ * Updates the origin
+ */
+DKTools.Window.Scrollable.prototype.updateOrigin = function() {
+    const blockWidth = this.scrollBlockWidth() || 1;
+    const blockHeight = this.scrollBlockHeight() || 1;
+    const baseX = this._scrollX - (this._scrollX % blockWidth);
+    const baseY = this._scrollY - (this._scrollY % blockHeight);
+
+    if (baseX !== this._scrollBaseX || baseY !== this._scrollBaseY) {
+        this.updateScrollBase(baseX, baseY);
+    }
+
+    this.origin.set(this._scrollX, this._scrollY);
+};
+
+/**
+ * Updates the smooth scroll
+ */
+DKTools.Window.Scrollable.prototype.updateSmoothScroll = function() {
+    if (this._scrollDuration > 0) {
+        const duration = this._scrollDuration;
+        const deltaX = (this._scrollTargetX - this._scrollX) / duration;
+        const deltaY = (this._scrollTargetY - this._scrollY) / duration;
+
+        this.scrollBy(deltaX, deltaY);
+
+        this._scrollDuration--;
+    }
+};
+
+/**
+ * Updates the scroll accel
+ */
+DKTools.Window.Scrollable.prototype.updateScrollAccel = function() {
+    if (this._scrollAccelX !== 0 || this._scrollAccelY !== 0) {
+        this.scrollBy(this._scrollAccelX, this._scrollAccelY);
+
+        this._scrollAccelX *= 0.92;
+        this._scrollAccelY *= 0.92;
+
+        if (Math.abs(this._scrollAccelX) < 1) {
+            this._scrollAccelX = 0;
+        }
+
+        if (Math.abs(this._scrollAccelY) < 1) {
+            this._scrollAccelY = 0;
+        }
+    }
+};
+
+/**
+ * Updates the scroll base
+ * @param {Number} baseX - The X base coordinate
+ * @param {Number} baseY - The Y base coordinate
+ */
+DKTools.Window.Scrollable.prototype.updateScrollBase = function(baseX, baseY) {
+    const deltaX = baseX - this._scrollBaseX;
+    const deltaY = baseY - this._scrollBaseY;
+
+    this._scrollBaseX = baseX;
+    this._scrollBaseY = baseY;
+
+    this.moveInnerChildrenBy(-deltaX, -deltaY);
+};
+
+/**
+ * Updates the window
+ * @override
+ */
+DKTools.Window.Scrollable.prototype.update = function() {
+    Window_Base.prototype.update.apply(this, arguments);
+    DKTools.Base.prototype.update.apply(this, arguments);
+    this.processWheelScroll();
+    this.processTouchScroll();
+    this.processPageScroll();
+    this.updateSmoothScroll();
+    this.updateScrollAccel();
+    this.updateArrows();
+    this.updateOrigin();
+};
+
+
+
+//===========================================================================
 // DKTools.Window.Selectable
 //===========================================================================
 
@@ -16301,7 +17127,7 @@ DKTools.Window.Selectable.prototype.addItem = function(item) {
         item.enabled = true;
     }
 
-    if (item.symbol && DKTools.Utils.isFunction(item.handler)) {
+    if (item.symbol && typeof item.handler === 'function') {
         this.setHandler(item.symbol, item.handler);
     }
 
@@ -16518,9 +17344,9 @@ DKTools.Window.Selectable.prototype.drawAllItems = function() {
 DKTools.Window.Selectable.prototype.drawItem = function(index) {
     const item = this.item(index) || {};
 
-    if (DKTools.Utils.isFunction(item.drawHandler)) {
+    if (typeof item.drawHandler === 'function') {
         item.drawHandler(index, this);
-    } else if (DKTools.Utils.isFunction(this._itemDrawHandler)) {
+    } else if (typeof this._itemDrawHandler === 'function') {
         this._itemDrawHandler(index, this);
     }
 };
@@ -16605,7 +17431,7 @@ DKTools.Window.Selectable.prototype.item = function(index) {
 DKTools.Window.Selectable.prototype.itemName = function(index) {
     const item = this.item(index) || {};
 
-    if (DKTools.Utils.isFunction(item.name)) {
+    if (typeof item.name === 'function') {
         return item.name(index, this);
     }
 
@@ -16642,7 +17468,7 @@ DKTools.Window.Selectable.prototype.itemExt = function(index) {
  * @return {Number} Width of the item
  */
 DKTools.Window.Selectable.prototype.itemWidth = function() {
-    if (DKTools.Utils.isFunction(this._itemWidth)) {
+    if (typeof this._itemWidth === 'function') {
         return this._itemWidth(this);
     } else if (Number.isFinite(this._itemWidth)) {
         return this._itemWidth;
@@ -16657,11 +17483,11 @@ DKTools.Window.Selectable.prototype.itemWidth = function() {
  * @return {Number} Height of the item
  */
 DKTools.Window.Selectable.prototype.itemHeight = function() {
-    if (DKTools.Utils.isFunction(this._itemHeight)) {
+    if (typeof this._itemHeight === 'function') {
         return this._itemHeight(this);
     } else if (Number.isFinite(this._itemHeight)) {
         return this._itemHeight;
-    } else if (DKTools.Utils.isString(this._itemHeight)) { // number of lines
+    } else if (typeof this._itemHeight === 'string') { // number of lines
         return this.lineHeight() * parseFloat(this._itemHeight);
     }
 
@@ -16709,11 +17535,11 @@ DKTools.Window.Selectable.prototype.itemExt = function(index) {
 DKTools.Window.Selectable.prototype.itemTextAlign = function(index) {
     const item = this.item(index) || {};
 
-    if (DKTools.Utils.isFunction(item.align)) {
+    if (typeof item.align === 'function') {
         return item.align(index, this);
     }
 
-    if (DKTools.Utils.isFunction(this._itemTextAlign)) {
+    if (typeof this._itemTextAlign === 'function') {
         return this._itemTextAlign(index, this);
     }
 
@@ -16729,7 +17555,7 @@ DKTools.Window.Selectable.prototype.itemTextColor = function(index) {
     const item = this.item(index) || {};
     const itemTextColor = item.textColor || this._itemTextColor;
 
-    if (DKTools.Utils.isFunction(itemTextColor)) {
+    if (typeof itemTextColor === 'function') {
         return itemTextColor(index, this);
     }
 
@@ -16744,16 +17570,25 @@ DKTools.Window.Selectable.prototype.itemTextColor = function(index) {
 DKTools.Window.Selectable.prototype.itemPaintOpacity = function(index) {
     const item = this.item(index) || {};
 
-    if (DKTools.Utils.isFunction(item.paintOpacity)) {
+    if (typeof item.paintOpacity === 'function') {
         return item.paintOpacity(index, this);
     } else if (Number.isFinite(item.paintOpacity)) {
         return item.paintOpacity;
-    } else if (DKTools.Utils.isFunction(this._itemPaintOpacity)) {
+    } else if (typeof this._itemPaintOpacity === 'function') {
         return this._itemPaintOpacity(index, this);
     }
 
     return this.isItemEnabled(index) ?
         255 : this.translucentOpacity();
+};
+
+/**
+ * Returns the padding of the item
+ * @since 11.1.0
+ * @returns {Number} Padding of the item
+ */
+DKTools.Window.Selectable.prototype.itemPadding = function() {
+    return 0;
 };
 
 /**
@@ -16765,7 +17600,7 @@ DKTools.Window.Selectable.prototype.isItemEnabled = function(index) {
     const item = this.item(index) || {};
     const itemEnabled = item.enabled;
 
-    if (DKTools.Utils.isFunction(itemEnabled)) {
+    if (typeof itemEnabled === 'function') {
         return itemEnabled(index, this);
     }
 
@@ -16953,7 +17788,7 @@ DKTools.Window.Selectable.prototype.processCancel = function() {
 
     const item = this.currentItem();
 
-    if (item && DKTools.Utils.isFunction(item.cancelHandler)) {
+    if (item && typeof item.cancelHandler === 'function') {
         item.cancelHandler(this._index, this);
     } else {
         this.callCancelHandler();
@@ -16972,7 +17807,7 @@ DKTools.Window.Selectable.prototype.processOk = function() {
 
         const item = this.currentItem() || {};
 
-        if (DKTools.Utils.isFunction(item.okHandler)) {
+        if (typeof item.okHandler === 'function') {
             item.okHandler(this._index, this);
         } else {
             this.callOkHandler();
@@ -17348,7 +18183,7 @@ DKTools.Window.Selectable.prototype.select = function(index, playCursor = false)
         this.playCursorSound();
     }
 
-    if (item && DKTools.Utils.isFunction(item.selectHandler)) {
+    if (item && typeof item.selectHandler === 'function') {
         item.selectHandler(index, this);
     }
 
@@ -17467,8 +18302,8 @@ DKTools.Window.Selectable.prototype.topCol = function() {
  * @return {Number} Top index
  */
 DKTools.Window.Selectable.prototype.topIndex = function() {
-   return this.isHorizontal() ?
-       this.topCol() : Window_Selectable.prototype.topIndex.apply(this, arguments);
+    return this.isHorizontal() ?
+        this.topCol() : Window_Selectable.prototype.topIndex.apply(this, arguments);
 };
 
 // U methods
@@ -17621,6 +18456,21 @@ DKTools.Scene.prototype.addAnimation = function(animation) {
 // C methods
 
 /**
+ * Returns calculated window height
+ * @since 11.1.0
+ * @param {Number} [numLines=1] - Window lines
+ * @param {Boolean} [selectable=false] - Selectable window
+ * @return {Number} Calculated window height
+ */
+DKTools.Scene.prototype.calcWindowHeight = function(numLines = 1, selectable = false) {
+    if (selectable) {
+        return Window_Selectable.prototype.fittingHeight(numLines);
+    } else {
+        return Window_Base.prototype.fittingHeight(numLines);
+    }
+};
+
+/**
  * Creates all
  * @override
  */
@@ -17635,9 +18485,12 @@ DKTools.Scene.prototype.create = function() {
 
 /**
  * Creates the background
+ * @version 11.1.0
  */
 DKTools.Scene.prototype.createBackground = function() {
-    // to be overridden by plugins
+    if (this.needsBackground()) {
+        Scene_MenuBase.prototype.createBackground.apply(this, arguments);
+    }
 };
 
 /**
@@ -17652,6 +18505,24 @@ DKTools.Scene.prototype.createAllSprites = function() {
  */
 DKTools.Scene.prototype.createAllWindows = function() {
     // to be overridden by plugins
+};
+
+/**
+ * Creates the help window
+ * @since 11.1.0
+ * @param {Function} windowClass - Window class
+ * @param {Number} [rows=2] - Visible rows
+ */
+DKTools.Scene.prototype.createHelpWindow = function(windowClass = Window_Help, rows = 2) {
+    if (windowClass === Window_Help) {
+        this._helpWindow = new Window_Help(rows);
+    } else {
+        const rect = this.helpWindowRect(rows);
+
+        this._helpWindow = new windowClass(rect.x, rect.y, rect.width, rect.height);
+    }
+
+    this.addWindow(this._helpWindow);
 };
 
 /**
@@ -17671,6 +18542,40 @@ DKTools.Scene.prototype.hasWindowLayer = function() {
     return !!this._windowLayer;
 };
 
+/**
+ * @since 11.1.0
+ * @return {Number}
+ */
+DKTools.Scene.prototype.helpAreaTop = function() {
+    return 0;
+};
+
+/**
+ * @since 11.1.0
+ * @return {Number}
+ */
+DKTools.Scene.prototype.helpAreaBottom = function() {
+    return this.helpAreaTop() + this.helpAreaHeight();
+};
+
+/**
+ * @since 11.1.0
+ * @return {Number}
+ */
+DKTools.Scene.prototype.helpAreaHeight = function() {
+    return this.calcWindowHeight(2, false);
+};
+
+/**
+ * Returns the rect of the help window
+ * @since 11.1.0
+ * @param {Number} rows - Visible rows
+ * @return {Rectangle} Rect of the help window
+ */
+DKTools.Scene.prototype.helpWindowRect = function(rows) {
+    return new Rectangle(0, 0, Graphics.boxWidth, this.calcWindowHeight(rows));
+};
+
 // I methods
 
 /**
@@ -17686,6 +18591,43 @@ DKTools.Scene.prototype.isChild = function(object) {
     }
 
     return this.children.includes(object);
+};
+
+// M methods
+
+/**
+ * @since 11.1.0
+ * @return {Number}
+ */
+DKTools.Scene.prototype.mainAreaTop = function() {
+    return this.helpAreaBottom();
+};
+
+/**
+ * @since 11.1.0
+ * @return {Number}
+ */
+DKTools.Scene.prototype.mainAreaBottom = function() {
+    return this.mainAreaTop() + this.mainAreaHeight();
+};
+
+/**
+ * @since 11.1.0
+ * @return {Number}
+ */
+DKTools.Scene.prototype.mainAreaHeight = function() {
+    return Graphics.boxHeight - this.helpAreaHeight();
+};
+
+// N methods
+
+/**
+ * Returns true if needs create the background
+ * @since 11.1.0
+ * @return {Boolean} Needs create the background
+ */
+DKTools.Scene.prototype.needsBackground = function() {
+    return false;
 };
 
 // R methods
@@ -17940,6 +18882,161 @@ const DKToolsParam = new DKTools.ParameterManager('DKTools');
 DKTools.PluginCommandManager.set('UpdateFileSystemStamp', () => {
     DKTools.IO._createStamp();
 });
+
+
+
+//===========================================================================
+// ColorManager
+//===========================================================================
+
+function ColorManager() {
+    throw new Error("This is a static class");
+}
+
+ColorManager.initialize = function() {
+    this._window = new Window_Base();
+};
+
+ColorManager.textColor = function(n) {
+    return this._window.textColor(n);
+};
+
+ColorManager.normalColor = function() {
+    return this.textColor(0);
+};
+
+ColorManager.systemColor = function() {
+    return this.textColor(16);
+};
+
+ColorManager.crisisColor = function() {
+    return this.textColor(17);
+};
+
+ColorManager.deathColor = function() {
+    return this.textColor(18);
+};
+
+ColorManager.gaugeBackColor = function() {
+    return this.textColor(19);
+};
+
+ColorManager.hpGaugeColor1 = function() {
+    return this.textColor(20);
+};
+
+ColorManager.hpGaugeColor2 = function() {
+    return this.textColor(21);
+};
+
+ColorManager.mpGaugeColor1 = function() {
+    return this.textColor(22);
+};
+
+ColorManager.mpGaugeColor2 = function() {
+    return this.textColor(23);
+};
+
+ColorManager.mpCostColor = function() {
+    return this.textColor(23);
+};
+
+ColorManager.powerUpColor = function() {
+    return this.textColor(24);
+};
+
+ColorManager.powerDownColor = function() {
+    return this.textColor(25);
+};
+
+ColorManager.ctGaugeColor1 = function() {
+    return this.textColor(26);
+};
+
+ColorManager.ctGaugeColor2 = function() {
+    return this.textColor(27);
+};
+
+ColorManager.tpGaugeColor1 = function() {
+    return this.textColor(28);
+};
+
+ColorManager.tpGaugeColor2 = function() {
+    return this.textColor(29);
+};
+
+ColorManager.tpCostColor = function() {
+    return this.textColor(29);
+};
+
+ColorManager.pendingColor = function() {
+    return this._window.pendingColor();
+};
+
+ColorManager.hpColor = function(actor) {
+    if (!actor) {
+        return this.normalColor();
+    } else if (actor.isDead()) {
+        return this.deathColor();
+    } else if (actor.isDying()) {
+        return this.crisisColor();
+    } else {
+        return this.normalColor();
+    }
+};
+
+ColorManager.mpColor = function(/*actor*/) {
+    return this.normalColor();
+};
+
+ColorManager.tpColor = function(/*actor*/) {
+    return this.normalColor();
+};
+
+ColorManager.paramchangeTextColor = function(change) {
+    if (change > 0) {
+        return this.powerUpColor();
+    } else if (change < 0) {
+        return this.powerDownColor();
+    } else {
+        return this.normalColor();
+    }
+};
+
+ColorManager.damageColor = function(colorType) {
+    switch (colorType) {
+        case 0: // HP damage
+            return '#ffffff';
+        case 1: // HP recover
+            return '#b9ffb5';
+        case 2: // MP damage
+            return '#ffff90';
+        case 3: // MP recover
+            return '#80b0ff';
+        default:
+            return '#808080';
+    }
+};
+
+ColorManager.outlineColor = function() {
+    return 'rgba(0, 0, 0, 0.6)';
+};
+
+ColorManager.dimColor1 = function() {
+    return 'rgba(0, 0, 0, 0.6)';
+};
+
+ColorManager.dimColor2 = function() {
+    return 'rgba(0, 0, 0, 0)';
+};
+
+ColorManager.itemBackColor1 = function() {
+    return 'rgba(32, 32, 32, 0.5)';
+};
+
+ColorManager.itemBackColor2 = function() {
+    return 'rgba(0, 0, 0, 0.5)';
+};
 
 
 
@@ -18343,6 +19440,12 @@ if (Input.keyMapper['36'] === undefined) {
 // TouchInput
 //===========================================================================
 
+/**
+ * The threshold number of pixels to treat as moved.
+ * @type {Number}
+ */
+TouchInput.moveThreshold = 10;
+
 const DKTools_TouchInput_initialize = TouchInput.initialize;
 TouchInput.initialize = function() {
     DKTools_TouchInput_initialize.apply(this, arguments);
@@ -18367,7 +19470,7 @@ TouchInput.clear = function() {
      * @readonly
      * @type {Boolean}
      */
-    this._moved = false;
+    this._mouseMoved = false;
 
     /**
      * @private
@@ -18426,11 +19529,9 @@ TouchInput.clear = function() {
     this._mouseY = 0;
 
     this._events.moved = false;
-
     this._events.leftButtonPressed = false;
     this._events.middleButtonPressed = false;
     this._events.rightButtonPressed = false;
-
     this._events.leftButtonReleased = false;
     this._events.middleButtonReleased = false;
     this._events.rightButtonReleased = false;
@@ -18438,18 +19539,15 @@ TouchInput.clear = function() {
 
 const DKTools_TouchInput_update = TouchInput.update;
 TouchInput.update = function() {
-    this._moved = this._events.moved;
-
+    this._mouseMoved = this._events.mouseMoved;
     this._leftButtonPressed = this._events.leftButtonPressed;
     this._middleButtonPressed = this._events.middleButtonPressed;
     this._rightButtonPressed = this._events.rightButtonPressed;
-
     this._leftButtonReleased = this._events.leftButtonReleased;
     this._middleButtonReleased = this._events.middleButtonReleased;
     this._rightButtonReleased = this._events.rightButtonReleased;
 
-    this._events.moved = false;
-
+    this._events.mouseMoved = false;
     this._events.leftButtonReleased = false;
     this._events.middleButtonReleased = false;
     this._events.rightButtonReleased = false;
@@ -18464,8 +19562,8 @@ TouchInput.update = function() {
  * @static
  * @return {Boolean} Mouse is moving
  */
-TouchInput.isMoved = function() {
-    return this._moved;
+TouchInput.isMouseMoved = function() {
+    return this._mouseMoved;
 };
 
 /**
@@ -18593,10 +19691,11 @@ TouchInput._onMouseMove = function(event) {
 
     const x = Graphics.pageToCanvasX(event.pageX);
     const y = Graphics.pageToCanvasY(event.pageY);
+    const dx = Math.abs(this._mouseX - x);
+    const dy = Math.abs(this._mouseY - y);
 
-    if (this._mouseX !== x || this._mouseY !== y) {
-        this._events.moved = true;
-
+    if (dx > this.moveThreshold || dy > this.moveThreshold) {
+        this._events.mouseMoved = true;
         this._date = Date.now();
         this._mouseX = x;
         this._mouseY = y;
@@ -18685,6 +19784,9 @@ Object.defineProperties(Sprite.prototype, {
         get: function() {
             return this._frame;
         },
+        set: function(value) {
+            this.setFrame(value);
+        },
         configurable: true
     }
 
@@ -18712,6 +19814,18 @@ Object.defineProperties(Window.prototype, {
         configurable: true
     },
 
+    innerRect: {
+        get: function() {
+            return new Rectangle(
+                this._padding,
+                this._padding,
+                this.innerWidth,
+                this.innerHeight
+            );
+        },
+        configurable: true
+    },
+
     frameOpacity: {
         get: function() {
             return this._windowFrameSprite.alpha * 255;
@@ -18730,6 +19844,65 @@ Object.defineProperties(Window.prototype, {
     }
 
 });
+
+// methods
+
+const DKTools_Window_initialize = Window.prototype.initialize;
+Window.prototype.initialize = function() {
+    this._innerChildren = [];
+    DKTools_Window_initialize.apply(this, arguments);
+};
+
+const DKTools_Window_createAllParts = Window.prototype._createAllParts;
+Window.prototype._createAllParts = function() {
+    DKTools_Window_createAllParts.apply(this, arguments);
+    this._createInnerChildrenContainer();
+};
+
+Window.prototype._createInnerChildrenContainer = function() {
+    const mask = new PIXI.Graphics();
+
+    this._windowInnerChildrenContainer = new Sprite();
+    this._windowInnerChildrenContainer.mask = mask;
+    this._windowInnerChildrenContainer.addChild(mask);
+
+    this.addChild(this._windowInnerChildrenContainer);
+};
+
+const DKTools_Window_updateTransform = Window.prototype.updateTransform;
+Window.prototype.updateTransform = function() {
+    this._updateInnerChildrenContainer();
+    DKTools_Window_updateTransform.apply(this, arguments);
+};
+
+Window.prototype._updateInnerChildrenContainer = function() {
+    const mask = this._windowInnerChildrenContainer.mask;
+
+    mask.clear();
+    mask.beginFill();
+    mask.drawRect(0, 0, this.innerWidth, this.innerHeight);
+    mask.endFill();
+
+    this._windowInnerChildrenContainer.move(this._padding, this._padding);
+};
+
+/**
+ * Adds the inner child
+ * @param {Sprite} child - Inner child
+ * @return {Sprite} Added sprite
+ */
+Window.prototype.addInnerChild = function(child) {
+    this._innerChildren.push(child);
+
+    return this._windowInnerChildrenContainer.addChild(child);
+};
+
+Window.prototype.moveInnerChildrenBy = function(x, y) {
+    for (const child of this._innerChildren) {
+        child.x += x;
+        child.y += y;
+    }
+};
 
 
 
@@ -18761,6 +19934,12 @@ WebAudio.prototype._onLoad = function() {
 //===========================================================================
 // DataManager
 //===========================================================================
+
+const DKTools_DataManager_createGameObjects = DataManager.createGameObjects;
+DataManager.createGameObjects = function() {
+    DKTools_DataManager_createGameObjects.apply(this, arguments);
+    ColorManager.initialize();
+};
 
 const DKTools_DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
 DataManager.isDatabaseLoaded = function() {
@@ -19417,7 +20596,7 @@ Scene_Map.prototype.isReady = function() {
         return false;
     }
 
-    return DKTools_Scene_Map_isReady.call(this);
+    return DKTools_Scene_Map_isReady.apply(this, arguments);
 };
 
 const DKTools_Scene_Map_terminate = Scene_Map.prototype.terminate;
@@ -19577,7 +20756,7 @@ if (DKToolsParam.get('Title Menu Command Window', 'Enabled')) {
 
 }
 
-if (DKToolsParam.get('Title Menu Exit Command', 'Enabled')) {
+if (DKToolsParam.get('Title Menu Exit Command', 'Enabled') && Utils.isNwjs()) {
 
     const DKTools_Window_TitleCommand_createContents = Window_TitleCommand.prototype.createContents;
     Window_TitleCommand.prototype.createContents = function() {

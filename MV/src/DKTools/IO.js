@@ -16,13 +16,41 @@ DKTools.IO = class {
     // initialize methods
 
     /**
-     * @version 10.0.5
+     * @version 11.2.4
      * @static
      */
     static initialize() {
         let projectPath = '';
 
+        /**
+         * @private
+         * @readonly
+         * @type {Boolean}
+         */
+        this._isReady = false;
+
         if (Utils.isNwjs()) {
+            /**
+             * @private
+             * @readonly
+             * @type {Object}
+             */
+            this._fs = require('fs');
+
+            /**
+             * @private
+             * @readonly
+             * @type {Object}
+             */
+            this._os = require('os');
+
+            /**
+             * @private
+             * @readonly
+             * @type {Object}
+             */
+            this._path = require('path');
+
             projectPath = this.joinPath(this.path.dirname(process.mainModule.filename), '/');
         }
 
@@ -54,6 +82,8 @@ DKTools.IO = class {
         if (!DKToolsParam.get('File System', 'Disable Auto Create Stamp')) {
             this._createStamp();
         }
+
+        this._isReady = true;
     }
 
     // A methods
@@ -84,7 +114,7 @@ DKTools.IO = class {
 
     /**
      * Creates the file system stamp
-     * @version 10.0.0
+     * @version 11.2.1
      * @since 8.0.0
      * @async
      * @private
@@ -96,6 +126,7 @@ DKTools.IO = class {
         }
 
         const ignoredDirectories = DKToolsParam.get('File System', 'Ignored Directories')
+                                                .filter(path => !['locales'].includes(path))
                                                 .map(path => new DKTools.IO.Directory(path));
         const directory = DKTools.IO.getRootDirectory();
         const file = new DKTools.IO.File('data/Stamp.json');
@@ -105,19 +136,25 @@ DKTools.IO = class {
             const entities = await directory.getAllAsync().then(result => result.data);
 
             for (const entity of entities) {
-                const stats = await entity.getStatsAsync().then(result => result.data);
-                const fullPath = entity.getFullPath().substring(1).split('\\');
+                const isDirectory = entity.isDirectory();
 
-                if (entity.isFile()) {
-                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'file' } });
-                } else {
-                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'directory' } });
+                if (isDirectory) {
+                    if (ignoredDirectories.some(dir => dir.equals(entity))) {
+                        continue;
+                    }
                 }
 
-                if (entity.isDirectory()) {
-                    if (!ignoredDirectories.some(dir => dir.getFullPath() === directory.getFullPath())) {
-                        await processDirectory(entity);
-                    }
+                const stats = await entity.getStatsAsync().then(result => result.data);
+                const fullPath = entity.getFullPath().substring(1).split(DKTools.IO.sep);
+
+                if (isDirectory) {
+                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'directory' } });
+                } else {
+                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'file' } });
+                }
+
+                if (isDirectory) {
+                    await processDirectory(entity);
                 }
             }
         };
@@ -157,7 +194,7 @@ DKTools.IO = class {
 
     /**
      * Returns true if the full path is a file
-     * @version 8.0.0
+     * @version 11.2.3
      * @static
      * @param {String} fullPath - Path to file
      * @return {Boolean} Full path is a file
@@ -170,7 +207,7 @@ DKTools.IO = class {
                 return this.fs.lstatSync(absolutePath).isFile();
             }
         } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP) {
-            const parts = this.normalizePath(fullPath).split('\\');
+            const parts = this.normalizePath(fullPath).split(DKTools.IO.sep).filter(part => !!part);
             const extension = _.last(parts);
 
             if (extension.includes('.')) {
@@ -183,7 +220,7 @@ DKTools.IO = class {
 
     /**
      * Returns true if the full path is a directory
-     * @version 8.0.0
+     * @version 11.2.3
      * @static
      * @param {String} fullPath - Path to directory
      * @return {Boolean} Full path is a directory
@@ -196,7 +233,7 @@ DKTools.IO = class {
                 return this.fs.lstatSync(absolutePath).isDirectory();
             }
         } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP) {
-            const parts = this.normalizePath(fullPath).split('\\').filter(part => !!part);
+            const parts = this.normalizePath(fullPath).split(DKTools.IO.sep).filter(part => !!part);
             const extension = _.last(parts);
 
             if (!extension.includes('.')) {
@@ -205,6 +242,16 @@ DKTools.IO = class {
         }
 
         return false;
+    }
+
+    /**
+     * Returns true if the manager is ready
+     * @since 11.2.4
+     * @static
+     * @return {Boolean} Manager is ready
+     */
+    static isReady() {
+        return this._isReady;
     }
 
     // J methods
@@ -260,7 +307,7 @@ DKTools.IO = class {
 
     /**
      * Returns a normalized path
-     * @version 6.1.0
+     * @version 11.2.3
      * @static
      * @param {String} path - Path for normalize
      * @param {Boolean} [reverseSlash=false] - Reversing slash
@@ -278,7 +325,6 @@ DKTools.IO = class {
         }
 
         const result = this._statPath(path),
-            isUnc = result.isUnc,
             isAbsolute = result.isAbsolute;
 
         let device = result.device,
@@ -310,17 +356,19 @@ DKTools.IO = class {
             tail += '\\';
         }
 
-        if (isUnc) {
-            device = '\\\\' + device.replace(/^[\\\/]+/, '').replace(/[\\\/]+/g, '\\');
+        if (result.isUnc) {
+            device = '\\\\' + device.replace(/^[\\\/]+/, '')
+                                     .replace(/[\\\/]+/g, '\\');
         }
 
-        const normalizedPath = device + (isAbsolute ? '\\' : '') + tail;
+        let fullPath = (device + (isAbsolute ? '\\' : '') + tail)
+        .replace(/\\/g, DKTools.IO.sep);
 
-        if (!reverseSlash) {
-            return normalizedPath;
+        if (fullPath[0] === DKTools.IO.sep) {
+            fullPath = fullPath.substring(1);
         }
 
-        return normalizedPath.replace(/\\/g, '/');
+        return fullPath;
     }
 
     // P methods
@@ -436,7 +484,7 @@ Object.defineProperties(DKTools.IO, {
      */
     fs: {
         get: function() {
-            return require('fs');
+            return this._fs;
         },
         configurable: true
     },
@@ -449,7 +497,7 @@ Object.defineProperties(DKTools.IO, {
      */
     os: {
         get: function() {
-            return require('os');
+            return this._os;
         },
         configurable: true
     },
@@ -462,7 +510,7 @@ Object.defineProperties(DKTools.IO, {
      */
     path: {
         get: function() {
-            return require('path');
+            return this._path;
         },
         configurable: true
     },

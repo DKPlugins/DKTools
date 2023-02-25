@@ -3,8 +3,8 @@ Title: DKTools
 Author: DKPlugins
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 10.0.5
-Release: 21.01.2021
+Version: 11.2.4
+Release: 10.02.2023
 First release: 13.01.2016
 */
 
@@ -13,13 +13,13 @@ First release: 13.01.2016
 Автор: DKPlugins
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 10.0.5
-Релиз: 21.01.2021
+Версия: 11.2.4
+Релиз: 10.02.2023
 Первый релиз: 13.01.2016
 */
 
 /*:
-* @plugindesc v.10.0.5 [MV] Advanced project testing and various functions. Made with ♥ by DKPlugins.
+* @plugindesc v.11.2.4 [MV] Advanced project testing and various functions. Made with ♥ by DKPlugins.
 * @author DKPlugins
 * @help
 
@@ -27,8 +27,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DKPlugins
  Site: https://dk-plugins.ru
- Version: 10.0.5
- Release: 21.01.2021
+ Version: 11.2.4
+ Release: 10.02.2023
  First release: 13.01.2016
 
  ###===========================================================================
@@ -255,6 +255,7 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Exit command on the title screen ###
  Allows you to add an exit command to the command window on the title screen.
  The command is added to the end of the list.
+ This function only works on PC.
 
  ###=========================================================================
  ## Hidden functions
@@ -460,7 +461,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.10.0.5 [MV] Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins.
+* @plugindesc v.11.2.4 [MV] Расширенное тестирование проекта и различные функции. Сделано с ♥ от DKPlugins.
 * @author DKPlugins
 * @help
 
@@ -468,8 +469,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DKPlugins
  Сайт: https://dk-plugins.ru
- Версия: 10.0.5
- Релиз: 21.01.2021
+ Версия: 11.2.4
+ Релиз: 10.02.2023
  Первый релиз: 13.01.2016
 
  ###===========================================================================
@@ -694,6 +695,7 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Команда выхода на титульном экране ###
  Позволяет вам добавить команду выхода в окно команд на титульном экране.
  Команда добавляется в конец списка.
+ Эта функция работает только на ПК.
 
  ###=========================================================================
  ## Скрытые функции

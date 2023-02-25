@@ -83,7 +83,7 @@ DKTools.Base = class {
     /**
      * Initializes a class object
      *
-     * @param {Number | Graphics | Object | *} [object] - The X coordinate or Graphics or object with parameters
+     * @param {Number | Object | *} [object] - The X coordinate or Graphics or object with parameters
      * @param {Number} [y] - The Y coordinate (if object is Number)
      * @param {Number} [width] - The width of the object (if object is Number)
      * @param {Number | String} [height] - The height of the object (if object is Number)
@@ -268,7 +268,9 @@ DKTools.Base = class {
      * @private
      */
     _createEventsManager() {
-        this._eventsManager = new DKTools.EventsManager(this);
+        if (!this._eventsManager) {
+            this._eventsManager = new DKTools.EventsManager(this);
+        }
     }
 
     /**
@@ -1602,10 +1604,11 @@ DKTools.Base = class {
 
     /**
      * Returns true if the touch is inside the object
+     * @version 10.0.6
      * @return {Boolean} Touch is inside the object
      */
     isTouchInside() {
-        return TouchInput.isScreenPressed() && this.isInside(TouchInput.x, TouchInput.y);
+        return this.isInside(TouchInput.x, TouchInput.y);
     }
 
     /**
@@ -1681,6 +1684,16 @@ DKTools.Base = class {
      */
     obtainEscapeParam(textState) {
         return Window_Base.prototype.obtainEscapeParam.apply(this, arguments);
+    }
+
+    /**
+     * Handles item change
+     * @since 11.1.0
+     * @param {*} item - Item
+     * @param {*} lastItem - Last item
+     */
+    onItemChange(item, lastItem) {
+        // to be overridden by plugins
     }
 
     // P methods
@@ -2231,6 +2244,25 @@ DKTools.Base = class {
     }
 
     /**
+     * Sets the item
+     * @since 11.1.0
+     * @param {*} item - Item
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     */
+    setItem(item, blockStart = false) {
+        if (this._item !== item) {
+            const lastItem = this._item;
+
+            this._item = item;
+            this.onItemChange(this._item, lastItem);
+
+            if (!blockStart) {
+                this.start();
+            }
+        }
+    }
+
+    /**
      * Changes the visibility of the object
      * Returns true if the change occurred
      * @param {Boolean} [visible] - Visibility of the object
@@ -2525,7 +2557,6 @@ DKTools.Base = class {
      */
     updateEvents() {
         this._eventsManager.update();
-
         this.updateReadyEvents();
         this.updateUpdateEvents();
         this.updateQueueEvents();

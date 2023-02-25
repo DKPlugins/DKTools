@@ -54,7 +54,7 @@ DKTools.Window.Selectable.prototype.addItem = function(item) {
         item.enabled = true;
     }
 
-    if (item.symbol && DKTools.Utils.isFunction(item.handler)) {
+    if (item.symbol && typeof item.handler === 'function') {
         this.setHandler(item.symbol, item.handler);
     }
 
@@ -271,9 +271,9 @@ DKTools.Window.Selectable.prototype.drawAllItems = function() {
 DKTools.Window.Selectable.prototype.drawItem = function(index) {
     const item = this.item(index) || {};
 
-    if (DKTools.Utils.isFunction(item.drawHandler)) {
+    if (typeof item.drawHandler === 'function') {
         item.drawHandler(index, this);
-    } else if (DKTools.Utils.isFunction(this._itemDrawHandler)) {
+    } else if (typeof this._itemDrawHandler === 'function') {
         this._itemDrawHandler(index, this);
     }
 };
@@ -358,7 +358,7 @@ DKTools.Window.Selectable.prototype.item = function(index) {
 DKTools.Window.Selectable.prototype.itemName = function(index) {
     const item = this.item(index) || {};
 
-    if (DKTools.Utils.isFunction(item.name)) {
+    if (typeof item.name === 'function') {
         return item.name(index, this);
     }
 
@@ -395,7 +395,7 @@ DKTools.Window.Selectable.prototype.itemExt = function(index) {
  * @return {Number} Width of the item
  */
 DKTools.Window.Selectable.prototype.itemWidth = function() {
-    if (DKTools.Utils.isFunction(this._itemWidth)) {
+    if (typeof this._itemWidth === 'function') {
         return this._itemWidth(this);
     } else if (Number.isFinite(this._itemWidth)) {
         return this._itemWidth;
@@ -410,11 +410,11 @@ DKTools.Window.Selectable.prototype.itemWidth = function() {
  * @return {Number} Height of the item
  */
 DKTools.Window.Selectable.prototype.itemHeight = function() {
-    if (DKTools.Utils.isFunction(this._itemHeight)) {
+    if (typeof this._itemHeight === 'function') {
         return this._itemHeight(this);
     } else if (Number.isFinite(this._itemHeight)) {
         return this._itemHeight;
-    } else if (DKTools.Utils.isString(this._itemHeight)) { // number of lines
+    } else if (typeof this._itemHeight === 'string') { // number of lines
         return this.lineHeight() * parseFloat(this._itemHeight);
     }
 
@@ -462,11 +462,11 @@ DKTools.Window.Selectable.prototype.itemExt = function(index) {
 DKTools.Window.Selectable.prototype.itemTextAlign = function(index) {
     const item = this.item(index) || {};
 
-    if (DKTools.Utils.isFunction(item.align)) {
+    if (typeof item.align === 'function') {
         return item.align(index, this);
     }
 
-    if (DKTools.Utils.isFunction(this._itemTextAlign)) {
+    if (typeof this._itemTextAlign === 'function') {
         return this._itemTextAlign(index, this);
     }
 
@@ -482,7 +482,7 @@ DKTools.Window.Selectable.prototype.itemTextColor = function(index) {
     const item = this.item(index) || {};
     const itemTextColor = item.textColor || this._itemTextColor;
 
-    if (DKTools.Utils.isFunction(itemTextColor)) {
+    if (typeof itemTextColor === 'function') {
         return itemTextColor(index, this);
     }
 
@@ -497,16 +497,25 @@ DKTools.Window.Selectable.prototype.itemTextColor = function(index) {
 DKTools.Window.Selectable.prototype.itemPaintOpacity = function(index) {
     const item = this.item(index) || {};
 
-    if (DKTools.Utils.isFunction(item.paintOpacity)) {
+    if (typeof item.paintOpacity === 'function') {
         return item.paintOpacity(index, this);
     } else if (Number.isFinite(item.paintOpacity)) {
         return item.paintOpacity;
-    } else if (DKTools.Utils.isFunction(this._itemPaintOpacity)) {
+    } else if (typeof this._itemPaintOpacity === 'function') {
         return this._itemPaintOpacity(index, this);
     }
 
     return this.isItemEnabled(index) ?
         255 : this.translucentOpacity();
+};
+
+/**
+ * Returns the padding of the item
+ * @since 11.1.0
+ * @returns {Number} Padding of the item
+ */
+DKTools.Window.Selectable.prototype.itemPadding = function() {
+    return 0;
 };
 
 /**
@@ -518,7 +527,7 @@ DKTools.Window.Selectable.prototype.isItemEnabled = function(index) {
     const item = this.item(index) || {};
     const itemEnabled = item.enabled;
 
-    if (DKTools.Utils.isFunction(itemEnabled)) {
+    if (typeof itemEnabled === 'function') {
         return itemEnabled(index, this);
     }
 
@@ -706,7 +715,7 @@ DKTools.Window.Selectable.prototype.processCancel = function() {
 
     const item = this.currentItem();
 
-    if (item && DKTools.Utils.isFunction(item.cancelHandler)) {
+    if (item && typeof item.cancelHandler === 'function') {
         item.cancelHandler(this._index, this);
     } else {
         this.callCancelHandler();
@@ -725,7 +734,7 @@ DKTools.Window.Selectable.prototype.processOk = function() {
 
         const item = this.currentItem() || {};
 
-        if (DKTools.Utils.isFunction(item.okHandler)) {
+        if (typeof item.okHandler === 'function') {
             item.okHandler(this._index, this);
         } else {
             this.callOkHandler();
@@ -1101,7 +1110,7 @@ DKTools.Window.Selectable.prototype.select = function(index, playCursor = false)
         this.playCursorSound();
     }
 
-    if (item && DKTools.Utils.isFunction(item.selectHandler)) {
+    if (item && typeof item.selectHandler === 'function') {
         item.selectHandler(index, this);
     }
 
@@ -1220,8 +1229,8 @@ DKTools.Window.Selectable.prototype.topCol = function() {
  * @return {Number} Top index
  */
 DKTools.Window.Selectable.prototype.topIndex = function() {
-   return this.isHorizontal() ?
-       this.topCol() : Window_Selectable.prototype.topIndex.apply(this, arguments);
+    return this.isHorizontal() ?
+        this.topCol() : Window_Selectable.prototype.topIndex.apply(this, arguments);
 };
 
 // U methods

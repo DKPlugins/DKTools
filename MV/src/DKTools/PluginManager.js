@@ -42,7 +42,7 @@ DKTools.PluginManager = class {
                     .format(pluginName, maxVersion);
 
                 throw new Error(error);
-            } else if (!this._compareVersions(pluginVersion, maxVersion)) {
+            } else if (!this.compareVersions(pluginVersion, maxVersion)) {
                 const error = 'Required to update the plugin "%1" to minimal version %2 (Installed: %3)'
                     .format(pluginName, maxVersion, pluginVersion);
 
@@ -52,13 +52,15 @@ DKTools.PluginManager = class {
     }
 
     /**
-     * @private
+     * Compares two versions
+     * Returns true if the first version greater than the second
+     * @since 11.1.0
      * @static
      * @param {String} v1 - First version
      * @param {String} v2 - Second version
-     * @return {Boolean}
+     * @return {Boolean} First version greater than the second
      */
-    static _compareVersions(v1, v2) {
+    static compareVersions(v1, v2) {
         if (v1 === v2) {
             return true;
         }
@@ -93,7 +95,7 @@ DKTools.PluginManager = class {
      * @return {Boolean} Current version is greater than or equal to the given version
      */
     static checkVersion(pluginName, version) {
-        return this._compareVersions(this.getVersion(pluginName), version);
+        return this.compareVersions(this.getVersion(pluginName), version);
     }
 
     // G methods
@@ -107,7 +109,7 @@ DKTools.PluginManager = class {
     static _getMaxVersion(pluginName) {
         return (this._requirements[pluginName] || [])
             .slice()
-            .sort((a, b) => (this._compareVersions(a, b) ? -1 : 1))[0];
+            .sort((a, b) => (this.compareVersions(a, b) ? -1 : 1))[0];
     }
 
     /**
@@ -144,6 +146,48 @@ DKTools.PluginManager = class {
     static isRegistered(pluginName) {
         return DKTools.Utils.isString(this.getVersion(pluginName)) ||
             $plugins.some(plugin => plugin.name === pluginName && plugin.status);
+    }
+
+    // O methods
+
+    /**
+     * Checks if the specified plugin is below the required one
+     * Returns true if the specified plugin is below the required one
+     * @since 11.1.0
+     * @static
+     * @param {String} pluginName - Specified plugin
+     * @param {String} orderAfter - Required plugin
+     * @return {Boolean} Specified plugin is below the required one
+     */
+    static orderAfter(pluginName, orderAfter) {
+        const plugins = $plugins.filter(plugin => plugin.status);
+
+        if (plugins.findIndex(plugin => plugin.name === pluginName) < plugins.findIndex(plugin => plugin.name === orderAfter)) {
+            DKTools.Utils.throwError(
+                new Error(`Plugin "${pluginName}" must be located after the plugin "${orderAfter}"`), 500);
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if the specified plugin is higher the required one
+     * Returns true if the specified plugin is higher the required one
+     * @since 11.1.0
+     * @static
+     * @param {String} pluginName - Specified plugin
+     * @param {String} orderAfter - Required plugin
+     * @return {Boolean} Specified plugin is higher the required one
+     */
+    static orderBefore(pluginName, orderBefore) {
+        const plugins = $plugins.filter(plugin => plugin.status);
+
+        if (plugins.findIndex(plugin => plugin.name === pluginName) > plugins.findIndex(plugin => plugin.name === orderBefore)) {
+            DKTools.Utils.throwError(
+                new Error(`Plugin "${pluginName}" must be located before the plugin "${orderBefore}"`), 500);
+        }
+
+        return true;
     }
 
     // R methods

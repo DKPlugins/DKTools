@@ -14,8 +14,16 @@ window.DKTools = {};
 Object.defineProperties(DKTools, {
 
     /**
+     * DKPlugins Patreon site
+     * @since 11.1.0
+     * @constant
+     * @type {String}
+     * @memberof DKTools
+     */
+    PATREON: { value: 'https://www.patreon.com/dkplugins' },
+
+    /**
      * DKPlugins site url
-     *
      * @since 6.0.0
      * @constant
      * @type {String}
@@ -25,7 +33,6 @@ Object.defineProperties(DKTools, {
 
     /**
      * Version of DKTools
-     *
      * @constant
      * @type {String}
      * @memberof DKTools

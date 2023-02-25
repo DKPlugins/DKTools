@@ -398,6 +398,12 @@ if (Input.keyMapper['36'] === undefined) {
 // TouchInput
 //===========================================================================
 
+/**
+ * The threshold number of pixels to treat as moved.
+ * @type {Number}
+ */
+TouchInput.moveThreshold = 10;
+
 const DKTools_TouchInput_initialize = TouchInput.initialize;
 TouchInput.initialize = function() {
     DKTools_TouchInput_initialize.apply(this, arguments);
@@ -422,7 +428,7 @@ TouchInput.clear = function() {
      * @readonly
      * @type {Boolean}
      */
-    this._moved = false;
+    this._mouseMoved = false;
 
     /**
      * @private
@@ -481,11 +487,9 @@ TouchInput.clear = function() {
     this._mouseY = 0;
 
     this._events.moved = false;
-
     this._events.leftButtonPressed = false;
     this._events.middleButtonPressed = false;
     this._events.rightButtonPressed = false;
-
     this._events.leftButtonReleased = false;
     this._events.middleButtonReleased = false;
     this._events.rightButtonReleased = false;
@@ -493,18 +497,15 @@ TouchInput.clear = function() {
 
 const DKTools_TouchInput_update = TouchInput.update;
 TouchInput.update = function() {
-    this._moved = this._events.moved;
-
+    this._mouseMoved = this._events.mouseMoved;
     this._leftButtonPressed = this._events.leftButtonPressed;
     this._middleButtonPressed = this._events.middleButtonPressed;
     this._rightButtonPressed = this._events.rightButtonPressed;
-
     this._leftButtonReleased = this._events.leftButtonReleased;
     this._middleButtonReleased = this._events.middleButtonReleased;
     this._rightButtonReleased = this._events.rightButtonReleased;
 
-    this._events.moved = false;
-
+    this._events.mouseMoved = false;
     this._events.leftButtonReleased = false;
     this._events.middleButtonReleased = false;
     this._events.rightButtonReleased = false;
@@ -519,8 +520,8 @@ TouchInput.update = function() {
  * @static
  * @return {Boolean} Mouse is moving
  */
-TouchInput.isMoved = function() {
-    return this._moved;
+TouchInput.isMouseMoved = function() {
+    return this._mouseMoved;
 };
 
 /**
@@ -648,10 +649,11 @@ TouchInput._onMouseMove = function(event) {
 
     const x = Graphics.pageToCanvasX(event.pageX);
     const y = Graphics.pageToCanvasY(event.pageY);
+    const dx = Math.abs(this._mouseX - x);
+    const dy = Math.abs(this._mouseY - y);
 
-    if (this._mouseX !== x || this._mouseY !== y) {
-        this._events.moved = true;
-
+    if (dx > this.moveThreshold || dy > this.moveThreshold) {
+        this._events.mouseMoved = true;
         this._date = Date.now();
         this._mouseX = x;
         this._mouseY = y;
@@ -740,6 +742,9 @@ Object.defineProperties(Sprite.prototype, {
         get: function() {
             return this._frame;
         },
+        set: function(value) {
+            this.setFrame(value);
+        },
         configurable: true
     }
 
@@ -767,6 +772,18 @@ Object.defineProperties(Window.prototype, {
         configurable: true
     },
 
+    innerRect: {
+        get: function() {
+            return new Rectangle(
+                this._padding,
+                this._padding,
+                this.innerWidth,
+                this.innerHeight
+            );
+        },
+        configurable: true
+    },
+
     frameOpacity: {
         get: function() {
             return this._windowFrameSprite.alpha * 255;
@@ -785,6 +802,65 @@ Object.defineProperties(Window.prototype, {
     }
 
 });
+
+// methods
+
+const DKTools_Window_initialize = Window.prototype.initialize;
+Window.prototype.initialize = function() {
+    this._innerChildren = [];
+    DKTools_Window_initialize.apply(this, arguments);
+};
+
+const DKTools_Window_createAllParts = Window.prototype._createAllParts;
+Window.prototype._createAllParts = function() {
+    DKTools_Window_createAllParts.apply(this, arguments);
+    this._createInnerChildrenContainer();
+};
+
+Window.prototype._createInnerChildrenContainer = function() {
+    const mask = new PIXI.Graphics();
+
+    this._windowInnerChildrenContainer = new Sprite();
+    this._windowInnerChildrenContainer.mask = mask;
+    this._windowInnerChildrenContainer.addChild(mask);
+
+    this.addChild(this._windowInnerChildrenContainer);
+};
+
+const DKTools_Window_updateTransform = Window.prototype.updateTransform;
+Window.prototype.updateTransform = function() {
+    this._updateInnerChildrenContainer();
+    DKTools_Window_updateTransform.apply(this, arguments);
+};
+
+Window.prototype._updateInnerChildrenContainer = function() {
+    const mask = this._windowInnerChildrenContainer.mask;
+
+    mask.clear();
+    mask.beginFill();
+    mask.drawRect(0, 0, this.innerWidth, this.innerHeight);
+    mask.endFill();
+
+    this._windowInnerChildrenContainer.move(this._padding, this._padding);
+};
+
+/**
+ * Adds the inner child
+ * @param {Sprite} child - Inner child
+ * @return {Sprite} Added sprite
+ */
+Window.prototype.addInnerChild = function(child) {
+    this._innerChildren.push(child);
+
+    return this._windowInnerChildrenContainer.addChild(child);
+};
+
+Window.prototype.moveInnerChildrenBy = function(x, y) {
+    for (const child of this._innerChildren) {
+        child.x += x;
+        child.y += y;
+    }
+};
 
 
 
@@ -816,6 +892,12 @@ WebAudio.prototype._onLoad = function() {
 //===========================================================================
 // DataManager
 //===========================================================================
+
+const DKTools_DataManager_createGameObjects = DataManager.createGameObjects;
+DataManager.createGameObjects = function() {
+    DKTools_DataManager_createGameObjects.apply(this, arguments);
+    ColorManager.initialize();
+};
 
 const DKTools_DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
 DataManager.isDatabaseLoaded = function() {
@@ -1472,7 +1554,7 @@ Scene_Map.prototype.isReady = function() {
         return false;
     }
 
-    return DKTools_Scene_Map_isReady.call(this);
+    return DKTools_Scene_Map_isReady.apply(this, arguments);
 };
 
 const DKTools_Scene_Map_terminate = Scene_Map.prototype.terminate;
@@ -1632,7 +1714,7 @@ if (DKToolsParam.get('Title Menu Command Window', 'Enabled')) {
 
 }
 
-if (DKToolsParam.get('Title Menu Exit Command', 'Enabled')) {
+if (DKToolsParam.get('Title Menu Exit Command', 'Enabled') && Utils.isNwjs()) {
 
     const DKTools_Window_TitleCommand_createContents = Window_TitleCommand.prototype.createContents;
     Window_TitleCommand.prototype.createContents = function() {

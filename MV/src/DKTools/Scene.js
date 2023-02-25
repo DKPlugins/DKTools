@@ -92,6 +92,21 @@ DKTools.Scene.prototype.addAnimation = function(animation) {
 // C methods
 
 /**
+ * Returns calculated window height
+ * @since 11.1.0
+ * @param {Number} [numLines=1] - Window lines
+ * @param {Boolean} [selectable=false] - Selectable window
+ * @return {Number} Calculated window height
+ */
+DKTools.Scene.prototype.calcWindowHeight = function(numLines = 1, selectable = false) {
+    if (selectable) {
+        return Window_Selectable.prototype.fittingHeight(numLines);
+    } else {
+        return Window_Base.prototype.fittingHeight(numLines);
+    }
+};
+
+/**
  * Creates all
  * @override
  */
@@ -106,9 +121,12 @@ DKTools.Scene.prototype.create = function() {
 
 /**
  * Creates the background
+ * @version 11.1.0
  */
 DKTools.Scene.prototype.createBackground = function() {
-    // to be overridden by plugins
+    if (this.needsBackground()) {
+        Scene_MenuBase.prototype.createBackground.apply(this, arguments);
+    }
 };
 
 /**
@@ -123,6 +141,24 @@ DKTools.Scene.prototype.createAllSprites = function() {
  */
 DKTools.Scene.prototype.createAllWindows = function() {
     // to be overridden by plugins
+};
+
+/**
+ * Creates the help window
+ * @since 11.1.0
+ * @param {Function} windowClass - Window class
+ * @param {Number} [rows=2] - Visible rows
+ */
+DKTools.Scene.prototype.createHelpWindow = function(windowClass = Window_Help, rows = 2) {
+    if (windowClass === Window_Help) {
+        this._helpWindow = new Window_Help(rows);
+    } else {
+        const rect = this.helpWindowRect(rows);
+
+        this._helpWindow = new windowClass(rect.x, rect.y, rect.width, rect.height);
+    }
+
+    this.addWindow(this._helpWindow);
 };
 
 /**
@@ -142,6 +178,40 @@ DKTools.Scene.prototype.hasWindowLayer = function() {
     return !!this._windowLayer;
 };
 
+/**
+ * @since 11.1.0
+ * @return {Number}
+ */
+DKTools.Scene.prototype.helpAreaTop = function() {
+    return 0;
+};
+
+/**
+ * @since 11.1.0
+ * @return {Number}
+ */
+DKTools.Scene.prototype.helpAreaBottom = function() {
+    return this.helpAreaTop() + this.helpAreaHeight();
+};
+
+/**
+ * @since 11.1.0
+ * @return {Number}
+ */
+DKTools.Scene.prototype.helpAreaHeight = function() {
+    return this.calcWindowHeight(2, false);
+};
+
+/**
+ * Returns the rect of the help window
+ * @since 11.1.0
+ * @param {Number} rows - Visible rows
+ * @return {Rectangle} Rect of the help window
+ */
+DKTools.Scene.prototype.helpWindowRect = function(rows) {
+    return new Rectangle(0, 0, Graphics.boxWidth, this.calcWindowHeight(rows));
+};
+
 // I methods
 
 /**
@@ -157,6 +227,43 @@ DKTools.Scene.prototype.isChild = function(object) {
     }
 
     return this.children.includes(object);
+};
+
+// M methods
+
+/**
+ * @since 11.1.0
+ * @return {Number}
+ */
+DKTools.Scene.prototype.mainAreaTop = function() {
+    return this.helpAreaBottom();
+};
+
+/**
+ * @since 11.1.0
+ * @return {Number}
+ */
+DKTools.Scene.prototype.mainAreaBottom = function() {
+    return this.mainAreaTop() + this.mainAreaHeight();
+};
+
+/**
+ * @since 11.1.0
+ * @return {Number}
+ */
+DKTools.Scene.prototype.mainAreaHeight = function() {
+    return Graphics.boxHeight - this.helpAreaHeight();
+};
+
+// N methods
+
+/**
+ * Returns true if needs create the background
+ * @since 11.1.0
+ * @return {Boolean} Needs create the background
+ */
+DKTools.Scene.prototype.needsBackground = function() {
+    return false;
 };
 
 // R methods
