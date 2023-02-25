@@ -5,7 +5,7 @@
 /**
  * @class
  * @extends Window_Selectable
- * @mixes DKTools.Window
+ * @mixes DKTools.Window.Scrollable
  */
 DKTools.Window.Selectable = function(object, y, width, height) {
     this.initialize.apply(this, arguments);
@@ -13,7 +13,7 @@ DKTools.Window.Selectable = function(object, y, width, height) {
 
 DKTools.Window.Selectable.prototype = Object.create(Window_Selectable.prototype);
 Object.defineProperties(DKTools.Window.Selectable.prototype,
-    Object.getOwnPropertyDescriptors(DKTools.Window.prototype));
+    Object.getOwnPropertyDescriptors(DKTools.Window.Scrollable.prototype));
 DKTools.Window.Selectable.prototype.constructor = DKTools.Window.Selectable;
 
 // A methods
@@ -28,7 +28,7 @@ DKTools.Window.Selectable.prototype.addItem = function(item) {
         item.enabled = true;
     }
 
-    if (item.symbol && typeof item.handler === 'function') {
+    if (item.symbol && DKTools.Utils.isFunction(item.handler)) {
         this.setHandler(item.symbol, item.handler);
     }
 
@@ -39,38 +39,15 @@ DKTools.Window.Selectable.prototype.addItem = function(item) {
 
 /**
  * Clears all
- * @private
+ * @version 1.1.5
  * @override
+ * @private
  */
 DKTools.Window.Selectable.prototype._clearAll = function() {
-    DKTools.Window.prototype._clearAll.apply(this, arguments);
-
-    this._index = 0;
-    this._cursorFixed = false;
-    this._cursorAll = false;
-    this._helpWindow = null;
-    this._handlers = {};
-    this._doubleTouch = false;
+    DKTools.Window.Scrollable.prototype._clearAll.apply(this, arguments);
     this._canRepeat = true;
-    this._scrollX = 0;
-    this._scrollY = 0;
-    this._scrollBaseX = 0;
-    this._scrollBaseY = 0;
-
-    this.clearScrollStatus();
-};
-
-/**
- * @override
- */
-DKTools.Window.Selectable.prototype._createArrowSprites = function() {
-    DKTools.Window.prototype._createArrowSprites.apply(this, arguments);
-
-    this._leftArrowSprite = new Sprite();
-    this._rightArrowSprite = new Sprite();
-
-    this.addChild(this._leftArrowSprite);
-    this.addChild(this._rightArrowSprite);
+    this._handlers = {};
+    this._index = 0;
 };
 
 /**
@@ -240,6 +217,14 @@ DKTools.Window.Selectable.prototype.cursorRight = function(wrap = false) {
 // D methods
 
 /**
+ * Disables the items background
+ * @since 1.1.5
+ */
+DKTools.Window.Selectable.prototype.disableItemsBackground = function() {
+    this._itemsBackgroundDisabled = true;
+};
+
+/**
  * Draws all
  * @override
  */
@@ -254,10 +239,14 @@ DKTools.Window.Selectable.prototype.drawAll = function() {
 DKTools.Window.Selectable.prototype.drawAllItems = function() {
     const maxVisibleItems = this.maxVisibleItems();
     const maxItems = this.maxItems();
+    const itemBackgroundEnabled = this.isItemsBackgroundEnabled();
     let index = this.topIndex();
 
     for (let i = 0; i < maxVisibleItems && index < maxItems; i++, index++) {
-        this.drawItemBackground(index);
+        if (itemBackgroundEnabled) {
+            this.drawItemBackground(index);
+        }
+
         this.drawItem(index);
     }
 };
@@ -355,6 +344,19 @@ DKTools.Window.Selectable.prototype.hasSymbol = function(symbol) {
     return this._list.some(item => item.symbol === symbol);
 };
 
+/**
+ * Hides the cursor
+ * Returns the event with "update" type
+ * @override
+ * @return {DKTools.Event} Event
+ */
+DKTools.Window.Selectable.prototype.hideCursor = function() {
+    return this.addEvent({
+        type: 'update',
+        onUpdate: DKTools.Window.prototype.hideCursor.bind(this)
+    });
+};
+
 // I methods
 
 /**
@@ -428,11 +430,11 @@ DKTools.Window.Selectable.prototype.itemWidth = function() {
  * @return {Number} Height of the item
  */
 DKTools.Window.Selectable.prototype.itemHeight = function() {
-    if (typeof this._itemHeight === 'function') {
+    if (DKTools.Utils.isFunction(this._itemHeight)) {
         return this._itemHeight(this);
     } else if (Number.isFinite(this._itemHeight)) {
         return this._itemHeight;
-    } else if (typeof this._itemHeight === 'string') { // number of lines
+    } else if (DKTools.Utils.isString(this._itemHeight)) { // number of lines
         return this.lineHeight() * parseFloat(this._itemHeight);
     }
 
@@ -440,10 +442,15 @@ DKTools.Window.Selectable.prototype.itemHeight = function() {
 };
 
 /**
+ * @version 1.2.5
  * @override
  * @param {Number} index - Item index
  */
 DKTools.Window.Selectable.prototype.itemRect = function(index) {
+    if (!this.isHorizontal()) {
+        return Window_Selectable.prototype.itemRect.apply(this, arguments);
+    }
+
     const itemWidth = this.itemWidth();
     const itemHeight = this.itemHeight();
     const colSpacing = this.colSpacing();
@@ -453,14 +460,7 @@ DKTools.Window.Selectable.prototype.itemRect = function(index) {
     const rect = new Rectangle(0, 0, width, height);
 
     if (this.isHorizontal()) {
-        rect.x = index * itemWidth - this.scrollBaseX();
-    } else {
-        const maxCols = this.maxCols();
-        const col = index % maxCols;
-        const row = Math.floor(index / maxCols);
-
-        rect.x = col * itemWidth + colSpacing / 2 - this.scrollBaseX();
-        rect.y = row * itemHeight + rowSpacing / 2 - this.scrollBaseY();
+        rect.x = index * itemWidth + colSpacing / 2 - this.scrollBaseX();
     }
 
     return rect;
@@ -525,7 +525,7 @@ DKTools.Window.Selectable.prototype.itemPaintOpacity = function(index) {
         return item.paintOpacity(index, this);
     } else if (Number.isFinite(item.paintOpacity)) {
         return item.paintOpacity;
-    } else if (typeof this._itemPaintOpacity === 'function') {
+    } else if (DKTools.Utils.isFunction(this._itemPaintOpacity)) {
         return this._itemPaintOpacity(index, this);
     }
 
@@ -550,12 +550,67 @@ DKTools.Window.Selectable.prototype.isItemEnabled = function(index) {
 };
 
 /**
+ * Returns true if the item is selected
+ * @since 1.1.5
+ * @param {Number} index - Index
+ * @return {Boolean} Item is selected
+ */
+DKTools.Window.Selectable.prototype.isItemSelected = function(index) {
+    return this._index === index;
+};
+
+/**
+ * Returns true if the items background enabled
+ * @since 1.1.5
+ * @return {Boolean} Items background enabled
+ */
+DKTools.Window.Selectable.prototype.isItemsBackgroundEnabled = function() {
+    return !this._itemsBackgroundDisabled;
+};
+
+/**
  * Returns true if the current item (selected item) is enabled
  * @override
  * @return {Boolean} Current item (selected item) is enabled
  */
 DKTools.Window.Selectable.prototype.isCurrentItemEnabled = function() {
     return this.isItemEnabled(this._index);
+};
+
+/**
+ * Returns true if the horizontal scrolling
+ * @override
+ * @return {Boolean} Horizontal scrolling
+ */
+DKTools.Window.Selectable.prototype.isHorizontal = function() {
+    return Window_Selectable.prototype.isHorizontal.apply(this, arguments);
+};
+
+/**
+ * Returns true if the OK enabled
+ * @override
+ * @return {Boolean} OK enabled
+ */
+DKTools.Window.Selectable.prototype.isOkEnabled = function() {
+    return true;
+};
+
+/**
+ * Returns true if the refreshing when the item is selected
+ * @since 1.1.5
+ * @return {Boolean} Refreshing when the item is selected
+ */
+DKTools.Window.Selectable.prototype.isRefreshOnSelect = function() {
+    return !!this._refreshOnSelect;
+};
+
+/**
+ * Returns true if the scroll enabled
+ * @override
+ * @return {Boolean} Scroll enabled
+ */
+DKTools.Window.Selectable.prototype.isScrollEnabled = function() {
+    return Window_Selectable.prototype.isScrollEnabled.apply(this, arguments);
 };
 
 // M methods
@@ -734,58 +789,7 @@ DKTools.Window.Selectable.prototype.processOk = function() {
     }
 };
 
-/**
- * Processes wheel scroll
- * @override
- */
-DKTools.Window.Selectable.prototype.processWheelScroll = function() {
-    if (this.isWheelScrollEnabled() && this.isTouchedInsideFrame()) {
-        const threshold = 20;
-
-        if (TouchInput.wheelY >= threshold) {
-            if (this.isHorizontal()) {
-                this.smoothScrollLeft(1);
-            } else {
-                this.smoothScrollDown(1);
-            }
-        }
-
-        if (TouchInput.wheelY <= -threshold) {
-            if (this.isHorizontal()) {
-                this.smoothScrollRight(1);
-            } else {
-                this.smoothScrollUp(1);
-            }
-        }
-    }
-};
-
 // R methods
-
-/**
- * Refreshes arrows
- * @override
- */
-DKTools.Window.Selectable.prototype._refreshArrows = function() {
-    DKTools.Window.prototype._refreshArrows.apply(this, arguments);
-
-    const w = this._width;
-    const h = this._height;
-    const p = 24;
-    const q = p / 2;
-    const sx = 96 + p;
-    const sy = 0 + p;
-
-    this._leftArrowSprite.bitmap = this._windowskin;
-    this._leftArrowSprite.anchor.set(0.5, 0.5);
-    this._leftArrowSprite.setFrame(sx, sy + q, q, p);
-    this._leftArrowSprite.move(q / 2, h / 2);
-
-    this._rightArrowSprite.bitmap = this._windowskin;
-    this._rightArrowSprite.anchor.set(0.5, 0.5);
-    this._rightArrowSprite.setFrame(sx + q + p, sy + q, q, p);
-    this._rightArrowSprite.move(w - q, h / 2);
-};
 
 /**
  * Refreshes the window
@@ -794,6 +798,14 @@ DKTools.Window.Selectable.prototype._refreshArrows = function() {
 DKTools.Window.Selectable.prototype.refreshAll = function() {
     DKTools.Window.prototype.refreshAll.apply(this, arguments);
     this.refreshCursor();
+};
+
+/**
+ * Enables refreshing when the item is selected
+ * @since 1.1.5
+ */
+DKTools.Window.Selectable.prototype.refreshOnSelect = function() {
+    this._refreshOnSelect = true;
 };
 
 // S methods
@@ -861,13 +873,9 @@ DKTools.Window.Selectable.prototype.standardItemTextAlign = function() {
  *
  * @param {Object} [object={}] - Parameters
  *
- * @param {Number} [object.index] - Index
  * @param {Number} [object.maxCols] - Number of the columns
  * @param {Object[]} [object.items] - List of the items
  * @param {Function} [object.drawItemHandler] - Handler of draw of the item
- * @param {Function | Number} [object.itemWidth] - Width of the item
- * @param {Function | Number} [object.itemHeight] - Height of the item
- * @param {Function | Object} [object.itemFont] - Font of the item
  * @param {Function | String} [object.itemTextColor] - Text color of the item
  * @param {Function | Number} [object.itemPaintOpacity] - Paint opacity of the item
  * @param {Function | String} [object.itemAlign] - Align of the item
@@ -880,8 +888,6 @@ DKTools.Window.Selectable.prototype.setupAll = function(object = {}) {
 
     this.setupMaxCols(object.maxCols);
     this.setupItems(object.items);
-    this.setupItemWidth(object.itemWidth);
-    this.setupItemHeight(object.itemHeight);
     this.setupItemTextColor(object.itemTextColor);
     this.setupItemPaintOpacity(object.itemPaintOpacity);
     this.setupItemAlign(object.itemAlign);
@@ -964,29 +970,13 @@ DKTools.Window.Selectable.prototype.setupItemDrawHandler = function(handler) {
 };
 
 /**
- * Sets the width of the item
- * @param {Function | Number} [itemWidth] - Width of the item
- */
-DKTools.Window.Selectable.prototype.setupItemWidth = function(itemWidth) {
-    this._itemWidth = itemWidth;
-};
-
-/**
- * Sets the height of the item
- * @param {Function | Number} [itemHeight] - Height of the item
- */
-DKTools.Window.Selectable.prototype.setupItemHeight = function(itemHeight) {
-    this._itemHeight = itemHeight;
-};
-
-/**
  * Sets the size of the window
  * @override
  * @param {Number | Object} [width] - Width of the window
  * @param {Number | String} [height] - Height of the window or number of lines (String)
  */
 DKTools.Window.Selectable.prototype.setupSize = function(width, height) {
-    if (typeof height === 'string') { // number of lines
+    if (DKTools.Utils.isString(height)) { // number of lines
         height = this.itemHeight() * parseFloat(height) + this._padding * 2;
     }
 
@@ -1047,6 +1037,7 @@ DKTools.Window.Selectable.prototype.setMaxCols = function(maxCols, blockStart = 
 
 /**
  * Selects the item
+ * @version 1.1.5
  * @override
  * @param {Number} index - Index
  * @param {Boolean} [playCursor=false] - Play "cursor" sound
@@ -1056,11 +1047,15 @@ DKTools.Window.Selectable.prototype.select = function(index, playCursor = false)
 
     Window_Selectable.prototype.select.call(this, index);
 
+    if (this.isRefreshOnSelect()) {
+        this.refreshAll();
+    }
+
     if (playCursor) {
         this.playCursorSound();
     }
 
-    if (item && typeof item.selectHandler === 'function') {
+    if (item && DKTools.Utils.isFunction(item.selectHandler)) {
         item.selectHandler(index, this);
     }
 
@@ -1179,22 +1174,6 @@ DKTools.Window.Selectable.prototype.selectNextItem = function(wrap = false, smoo
     }
 };
 
-/**
- * Smooth scrolls to left
- * @param {Number} cols - Cols to scroll
- */
-DKTools.Window.Selectable.prototype.smoothScrollLeft = function(cols) {
-    this.smoothScrollBy(this.itemWidth() * cols, 0);
-};
-
-/**
- * Smooth scrolls to right
- * @param {Number} cols - Cols to scroll
- */
-DKTools.Window.Selectable.prototype.smoothScrollRight = function(cols) {
-    this.smoothScrollBy(-this.itemWidth() * cols, 0);
-};
-
 // T methods
 
 /**
@@ -1218,34 +1197,11 @@ DKTools.Window.Selectable.prototype.topIndex = function() {
 // U methods
 
 /**
- * @override
- * @private
- */
-DKTools.Window.Selectable.prototype._updateArrows = function() {
-    const isOpen = this.isOpen();
-
-    this._leftArrowSprite.visible = isOpen && this.leftArrowVisible;
-    this._rightArrowSprite.visible = isOpen && this.rightArrowVisible;
-    this._downArrowSprite.visible = isOpen && this.downArrowVisible;
-    this._upArrowSprite.visible = isOpen && this.upArrowVisible;
-};
-
-/**
- * Updates the arrows
+ * Updates the origin
  * @override
  */
-DKTools.Window.Selectable.prototype.updateArrows = function() {
-    if (this.isHorizontal()) {
-        this.leftArrowVisible = this._scrollX > 0;
-        this.rightArrowVisible = this._scrollX < this.maxScrollX();
-        this.downArrowVisible = false;
-        this.upArrowVisible = false;
-    } else {
-        this.leftArrowVisible = false;
-        this.rightArrowVisible = false;
-        this.downArrowVisible = this._scrollY < this.maxScrollY();
-        this.upArrowVisible = this._scrollY > 0;
-    }
+DKTools.Window.Selectable.prototype.updateOrigin = function() {
+    Window_Selectable.prototype.updateOrigin.apply(this, arguments);
 };
 
 /**
@@ -1261,9 +1217,10 @@ DKTools.Window.Selectable.prototype.update = function() {
 
 /**
  * Updates the events with type: select
+ * @version 1.1.6
  */
 DKTools.Window.Selectable.prototype.updateSelectEvents = function() {
-    this._eventsManager.updateEventsContainer('select');
+    this._eventsManager.updateEventsContainer('select', this._index);
 };
 
 

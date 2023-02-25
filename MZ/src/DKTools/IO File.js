@@ -14,14 +14,11 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Initializes the file
-     *
      * @override
-     *
      * @param {String} fullPath - Path to file
      */
     initialize(fullPath = '') {
         super.initialize(fullPath);
-
         this._detectExtension();
     }
 
@@ -170,22 +167,6 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     // G methods
 
     /**
-     * Returns the extension of the file
-     *
-     * @override
-     * @return {String} Extension of the file
-     */
-    getExtension() {
-        let extension = super.getExtension();
-
-        if (Utils.hasEncryptedAudio() && extension === AudioManager.audioFileExt() || Utils.hasEncryptedImages() && extension === '.png') {
-            extension += '_';
-        }
-
-        return extension;
-    }
-
-    /**
      * Returns the directory of the file
      *
      * @return {DKTools.IO.Directory} Directory of the file
@@ -200,6 +181,23 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      */
     getDirectoryName() {
         return this.getDirectory().getName();
+    }
+
+    /**
+     * Returns the extension of the file
+     * @version 1.2.0
+     * @override
+     * @return {String} Extension of the file
+     */
+    getExtension() {
+        let extension = super.getExtension();
+
+        if (Utils.hasEncryptedAudio() && extension === AudioManager.audioFileExt()
+            || Utils.hasEncryptedImages() && extension === ImageManager.imageFileExt()) {
+                extension += Utils.getEncryptedFileExtension();
+        }
+
+        return extension;
     }
 
     // I methods
@@ -394,7 +392,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
             xhr.onload = () => {
                 if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
+                    if (xhr.status === 0 || xhr.status === 200) {
                         object.onSuccess(processData(xhr.responseText), this);
                     } else {
                         this.__processError(xhr, object.onError);
@@ -464,6 +462,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Loads an audio file and returns a WebAudio
+     * @version 1.1.4
      * @return {WebAudio | null} Audio file or null
      */
     loadAudio() {
@@ -475,8 +474,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
             return null;
         }
 
-        return DKTools.Utils.WebAudio.load(
-            DKTools.IO.normalizePath(this.getDirectoryName() + '/'), this.getName());
+        return DKTools.Utils.WebAudio.load(this.getDirectoryName(), this.getName());
     }
 
     /**

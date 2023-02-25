@@ -607,6 +607,103 @@ DKTools.Sprite.prototype.moveWithAnchor = function(x, y) {
     this.move(x + this.width * anchor.x, y + this.height * anchor.y);
 };
 
+// R methods
+
+/**
+ * Removes the bitmap
+ * @version 1.1.0
+ * @param {Boolean} [destroy=false] - Destroy the bitmap
+ */
+DKTools.Sprite.prototype.removeBitmap = function(destroy = false) {
+    if (this.hasBitmap()) {
+        if (destroy) {
+            this.bitmap.destroy();
+        }
+
+        this.setBitmap(null);
+    }
+};
+
+/**
+ * Resets all
+ */
+DKTools.Sprite.prototype.resetAll = function() {
+    this.resetFont();
+    this.resetPaintOpacity();
+    this.resetTextColor();
+};
+
+/**
+ * Resets the font of the bitmap
+ */
+DKTools.Sprite.prototype.resetFont = function() {
+    this.changeFont(this.font);
+};
+
+/**
+ * Resets the font settings
+ * @since 1.1.5
+ */
+DKTools.Sprite.prototype.resetFontSettings = function() {
+    Window_Base.prototype.resetFontSettings.apply(this, arguments);
+};
+
+/**
+ * Resets the paint opacity of the bitmap
+ */
+DKTools.Sprite.prototype.resetPaintOpacity = function() {
+    this.changePaintOpacity(this.paintOpacity);
+};
+
+/**
+ * Resets the text color of the bitmap
+ */
+DKTools.Sprite.prototype.resetTextColor = function() {
+    this.changeTextColor(this.textColor);
+};
+
+/**
+ * Changes the width and height of the sprite
+ * Returns true if the change occurred
+ * @version 1.1.5
+ * @override
+ * @param {Number} width - Width of the sprite
+ * @param {Number | String} height - Height of the sprite or number of lines (String)
+ * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+ * @return {Boolean} Change occurred
+ */
+DKTools.Sprite.prototype.resize = function(width, height, blockStart = false) {
+    if (!this.isResizable()) {
+        return false;
+    }
+
+    if (DKTools.Utils.isString(height)) { // number of lines
+        height = this.lineHeight() * parseFloat(height);
+    }
+
+    width = Math.floor(width);
+    height = Math.floor(height);
+
+    if (this.width === width && this.height === height) {
+        return false;
+    }
+
+    const lastWidth = this.width;
+    const lastHeight = this.height;
+
+    this.setupSize(width, height);
+
+    if (this._bitmapWidth === lastWidth && this._bitmapHeight === lastHeight) {
+        return false;
+    }
+
+    if (!blockStart) {
+        this.start();
+    }
+
+    return true;
+};
+
 // S methods
 
 // standard methods
@@ -637,11 +734,13 @@ DKTools.Sprite.prototype.standardFillColor = function() {
 
 /**
  * Returns the standard font
- * @return {{ fontFace: String, fontSize: Number, fontItalic: Boolean }} Standard font
+ * @version 1.1.5
+ * @return {{ fontFace: String, fontSize: Number, fontItalic: Boolean, fontBold: Boolean }} Standard font
  */
 DKTools.Sprite.prototype.standardFont = function() {
     return {
         fontFace: this.standardFontFace(),
+        fontBold: this.standardFontBold(),
         fontItalic: this.standardFontItalic(),
         fontSize: this.standardFontSize()
     };
@@ -653,6 +752,15 @@ DKTools.Sprite.prototype.standardFont = function() {
  */
 DKTools.Sprite.prototype.standardFontFace = function() {
     return $gameSystem.mainFontFace();
+};
+
+/**
+ * Returns the standard font bold
+ * @since 1.1.5
+ * @return {Boolean} Standard font bold
+ */
+DKTools.Sprite.prototype.standardFontBold = function() {
+    return false;
 };
 
 /**
@@ -949,7 +1057,7 @@ DKTools.Sprite.prototype.setupTextColor = function(color) {
  * @param {Number | String} [height] - Height of the bitmap
  */
 DKTools.Sprite.prototype.setupSize = function(width, height) {
-    if (typeof height === 'string') { // number of lines
+    if (DKTools.Utils.isString(height)) { // number of lines
         height = this.lineHeight() * parseFloat(height);
     }
 
@@ -1175,82 +1283,6 @@ DKTools.Sprite.prototype.setTextColor = function(color, blockRefreshAll = false)
 
     return true;
 };
-
-// R methods
-
-/**
- * Removes the bitmap
- * @version 1.1.0
- * @param {Boolean} [destroy=false] - Destroy the bitmap
- */
-DKTools.Sprite.prototype.removeBitmap = function(destroy = false) {
-    if (this.hasBitmap()) {
-        if (destroy) {
-            this.bitmap.destroy();
-        }
-
-        this.setBitmap(null);
-    }
-};
-
-/**
- * Resets all
- */
-DKTools.Sprite.prototype.resetAll = function() {
-    this.resetFont();
-    this.resetPaintOpacity();
-    this.resetTextColor();
-};
-
-/**
- * Resets the font of the bitmap
- */
-DKTools.Sprite.prototype.resetFont = function() {
-    this.changeFont(this.font);
-};
-
-/**
- * Resets the paint opacity of the bitmap
- */
-DKTools.Sprite.prototype.resetPaintOpacity = function() {
-    this.changePaintOpacity(this.paintOpacity);
-};
-
-/**
- * Resets the text color of the bitmap
- */
-DKTools.Sprite.prototype.resetTextColor = function() {
-    this.changeTextColor(this.textColor);
-};
-
-/**
- * Changes the width and height of the sprite
- * Returns true if the change occurred
- * @version 1.1.0
- * @override
- * @param {Number} width - Width of the sprite
- * @param {Number | String} height - Height of the sprite or number of lines (String)
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- * @return {Boolean} Change occurred
- */
-DKTools.Sprite.prototype.resize = function(width, height, blockStart = false) {
-    if (!this.isResizable()) {
-        return false;
-    }
-
-    return DKTools.Base.prototype.resize.apply(this, arguments);
-};
-
-// T methods
-
-/**
- * Returns the size of the text (special characters are supported)
- * @param {String} text - Text
- * @return {{ width: Number, height: Number }} Size of the text
- */
-DKTools.Sprite.prototype.textSizeEx = function(text) {
-    return Window_Base.prototype.textSizeEx.apply(this, arguments);
-}
 
 // U methods
 

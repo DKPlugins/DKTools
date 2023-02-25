@@ -194,6 +194,18 @@ DKTools.EventsManager = class {
     // F methods
 
     /**
+     * Fails the events
+     * @version 1.1.5
+     * @param {String} type - Type of the events
+     * @param {*} [data] - Data
+     */
+    failEvents(type, data) {
+        this.iterateEventsContainer(type, (event) => {
+            event.fail(data);
+        });
+    }
+
+    /**
      * Returns the found animation
      * @param {Number | String | *} id - ID of the animation
      * @param {String} [type] - Type of the animation
@@ -217,12 +229,14 @@ DKTools.EventsManager = class {
 
     /**
      * Finishes the events
+     * @version 1.1.5
      * @param {String} type - Type of the events
      * @param {Boolean} [forcedSuccess=false] - Forced success for the finish of the events
+     * @param {*} [data] - Data
      */
-    finishEvents(type, forcedSuccess = false) {
+    finishEvents(type, forcedSuccess = false, data) {
         this.iterateEventsContainer(type, (event) => {
-            event.finish(forcedSuccess);
+            event.finish(forcedSuccess, data);
         });
     }
 

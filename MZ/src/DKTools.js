@@ -3,8 +3,8 @@ Title: DKTools
 Author: DKPlugins
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 1.1.3
-Release: 15.11.2020
+Version: 1.3.5
+Release: 10.02.2023
 First release: 21.08.2020
 */
 
@@ -13,13 +13,13 @@ First release: 21.08.2020
 Автор: DKPlugins
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 1.1.3
-Релиз: 15.11.2020
+Версия: 1.3.5
+Релиз: 10.02.2023
 Первый релиз: 21.08.2020
 */
 
 /*:
-* @plugindesc v.1.1.3 Advanced project testing and various settings. Made with ♥ by DKPlugins
+* @plugindesc v.1.3.5 [MZ] Advanced project testing and various settings. Made with ♥ by DKPlugins
 * @author DKPlugins
 * @url https://dk-plugins.ru
 * @target MZ
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DKPlugins
  Site: https://dk-plugins.ru
- Version: 1.1.3
- Release: 15.11.2020
+ Version: 1.3.5
+ Release: 10.02.2023
  First release: 21.08.2020
 
  ###=========================================================================
@@ -204,6 +204,10 @@ E-mail: kuznetsovdenis96@gmail.com
  %seconds - Seconds
 
  ###=========================================================================
+ ### Active in background ###
+ Allows you to keep the game active when the focus is switched to another program.
+
+ ###=========================================================================
  ### Command window on the title screen ###
  Allows you to adjust the width of the command window on the title screen.
 
@@ -211,6 +215,7 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Exit command on the title screen ###
  Allows you to add an exit command to the command window on the title screen.
  The command is added to the end of the list.
+ This function only works on PC.
 
  ###=========================================================================
  ### Disable item background ###
@@ -230,6 +235,26 @@ E-mail: kuznetsovdenis96@gmail.com
  mobile devices can check for the existence of folders and files.
 
  ###===========================================================================
+ ## See also
+ ###===========================================================================
+ 1. Mouse System (https://dk-plugins.ru/mouse-system/)
+ Allows you to change the mouse cursor, activate events by clicking, hovering, etc.
+
+ 2. Video Player (https://dk-plugins.ru/video-player/)
+ Adds video to the title screen, credits, the layers on the map and other.
+
+ 3. Events Glow (https://dk-plugins.ru/events-glow/)
+ Allows highlighting events on mouse hover.
+
+ 4. Pictures Glow (https://dk-plugins.ru/pictures-glow/)
+ Allows highlighting pictures on mouse hover.
+
+ ###=========================================================================
+ ## Graphics
+ ###=========================================================================
+ Additional graphics for your project: https://dk-plugins.ru/resources/
+
+ ###===========================================================================
  ## License and terms of use
  ###===========================================================================
  You can:
@@ -246,8 +271,9 @@ E-mail: kuznetsovdenis96@gmail.com
  ###=========================================================================
  ## Support
  ###=========================================================================
- Donate: https://dk-plugins.ru/donate
- Become a patron: https://www.patreon.com/dkplugins
+ Become a subscriber: https://boosty.to/dkplugins
+
+
 
  * @command UpdateFileSystemStamp
  * @desc Update file system stamp
@@ -379,6 +405,12 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<Screenshots>
  * @default {"Enabled":"false","Key Code":"122","Path":"screenshots/","Filename":"%year_%month_%day_%hours_%minutes_%seconds.png","Type":"png","Quality":"0.9"}
 
+ * @param Active In Background
+ * @parent Functions
+ * @desc Allow the game to be active in the background (for example when using another program)
+ * @type struct<ActiveInBackground>
+ * @default {"Enabled":"false"}
+
  * @param Title Menu
  * @default ---------------------------------
 
@@ -397,7 +429,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.1.1.3 Расширенное тестирование проекта и различные настройки. Сделано с ♥ от DKPlugins
+* @plugindesc v.1.3.5 [MZ] Расширенное тестирование проекта и различные настройки. Сделано с ♥ от DKPlugins
 * @author DKPlugins
 * @url https://dk-plugins.ru
 * @target MZ
@@ -407,8 +439,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DKPlugins
  Сайт: https://dk-plugins.ru
- Версия: 1.1.3
- Релиз: 15.11.2020
+ Версия: 1.3.5
+ Релиз: 10.02.2023
  Первый релиз: 21.08.2020
 
  ###=========================================================================
@@ -580,6 +612,10 @@ E-mail: kuznetsovdenis96@gmail.com
  %seconds - Секунды
 
  ###=========================================================================
+ ### Активно в фоне ###
+ Позволяет оставлять игру активной, когда фокус переключается на другую программу.
+
+ ###=========================================================================
  ### Окно команд на титульном экране ###
  Позволяет вам настроить положение и ширину окна команд на титульном экране.
 
@@ -587,6 +623,7 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Команда выхода на титульном экране ###
  Позволяет вам добавить команду выхода в окно команд на титульном экране.
  Команда добавляется в конец списка.
+ Эта функция работает только на ПК.
 
  ###=========================================================================
  ### Отключить фон элементов списков ###
@@ -606,6 +643,26 @@ E-mail: kuznetsovdenis96@gmail.com
  Это необходимо, чтобы браузеры и мобильные устройства могли проверять
  существование папок и файлов.
 
+ ###=========================================================================
+ ## Смотрите также
+ ###=========================================================================
+ 1. Система Мыши (https://dk-plugins.ru/mouse-system/)
+ Позволяет изменять курсор мыши, активировать события нажатием, наведением и др.
+
+ 2. Видео плеер (https://dk-plugins.ru/video-player/)
+ Добавляет видео перед титульным экраном, титры, слои на карте и другое.
+
+ 3. Свечение Событий (https://dk-plugins.ru/events-glow/)
+ Позволяет подсвечивать события при наведении мыши.
+
+ 4. Свечение Изображений (https://dk-plugins.ru/pictures-glow/)
+ Позволяет подсвечивать изображения при наведении мыши.
+
+ ###=========================================================================
+ ## Графика
+ ###=========================================================================
+ Дополнительная графика для вашего проекта: https://dk-plugins.ru/resources/
+
  ###===========================================================================
  ## Лицензия и правила использования плагина
  ###===========================================================================
@@ -623,11 +680,14 @@ E-mail: kuznetsovdenis96@gmail.com
  ###=========================================================================
  ## Поддержка
  ###=========================================================================
- Поддержать: https://dk-plugins.ru/donate
- Стать патроном: https://www.patreon.com/dkplugins
+ Стать подписчиком: https://boosty.to/dkplugins
+
+
 
  * @command UpdateFileSystemStamp
  * @desc Обновить штамп файловой системы
+
+
 
  * @param System
  * @text Система
@@ -778,6 +838,13 @@ E-mail: kuznetsovdenis96@gmail.com
  * @desc Скриншоты
  * @type struct<Screenshots>
  * @default {"Enabled":"false","Key Code":"122","Path":"screenshots/","Filename":"%year_%month_%day_%hours_%minutes_%seconds.png","Type":"png","Quality":"0.9"}
+
+ * @param Active In Background
+ * @text Активно в фоне
+ * @parent Functions
+ * @desc Разрешить игре быть активной в фоне (например, когда используется другая программа)
+ * @type struct<ActiveInBackground>
+ * @default {"Enabled":"false"}
 
  * @param Title Menu
  * @text Титульный экран
@@ -1696,5 +1763,24 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type number
  * @min 1
  * @default 20
+
+*/
+
+/*~struct~ActiveInBackground:
+
+ * @param Enabled
+ * @desc Enable function of active game in background ?
+ * @type boolean
+ * @default false
+
+*/
+
+/*~struct~ActiveInBackground:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию активной игры в фоне ?
+ * @type boolean
+ * @default false
 
 */

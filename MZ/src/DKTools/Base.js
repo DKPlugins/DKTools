@@ -79,7 +79,7 @@ DKTools.Base = class {
     /**
      * Initializes a class object
      *
-     * @param {Number | Graphics | Object | *} [object] - The X coordinate or Graphics or object with parameters
+     * @param {Number | Object | *} [object] - The X coordinate or Graphics or object with parameters
      * @param {Number} [y] - The Y coordinate (if object is Number)
      * @param {Number} [width] - The width of the object (if object is Number)
      * @param {Number | String} [height] - The height of the object (if object is Number)
@@ -104,10 +104,7 @@ DKTools.Base = class {
     initialize(object, y, width, height) {
         let x;
 
-        if (object instanceof Graphics) {
-            width = Graphics.boxWidth;
-            height = Graphics.boxHeight;
-        } else if (object instanceof Object) {
+        if (object instanceof Object) {
             x = object.x;
             y = object.y;
             width = object.width;
@@ -245,7 +242,6 @@ DKTools.Base = class {
      */
     _clearAll() {
         this._mouseEnterTime = 0;
-
         this._wheelX = 0;
         this._wheelY = 0;
     }
@@ -255,7 +251,9 @@ DKTools.Base = class {
      * @private
      */
     _createEventsManager() {
-        this._eventsManager = new DKTools.EventsManager(this);
+        if (!this._eventsManager) {
+            this._eventsManager = new DKTools.EventsManager(this);
+        }
     }
 
     /**
@@ -748,6 +746,7 @@ DKTools.Base = class {
      * Draws a gauge
      * Returns true if successfully completed
      *
+     * @version 1.2.4
      * @param {Object} [options={}] - Options for drawing
      *
      * @param {Number} [options.x] - The X coordinate
@@ -760,6 +759,7 @@ DKTools.Base = class {
      * @param {String} [options.type] - Gauge type (horizontal or vertical)
      * @param {Boolean} [options.reversed] - Reversed gauge
      * @param {String} [options.gradient] - Gradient type (horizontal or vertical)
+     * @param {Number} [options.gradientPadding] - Gradient inner padding
      * @param {String} [options.backgroundColor] - Background fill color
      * @param {String} [options.color] - Fill color
      * @param {String} [options.color1] - First gradient color (ignores other parameters: color)
@@ -783,7 +783,7 @@ DKTools.Base = class {
         }
 
         const { pos, rect, reversed, gradient, paintOpacity, resetPaintOpacity } = options;
-        let { x, y, width, height, type, rate, backgroundColor, color, color1, color2 } = options;
+        let { x, y, width, height, type, rate, gradientPadding, backgroundColor, color, color1, color2 } = options;
 
         if (pos instanceof Object) {
             x = pos.x;
@@ -811,25 +811,26 @@ DKTools.Base = class {
 
         x = x || 0;
         y = y || 0;
-        width = width || this.standardDrawingWidth();
-        height = height || this.standardDrawingHeight();
+        width = Math.floor(width || this.standardDrawingWidth());
+        height = Math.floor(height || this.standardDrawingHeight());
+        gradientPadding = _.defaultTo(gradientPadding, 1);
         backgroundColor = _.defaultTo(backgroundColor, 'black');
         color = _.defaultTo(color, 'white');
         color1 = _.defaultTo(color1, color);
         color2 = _.defaultTo(color2, color);
         type = _.defaultTo(type, 'horizontal');
-        rate = _.defaultTo(rate, 1);
+        rate = Math.min(_.defaultTo(rate, 1), 1);
 
         const gradientRect = { x, y, width, height };
 
         if (type === 'horizontal') {
-            gradientRect.width *= rate;
+            gradientRect.width = Math.floor(gradientRect.width * rate);
 
             if (reversed) {
                 gradientRect.x += width - gradientRect.width;
             }
         } else if (type === 'vertical') {
-            gradientRect.height *= rate;
+            gradientRect.height = Math.floor(gradientRect.height * rate);
 
             if (reversed) {
                 gradientRect.y += height - gradientRect.height;
@@ -838,12 +839,18 @@ DKTools.Base = class {
             return false;
         }
 
+        if (Number.isFinite(gradientPadding) && rate > 0) {
+            gradientRect.x += gradientPadding;
+            gradientRect.y += gradientPadding;
+            gradientRect.width -= gradientPadding * 2;
+            gradientRect.height -= gradientPadding * 2;
+        }
+
         if (Number.isFinite(paintOpacity)) {
             this.changePaintOpacity(paintOpacity);
         }
 
         this.fillRect({ x, y, width, height, color: backgroundColor });
-
         this.gradientFillRect({ rect: gradientRect, color1, color2, vertical: gradient === 'vertical' });
 
         if (resetPaintOpacity) {
@@ -865,6 +872,7 @@ DKTools.Base = class {
      * @param {Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
      * @param {Number} [options.paintOpacity] - Change paint opacity
      * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
+     * @param {String} [options.iconSet='IconSet'] - IconSet filename
      *
      * @param {Number} [options.pos.x] - The X coordinate
      * @param {Number | String} [options.pos.y] - The Y coordinate or line number (String)
@@ -876,7 +884,7 @@ DKTools.Base = class {
             return false;
         }
 
-        const bitmap = ImageManager.loadSystem('IconSet');
+        const bitmap = ImageManager.loadSystem(options.iconSet || 'IconSet');
         const pw = ImageManager.iconWidth;
         const ph = ImageManager.iconHeight;
         const sx = iconIndex % 16 * pw;
@@ -1138,7 +1146,7 @@ DKTools.Base = class {
 
         x     = _.defaultTo(x, 0);
         y     = _.defaultTo(y, 0);
-        width = _.defaultTo(width, 0);
+        width = _.defaultTo(width, this.standardDrawingWidth());
 
         const textState = this.createTextState(text, x, y, width);
 
@@ -1521,7 +1529,7 @@ DKTools.Base = class {
      * @return {Boolean} Touch is inside the object
      */
     isTouchInside() {
-        return TouchInput.isScreenPressed() && this.isInside(TouchInput.x, TouchInput.y);
+        return this.isInside(TouchInput.x, TouchInput.y);
     }
 
     /**
@@ -1609,6 +1617,16 @@ DKTools.Base = class {
      */
     obtainEscapeParam(textState) {
         return Window_Base.prototype.obtainEscapeParam.apply(this, arguments);
+    }
+
+    /**
+     * Handles item change
+     * @since 1.2.5
+     * @param {*} item - Item
+     * @param {*} lastItem - Last item
+     */
+    onItemChange(item, lastItem) {
+        // to be overridden by plugins
     }
 
     // P methods
@@ -1858,6 +1876,9 @@ DKTools.Base = class {
         if (DKTools.Utils.isString(height)) { // number of lines
             height = this.lineHeight() * parseFloat(height);
         }
+
+        width = Math.floor(width);
+        height = Math.floor(height);
 
         if (this.width === width && this.height === height) {
             return false;
@@ -2147,6 +2168,25 @@ DKTools.Base = class {
     }
 
     /**
+     * Sets the item
+     * @since 1.2.5
+     * @param {*} item - Item
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     */
+    setItem(item, blockStart = false) {
+        if (this._item !== item) {
+            const lastItem = this._item;
+
+            this._item = item;
+            this.onItemChange(this._item, lastItem);
+
+            if (!blockStart) {
+                this.start();
+            }
+        }
+    }
+
+    /**
      * Changes the visibility of the object
      * Returns true if the change occurred
      * @param {Boolean} [visible] - Visibility of the object
@@ -2263,14 +2303,38 @@ DKTools.Base = class {
         return this.textLines(text, wrap) * this.lineHeight();
     }
 
+    // T methods
+
+    /**
+     * Returns the size of the text (special characters are supported)
+     * @version 1.1.5
+     * @param {String} text - Text
+     * @param {Boolean} [resetFontSettings=true] - Reset font settings
+     * @return {{ width: Number, height: Number }} Size of the text
+     */
+    textSizeEx(text, resetFontSettings = true) {
+        if (resetFontSettings) {
+            return Window_Base.prototype.textSizeEx.apply(this, arguments);
+        }
+
+        const textState = this.createTextState(text, 0, 0, 0);
+
+        textState.drawing = false;
+
+        this.processAllText(textState);
+
+        return { width: textState.outputWidth, height: textState.outputHeight };
+    }
+
     /**
      * Makes a text wrap
-     *
+     * @version 1.1.5
      * @param {String} text - Text
      * @param {Object} [options={}] - Wrap options
      *
      * @param {Number} [options.maxWidth] - Max width of a text line
      * @param {Number} [options.maxLines] - Max lines
+     * @param {Number} [options.fontSize] - Font size
      *
      * @return {String} Wrapped text
      */
@@ -2281,6 +2345,10 @@ DKTools.Base = class {
 
         text = String(text);
         options = options || {};
+
+        const lastFontSize = this.bitmap.fontSize;
+
+        this.bitmap.fontSize = options.fontSize || lastFontSize;
 
         const lines = text.split('\n');
         const maxWidth = options.maxWidth || this.bitmap.width;
@@ -2293,7 +2361,7 @@ DKTools.Base = class {
 
             for (let j = 0; j < words.length; j++) {
                 const word = words[j];
-                const wordWidth = this.textSizeEx(word).width;
+                const wordWidth = this.textSizeEx(word, false).width;
                 let wordWidthWithSpace = wordWidth + spaceWidth;
 
                 if (wordWidth === 0) {
@@ -2303,6 +2371,8 @@ DKTools.Base = class {
                 if (j === 0 || wordWidthWithSpace > spaceLeft) {
                     if (j > 0) {
                         if (options.maxLines === newLines) {
+                            this.bitmap.fontSize = lastFontSize;
+
                             return result;
                         }
 
@@ -2322,6 +2392,8 @@ DKTools.Base = class {
                 result += '\n';
             }
         }
+
+        this.bitmap.fontSize = lastFontSize;
 
         return result;
     }

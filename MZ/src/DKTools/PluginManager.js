@@ -40,7 +40,7 @@ DKTools.PluginManager = class {
                     .format(pluginName, maxVersion);
 
                 throw new Error(error);
-            } else if (!this._compareVersions(pluginVersion, maxVersion)) {
+            } else if (!this.compareVersions(pluginVersion, maxVersion)) {
                 const error = 'Required to update the plugin "%1" to minimal version %2 (Installed: %3)'
                     .format(pluginName, maxVersion, pluginVersion);
 
@@ -50,13 +50,15 @@ DKTools.PluginManager = class {
     }
 
     /**
-     * @private
+     * Compares two versions
+     * Returns true if the first version greater than the second
+     * @since 1.2.4
      * @static
      * @param {String} v1 - First version
      * @param {String} v2 - Second version
-     * @return {Boolean}
+     * @return {Boolean} First version greater than the second
      */
-    static _compareVersions(v1, v2) {
+    static compareVersions(v1, v2) {
         if (v1 === v2) {
             return true;
         }
@@ -91,7 +93,7 @@ DKTools.PluginManager = class {
      * @return {Boolean} Current version is greater than or equal to the given version
      */
     static checkVersion(pluginName, version) {
-        return this._compareVersions(this.getVersion(pluginName), version);
+        return this.compareVersions(this.getVersion(pluginName), version);
     }
 
     // G methods
@@ -105,11 +107,12 @@ DKTools.PluginManager = class {
     static _getMaxVersion(pluginName) {
         return (this._requirements[pluginName] || [])
             .slice()
-            .sort((a, b) => (this._compareVersions(a, b) ? -1 : 1))[0];
+            .sort((a, b) => (this.compareVersions(a, b) ? -1 : 1))[0];
     }
 
     /**
      * Returns a version of plugin
+     * @version 1.1.4
      * @static
      * @param {String} pluginName - Plugin name
      * @example
@@ -119,8 +122,13 @@ DKTools.PluginManager = class {
     static getVersion(pluginName) {
         const version = Imported[pluginName];
 
-        return DKTools.Utils.isString(version) ?
-            version : null;
+        if (DKTools.Utils.isString(version)) {
+            return version;
+        } else if (Number.isFinite(version)) {
+            return String(version);
+        }
+
+        return null;
     }
 
     // I methods

@@ -71,6 +71,7 @@ DKTools.Window.prototype.initialize = function(object, y, width, height) {
     Window.prototype.initialize.apply(this, arguments);
     DKTools.Base.prototype.initialize.call(this, object, y, width, height);
     this.loadWindowskin();
+    this.updateBackOpacity();
     this.createContents();
 };
 
@@ -92,8 +93,8 @@ DKTools.Window.prototype.activate = function() {
 
 /**
  * Creates the contents background sprite
- * @private
  * @override
+ * @private
  */
 DKTools.Window.prototype._createContentsBackSprite = function() {
     Window.prototype._createContentsBackSprite.apply(this, arguments);
@@ -130,11 +131,13 @@ DKTools.Window.prototype.clear = function() {
  * @return {Number} Width of the contents
  */
 DKTools.Window.prototype.contentsWidth = function() {
-    if (typeof this._contentsWidth === 'function') {
+    if (DKTools.Utils.isFunction(this._contentsWidth)) {
         return this._contentsWidth(this);
+    } else if (Number.isFinite(this._contentsWidth)) {
+        return this._contentsWidth;
     }
 
-    return this._contentsWidth;
+    return Window_Base.prototype.contentsWidth.apply(this, arguments);
 };
 
 /**
@@ -143,11 +146,24 @@ DKTools.Window.prototype.contentsWidth = function() {
  * @return {Number} Height of the contents
  */
 DKTools.Window.prototype.contentsHeight = function() {
-    if (typeof this._contentsHeight === 'function') {
+    if (DKTools.Utils.isFunction(this._contentsHeight)) {
         return this._contentsHeight(this);
+    } else if (Number.isFinite(this._contentsHeight)) {
+        return this._contentsHeight;
+    } else if (DKTools.Utils.isString(this._contentsHeight)) { // number of lines
+        return this.lineHeight() * parseFloat(this._contentsHeight);
     }
 
-    return this._contentsHeight;
+    return Window_Base.prototype.contentsHeight.apply(this, arguments);
+};
+
+/**
+ * Creates all objects
+ * @override
+ */
+DKTools.Window.prototype.createAll = function() {
+    DKTools.Base.prototype.createAll.apply(this, arguments);
+    this.createContents();
 };
 
 /**
@@ -180,15 +196,6 @@ DKTools.Window.prototype.createContents = function() {
 
     this.resetFontSettings();
 };
-
-/**
- * Creates all objects
- * @override
- */
-DKTools.Window.prototype.createAll = function() {
-    DKTools.Base.prototype.createAll.apply(this, arguments);
-    this.createContents();
-}
 
 // D methods
 
@@ -299,6 +306,22 @@ DKTools.Window.prototype.loadWindowskin = function() {
     });
 };
 
+// O methods
+
+/**
+ * Handles item change
+ * @override
+ * @param {*} item - Item
+ * @param {*} lastItem - Last item
+ */
+DKTools.Window.prototype.onItemChange = function(item, lastItem) {
+    DKTools.Base.prototype.onItemChange.apply(this, arguments);
+
+    if (DKTools.Utils.isFunction(this._contentsSprite.setItem)) {
+        this._contentsSprite.setItem(item);
+    }
+};
+
 // R methods
 
 /**
@@ -337,6 +360,14 @@ DKTools.Window.prototype.resetTextColor = function() {
 };
 
 /**
+ * Resets the paint opacity of the bitmap
+ * @since 1.1.5
+ */
+DKTools.Window.prototype.resetPaintOpacity = function() {
+    this.changePaintOpacity(255);
+};
+
+/**
  * Changes the size of the window
  * Returns true if the change occurred
  * @override
@@ -346,7 +377,7 @@ DKTools.Window.prototype.resetTextColor = function() {
  * @return {Boolean} Change occurred
  */
 DKTools.Window.prototype.resize = function(width, height, blockStart = false) {
-    if (typeof height === 'string') { // number of lines
+    if (DKTools.Utils.isString(height)) { // number of lines
         height = this.itemHeight() * parseFloat(height) + this._padding * 2;
     }
 
@@ -372,19 +403,13 @@ DKTools.Window.prototype.standardContentsSprite = function() {
 };
 
 /**
- * Returns the standard width of the contents
- * @return {Function} Standard width of the contents
+ * Just for compatibility with MV plugins
+ * Returns the window padding
+ * @since 1.2.4
+ * @return {Number} Window padding
  */
-DKTools.Window.prototype.standardContentsWidth = function() {
-    return () => this.innerWidth;
-};
-
-/**
- * Returns the standard height of the contents
- * @return {Function} Standard height of the contents
- */
-DKTools.Window.prototype.standardContentsHeight = function() {
-    return () => this.innerHeight;
+DKTools.Window.prototype.standardPadding = function() {
+    return $gameSystem.windowPadding();
 };
 
 // setup methods
@@ -417,7 +442,7 @@ DKTools.Window.prototype.setupAll = function(object = {}) {
  * @param {Number | String} [height] - Height of the window or number of lines (String)
  */
 DKTools.Window.prototype.setupSize = function(width, height) {
-    if (typeof height === 'string') { // number of lines
+    if (DKTools.Utils.isString(height)) { // number of lines
         height = this.lineHeight() * parseFloat(height) + this._padding * 2;
     }
 
@@ -429,7 +454,7 @@ DKTools.Window.prototype.setupSize = function(width, height) {
  * @param {Function | Number} [contentsWidth=this.standardContentsWidth()] - Width of the contents
  */
 DKTools.Window.prototype.setupContentsWidth = function(contentsWidth) {
-    this._contentsWidth = contentsWidth || this.standardContentsWidth();
+    this._contentsWidth = contentsWidth;
 };
 
 /**
@@ -437,7 +462,7 @@ DKTools.Window.prototype.setupContentsWidth = function(contentsWidth) {
  * @param {Function | Number} [contentsHeight=this.standardContentsHeight()] - Height of the contents
  */
 DKTools.Window.prototype.setupContentsHeight = function(contentsHeight) {
-    this._contentsHeight = contentsHeight || this.standardContentsHeight();
+    this._contentsHeight = contentsHeight;
 };
 
 /**
@@ -489,7 +514,7 @@ DKTools.Window.prototype.updateAll = function() {
  * Updates the contents
  */
 DKTools.Window.prototype.updateContents = function() {
-    if (typeof this._contentsSprite.updateAll === 'function') {
+    if (DKTools.Utils.isFunction(this._contentsSprite.updateAll)) {
         this._contentsSprite.updateAll();
     }
 };
@@ -497,6 +522,7 @@ DKTools.Window.prototype.updateContents = function() {
 /**
  * Updates the opening of the window
  * @override
+ * @version 1.1.5
  */
 DKTools.Window.prototype.updateOpen = function() {
     if (!this._opening) {
@@ -507,7 +533,8 @@ DKTools.Window.prototype.updateOpen = function() {
 
     if (this.isOpen()) {
         this._opening = false;
-
+        this._eventsManager.finishEvents('open', true);
+    } else {
         this.updateOpenEvents();
     }
 };
@@ -515,6 +542,7 @@ DKTools.Window.prototype.updateOpen = function() {
 /**
  * Updates the closing of the window
  * @override
+ * @version 1.1.5
  */
 DKTools.Window.prototype.updateClose = function() {
     if (!this._closing) {
@@ -525,7 +553,8 @@ DKTools.Window.prototype.updateClose = function() {
 
     if (this.isClosed()) {
         this._closing = false;
-
+        this._eventsManager.finishEvents('close', true);
+    } else {
         this.updateCloseEvents();
     }
 };

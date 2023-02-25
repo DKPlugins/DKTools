@@ -7,7 +7,6 @@ main.onEffekseerLoad = function() {
     DKTools.Utils.initialize();
     DKTools.IO.initialize();
     DKTools_main_onEffekseerLoad.apply(this, arguments);
-    DKTools.PreloadManager.initialize();
     DKTools.PluginManager.initialize();
 };
 
@@ -16,6 +15,7 @@ main.onEffekseerLoad = function() {
 //===========================================================================
 // Utils
 //===========================================================================
+
 const DKTools_Utils_isNwjs = Utils.isNwjs;
 Utils.isNwjs = function() {
     if (this.__isNwjs__ === undefined) {
@@ -58,6 +58,10 @@ Utils.isTest = function() {
     }
 
     return this.__isTest__;
+};
+
+Utils.getEncryptedFileExtension = function() {
+    return '_';
 };
 
 
@@ -382,6 +386,9 @@ Object.defineProperties(Sprite.prototype, {
         get: function() {
             return this._frame;
         },
+        set: function(value) {
+            this.setFrame(value);
+        },
         configurable: true
     }
 
@@ -687,6 +694,10 @@ SceneManager.changeScene = function() {
 
 SceneManager.updateScene = function() {
     if (this._scene) {
+        if (this._scene.isStarted() && this.isGameActive()) {
+            this._scene.update();
+        }
+
         if (!this._sceneCreated && this._scene.isPreloaded()) {
             this._scene.create();
 
@@ -709,16 +720,16 @@ SceneManager.updateScene = function() {
 
                 DKTools.Utils.logError(e);
 
+                if (Array.isArray(e) && e[0] === 'LoadError') {
+                    throw e;
+                }
+
                 this.onBeforeSceneStart();
 
                 this._scene.start();
 
                 this.onSceneStart();
             }
-        }
-
-        if (this._scene.isStarted() && this.isGameActive()) {
-            this._scene.update();
         }
     }
 };
@@ -818,8 +829,13 @@ Scene_Base.prototype.terminate = function() {
 const DKTools_Scene_Boot_isReady = Scene_Boot.prototype.isReady;
 Scene_Boot.prototype.isReady = function() {
     return DKTools_Scene_Boot_isReady.apply(this, arguments)
-        && DKTools.StartupManager.isReady()
-        && DKTools.PreloadManager.isReady();
+        && DKTools.StartupManager.isReady();
+};
+
+const DKTools_Scene_Boot_isBusy = Scene_Boot.prototype.isBusy;
+Scene_Boot.prototype.isBusy = function() {
+    return DKTools_Scene_Boot_isBusy.apply(this, arguments)
+        || !DKTools.PreloadManager.isReady();
 };
 
 const DKTools_Scene_Boot_start = Scene_Boot.prototype.start;
@@ -833,19 +849,17 @@ Scene_Boot.prototype.start = function() {
             (quickStart['Skip Saves'] || !DataManager.isAnySavefileExists())) {
             Scene_Base.prototype.start.apply(this, arguments);
             SoundManager.preloadImportantSounds();
-
             this.checkPlayerLocation();
-
             DataManager.setupNewGame();
-
             this.resizeScreen();
             this.updateDocumentTitle();
-
             SceneManager.goto(window[quickStart['Scene Name']]);
         }
     } else {
         DKTools_Scene_Boot_start.apply(this, arguments);
     }
+
+    DKTools.PreloadManager.initialize();
 };
 
 
@@ -913,6 +927,29 @@ Game_Map.prototype.tileWidth = function() {
 const DKTools_Game_Map_tileHeight = Game_Map.prototype.tileHeight;
 Game_Map.prototype.tileHeight = function() {
     return Tilemap.TILE_HEIGHT || DKTools_Game_Map_tileHeight.apply(this, arguments);
+};
+
+
+
+//===========================================================================
+// Window_Scrollable
+//===========================================================================
+
+Window_Scrollable.prototype.processPageScroll = function() {
+    if (Input.isRepeated('pageup')) {
+        this.smoothScrollUp(1);
+    }
+
+    if (Input.isRepeated('pagedown')) {
+        this.smoothScrollDown(1);
+    }
+};
+
+const DKTools_Window_Scrollable_update =
+    Window_Scrollable.prototype.update;
+Window_Scrollable.prototype.update = function() {
+    DKTools_Window_Scrollable_update.apply(this, arguments);
+    this.processPageScroll();
 };
 
 
@@ -986,7 +1023,7 @@ if (DKToolsParam.get('Title Menu Command Window', 'Enabled')) {
 
 }
 
-if (DKToolsParam.get('Title Menu Exit Command', 'Enabled')) {
+if (DKToolsParam.get('Title Menu Exit Command', 'Enabled') && Utils.isNwjs()) {
 
     const DKTools_Window_TitleCommand_paint = Window_TitleCommand.prototype.paint;
     Window_TitleCommand.prototype.paint = function() {
@@ -1019,7 +1056,15 @@ if (DKToolsParam.get('Title Menu Exit Command', 'Enabled')) {
 if (DKToolsParam.get('Max Savefiles', 'Enabled')) {
 
     DataManager.maxSavefiles = function() {
-        return DKToolsParam.get('Max Savefiles', 'Max Savefiles') || 1;
+        return (DKToolsParam.get('Max Savefiles', 'Max Savefiles') || 1) + 1;
+    };
+
+}
+
+if (Utils.isMobileDevice() || DKToolsParam.get('Active In Background', 'Enabled')) {
+
+    SceneManager.isGameActive = function() {
+        return true;
     };
 
 }

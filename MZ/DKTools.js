@@ -3,8 +3,8 @@ Title: DKTools
 Author: DKPlugins
 Site: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Version: 1.1.3
-Release: 15.11.2020
+Version: 1.3.5
+Release: 10.02.2023
 First release: 21.08.2020
 */
 
@@ -13,13 +13,13 @@ First release: 21.08.2020
 Автор: DKPlugins
 Сайт: https://dk-plugins.ru
 E-mail: kuznetsovdenis96@gmail.com
-Версия: 1.1.3
-Релиз: 15.11.2020
+Версия: 1.3.5
+Релиз: 10.02.2023
 Первый релиз: 21.08.2020
 */
 
 /*:
-* @plugindesc v.1.1.3 Advanced project testing and various settings. Made with ♥ by DKPlugins
+* @plugindesc v.1.3.5 [MZ] Advanced project testing and various settings. Made with ♥ by DKPlugins
 * @author DKPlugins
 * @url https://dk-plugins.ru
 * @target MZ
@@ -29,8 +29,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Title: DKTools
  Author: DKPlugins
  Site: https://dk-plugins.ru
- Version: 1.1.3
- Release: 15.11.2020
+ Version: 1.3.5
+ Release: 10.02.2023
  First release: 21.08.2020
 
  ###=========================================================================
@@ -204,6 +204,10 @@ E-mail: kuznetsovdenis96@gmail.com
  %seconds - Seconds
 
  ###=========================================================================
+ ### Active in background ###
+ Allows you to keep the game active when the focus is switched to another program.
+
+ ###=========================================================================
  ### Command window on the title screen ###
  Allows you to adjust the width of the command window on the title screen.
 
@@ -211,6 +215,7 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Exit command on the title screen ###
  Allows you to add an exit command to the command window on the title screen.
  The command is added to the end of the list.
+ This function only works on PC.
 
  ###=========================================================================
  ### Disable item background ###
@@ -230,6 +235,26 @@ E-mail: kuznetsovdenis96@gmail.com
  mobile devices can check for the existence of folders and files.
 
  ###===========================================================================
+ ## See also
+ ###===========================================================================
+ 1. Mouse System (https://dk-plugins.ru/mouse-system/)
+ Allows you to change the mouse cursor, activate events by clicking, hovering, etc.
+
+ 2. Video Player (https://dk-plugins.ru/video-player/)
+ Adds video to the title screen, credits, the layers on the map and other.
+
+ 3. Events Glow (https://dk-plugins.ru/events-glow/)
+ Allows highlighting events on mouse hover.
+
+ 4. Pictures Glow (https://dk-plugins.ru/pictures-glow/)
+ Allows highlighting pictures on mouse hover.
+
+ ###=========================================================================
+ ## Graphics
+ ###=========================================================================
+ Additional graphics for your project: https://dk-plugins.ru/resources/
+
+ ###===========================================================================
  ## License and terms of use
  ###===========================================================================
  You can:
@@ -246,8 +271,9 @@ E-mail: kuznetsovdenis96@gmail.com
  ###=========================================================================
  ## Support
  ###=========================================================================
- Donate: https://dk-plugins.ru/donate
- Become a patron: https://www.patreon.com/dkplugins
+ Become a subscriber: https://boosty.to/dkplugins
+
+
 
  * @command UpdateFileSystemStamp
  * @desc Update file system stamp
@@ -379,6 +405,12 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type struct<Screenshots>
  * @default {"Enabled":"false","Key Code":"122","Path":"screenshots/","Filename":"%year_%month_%day_%hours_%minutes_%seconds.png","Type":"png","Quality":"0.9"}
 
+ * @param Active In Background
+ * @parent Functions
+ * @desc Allow the game to be active in the background (for example when using another program)
+ * @type struct<ActiveInBackground>
+ * @default {"Enabled":"false"}
+
  * @param Title Menu
  * @default ---------------------------------
 
@@ -397,7 +429,7 @@ E-mail: kuznetsovdenis96@gmail.com
 */
 
 /*:ru
-* @plugindesc v.1.1.3 Расширенное тестирование проекта и различные настройки. Сделано с ♥ от DKPlugins
+* @plugindesc v.1.3.5 [MZ] Расширенное тестирование проекта и различные настройки. Сделано с ♥ от DKPlugins
 * @author DKPlugins
 * @url https://dk-plugins.ru
 * @target MZ
@@ -407,8 +439,8 @@ E-mail: kuznetsovdenis96@gmail.com
  Название: DKTools
  Автор: DKPlugins
  Сайт: https://dk-plugins.ru
- Версия: 1.1.3
- Релиз: 15.11.2020
+ Версия: 1.3.5
+ Релиз: 10.02.2023
  Первый релиз: 21.08.2020
 
  ###=========================================================================
@@ -580,6 +612,10 @@ E-mail: kuznetsovdenis96@gmail.com
  %seconds - Секунды
 
  ###=========================================================================
+ ### Активно в фоне ###
+ Позволяет оставлять игру активной, когда фокус переключается на другую программу.
+
+ ###=========================================================================
  ### Окно команд на титульном экране ###
  Позволяет вам настроить положение и ширину окна команд на титульном экране.
 
@@ -587,6 +623,7 @@ E-mail: kuznetsovdenis96@gmail.com
  ### Команда выхода на титульном экране ###
  Позволяет вам добавить команду выхода в окно команд на титульном экране.
  Команда добавляется в конец списка.
+ Эта функция работает только на ПК.
 
  ###=========================================================================
  ### Отключить фон элементов списков ###
@@ -606,6 +643,26 @@ E-mail: kuznetsovdenis96@gmail.com
  Это необходимо, чтобы браузеры и мобильные устройства могли проверять
  существование папок и файлов.
 
+ ###=========================================================================
+ ## Смотрите также
+ ###=========================================================================
+ 1. Система Мыши (https://dk-plugins.ru/mouse-system/)
+ Позволяет изменять курсор мыши, активировать события нажатием, наведением и др.
+
+ 2. Видео плеер (https://dk-plugins.ru/video-player/)
+ Добавляет видео перед титульным экраном, титры, слои на карте и другое.
+
+ 3. Свечение Событий (https://dk-plugins.ru/events-glow/)
+ Позволяет подсвечивать события при наведении мыши.
+
+ 4. Свечение Изображений (https://dk-plugins.ru/pictures-glow/)
+ Позволяет подсвечивать изображения при наведении мыши.
+
+ ###=========================================================================
+ ## Графика
+ ###=========================================================================
+ Дополнительная графика для вашего проекта: https://dk-plugins.ru/resources/
+
  ###===========================================================================
  ## Лицензия и правила использования плагина
  ###===========================================================================
@@ -623,11 +680,14 @@ E-mail: kuznetsovdenis96@gmail.com
  ###=========================================================================
  ## Поддержка
  ###=========================================================================
- Поддержать: https://dk-plugins.ru/donate
- Стать патроном: https://www.patreon.com/dkplugins
+ Стать подписчиком: https://boosty.to/dkplugins
+
+
 
  * @command UpdateFileSystemStamp
  * @desc Обновить штамп файловой системы
+
+
 
  * @param System
  * @text Система
@@ -778,6 +838,13 @@ E-mail: kuznetsovdenis96@gmail.com
  * @desc Скриншоты
  * @type struct<Screenshots>
  * @default {"Enabled":"false","Key Code":"122","Path":"screenshots/","Filename":"%year_%month_%day_%hours_%minutes_%seconds.png","Type":"png","Quality":"0.9"}
+
+ * @param Active In Background
+ * @text Активно в фоне
+ * @parent Functions
+ * @desc Разрешить игре быть активной в фоне (например, когда используется другая программа)
+ * @type struct<ActiveInBackground>
+ * @default {"Enabled":"false"}
 
  * @param Title Menu
  * @text Титульный экран
@@ -1699,6 +1766,25 @@ E-mail: kuznetsovdenis96@gmail.com
 
 */
 
+/*~struct~ActiveInBackground:
+
+ * @param Enabled
+ * @desc Enable function of active game in background ?
+ * @type boolean
+ * @default false
+
+*/
+
+/*~struct~ActiveInBackground:ru
+
+ * @param Enabled
+ * @text Включено
+ * @desc Включить функцию активной игры в фоне ?
+ * @type boolean
+ * @default false
+
+*/
+
 'use strict';
 
 //===========================================================================
@@ -1710,7 +1796,7 @@ E-mail: kuznetsovdenis96@gmail.com
  * @type {Object}
  */
 window.Imported = window.Imported || {};
-window.Imported.DKTools = '1.1.3';
+window.Imported['DKTools'] = '1.3.5';
 
 
 
@@ -1878,8 +1964,16 @@ window.DKTools = {};
 Object.defineProperties(DKTools, {
 
     /**
+     * DKPlugins Patreon site
+     * @since 1.2.4
+     * @constant
+     * @type {String}
+     * @memberof DKTools
+     */
+    PATREON: { value: 'https://boosty.to/dkplugins' },
+
+    /**
      * DKPlugins site url
-     *
      * @constant
      * @type {String}
      * @memberof DKTools
@@ -1888,7 +1982,6 @@ Object.defineProperties(DKTools, {
 
     /**
      * Version of DKTools
-     *
      * @constant
      * @type {String}
      * @memberof DKTools
@@ -1937,6 +2030,7 @@ DKTools.Utils = class {
 
     /**
      * Checks the updates
+     * @version 1.2.4
      * @private
      * @static
      * @async
@@ -1956,7 +2050,7 @@ DKTools.Utils = class {
 
             plugins = await DKTools.Network.fetchJson(`${DKTools.SITE}/plugins.php?${queryParams}`) || [];
 
-            if (plugins.length === 0) {
+            if (!plugins || plugins.length === 0) {
                 return;
             }
         } catch(e) {
@@ -1967,6 +2061,18 @@ DKTools.Utils = class {
 
         const showNewPlugins = DKToolsParam.get('Check Updates', 'Show New Plugins');
 
+        plugins = plugins.sort((a, b) => {
+            if (DKTools.PluginManager.isRegistered(a.name)) {
+                if (DKTools.PluginManager.isRegistered(b.name)) {
+                    return 0;
+                }
+
+                return -1;
+            }
+
+            return 1;
+        });
+
         plugins.forEach((plugin) => {
             const newVersion = plugin.version;
 
@@ -1975,7 +2081,7 @@ DKTools.Utils = class {
                     const currentVersion = DKTools.PluginManager.getVersion(plugin.name);
                     const args = [`Available a new ${plugin.beta ? 'beta ' : ''}version of ${plugin.name}: ${newVersion}\n`,
                         `Installed: ${currentVersion}\n`,
-                        `Visit site: ${plugin.url}`];
+                        `Plugin page: ${plugin.url}`];
 
                     if (plugin.download_url) {
                         args.push(`\nDownload: ${plugin.download_url}`)
@@ -1986,6 +2092,21 @@ DKTools.Utils = class {
                     }
 
                     console.log.apply(console, args);
+                }
+
+                if (DKTools.PluginManager.compareVersions(plugin.patreon_version, newVersion)
+                    && !DKTools.PluginManager.checkVersion(plugin.name, plugin.patreon_version)) {
+                        const currentVersion = DKTools.PluginManager.getVersion(plugin.name);
+                        const args = [`Available a new version of ${plugin.name} on Patreon: ${plugin.patreon_version}\n`,
+                            `Installed: ${currentVersion}\n`,
+                            `Patreon page: ${DKTools.PATREON}\n`,
+                            `Plugin page: ${plugin.url}`];
+
+                        if (plugin.patreon_url) {
+                            args.push(`\nPatreon download: ${plugin.patreon_url}`);
+                        }
+
+                        console.log.apply(console, args);
                 }
             } else if (showNewPlugins) {
                 const requirementsMet = plugin.requirements.length === 0 ||
@@ -1999,7 +2120,7 @@ DKTools.Utils = class {
                 const args = [
                     `Try the new plugin: ${plugin.name}\n`,
                     `Description: ${plugin.description}\n`,
-                    `Visit site: ${plugin.url} \n`];
+                    `Plugin page: ${plugin.url} \n`];
 
                 if (plugin.download_url) {
                     args.push(`\nDownload: ${plugin.download_url}`)
@@ -2408,13 +2529,17 @@ DKTools.Utils = class {
 
     /**
      * Throws the error
+     *
+     * @version 1.2.6
      * @static
+     *
      * @param {*} error - Error
+     * @param {Number} [timeout=0] - Timeout
      */
-    static throwError(error) {
+    static throwError(error, timeout = 0) {
         setTimeout(() => {
             throw error;
-        }, 0);
+        }, timeout);
     }
 
     // Q methods
@@ -2854,10 +2979,18 @@ DKTools.IO = class {
     // initialize methods
 
     /**
+     * @version 1.3.5
      * @static
      */
     static initialize() {
         let projectPath = '';
+
+        /**
+         * @private
+         * @readonly
+         * @type {Boolean}
+         */
+        this._isReady = false;
 
         if (Utils.isNwjs()) {
             /**
@@ -2906,6 +3039,8 @@ DKTools.IO = class {
         this._stamp = {};
 
         this._loadStamp();
+
+        this._isReady = true;
     }
 
     // A methods
@@ -2934,6 +3069,7 @@ DKTools.IO = class {
 
     /**
      * Creates the file system stamp
+     * @version 1.3.2
      * @private
      * @static
      */
@@ -2943,6 +3079,7 @@ DKTools.IO = class {
         }
 
         const ignoredDirectories = DKToolsParam.get('File System', 'Ignored Directories')
+                                                .filter(path => !['locales'].includes(path))
                                                 .map(path => new DKTools.IO.Directory(path));
         const directory = DKTools.IO.getRootDirectory();
         const file = new DKTools.IO.File('data/Stamp.json');
@@ -2952,19 +3089,25 @@ DKTools.IO = class {
             const entities = await directory.getAllAsync().then(result => result.data);
 
             for (const entity of entities) {
-                const stats = await entity.getStatsAsync().then(result => result.data);
-                const fullPath = entity.getFullPath().substring(1).split('\\');
+                const isDirectory = entity.isDirectory();
 
-                if (entity.isFile()) {
-                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'file' } });
-                } else {
-                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'directory' } });
+                if (isDirectory) {
+                    if (ignoredDirectories.some(dir => dir.equals(entity))) {
+                        continue;
+                    }
                 }
 
-                if (entity.isDirectory()) {
-                    if (!ignoredDirectories.some(dir => dir.getFullPath() === directory.getFullPath())) {
-                        await processDirectory(entity);
-                    }
+                const stats = await entity.getStatsAsync().then(result => result.data);
+                const fullPath = entity.getFullPath().substring(1).split(DKTools.IO.sep);
+
+                if (isDirectory) {
+                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'directory' } });
+                } else {
+                    _.set(stamp, fullPath, { __stats__: { ...stats, type: 'file' } });
+                }
+
+                if (isDirectory) {
+                    await processDirectory(entity);
                 }
             }
         };
@@ -3002,7 +3145,7 @@ DKTools.IO = class {
 
     /**
      * Returns true if the full path is a file
-     * @version 1.1.1
+     * @version 1.3.4
      * @static
      * @param {String} fullPath - Path to file
      * @return {Boolean} Full path is a file
@@ -3017,7 +3160,7 @@ DKTools.IO = class {
         } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP) {
             fullPath = decodeURIComponent(fullPath);
 
-            const parts = this.normalizePath(fullPath).split('\\');
+            const parts = this.normalizePath(fullPath).split(DKTools.IO.sep).filter(part => !!part);
             const extension = _.last(parts);
 
             if (extension.includes('.')) {
@@ -3030,7 +3173,7 @@ DKTools.IO = class {
 
     /**
      * Returns true if the full path is a directory
-     * @version 1.1.1
+     * @version 1.3.4
      * @static
      * @param {String} fullPath - Path to directory
      * @return {Boolean} Full path is a directory
@@ -3045,7 +3188,7 @@ DKTools.IO = class {
         } else if (this.mode === DKTools.IO.MODE_NWJS_STAMP) {
             fullPath = decodeURIComponent(fullPath);
 
-            const parts = this.normalizePath(fullPath).split('\\').filter(part => !!part);
+            const parts = this.normalizePath(fullPath).split(DKTools.IO.sep).filter(part => !!part);
             const extension = _.last(parts);
 
             if (!extension.includes('.')) {
@@ -3054,6 +3197,16 @@ DKTools.IO = class {
         }
 
         return false;
+    }
+
+    /**
+     * Returns true if the manager is ready
+     * @since 1.3.5
+     * @static
+     * @return {Boolean} Manager is ready
+     */
+    static isReady() {
+        return this._isReady;
     }
 
     // J methods
@@ -3107,6 +3260,7 @@ DKTools.IO = class {
 
     /**
      * Returns a normalized path
+     * @version 1.3.4
      * @static
      * @param {String} path - Path for normalize
      * @param {Boolean} [reverseSlash=false] - Reversing slash
@@ -3124,7 +3278,6 @@ DKTools.IO = class {
         }
 
         const result = this._statPath(path),
-            isUnc = result.isUnc,
             isAbsolute = result.isAbsolute;
 
         let device = result.device,
@@ -3156,17 +3309,19 @@ DKTools.IO = class {
             tail += '\\';
         }
 
-        if (isUnc) {
-            device = '\\\\' + device.replace(/^[\\\/]+/, '').replace(/[\\\/]+/g, '\\');
+        if (result.isUnc) {
+            device = '\\\\' + device.replace(/^[\\\/]+/, '')
+                                     .replace(/[\\\/]+/g, '\\');
         }
 
-        const normalizedPath = device + (isAbsolute ? '\\' : '') + tail;
+        let fullPath = (device + (isAbsolute ? '\\' : '') + tail)
+                                    .replace(/\\/g, DKTools.IO.sep);
 
-        if (!reverseSlash) {
-            return normalizedPath;
+        if (fullPath[0] === DKTools.IO.sep) {
+            fullPath = fullPath.substring(1);
         }
 
-        return normalizedPath.replace(/\\/g, '/');
+        return fullPath;
     }
 
     // P methods
@@ -3530,7 +3685,7 @@ DKTools.IO.Entity = class {
 
     /**
      * Initializes the entity
-     *
+     * @version 1.3.4
      * @param {String} fullPath - Path to entity
      */
     initialize(fullPath = '') {
@@ -3541,7 +3696,7 @@ DKTools.IO.Entity = class {
          * @readonly
          * @type {String}
          */
-        this._path = DKTools.IO.normalizePath(data.dir + '/');
+        this._path = data.dir;
 
         /**
          * @private
@@ -3566,6 +3721,16 @@ DKTools.IO.Entity = class {
     }
 
     // E methods
+
+    /**
+     * Returns true is the entity is same
+     * @since 1.3.2
+     * @param {DKTools.IO.Entity} entity - Entity
+     * @return {Boolean} Entity is same
+     */
+    equals(entity) {
+        return this.getFullPath() === entity.getFullPath();
+    }
 
     /**
      * Returns true if the entity exists
@@ -3611,10 +3776,11 @@ DKTools.IO.Entity = class {
 
     /**
      * Returns the full name
+     * @version 1.2.0
      * @return {String} Full name
      */
     getFullName() {
-        return this._name + this._extension;
+        return this.getName() + this.getExtension();
     }
 
     /**
@@ -3915,14 +4081,11 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Initializes the file
-     *
      * @override
-     *
      * @param {String} fullPath - Path to file
      */
     initialize(fullPath = '') {
         super.initialize(fullPath);
-
         this._detectExtension();
     }
 
@@ -4071,22 +4234,6 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
     // G methods
 
     /**
-     * Returns the extension of the file
-     *
-     * @override
-     * @return {String} Extension of the file
-     */
-    getExtension() {
-        let extension = super.getExtension();
-
-        if (Utils.hasEncryptedAudio() && extension === AudioManager.audioFileExt() || Utils.hasEncryptedImages() && extension === '.png') {
-            extension += '_';
-        }
-
-        return extension;
-    }
-
-    /**
      * Returns the directory of the file
      *
      * @return {DKTools.IO.Directory} Directory of the file
@@ -4101,6 +4248,23 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
      */
     getDirectoryName() {
         return this.getDirectory().getName();
+    }
+
+    /**
+     * Returns the extension of the file
+     * @version 1.2.0
+     * @override
+     * @return {String} Extension of the file
+     */
+    getExtension() {
+        let extension = super.getExtension();
+
+        if (Utils.hasEncryptedAudio() && extension === AudioManager.audioFileExt()
+            || Utils.hasEncryptedImages() && extension === ImageManager.imageFileExt()) {
+                extension += Utils.getEncryptedFileExtension();
+        }
+
+        return extension;
     }
 
     // I methods
@@ -4295,7 +4459,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
             xhr.onload = () => {
                 if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
+                    if (xhr.status === 0 || xhr.status === 200) {
                         object.onSuccess(processData(xhr.responseText), this);
                     } else {
                         this.__processError(xhr, object.onError);
@@ -4365,6 +4529,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
     /**
      * Loads an audio file and returns a WebAudio
+     * @version 1.1.4
      * @return {WebAudio | null} Audio file or null
      */
     loadAudio() {
@@ -4376,8 +4541,7 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
             return null;
         }
 
-        return DKTools.Utils.WebAudio.load(
-            DKTools.IO.normalizePath(this.getDirectoryName() + '/'), this.getName());
+        return DKTools.Utils.WebAudio.load(this.getDirectoryName(), this.getName());
     }
 
     /**
@@ -4890,6 +5054,28 @@ DKTools.IO.File = class extends DKTools.IO.Entity {
 
 
 
+
+/**
+ * Save file class
+ * @class
+ * @extends DKTools.IO.File
+ * @memberof DKTools.IO
+ */
+DKTools.IO.SaveFile = class extends DKTools.IO.File {
+
+    /**
+     * Initializes the save file
+     * @override
+     * @param {String} fullPath - Path to file
+     */
+    initialize(fullPath = '') {
+        super.initialize(`save/${fullPath}.rmmzsave`);
+    }
+
+};
+
+
+
 //===========================================================================
 // DKTools.IO.Directory
 //===========================================================================
@@ -5115,6 +5301,8 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
      *
+     * @version 1.3.2
+     *
      * @param {Object} object - Options of an operation
      *
      * @param {Boolean} [object.sync] - Use synchronous version of FileSystem.readdir
@@ -5132,7 +5320,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *     console.log(result.data);
      * }
      *
-     * @return {{ data: Object | null, status: Number }} All files
+     * @return {{ data: DKTools.IO.Entity[] | null, status: Number }} All files
      */
     findFiles(object) {
         if (!object) {
@@ -5143,7 +5331,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
-        if (!Utils.isNwjs()) {
+        if (!Utils.isNwjs() && DKTools.IO.mode === DKTools.IO.MODE_NWJS) {
             return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
 
@@ -5167,7 +5355,6 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                     }
                 } else if (total < searchLimit && entity.isDirectory()) {
                     total++;
-
                     processDirectory(entity);
                 }
             });
@@ -5410,6 +5597,8 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
      *
+     * @version 1.3.4
+     *
      * @param {Object} object - Options of an operation
      *
      * @param {Boolean} [object.sync] - Use synchronous version of FileSystem.readdir
@@ -5462,7 +5651,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
         };
 
         if (!Utils.isNwjs() && DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
-            const parts = this.getFullPath().split('\\');
+            const parts = this.getFullPath().split(DKTools.IO.sep).filter(part => !!part);
             const temp = _.get(DKTools.IO.stamp, parts, {});
             const names = Object.keys(temp);
 
@@ -6711,7 +6900,7 @@ DKTools.PluginManager = class {
                     .format(pluginName, maxVersion);
 
                 throw new Error(error);
-            } else if (!this._compareVersions(pluginVersion, maxVersion)) {
+            } else if (!this.compareVersions(pluginVersion, maxVersion)) {
                 const error = 'Required to update the plugin "%1" to minimal version %2 (Installed: %3)'
                     .format(pluginName, maxVersion, pluginVersion);
 
@@ -6721,13 +6910,15 @@ DKTools.PluginManager = class {
     }
 
     /**
-     * @private
+     * Compares two versions
+     * Returns true if the first version greater than the second
+     * @since 1.2.4
      * @static
      * @param {String} v1 - First version
      * @param {String} v2 - Second version
-     * @return {Boolean}
+     * @return {Boolean} First version greater than the second
      */
-    static _compareVersions(v1, v2) {
+    static compareVersions(v1, v2) {
         if (v1 === v2) {
             return true;
         }
@@ -6762,7 +6953,7 @@ DKTools.PluginManager = class {
      * @return {Boolean} Current version is greater than or equal to the given version
      */
     static checkVersion(pluginName, version) {
-        return this._compareVersions(this.getVersion(pluginName), version);
+        return this.compareVersions(this.getVersion(pluginName), version);
     }
 
     // G methods
@@ -6776,11 +6967,12 @@ DKTools.PluginManager = class {
     static _getMaxVersion(pluginName) {
         return (this._requirements[pluginName] || [])
             .slice()
-            .sort((a, b) => (this._compareVersions(a, b) ? -1 : 1))[0];
+            .sort((a, b) => (this.compareVersions(a, b) ? -1 : 1))[0];
     }
 
     /**
      * Returns a version of plugin
+     * @version 1.1.4
      * @static
      * @param {String} pluginName - Plugin name
      * @example
@@ -6790,8 +6982,13 @@ DKTools.PluginManager = class {
     static getVersion(pluginName) {
         const version = Imported[pluginName];
 
-        return DKTools.Utils.isString(version) ?
-            version : null;
+        if (DKTools.Utils.isString(version)) {
+            return version;
+        } else if (Number.isFinite(version)) {
+            return String(version);
+        }
+
+        return null;
     }
 
     // I methods
@@ -7141,6 +7338,7 @@ DKTools.PreloadManager = class {
 
     /**
      * Processes the loading of the data
+     * @version 1.1.4
      * @private
      * @static
      * @param {WebAudio | Bitmap} data - Data
@@ -7153,7 +7351,7 @@ DKTools.PreloadManager = class {
         if (this._fileLoadListeners) {
             const obj = {
                 file: data,
-                loadded: this._loaded,
+                loaded: this._loaded,
                 total: this.getTotal()
             };
 
@@ -7214,6 +7412,7 @@ DKTools.PreloadManager = class {
     /**
      * Adds the object to preload queue
      *
+     * @version 1.1.4
      * @private
      * @static
      *
@@ -7226,6 +7425,32 @@ DKTools.PreloadManager = class {
     static _preload(type, object) {
         if (object instanceof Object && DKTools.Utils.isString(object.path)) {
             const entity = new DKTools.IO.Directory(object.path);
+            const processFile = (file) => {
+                let fullPath = file.getFullPath();
+
+                if (type === 'audio') {
+                    const basePath = DKTools.IO.normalizePath(
+                        AudioManager._basePath || AudioManager._path);
+
+                    if (fullPath.startsWith(basePath)) {
+                        fullPath = fullPath.slice(basePath.length);
+                    }
+                }
+
+                if (this._queue[type][fullPath]) {
+                    return;
+                }
+
+                if (file.isFile()) {
+                    if (type === 'audio') {
+                        this._processAudioFile(file, object);
+                    } else if (type === 'image') {
+                        this._processImageFile(file, object);
+                    }
+                } else {
+                    console.error('This is not a file: ' + fullPath);
+                }
+            };
 
             if (entity.isDirectory()) {
                 if (Utils.isNwjs() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
@@ -7244,19 +7469,7 @@ DKTools.PreloadManager = class {
                         this._files[object.path] = files;
                     }
 
-                    files.forEach((file) => {
-                        const fullPath = file.getFullPath();
-
-                        if (this._queue[type][fullPath]) {
-                            return;
-                        }
-
-                        if (type === 'audio') {
-                            this._processAudioFile(file, object);
-                        } else if (type === 'image') {
-                            this._processImageFile(file, object);
-                        }
-                    });
+                    files.forEach(file => processFile(file));
                 } else {
                     throw new Error('Web browsers and mobile phones cannot load directories!');
                 }
@@ -7271,27 +7484,13 @@ DKTools.PreloadManager = class {
                     }
                 }
 
-                const file = new DKTools.IO.File(path);
-                const fullPath = file.getFullPath();
-
-                if (this._queue[type][fullPath]) {
-                    return;
-                }
-
-                if (file.isFile()) {
-                    if (type === 'audio') {
-                        this._processAudioFile(file, object);
-                    } else if (type === 'image') {
-                        this._processImageFile(file, object);
-                    }
-                } else {
-                    console.error('This is not a file: ' + fullPath);
-                }
+                processFile(new DKTools.IO.File(path));
             }
         }
     }
 
     /**
+     * @version 1.1.4
      * @private
      * @param {DKTools.IO.File} file
      * @param {Object} object
@@ -7319,7 +7518,9 @@ DKTools.PreloadManager = class {
             }
         }
 
-        this._queue.audio[normalizedPath] = { ...object, path: normalizedPath };
+        const basePath = AudioManager._basePath || AudioManager._path;
+
+        this._queue.audio[normalizedPath] = { ...object, path: basePath + normalizedPath };
     }
 
     /**
@@ -7653,7 +7854,7 @@ DKTools.StartupManager = class {
 
     /**
      * Initializes the manager
-     *
+     * @version 1.1.5
      * @static
      * @async
      */
@@ -7990,41 +8191,49 @@ DKTools.Event = class {
 
     /**
      * Calls on pause handler
+     * @version 1.1.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnPauseHandler() {
+    _callOnPauseHandler(data) {
         if (this._canCallOnPauseHandler()) {
-            this._onPause(this);
+            this._onPause(this, data);
         }
     }
 
     /**
      * Calls on repeat handler
+     * @version 1.1.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnRepeatHandler() {
+    _callOnRepeatHandler(data) {
         if (this._canCallOnRepeatHandler()) {
-            this._onRepeat(this);
+            this._onRepeat(this, data);
         }
     }
 
     /**
      * Calls on reset handler
+     * @version 1.1.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnResetHandler() {
+    _callOnResetHandler(data) {
         if (this._canCallOnResetHandler()) {
-            this._onReset(this);
+            this._onReset(this, data);
         }
     }
 
     /**
      * Calls on start handler
+     * @version 1.1.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnStartHandler() {
+    _callOnStartHandler(data) {
         if (this._canCallOnStartHandler()) {
-            this._onStart(this);
+            this._onStart(this, data);
         }
 
         this._started = true;
@@ -8032,12 +8241,14 @@ DKTools.Event = class {
 
     /**
      * Calls on success handler
+     * @version 1.1.5
      * @private
-     * @param {Boolean} [forcedSuccess=false]
+     * @param {Boolean} [forcedSuccess=false] - Forced success
+     * @param {*} [data] - Data
      */
-    _callOnSuccessHandler(forcedSuccess = false) {
+    _callOnSuccessHandler(forcedSuccess = false, data) {
         if (this._canCallOnSuccessHandler() || forcedSuccess && this.hasOnSuccessHandler()) {
-            this._onSuccess(this);
+            this._onSuccess(this, data);
         }
     }
 
@@ -8054,11 +8265,13 @@ DKTools.Event = class {
 
     /**
      * Calls on failure handler
+     * @version 1.1.5
      * @private
+     * @param {*} [data] - Data
      */
-    _callOnFailHandler() {
+    _callOnFailHandler(data) {
         if (this._canCallOnFailHandler()) {
-            this._onFail(this);
+            this._onFail(this, data);
         }
     }
 
@@ -8144,14 +8357,26 @@ DKTools.Event = class {
     // F methods
 
     /**
+     * Fails the events
+     * @since 1.1.5
+     * @param {*} [data] - Data
+     */
+    fail(data) {
+        this._callOnFailHandler(data);
+        this._clearRemainingTime();
+        this._clearRemainingRepeats();
+    }
+
+    /**
      * Finishes the event
      * @param {Boolean} [forcedSuccess=false] - Forced successful completion of the event
+     * @param {*} [data] - Data
      */
-    finish(forcedSuccess = false) {
+    finish(forcedSuccess = false, data) {
         if (this.isFinished() || forcedSuccess) {
-            this._callOnSuccessHandler(forcedSuccess);
+            this._callOnSuccessHandler(forcedSuccess, data);
         } else {
-            this._callOnFailHandler();
+            this._callOnFailHandler(data);
         }
 
         this._clearRemainingTime();
@@ -8757,8 +8982,8 @@ DKTools.Animation = class extends DKTools.Event {
 
     /**
      * Updates the animation
-     * @private
      * @override
+     * @private
      * @param {*} [data] - Data
      */
     _update(data) {
@@ -9335,6 +9560,18 @@ DKTools.EventsManager = class {
     // F methods
 
     /**
+     * Fails the events
+     * @version 1.1.5
+     * @param {String} type - Type of the events
+     * @param {*} [data] - Data
+     */
+    failEvents(type, data) {
+        this.iterateEventsContainer(type, (event) => {
+            event.fail(data);
+        });
+    }
+
+    /**
      * Returns the found animation
      * @param {Number | String | *} id - ID of the animation
      * @param {String} [type] - Type of the animation
@@ -9358,12 +9595,14 @@ DKTools.EventsManager = class {
 
     /**
      * Finishes the events
+     * @version 1.1.5
      * @param {String} type - Type of the events
      * @param {Boolean} [forcedSuccess=false] - Forced success for the finish of the events
+     * @param {*} [data] - Data
      */
-    finishEvents(type, forcedSuccess = false) {
+    finishEvents(type, forcedSuccess = false, data) {
         this.iterateEventsContainer(type, (event) => {
-            event.finish(forcedSuccess);
+            event.finish(forcedSuccess, data);
         });
     }
 
@@ -9644,7 +9883,7 @@ DKTools.Base = class {
     /**
      * Initializes a class object
      *
-     * @param {Number | Graphics | Object | *} [object] - The X coordinate or Graphics or object with parameters
+     * @param {Number | Object | *} [object] - The X coordinate or Graphics or object with parameters
      * @param {Number} [y] - The Y coordinate (if object is Number)
      * @param {Number} [width] - The width of the object (if object is Number)
      * @param {Number | String} [height] - The height of the object (if object is Number)
@@ -9669,10 +9908,7 @@ DKTools.Base = class {
     initialize(object, y, width, height) {
         let x;
 
-        if (object instanceof Graphics) {
-            width = Graphics.boxWidth;
-            height = Graphics.boxHeight;
-        } else if (object instanceof Object) {
+        if (object instanceof Object) {
             x = object.x;
             y = object.y;
             width = object.width;
@@ -9810,7 +10046,6 @@ DKTools.Base = class {
      */
     _clearAll() {
         this._mouseEnterTime = 0;
-
         this._wheelX = 0;
         this._wheelY = 0;
     }
@@ -9820,7 +10055,9 @@ DKTools.Base = class {
      * @private
      */
     _createEventsManager() {
-        this._eventsManager = new DKTools.EventsManager(this);
+        if (!this._eventsManager) {
+            this._eventsManager = new DKTools.EventsManager(this);
+        }
     }
 
     /**
@@ -10313,6 +10550,7 @@ DKTools.Base = class {
      * Draws a gauge
      * Returns true if successfully completed
      *
+     * @version 1.2.4
      * @param {Object} [options={}] - Options for drawing
      *
      * @param {Number} [options.x] - The X coordinate
@@ -10325,6 +10563,7 @@ DKTools.Base = class {
      * @param {String} [options.type] - Gauge type (horizontal or vertical)
      * @param {Boolean} [options.reversed] - Reversed gauge
      * @param {String} [options.gradient] - Gradient type (horizontal or vertical)
+     * @param {Number} [options.gradientPadding] - Gradient inner padding
      * @param {String} [options.backgroundColor] - Background fill color
      * @param {String} [options.color] - Fill color
      * @param {String} [options.color1] - First gradient color (ignores other parameters: color)
@@ -10348,7 +10587,7 @@ DKTools.Base = class {
         }
 
         const { pos, rect, reversed, gradient, paintOpacity, resetPaintOpacity } = options;
-        let { x, y, width, height, type, rate, backgroundColor, color, color1, color2 } = options;
+        let { x, y, width, height, type, rate, gradientPadding, backgroundColor, color, color1, color2 } = options;
 
         if (pos instanceof Object) {
             x = pos.x;
@@ -10376,25 +10615,26 @@ DKTools.Base = class {
 
         x = x || 0;
         y = y || 0;
-        width = width || this.standardDrawingWidth();
-        height = height || this.standardDrawingHeight();
+        width = Math.floor(width || this.standardDrawingWidth());
+        height = Math.floor(height || this.standardDrawingHeight());
+        gradientPadding = _.defaultTo(gradientPadding, 1);
         backgroundColor = _.defaultTo(backgroundColor, 'black');
         color = _.defaultTo(color, 'white');
         color1 = _.defaultTo(color1, color);
         color2 = _.defaultTo(color2, color);
         type = _.defaultTo(type, 'horizontal');
-        rate = _.defaultTo(rate, 1);
+        rate = Math.min(_.defaultTo(rate, 1), 1);
 
         const gradientRect = { x, y, width, height };
 
         if (type === 'horizontal') {
-            gradientRect.width *= rate;
+            gradientRect.width = Math.floor(gradientRect.width * rate);
 
             if (reversed) {
                 gradientRect.x += width - gradientRect.width;
             }
         } else if (type === 'vertical') {
-            gradientRect.height *= rate;
+            gradientRect.height = Math.floor(gradientRect.height * rate);
 
             if (reversed) {
                 gradientRect.y += height - gradientRect.height;
@@ -10403,12 +10643,18 @@ DKTools.Base = class {
             return false;
         }
 
+        if (Number.isFinite(gradientPadding) && rate > 0) {
+            gradientRect.x += gradientPadding;
+            gradientRect.y += gradientPadding;
+            gradientRect.width -= gradientPadding * 2;
+            gradientRect.height -= gradientPadding * 2;
+        }
+
         if (Number.isFinite(paintOpacity)) {
             this.changePaintOpacity(paintOpacity);
         }
 
         this.fillRect({ x, y, width, height, color: backgroundColor });
-
         this.gradientFillRect({ rect: gradientRect, color1, color2, vertical: gradient === 'vertical' });
 
         if (resetPaintOpacity) {
@@ -10430,6 +10676,7 @@ DKTools.Base = class {
      * @param {Point | Object} [options.pos] - Position for drawing (ignores other parameters of position: x, y)
      * @param {Number} [options.paintOpacity] - Change paint opacity
      * @param {Boolean} [options.resetPaintOpacity] - Reset paint opacity
+     * @param {String} [options.iconSet='IconSet'] - IconSet filename
      *
      * @param {Number} [options.pos.x] - The X coordinate
      * @param {Number | String} [options.pos.y] - The Y coordinate or line number (String)
@@ -10441,7 +10688,7 @@ DKTools.Base = class {
             return false;
         }
 
-        const bitmap = ImageManager.loadSystem('IconSet');
+        const bitmap = ImageManager.loadSystem(options.iconSet || 'IconSet');
         const pw = ImageManager.iconWidth;
         const ph = ImageManager.iconHeight;
         const sx = iconIndex % 16 * pw;
@@ -10703,7 +10950,7 @@ DKTools.Base = class {
 
         x     = _.defaultTo(x, 0);
         y     = _.defaultTo(y, 0);
-        width = _.defaultTo(width, 0);
+        width = _.defaultTo(width, this.standardDrawingWidth());
 
         const textState = this.createTextState(text, x, y, width);
 
@@ -11086,7 +11333,7 @@ DKTools.Base = class {
      * @return {Boolean} Touch is inside the object
      */
     isTouchInside() {
-        return TouchInput.isScreenPressed() && this.isInside(TouchInput.x, TouchInput.y);
+        return this.isInside(TouchInput.x, TouchInput.y);
     }
 
     /**
@@ -11174,6 +11421,16 @@ DKTools.Base = class {
      */
     obtainEscapeParam(textState) {
         return Window_Base.prototype.obtainEscapeParam.apply(this, arguments);
+    }
+
+    /**
+     * Handles item change
+     * @since 1.2.5
+     * @param {*} item - Item
+     * @param {*} lastItem - Last item
+     */
+    onItemChange(item, lastItem) {
+        // to be overridden by plugins
     }
 
     // P methods
@@ -11423,6 +11680,9 @@ DKTools.Base = class {
         if (DKTools.Utils.isString(height)) { // number of lines
             height = this.lineHeight() * parseFloat(height);
         }
+
+        width = Math.floor(width);
+        height = Math.floor(height);
 
         if (this.width === width && this.height === height) {
             return false;
@@ -11712,6 +11972,25 @@ DKTools.Base = class {
     }
 
     /**
+     * Sets the item
+     * @since 1.2.5
+     * @param {*} item - Item
+     * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+     */
+    setItem(item, blockStart = false) {
+        if (this._item !== item) {
+            const lastItem = this._item;
+
+            this._item = item;
+            this.onItemChange(this._item, lastItem);
+
+            if (!blockStart) {
+                this.start();
+            }
+        }
+    }
+
+    /**
      * Changes the visibility of the object
      * Returns true if the change occurred
      * @param {Boolean} [visible] - Visibility of the object
@@ -11828,14 +12107,38 @@ DKTools.Base = class {
         return this.textLines(text, wrap) * this.lineHeight();
     }
 
+    // T methods
+
+    /**
+     * Returns the size of the text (special characters are supported)
+     * @version 1.1.5
+     * @param {String} text - Text
+     * @param {Boolean} [resetFontSettings=true] - Reset font settings
+     * @return {{ width: Number, height: Number }} Size of the text
+     */
+    textSizeEx(text, resetFontSettings = true) {
+        if (resetFontSettings) {
+            return Window_Base.prototype.textSizeEx.apply(this, arguments);
+        }
+
+        const textState = this.createTextState(text, 0, 0, 0);
+
+        textState.drawing = false;
+
+        this.processAllText(textState);
+
+        return { width: textState.outputWidth, height: textState.outputHeight };
+    }
+
     /**
      * Makes a text wrap
-     *
+     * @version 1.1.5
      * @param {String} text - Text
      * @param {Object} [options={}] - Wrap options
      *
      * @param {Number} [options.maxWidth] - Max width of a text line
      * @param {Number} [options.maxLines] - Max lines
+     * @param {Number} [options.fontSize] - Font size
      *
      * @return {String} Wrapped text
      */
@@ -11846,6 +12149,10 @@ DKTools.Base = class {
 
         text = String(text);
         options = options || {};
+
+        const lastFontSize = this.bitmap.fontSize;
+
+        this.bitmap.fontSize = options.fontSize || lastFontSize;
 
         const lines = text.split('\n');
         const maxWidth = options.maxWidth || this.bitmap.width;
@@ -11858,7 +12165,7 @@ DKTools.Base = class {
 
             for (let j = 0; j < words.length; j++) {
                 const word = words[j];
-                const wordWidth = this.textSizeEx(word).width;
+                const wordWidth = this.textSizeEx(word, false).width;
                 let wordWidthWithSpace = wordWidth + spaceWidth;
 
                 if (wordWidth === 0) {
@@ -11868,6 +12175,8 @@ DKTools.Base = class {
                 if (j === 0 || wordWidthWithSpace > spaceLeft) {
                     if (j > 0) {
                         if (options.maxLines === newLines) {
+                            this.bitmap.fontSize = lastFontSize;
+
                             return result;
                         }
 
@@ -11887,6 +12196,8 @@ DKTools.Base = class {
                 result += '\n';
             }
         }
+
+        this.bitmap.fontSize = lastFontSize;
 
         return result;
     }
@@ -12711,6 +13022,103 @@ DKTools.Sprite.prototype.moveWithAnchor = function(x, y) {
     this.move(x + this.width * anchor.x, y + this.height * anchor.y);
 };
 
+// R methods
+
+/**
+ * Removes the bitmap
+ * @version 1.1.0
+ * @param {Boolean} [destroy=false] - Destroy the bitmap
+ */
+DKTools.Sprite.prototype.removeBitmap = function(destroy = false) {
+    if (this.hasBitmap()) {
+        if (destroy) {
+            this.bitmap.destroy();
+        }
+
+        this.setBitmap(null);
+    }
+};
+
+/**
+ * Resets all
+ */
+DKTools.Sprite.prototype.resetAll = function() {
+    this.resetFont();
+    this.resetPaintOpacity();
+    this.resetTextColor();
+};
+
+/**
+ * Resets the font of the bitmap
+ */
+DKTools.Sprite.prototype.resetFont = function() {
+    this.changeFont(this.font);
+};
+
+/**
+ * Resets the font settings
+ * @since 1.1.5
+ */
+DKTools.Sprite.prototype.resetFontSettings = function() {
+    Window_Base.prototype.resetFontSettings.apply(this, arguments);
+};
+
+/**
+ * Resets the paint opacity of the bitmap
+ */
+DKTools.Sprite.prototype.resetPaintOpacity = function() {
+    this.changePaintOpacity(this.paintOpacity);
+};
+
+/**
+ * Resets the text color of the bitmap
+ */
+DKTools.Sprite.prototype.resetTextColor = function() {
+    this.changeTextColor(this.textColor);
+};
+
+/**
+ * Changes the width and height of the sprite
+ * Returns true if the change occurred
+ * @version 1.1.5
+ * @override
+ * @param {Number} width - Width of the sprite
+ * @param {Number | String} height - Height of the sprite or number of lines (String)
+ * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
+ * @return {Boolean} Change occurred
+ */
+DKTools.Sprite.prototype.resize = function(width, height, blockStart = false) {
+    if (!this.isResizable()) {
+        return false;
+    }
+
+    if (DKTools.Utils.isString(height)) { // number of lines
+        height = this.lineHeight() * parseFloat(height);
+    }
+
+    width = Math.floor(width);
+    height = Math.floor(height);
+
+    if (this.width === width && this.height === height) {
+        return false;
+    }
+
+    const lastWidth = this.width;
+    const lastHeight = this.height;
+
+    this.setupSize(width, height);
+
+    if (this._bitmapWidth === lastWidth && this._bitmapHeight === lastHeight) {
+        return false;
+    }
+
+    if (!blockStart) {
+        this.start();
+    }
+
+    return true;
+};
+
 // S methods
 
 // standard methods
@@ -12741,11 +13149,13 @@ DKTools.Sprite.prototype.standardFillColor = function() {
 
 /**
  * Returns the standard font
- * @return {{ fontFace: String, fontSize: Number, fontItalic: Boolean }} Standard font
+ * @version 1.1.5
+ * @return {{ fontFace: String, fontSize: Number, fontItalic: Boolean, fontBold: Boolean }} Standard font
  */
 DKTools.Sprite.prototype.standardFont = function() {
     return {
         fontFace: this.standardFontFace(),
+        fontBold: this.standardFontBold(),
         fontItalic: this.standardFontItalic(),
         fontSize: this.standardFontSize()
     };
@@ -12757,6 +13167,15 @@ DKTools.Sprite.prototype.standardFont = function() {
  */
 DKTools.Sprite.prototype.standardFontFace = function() {
     return $gameSystem.mainFontFace();
+};
+
+/**
+ * Returns the standard font bold
+ * @since 1.1.5
+ * @return {Boolean} Standard font bold
+ */
+DKTools.Sprite.prototype.standardFontBold = function() {
+    return false;
 };
 
 /**
@@ -13053,7 +13472,7 @@ DKTools.Sprite.prototype.setupTextColor = function(color) {
  * @param {Number | String} [height] - Height of the bitmap
  */
 DKTools.Sprite.prototype.setupSize = function(width, height) {
-    if (typeof height === 'string') { // number of lines
+    if (DKTools.Utils.isString(height)) { // number of lines
         height = this.lineHeight() * parseFloat(height);
     }
 
@@ -13279,82 +13698,6 @@ DKTools.Sprite.prototype.setTextColor = function(color, blockRefreshAll = false)
 
     return true;
 };
-
-// R methods
-
-/**
- * Removes the bitmap
- * @version 1.1.0
- * @param {Boolean} [destroy=false] - Destroy the bitmap
- */
-DKTools.Sprite.prototype.removeBitmap = function(destroy = false) {
-    if (this.hasBitmap()) {
-        if (destroy) {
-            this.bitmap.destroy();
-        }
-
-        this.setBitmap(null);
-    }
-};
-
-/**
- * Resets all
- */
-DKTools.Sprite.prototype.resetAll = function() {
-    this.resetFont();
-    this.resetPaintOpacity();
-    this.resetTextColor();
-};
-
-/**
- * Resets the font of the bitmap
- */
-DKTools.Sprite.prototype.resetFont = function() {
-    this.changeFont(this.font);
-};
-
-/**
- * Resets the paint opacity of the bitmap
- */
-DKTools.Sprite.prototype.resetPaintOpacity = function() {
-    this.changePaintOpacity(this.paintOpacity);
-};
-
-/**
- * Resets the text color of the bitmap
- */
-DKTools.Sprite.prototype.resetTextColor = function() {
-    this.changeTextColor(this.textColor);
-};
-
-/**
- * Changes the width and height of the sprite
- * Returns true if the change occurred
- * @version 1.1.0
- * @override
- * @param {Number} width - Width of the sprite
- * @param {Number | String} height - Height of the sprite or number of lines (String)
- * @param {Boolean} [blockStart=false] - Blocking the call of the "start" function
- * @return {Boolean} Change occurred
- */
-DKTools.Sprite.prototype.resize = function(width, height, blockStart = false) {
-    if (!this.isResizable()) {
-        return false;
-    }
-
-    return DKTools.Base.prototype.resize.apply(this, arguments);
-};
-
-// T methods
-
-/**
- * Returns the size of the text (special characters are supported)
- * @param {String} text - Text
- * @return {{ width: Number, height: Number }} Size of the text
- */
-DKTools.Sprite.prototype.textSizeEx = function(text) {
-    return Window_Base.prototype.textSizeEx.apply(this, arguments);
-}
 
 // U methods
 
@@ -13885,6 +14228,7 @@ DKTools.Window.prototype.initialize = function(object, y, width, height) {
     Window.prototype.initialize.apply(this, arguments);
     DKTools.Base.prototype.initialize.call(this, object, y, width, height);
     this.loadWindowskin();
+    this.updateBackOpacity();
     this.createContents();
 };
 
@@ -13906,8 +14250,8 @@ DKTools.Window.prototype.activate = function() {
 
 /**
  * Creates the contents background sprite
- * @private
  * @override
+ * @private
  */
 DKTools.Window.prototype._createContentsBackSprite = function() {
     Window.prototype._createContentsBackSprite.apply(this, arguments);
@@ -13944,11 +14288,13 @@ DKTools.Window.prototype.clear = function() {
  * @return {Number} Width of the contents
  */
 DKTools.Window.prototype.contentsWidth = function() {
-    if (typeof this._contentsWidth === 'function') {
+    if (DKTools.Utils.isFunction(this._contentsWidth)) {
         return this._contentsWidth(this);
+    } else if (Number.isFinite(this._contentsWidth)) {
+        return this._contentsWidth;
     }
 
-    return this._contentsWidth;
+    return Window_Base.prototype.contentsWidth.apply(this, arguments);
 };
 
 /**
@@ -13957,11 +14303,24 @@ DKTools.Window.prototype.contentsWidth = function() {
  * @return {Number} Height of the contents
  */
 DKTools.Window.prototype.contentsHeight = function() {
-    if (typeof this._contentsHeight === 'function') {
+    if (DKTools.Utils.isFunction(this._contentsHeight)) {
         return this._contentsHeight(this);
+    } else if (Number.isFinite(this._contentsHeight)) {
+        return this._contentsHeight;
+    } else if (DKTools.Utils.isString(this._contentsHeight)) { // number of lines
+        return this.lineHeight() * parseFloat(this._contentsHeight);
     }
 
-    return this._contentsHeight;
+    return Window_Base.prototype.contentsHeight.apply(this, arguments);
+};
+
+/**
+ * Creates all objects
+ * @override
+ */
+DKTools.Window.prototype.createAll = function() {
+    DKTools.Base.prototype.createAll.apply(this, arguments);
+    this.createContents();
 };
 
 /**
@@ -13994,15 +14353,6 @@ DKTools.Window.prototype.createContents = function() {
 
     this.resetFontSettings();
 };
-
-/**
- * Creates all objects
- * @override
- */
-DKTools.Window.prototype.createAll = function() {
-    DKTools.Base.prototype.createAll.apply(this, arguments);
-    this.createContents();
-}
 
 // D methods
 
@@ -14113,6 +14463,22 @@ DKTools.Window.prototype.loadWindowskin = function() {
     });
 };
 
+// O methods
+
+/**
+ * Handles item change
+ * @override
+ * @param {*} item - Item
+ * @param {*} lastItem - Last item
+ */
+DKTools.Window.prototype.onItemChange = function(item, lastItem) {
+    DKTools.Base.prototype.onItemChange.apply(this, arguments);
+
+    if (DKTools.Utils.isFunction(this._contentsSprite.setItem)) {
+        this._contentsSprite.setItem(item);
+    }
+};
+
 // R methods
 
 /**
@@ -14151,6 +14517,14 @@ DKTools.Window.prototype.resetTextColor = function() {
 };
 
 /**
+ * Resets the paint opacity of the bitmap
+ * @since 1.1.5
+ */
+DKTools.Window.prototype.resetPaintOpacity = function() {
+    this.changePaintOpacity(255);
+};
+
+/**
  * Changes the size of the window
  * Returns true if the change occurred
  * @override
@@ -14160,7 +14534,7 @@ DKTools.Window.prototype.resetTextColor = function() {
  * @return {Boolean} Change occurred
  */
 DKTools.Window.prototype.resize = function(width, height, blockStart = false) {
-    if (typeof height === 'string') { // number of lines
+    if (DKTools.Utils.isString(height)) { // number of lines
         height = this.itemHeight() * parseFloat(height) + this._padding * 2;
     }
 
@@ -14186,19 +14560,13 @@ DKTools.Window.prototype.standardContentsSprite = function() {
 };
 
 /**
- * Returns the standard width of the contents
- * @return {Function} Standard width of the contents
+ * Just for compatibility with MV plugins
+ * Returns the window padding
+ * @since 1.2.4
+ * @return {Number} Window padding
  */
-DKTools.Window.prototype.standardContentsWidth = function() {
-    return () => this.innerWidth;
-};
-
-/**
- * Returns the standard height of the contents
- * @return {Function} Standard height of the contents
- */
-DKTools.Window.prototype.standardContentsHeight = function() {
-    return () => this.innerHeight;
+DKTools.Window.prototype.standardPadding = function() {
+    return $gameSystem.windowPadding();
 };
 
 // setup methods
@@ -14231,7 +14599,7 @@ DKTools.Window.prototype.setupAll = function(object = {}) {
  * @param {Number | String} [height] - Height of the window or number of lines (String)
  */
 DKTools.Window.prototype.setupSize = function(width, height) {
-    if (typeof height === 'string') { // number of lines
+    if (DKTools.Utils.isString(height)) { // number of lines
         height = this.lineHeight() * parseFloat(height) + this._padding * 2;
     }
 
@@ -14243,7 +14611,7 @@ DKTools.Window.prototype.setupSize = function(width, height) {
  * @param {Function | Number} [contentsWidth=this.standardContentsWidth()] - Width of the contents
  */
 DKTools.Window.prototype.setupContentsWidth = function(contentsWidth) {
-    this._contentsWidth = contentsWidth || this.standardContentsWidth();
+    this._contentsWidth = contentsWidth;
 };
 
 /**
@@ -14251,7 +14619,7 @@ DKTools.Window.prototype.setupContentsWidth = function(contentsWidth) {
  * @param {Function | Number} [contentsHeight=this.standardContentsHeight()] - Height of the contents
  */
 DKTools.Window.prototype.setupContentsHeight = function(contentsHeight) {
-    this._contentsHeight = contentsHeight || this.standardContentsHeight();
+    this._contentsHeight = contentsHeight;
 };
 
 /**
@@ -14303,7 +14671,7 @@ DKTools.Window.prototype.updateAll = function() {
  * Updates the contents
  */
 DKTools.Window.prototype.updateContents = function() {
-    if (typeof this._contentsSprite.updateAll === 'function') {
+    if (DKTools.Utils.isFunction(this._contentsSprite.updateAll)) {
         this._contentsSprite.updateAll();
     }
 };
@@ -14311,6 +14679,7 @@ DKTools.Window.prototype.updateContents = function() {
 /**
  * Updates the opening of the window
  * @override
+ * @version 1.1.5
  */
 DKTools.Window.prototype.updateOpen = function() {
     if (!this._opening) {
@@ -14321,7 +14690,8 @@ DKTools.Window.prototype.updateOpen = function() {
 
     if (this.isOpen()) {
         this._opening = false;
-
+        this._eventsManager.finishEvents('open', true);
+    } else {
         this.updateOpenEvents();
     }
 };
@@ -14329,6 +14699,7 @@ DKTools.Window.prototype.updateOpen = function() {
 /**
  * Updates the closing of the window
  * @override
+ * @version 1.1.5
  */
 DKTools.Window.prototype.updateClose = function() {
     if (!this._closing) {
@@ -14339,7 +14710,8 @@ DKTools.Window.prototype.updateClose = function() {
 
     if (this.isClosed()) {
         this._closing = false;
-
+        this._eventsManager.finishEvents('close', true);
+    } else {
         this.updateCloseEvents();
     }
 };
@@ -14363,13 +14735,345 @@ DKTools.Window.prototype.updateCloseEvents = function() {
 
 
 //===========================================================================
+// DKTools.Window.Scrollable
+//===========================================================================
+
+/**
+ * @class
+ * @since 1.1.5
+ * @extends Window_Scrollable
+ * @mixes DKTools.Window
+ */
+DKTools.Window.Scrollable = function(object, y, width, height) {
+    this.initialize.apply(this, arguments);
+};
+
+DKTools.Window.Scrollable.prototype = Object.create(Window_Scrollable.prototype);
+Object.defineProperties(DKTools.Window.Scrollable.prototype,
+    Object.getOwnPropertyDescriptors(DKTools.Window.prototype));
+DKTools.Window.Scrollable.prototype.constructor = DKTools.Window.Scrollable;
+
+// initialize methods
+
+/**
+ * Initializes a window
+ *
+ * @override
+ *
+ * @param {Number | Graphics | Object} [object] - The X coordinate or Graphics or object with parameters
+ * @param {Number} [y] - The Y coordinate (if object is Number)
+ * @param {Number} [width] - Width of the window (if object is Number)
+ * @param {Number | String} [height] - Height of the window or number of lines (String) (if object is Number)
+ *
+ * @param {Number} [object.x] - The X coordinate
+ * @param {Number} [object.y] - The Y coordinate
+ * @param {Number} [object.width] - Width of the window
+ * @param {Number | String} [object.height] - Height of the window or number of lines (String)
+ *
+ * @example
+ * const window = new DKTools.Window.Scrollable(0, 0, 100, 100);
+ *
+ * @example
+ * const window = new DKTools.Window.Scrollable(Graphics);
+ *
+ * @example
+ * const window = new DKTools.Window.Scrollable({ x: 0, y: 0, width: 200, height: 200 });
+ *
+ * @example
+ * const window = new DKTools.Window.Scrollable(50, 50, 400, '2');
+ */
+DKTools.Window.Scrollable.prototype.initialize = function(object, y, width, height) {
+    DKTools.Window.prototype.initialize.apply(this, arguments);
+    this.clearScrollStatus();
+};
+
+// C methods
+
+/**
+ * Clears all data
+ * @override
+ * @private
+ */
+DKTools.Window.Scrollable.prototype._clearAll = function() {
+    DKTools.Window.prototype._clearAll.apply(this, arguments);
+    this._scrollX = 0;
+    this._scrollY = 0;
+    this._scrollBaseX = 0;
+    this._scrollBaseY = 0;
+};
+
+/**
+ * @override
+ */
+DKTools.Window.Scrollable.prototype._createArrowSprites = function() {
+    DKTools.Window.prototype._createArrowSprites.apply(this, arguments);
+
+    this._leftArrowSprite = new Sprite();
+    this._rightArrowSprite = new Sprite();
+
+    this.addChild(this._leftArrowSprite);
+    this.addChild(this._rightArrowSprite);
+};
+
+// I methods
+
+/**
+ * Returns the width of the item
+ * @override
+ * @return {Number} Width of the item
+ */
+DKTools.Window.Scrollable.prototype.itemWidth = function() {
+    if (DKTools.Utils.isFunction(this._itemWidth)) {
+        return this._itemWidth(this);
+    } else if (Number.isFinite(this._itemWidth)) {
+        return this._itemWidth;
+    }
+
+    return Window_Scrollable.prototype.itemWidth.apply(this, arguments);
+};
+
+/**
+ * Returns the height of the item
+ * @override
+ * @return {Number} Height of the item
+ */
+DKTools.Window.Scrollable.prototype.itemHeight = function() {
+    if (DKTools.Utils.isFunction(this._itemHeight)) {
+        return this._itemHeight(this);
+    } else if (Number.isFinite(this._itemHeight)) {
+        return this._itemHeight;
+    } else if (DKTools.Utils.isString(this._itemHeight)) { // number of lines
+        return this.lineHeight() * parseFloat(this._itemHeight);
+    }
+
+    return Window_Scrollable.prototype.itemHeight.apply(this, arguments);
+};
+
+/**
+ * Returns true if the horizontal scrolling
+ * @return {Boolean} Horizontal scrolling
+ */
+DKTools.Window.Scrollable.prototype.isHorizontal = function() {
+    return this.maxScrollX() > 0;
+};
+
+// O methods
+
+/**
+ * @override
+ * @return {Number}
+ */
+DKTools.Window.Scrollable.prototype.overallWidth = function() {
+    return this.hasBitmap() ?
+        this.contents.width : 0;
+};
+
+/**
+ * @override
+ * @return {Number}
+ */
+DKTools.Window.Scrollable.prototype.overallHeight = function() {
+    return this.hasBitmap() ?
+        this.contents.height : 0;
+};
+
+/**
+ * Handles item change
+ * @override
+ * @param {*} item - Item
+ * @param {*} lastItem - Last item
+ */
+DKTools.Window.Scrollable.prototype.onItemChange = function(item, lastItem) {
+    DKTools.Window.prototype.onItemChange.apply(this, arguments);
+    this.scrollTo(0, 0);
+};
+
+// P methods
+
+/**
+ * Processes page scroll
+ * @override
+ */
+DKTools.Window.Scrollable.prototype.processPageScroll = function() {
+    if (Input.isRepeated('pageup')) {
+        if (this.isHorizontal()) {
+            this.smoothScrollRight(1);
+        } else {
+            this.smoothScrollUp(1);
+        }
+    }
+
+    if (Input.isRepeated('pagedown')) {
+        if (this.isHorizontal()) {
+            this.smoothScrollLeft(1);
+        } else {
+            this.smoothScrollDown(1);
+        }
+    }
+};
+
+/**
+ * Processes wheel scroll
+ * @override
+ */
+DKTools.Window.Scrollable.prototype.processWheelScroll = function() {
+    if (this.isWheelScrollEnabled() && this.isTouchedInsideFrame()) {
+        const threshold = 20;
+
+        if (TouchInput.wheelY >= threshold) {
+            if (this.isHorizontal()) {
+                this.smoothScrollLeft(1);
+            } else {
+                this.smoothScrollDown(1);
+            }
+        }
+
+        if (TouchInput.wheelY <= -threshold) {
+            if (this.isHorizontal()) {
+                this.smoothScrollRight(1);
+            } else {
+                this.smoothScrollUp(1);
+            }
+        }
+    }
+};
+
+// R methods
+
+/**
+ * Refreshes arrows
+ * @override
+ */
+DKTools.Window.Scrollable.prototype._refreshArrows = function() {
+    DKTools.Window.prototype._refreshArrows.apply(this, arguments);
+
+    const w = this._width;
+    const h = this._height;
+    const p = 24;
+    const q = p / 2;
+    const sx = 96 + p;
+    const sy = 0 + p;
+
+    this._leftArrowSprite.bitmap = this._windowskin;
+    this._leftArrowSprite.anchor.set(0.5, 0.5);
+    this._leftArrowSprite.setFrame(sx, sy + q, q, p);
+    this._leftArrowSprite.move(q / 2, h / 2);
+
+    this._rightArrowSprite.bitmap = this._windowskin;
+    this._rightArrowSprite.anchor.set(0.5, 0.5);
+    this._rightArrowSprite.setFrame(sx + q + p, sy + q, q, p);
+    this._rightArrowSprite.move(w - q, h / 2);
+};
+
+// S methods
+
+// setup methods
+
+/**
+ * Sets all parameters
+ *
+ * @param {Object} [object={}] - Parameters
+ *
+ * @param {Function | Number} [object.itemWidth] - Width of the item
+ * @param {Function | Number} [object.itemHeight] - Height of the item
+ * @param {Function | Number} [object.scrollBlockWidth] - Width of the scroll block
+ * @param {Function | Number} [object.scrollBlockHeight] - Height of the scroll block
+ */
+DKTools.Window.Scrollable.prototype.setupAll = function(object = {}) {
+    object = object || {};
+    DKTools.Window.prototype.setupAll.apply(this, arguments);
+    this.setupItemWidth(object.itemWidth);
+    this.setupItemHeight(object.itemHeight);
+};
+
+/**
+ * Sets the width of the item
+ * @param {Function | Number} [width] - Width of the item
+ */
+DKTools.Window.Scrollable.prototype.setupItemWidth = function(width) {
+    this._itemWidth = width;
+};
+
+/**
+ * Sets the height of the item
+ * @param {Function | Number} [height] - Height of the item
+ */
+DKTools.Window.Scrollable.prototype.setupItemHeight = function(height) {
+    this._itemHeight = height;
+};
+
+// other S methods
+
+/**
+ * Smooth scrolls to left
+ * @param {Number} cols - Cols to scroll
+ */
+DKTools.Window.Scrollable.prototype.smoothScrollLeft = function(cols) {
+    this.smoothScrollBy(this.itemWidth() * cols, 0);
+};
+
+/**
+ * Smooth scrolls to right
+ * @param {Number} cols - Cols to scroll
+ */
+DKTools.Window.Scrollable.prototype.smoothScrollRight = function(cols) {
+    this.smoothScrollBy(-this.itemWidth() * cols, 0);
+};
+
+// U methods
+
+/**
+ * @override
+ * @private
+ */
+DKTools.Window.Scrollable.prototype._updateArrows = function() {
+    const isOpen = this.isOpen();
+
+    this._leftArrowSprite.visible = isOpen && this.leftArrowVisible;
+    this._rightArrowSprite.visible = isOpen && this.rightArrowVisible;
+    this._downArrowSprite.visible = isOpen && this.downArrowVisible;
+    this._upArrowSprite.visible = isOpen && this.upArrowVisible;
+};
+
+/**
+ * Updates the arrows
+ * @override
+ */
+DKTools.Window.Scrollable.prototype.updateArrows = function() {
+    this.leftArrowVisible = this._scrollX > 0;
+    this.rightArrowVisible = this._scrollX < this.maxScrollX();
+    this.downArrowVisible = this._scrollY < this.maxScrollY();
+    this.upArrowVisible = this._scrollY > 0;
+};
+
+/**
+ * Updates the origin
+ * @override
+ */
+DKTools.Window.Scrollable.prototype.updateOrigin = function() {
+    Window_Scrollable.prototype.updateOrigin.apply(this, arguments);
+    this.origin.set(this._scrollX, this._scrollY);
+};
+
+/**
+ * Updates the window
+ * @override
+ */
+DKTools.Window.Scrollable.prototype.update = function() {
+    Window_Scrollable.prototype.update.apply(this, arguments);
+    DKTools.Base.prototype.update.apply(this, arguments);
+};
+
+
+
+//===========================================================================
 // DKTools.Window.Selectable
 //===========================================================================
 
 /**
  * @class
  * @extends Window_Selectable
- * @mixes DKTools.Window
+ * @mixes DKTools.Window.Scrollable
  */
 DKTools.Window.Selectable = function(object, y, width, height) {
     this.initialize.apply(this, arguments);
@@ -14377,7 +15081,7 @@ DKTools.Window.Selectable = function(object, y, width, height) {
 
 DKTools.Window.Selectable.prototype = Object.create(Window_Selectable.prototype);
 Object.defineProperties(DKTools.Window.Selectable.prototype,
-    Object.getOwnPropertyDescriptors(DKTools.Window.prototype));
+    Object.getOwnPropertyDescriptors(DKTools.Window.Scrollable.prototype));
 DKTools.Window.Selectable.prototype.constructor = DKTools.Window.Selectable;
 
 // A methods
@@ -14392,7 +15096,7 @@ DKTools.Window.Selectable.prototype.addItem = function(item) {
         item.enabled = true;
     }
 
-    if (item.symbol && typeof item.handler === 'function') {
+    if (item.symbol && DKTools.Utils.isFunction(item.handler)) {
         this.setHandler(item.symbol, item.handler);
     }
 
@@ -14403,38 +15107,15 @@ DKTools.Window.Selectable.prototype.addItem = function(item) {
 
 /**
  * Clears all
- * @private
+ * @version 1.1.5
  * @override
+ * @private
  */
 DKTools.Window.Selectable.prototype._clearAll = function() {
-    DKTools.Window.prototype._clearAll.apply(this, arguments);
-
-    this._index = 0;
-    this._cursorFixed = false;
-    this._cursorAll = false;
-    this._helpWindow = null;
-    this._handlers = {};
-    this._doubleTouch = false;
+    DKTools.Window.Scrollable.prototype._clearAll.apply(this, arguments);
     this._canRepeat = true;
-    this._scrollX = 0;
-    this._scrollY = 0;
-    this._scrollBaseX = 0;
-    this._scrollBaseY = 0;
-
-    this.clearScrollStatus();
-};
-
-/**
- * @override
- */
-DKTools.Window.Selectable.prototype._createArrowSprites = function() {
-    DKTools.Window.prototype._createArrowSprites.apply(this, arguments);
-
-    this._leftArrowSprite = new Sprite();
-    this._rightArrowSprite = new Sprite();
-
-    this.addChild(this._leftArrowSprite);
-    this.addChild(this._rightArrowSprite);
+    this._handlers = {};
+    this._index = 0;
 };
 
 /**
@@ -14604,6 +15285,14 @@ DKTools.Window.Selectable.prototype.cursorRight = function(wrap = false) {
 // D methods
 
 /**
+ * Disables the items background
+ * @since 1.1.5
+ */
+DKTools.Window.Selectable.prototype.disableItemsBackground = function() {
+    this._itemsBackgroundDisabled = true;
+};
+
+/**
  * Draws all
  * @override
  */
@@ -14618,10 +15307,14 @@ DKTools.Window.Selectable.prototype.drawAll = function() {
 DKTools.Window.Selectable.prototype.drawAllItems = function() {
     const maxVisibleItems = this.maxVisibleItems();
     const maxItems = this.maxItems();
+    const itemBackgroundEnabled = this.isItemsBackgroundEnabled();
     let index = this.topIndex();
 
     for (let i = 0; i < maxVisibleItems && index < maxItems; i++, index++) {
-        this.drawItemBackground(index);
+        if (itemBackgroundEnabled) {
+            this.drawItemBackground(index);
+        }
+
         this.drawItem(index);
     }
 };
@@ -14719,6 +15412,19 @@ DKTools.Window.Selectable.prototype.hasSymbol = function(symbol) {
     return this._list.some(item => item.symbol === symbol);
 };
 
+/**
+ * Hides the cursor
+ * Returns the event with "update" type
+ * @override
+ * @return {DKTools.Event} Event
+ */
+DKTools.Window.Selectable.prototype.hideCursor = function() {
+    return this.addEvent({
+        type: 'update',
+        onUpdate: DKTools.Window.prototype.hideCursor.bind(this)
+    });
+};
+
 // I methods
 
 /**
@@ -14792,11 +15498,11 @@ DKTools.Window.Selectable.prototype.itemWidth = function() {
  * @return {Number} Height of the item
  */
 DKTools.Window.Selectable.prototype.itemHeight = function() {
-    if (typeof this._itemHeight === 'function') {
+    if (DKTools.Utils.isFunction(this._itemHeight)) {
         return this._itemHeight(this);
     } else if (Number.isFinite(this._itemHeight)) {
         return this._itemHeight;
-    } else if (typeof this._itemHeight === 'string') { // number of lines
+    } else if (DKTools.Utils.isString(this._itemHeight)) { // number of lines
         return this.lineHeight() * parseFloat(this._itemHeight);
     }
 
@@ -14804,10 +15510,15 @@ DKTools.Window.Selectable.prototype.itemHeight = function() {
 };
 
 /**
+ * @version 1.2.5
  * @override
  * @param {Number} index - Item index
  */
 DKTools.Window.Selectable.prototype.itemRect = function(index) {
+    if (!this.isHorizontal()) {
+        return Window_Selectable.prototype.itemRect.apply(this, arguments);
+    }
+
     const itemWidth = this.itemWidth();
     const itemHeight = this.itemHeight();
     const colSpacing = this.colSpacing();
@@ -14817,14 +15528,7 @@ DKTools.Window.Selectable.prototype.itemRect = function(index) {
     const rect = new Rectangle(0, 0, width, height);
 
     if (this.isHorizontal()) {
-        rect.x = index * itemWidth - this.scrollBaseX();
-    } else {
-        const maxCols = this.maxCols();
-        const col = index % maxCols;
-        const row = Math.floor(index / maxCols);
-
-        rect.x = col * itemWidth + colSpacing / 2 - this.scrollBaseX();
-        rect.y = row * itemHeight + rowSpacing / 2 - this.scrollBaseY();
+        rect.x = index * itemWidth + colSpacing / 2 - this.scrollBaseX();
     }
 
     return rect;
@@ -14889,7 +15593,7 @@ DKTools.Window.Selectable.prototype.itemPaintOpacity = function(index) {
         return item.paintOpacity(index, this);
     } else if (Number.isFinite(item.paintOpacity)) {
         return item.paintOpacity;
-    } else if (typeof this._itemPaintOpacity === 'function') {
+    } else if (DKTools.Utils.isFunction(this._itemPaintOpacity)) {
         return this._itemPaintOpacity(index, this);
     }
 
@@ -14914,12 +15618,67 @@ DKTools.Window.Selectable.prototype.isItemEnabled = function(index) {
 };
 
 /**
+ * Returns true if the item is selected
+ * @since 1.1.5
+ * @param {Number} index - Index
+ * @return {Boolean} Item is selected
+ */
+DKTools.Window.Selectable.prototype.isItemSelected = function(index) {
+    return this._index === index;
+};
+
+/**
+ * Returns true if the items background enabled
+ * @since 1.1.5
+ * @return {Boolean} Items background enabled
+ */
+DKTools.Window.Selectable.prototype.isItemsBackgroundEnabled = function() {
+    return !this._itemsBackgroundDisabled;
+};
+
+/**
  * Returns true if the current item (selected item) is enabled
  * @override
  * @return {Boolean} Current item (selected item) is enabled
  */
 DKTools.Window.Selectable.prototype.isCurrentItemEnabled = function() {
     return this.isItemEnabled(this._index);
+};
+
+/**
+ * Returns true if the horizontal scrolling
+ * @override
+ * @return {Boolean} Horizontal scrolling
+ */
+DKTools.Window.Selectable.prototype.isHorizontal = function() {
+    return Window_Selectable.prototype.isHorizontal.apply(this, arguments);
+};
+
+/**
+ * Returns true if the OK enabled
+ * @override
+ * @return {Boolean} OK enabled
+ */
+DKTools.Window.Selectable.prototype.isOkEnabled = function() {
+    return true;
+};
+
+/**
+ * Returns true if the refreshing when the item is selected
+ * @since 1.1.5
+ * @return {Boolean} Refreshing when the item is selected
+ */
+DKTools.Window.Selectable.prototype.isRefreshOnSelect = function() {
+    return !!this._refreshOnSelect;
+};
+
+/**
+ * Returns true if the scroll enabled
+ * @override
+ * @return {Boolean} Scroll enabled
+ */
+DKTools.Window.Selectable.prototype.isScrollEnabled = function() {
+    return Window_Selectable.prototype.isScrollEnabled.apply(this, arguments);
 };
 
 // M methods
@@ -15098,58 +15857,7 @@ DKTools.Window.Selectable.prototype.processOk = function() {
     }
 };
 
-/**
- * Processes wheel scroll
- * @override
- */
-DKTools.Window.Selectable.prototype.processWheelScroll = function() {
-    if (this.isWheelScrollEnabled() && this.isTouchedInsideFrame()) {
-        const threshold = 20;
-
-        if (TouchInput.wheelY >= threshold) {
-            if (this.isHorizontal()) {
-                this.smoothScrollLeft(1);
-            } else {
-                this.smoothScrollDown(1);
-            }
-        }
-
-        if (TouchInput.wheelY <= -threshold) {
-            if (this.isHorizontal()) {
-                this.smoothScrollRight(1);
-            } else {
-                this.smoothScrollUp(1);
-            }
-        }
-    }
-};
-
 // R methods
-
-/**
- * Refreshes arrows
- * @override
- */
-DKTools.Window.Selectable.prototype._refreshArrows = function() {
-    DKTools.Window.prototype._refreshArrows.apply(this, arguments);
-
-    const w = this._width;
-    const h = this._height;
-    const p = 24;
-    const q = p / 2;
-    const sx = 96 + p;
-    const sy = 0 + p;
-
-    this._leftArrowSprite.bitmap = this._windowskin;
-    this._leftArrowSprite.anchor.set(0.5, 0.5);
-    this._leftArrowSprite.setFrame(sx, sy + q, q, p);
-    this._leftArrowSprite.move(q / 2, h / 2);
-
-    this._rightArrowSprite.bitmap = this._windowskin;
-    this._rightArrowSprite.anchor.set(0.5, 0.5);
-    this._rightArrowSprite.setFrame(sx + q + p, sy + q, q, p);
-    this._rightArrowSprite.move(w - q, h / 2);
-};
 
 /**
  * Refreshes the window
@@ -15158,6 +15866,14 @@ DKTools.Window.Selectable.prototype._refreshArrows = function() {
 DKTools.Window.Selectable.prototype.refreshAll = function() {
     DKTools.Window.prototype.refreshAll.apply(this, arguments);
     this.refreshCursor();
+};
+
+/**
+ * Enables refreshing when the item is selected
+ * @since 1.1.5
+ */
+DKTools.Window.Selectable.prototype.refreshOnSelect = function() {
+    this._refreshOnSelect = true;
 };
 
 // S methods
@@ -15225,13 +15941,9 @@ DKTools.Window.Selectable.prototype.standardItemTextAlign = function() {
  *
  * @param {Object} [object={}] - Parameters
  *
- * @param {Number} [object.index] - Index
  * @param {Number} [object.maxCols] - Number of the columns
  * @param {Object[]} [object.items] - List of the items
  * @param {Function} [object.drawItemHandler] - Handler of draw of the item
- * @param {Function | Number} [object.itemWidth] - Width of the item
- * @param {Function | Number} [object.itemHeight] - Height of the item
- * @param {Function | Object} [object.itemFont] - Font of the item
  * @param {Function | String} [object.itemTextColor] - Text color of the item
  * @param {Function | Number} [object.itemPaintOpacity] - Paint opacity of the item
  * @param {Function | String} [object.itemAlign] - Align of the item
@@ -15244,8 +15956,6 @@ DKTools.Window.Selectable.prototype.setupAll = function(object = {}) {
 
     this.setupMaxCols(object.maxCols);
     this.setupItems(object.items);
-    this.setupItemWidth(object.itemWidth);
-    this.setupItemHeight(object.itemHeight);
     this.setupItemTextColor(object.itemTextColor);
     this.setupItemPaintOpacity(object.itemPaintOpacity);
     this.setupItemAlign(object.itemAlign);
@@ -15328,29 +16038,13 @@ DKTools.Window.Selectable.prototype.setupItemDrawHandler = function(handler) {
 };
 
 /**
- * Sets the width of the item
- * @param {Function | Number} [itemWidth] - Width of the item
- */
-DKTools.Window.Selectable.prototype.setupItemWidth = function(itemWidth) {
-    this._itemWidth = itemWidth;
-};
-
-/**
- * Sets the height of the item
- * @param {Function | Number} [itemHeight] - Height of the item
- */
-DKTools.Window.Selectable.prototype.setupItemHeight = function(itemHeight) {
-    this._itemHeight = itemHeight;
-};
-
-/**
  * Sets the size of the window
  * @override
  * @param {Number | Object} [width] - Width of the window
  * @param {Number | String} [height] - Height of the window or number of lines (String)
  */
 DKTools.Window.Selectable.prototype.setupSize = function(width, height) {
-    if (typeof height === 'string') { // number of lines
+    if (DKTools.Utils.isString(height)) { // number of lines
         height = this.itemHeight() * parseFloat(height) + this._padding * 2;
     }
 
@@ -15411,6 +16105,7 @@ DKTools.Window.Selectable.prototype.setMaxCols = function(maxCols, blockStart = 
 
 /**
  * Selects the item
+ * @version 1.1.5
  * @override
  * @param {Number} index - Index
  * @param {Boolean} [playCursor=false] - Play "cursor" sound
@@ -15420,11 +16115,15 @@ DKTools.Window.Selectable.prototype.select = function(index, playCursor = false)
 
     Window_Selectable.prototype.select.call(this, index);
 
+    if (this.isRefreshOnSelect()) {
+        this.refreshAll();
+    }
+
     if (playCursor) {
         this.playCursorSound();
     }
 
-    if (item && typeof item.selectHandler === 'function') {
+    if (item && DKTools.Utils.isFunction(item.selectHandler)) {
         item.selectHandler(index, this);
     }
 
@@ -15543,22 +16242,6 @@ DKTools.Window.Selectable.prototype.selectNextItem = function(wrap = false, smoo
     }
 };
 
-/**
- * Smooth scrolls to left
- * @param {Number} cols - Cols to scroll
- */
-DKTools.Window.Selectable.prototype.smoothScrollLeft = function(cols) {
-    this.smoothScrollBy(this.itemWidth() * cols, 0);
-};
-
-/**
- * Smooth scrolls to right
- * @param {Number} cols - Cols to scroll
- */
-DKTools.Window.Selectable.prototype.smoothScrollRight = function(cols) {
-    this.smoothScrollBy(-this.itemWidth() * cols, 0);
-};
-
 // T methods
 
 /**
@@ -15582,34 +16265,11 @@ DKTools.Window.Selectable.prototype.topIndex = function() {
 // U methods
 
 /**
- * @override
- * @private
- */
-DKTools.Window.Selectable.prototype._updateArrows = function() {
-    const isOpen = this.isOpen();
-
-    this._leftArrowSprite.visible = isOpen && this.leftArrowVisible;
-    this._rightArrowSprite.visible = isOpen && this.rightArrowVisible;
-    this._downArrowSprite.visible = isOpen && this.downArrowVisible;
-    this._upArrowSprite.visible = isOpen && this.upArrowVisible;
-};
-
-/**
- * Updates the arrows
+ * Updates the origin
  * @override
  */
-DKTools.Window.Selectable.prototype.updateArrows = function() {
-    if (this.isHorizontal()) {
-        this.leftArrowVisible = this._scrollX > 0;
-        this.rightArrowVisible = this._scrollX < this.maxScrollX();
-        this.downArrowVisible = false;
-        this.upArrowVisible = false;
-    } else {
-        this.leftArrowVisible = false;
-        this.rightArrowVisible = false;
-        this.downArrowVisible = this._scrollY < this.maxScrollY();
-        this.upArrowVisible = this._scrollY > 0;
-    }
+DKTools.Window.Selectable.prototype.updateOrigin = function() {
+    Window_Selectable.prototype.updateOrigin.apply(this, arguments);
 };
 
 /**
@@ -15625,9 +16285,10 @@ DKTools.Window.Selectable.prototype.update = function() {
 
 /**
  * Updates the events with type: select
+ * @version 1.1.6
  */
 DKTools.Window.Selectable.prototype.updateSelectEvents = function() {
-    this._eventsManager.updateEventsContainer('select');
+    this._eventsManager.updateEventsContainer('select', this._index);
 };
 
 
@@ -15718,10 +16379,20 @@ DKTools.Scene.prototype.addAnimation = function(animation) {
     this._eventsManager.addAnimation(animation);
 };
 
+/**
+ * Returns true if the page buttons enabled
+ * @since 1.2.4
+ * @return {Boolean} Page buttons enabled
+ */
+DKTools.Scene.prototype.arePageButtonsEnabled = function() {
+    return true;
+};
+
 // C methods
 
 /**
  * Creates all
+ * @version 1.2.4
  * @override
  */
 DKTools.Scene.prototype.create = function() {
@@ -15729,20 +16400,23 @@ DKTools.Scene.prototype.create = function() {
     this.createBackground();
     this.createAllSprites();
     this.createWindowLayer();
-    this.createAllWindows();
 
     if (ConfigManager.touchUI) {
         this.createUI();
     }
 
+    this.createAllWindows();
     this.createForeground();
 };
 
 /**
  * Creates the background
+ * @version 1.2.4
  */
 DKTools.Scene.prototype.createBackground = function() {
-    // to be overridden by plugins
+    if (this.needsBackground()) {
+        Scene_MenuBase.prototype.createBackground.apply(this, arguments);
+    }
 };
 
 /**
@@ -15757,6 +16431,16 @@ DKTools.Scene.prototype.createAllSprites = function() {
  */
 DKTools.Scene.prototype.createAllWindows = function() {
     // to be overridden by plugins
+};
+
+/**
+ * Creates the help window
+ * @since 1.2.4
+ * @param {Function} [windowClass=Window_Help] - Window class
+ */
+DKTools.Scene.prototype.createHelpWindow = function(windowClass = Window_Help) {
+    this._helpWindow = new windowClass(this.helpWindowRect());
+    this.addWindow(this._helpWindow);
 };
 
 /**
@@ -15820,6 +16504,11 @@ DKTools.Scene.prototype.hasWindowLayer = function() {
     return !!this._windowLayer;
 };
 
+DKTools.Scene.prototype.helpAreaBottom = Scene_MenuBase.prototype.helpAreaBottom;
+DKTools.Scene.prototype.helpAreaHeight = Scene_MenuBase.prototype.helpAreaHeight;
+DKTools.Scene.prototype.helpAreaTop = Scene_MenuBase.prototype.helpAreaTop;
+DKTools.Scene.prototype.helpWindowRect = Scene_MenuBase.prototype.helpWindowRect;
+
 // I methods
 
 /**
@@ -15835,7 +16524,22 @@ DKTools.Scene.prototype.isChild = function(object) {
     return this.children.includes(object);
 };
 
+// M methods
+
+DKTools.Scene.prototype.mainAreaBottom = Scene_MenuBase.prototype.mainAreaBottom;
+DKTools.Scene.prototype.mainAreaHeight = Scene_MenuBase.prototype.mainAreaHeight;
+DKTools.Scene.prototype.mainAreaTop = Scene_MenuBase.prototype.mainAreaTop;
+
 // N methods
+
+/**
+ * Returns true if needs create the background
+ * @since 1.2.4
+ * @return {Boolean} Needs create the background
+ */
+DKTools.Scene.prototype.needsBackground = function() {
+    return false;
+};
 
 /**
  * Returns true if needs create the cancel button
@@ -15881,15 +16585,43 @@ DKTools.Scene.prototype.removeWindow = function(window) {
     return false;
 };
 
+// S methods
+
+/**
+ * Sets the background opacity
+ * @since 1.2.4
+ * @param {Number} opacity - Opacity
+ */
+DKTools.Scene.prototype.setBackgroundOpacity = function(opacity) {
+    if (this._backgroundSprite) {
+        this._backgroundSprite.opacity = opacity;
+    }
+};
+
 // U methods
 
 /**
  * Updates the scene
+ * @version 1.2.4
  * @override
  */
 DKTools.Scene.prototype.update = function() {
     Scene_Base.prototype.update.apply(this, arguments);
+    this.updatePageButtons();
     this.updateEvents();
+};
+
+/**
+ * Updates page buttons
+ * @since 1.2.4
+ */
+DKTools.Scene.prototype.updatePageButtons = function() {
+    if (this._pageupButton && this._pagedownButton) {
+        const enabled = this.arePageButtonsEnabled();
+
+        this._pageupButton.visible = enabled;
+        this._pagedownButton.visible = enabled;
+    }
 };
 
 /**
@@ -16114,7 +16846,6 @@ main.onEffekseerLoad = function() {
     DKTools.Utils.initialize();
     DKTools.IO.initialize();
     DKTools_main_onEffekseerLoad.apply(this, arguments);
-    DKTools.PreloadManager.initialize();
     DKTools.PluginManager.initialize();
 };
 
@@ -16123,6 +16854,7 @@ main.onEffekseerLoad = function() {
 //===========================================================================
 // Utils
 //===========================================================================
+
 const DKTools_Utils_isNwjs = Utils.isNwjs;
 Utils.isNwjs = function() {
     if (this.__isNwjs__ === undefined) {
@@ -16165,6 +16897,10 @@ Utils.isTest = function() {
     }
 
     return this.__isTest__;
+};
+
+Utils.getEncryptedFileExtension = function() {
+    return '_';
 };
 
 
@@ -16489,6 +17225,9 @@ Object.defineProperties(Sprite.prototype, {
         get: function() {
             return this._frame;
         },
+        set: function(value) {
+            this.setFrame(value);
+        },
         configurable: true
     }
 
@@ -16794,6 +17533,10 @@ SceneManager.changeScene = function() {
 
 SceneManager.updateScene = function() {
     if (this._scene) {
+        if (this._scene.isStarted() && this.isGameActive()) {
+            this._scene.update();
+        }
+
         if (!this._sceneCreated && this._scene.isPreloaded()) {
             this._scene.create();
 
@@ -16816,16 +17559,16 @@ SceneManager.updateScene = function() {
 
                 DKTools.Utils.logError(e);
 
+                if (Array.isArray(e) && e[0] === 'LoadError') {
+                    throw e;
+                }
+
                 this.onBeforeSceneStart();
 
                 this._scene.start();
 
                 this.onSceneStart();
             }
-        }
-
-        if (this._scene.isStarted() && this.isGameActive()) {
-            this._scene.update();
         }
     }
 };
@@ -16925,8 +17668,13 @@ Scene_Base.prototype.terminate = function() {
 const DKTools_Scene_Boot_isReady = Scene_Boot.prototype.isReady;
 Scene_Boot.prototype.isReady = function() {
     return DKTools_Scene_Boot_isReady.apply(this, arguments)
-        && DKTools.StartupManager.isReady()
-        && DKTools.PreloadManager.isReady();
+        && DKTools.StartupManager.isReady();
+};
+
+const DKTools_Scene_Boot_isBusy = Scene_Boot.prototype.isBusy;
+Scene_Boot.prototype.isBusy = function() {
+    return DKTools_Scene_Boot_isBusy.apply(this, arguments)
+        || !DKTools.PreloadManager.isReady();
 };
 
 const DKTools_Scene_Boot_start = Scene_Boot.prototype.start;
@@ -16940,19 +17688,17 @@ Scene_Boot.prototype.start = function() {
             (quickStart['Skip Saves'] || !DataManager.isAnySavefileExists())) {
             Scene_Base.prototype.start.apply(this, arguments);
             SoundManager.preloadImportantSounds();
-
             this.checkPlayerLocation();
-
             DataManager.setupNewGame();
-
             this.resizeScreen();
             this.updateDocumentTitle();
-
             SceneManager.goto(window[quickStart['Scene Name']]);
         }
     } else {
         DKTools_Scene_Boot_start.apply(this, arguments);
     }
+
+    DKTools.PreloadManager.initialize();
 };
 
 
@@ -17020,6 +17766,29 @@ Game_Map.prototype.tileWidth = function() {
 const DKTools_Game_Map_tileHeight = Game_Map.prototype.tileHeight;
 Game_Map.prototype.tileHeight = function() {
     return Tilemap.TILE_HEIGHT || DKTools_Game_Map_tileHeight.apply(this, arguments);
+};
+
+
+
+//===========================================================================
+// Window_Scrollable
+//===========================================================================
+
+Window_Scrollable.prototype.processPageScroll = function() {
+    if (Input.isRepeated('pageup')) {
+        this.smoothScrollUp(1);
+    }
+
+    if (Input.isRepeated('pagedown')) {
+        this.smoothScrollDown(1);
+    }
+};
+
+const DKTools_Window_Scrollable_update =
+    Window_Scrollable.prototype.update;
+Window_Scrollable.prototype.update = function() {
+    DKTools_Window_Scrollable_update.apply(this, arguments);
+    this.processPageScroll();
 };
 
 
@@ -17093,7 +17862,7 @@ if (DKToolsParam.get('Title Menu Command Window', 'Enabled')) {
 
 }
 
-if (DKToolsParam.get('Title Menu Exit Command', 'Enabled')) {
+if (DKToolsParam.get('Title Menu Exit Command', 'Enabled') && Utils.isNwjs()) {
 
     const DKTools_Window_TitleCommand_paint = Window_TitleCommand.prototype.paint;
     Window_TitleCommand.prototype.paint = function() {
@@ -17126,7 +17895,15 @@ if (DKToolsParam.get('Title Menu Exit Command', 'Enabled')) {
 if (DKToolsParam.get('Max Savefiles', 'Enabled')) {
 
     DataManager.maxSavefiles = function() {
-        return DKToolsParam.get('Max Savefiles', 'Max Savefiles') || 1;
+        return (DKToolsParam.get('Max Savefiles', 'Max Savefiles') || 1) + 1;
+    };
+
+}
+
+if (Utils.isMobileDevice() || DKToolsParam.get('Active In Background', 'Enabled')) {
+
+    SceneManager.isGameActive = function() {
+        return true;
     };
 
 }

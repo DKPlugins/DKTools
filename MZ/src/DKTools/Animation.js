@@ -189,8 +189,8 @@ DKTools.Animation = class extends DKTools.Event {
 
     /**
      * Updates the animation
-     * @private
      * @override
+     * @private
      * @param {*} [data] - Data
      */
     _update(data) {

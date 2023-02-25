@@ -13,7 +13,7 @@ DKTools.StartupManager = class {
 
     /**
      * Initializes the manager
-     *
+     * @version 1.1.5
      * @static
      * @async
      */

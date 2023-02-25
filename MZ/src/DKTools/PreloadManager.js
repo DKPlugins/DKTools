@@ -275,6 +275,7 @@ DKTools.PreloadManager = class {
 
     /**
      * Processes the loading of the data
+     * @version 1.1.4
      * @private
      * @static
      * @param {WebAudio | Bitmap} data - Data
@@ -287,7 +288,7 @@ DKTools.PreloadManager = class {
         if (this._fileLoadListeners) {
             const obj = {
                 file: data,
-                loadded: this._loaded,
+                loaded: this._loaded,
                 total: this.getTotal()
             };
 
@@ -348,6 +349,7 @@ DKTools.PreloadManager = class {
     /**
      * Adds the object to preload queue
      *
+     * @version 1.1.4
      * @private
      * @static
      *
@@ -360,6 +362,32 @@ DKTools.PreloadManager = class {
     static _preload(type, object) {
         if (object instanceof Object && DKTools.Utils.isString(object.path)) {
             const entity = new DKTools.IO.Directory(object.path);
+            const processFile = (file) => {
+                let fullPath = file.getFullPath();
+
+                if (type === 'audio') {
+                    const basePath = DKTools.IO.normalizePath(
+                        AudioManager._basePath || AudioManager._path);
+
+                    if (fullPath.startsWith(basePath)) {
+                        fullPath = fullPath.slice(basePath.length);
+                    }
+                }
+
+                if (this._queue[type][fullPath]) {
+                    return;
+                }
+
+                if (file.isFile()) {
+                    if (type === 'audio') {
+                        this._processAudioFile(file, object);
+                    } else if (type === 'image') {
+                        this._processImageFile(file, object);
+                    }
+                } else {
+                    console.error('This is not a file: ' + fullPath);
+                }
+            };
 
             if (entity.isDirectory()) {
                 if (Utils.isNwjs() || DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
@@ -378,19 +406,7 @@ DKTools.PreloadManager = class {
                         this._files[object.path] = files;
                     }
 
-                    files.forEach((file) => {
-                        const fullPath = file.getFullPath();
-
-                        if (this._queue[type][fullPath]) {
-                            return;
-                        }
-
-                        if (type === 'audio') {
-                            this._processAudioFile(file, object);
-                        } else if (type === 'image') {
-                            this._processImageFile(file, object);
-                        }
-                    });
+                    files.forEach(file => processFile(file));
                 } else {
                     throw new Error('Web browsers and mobile phones cannot load directories!');
                 }
@@ -405,27 +421,13 @@ DKTools.PreloadManager = class {
                     }
                 }
 
-                const file = new DKTools.IO.File(path);
-                const fullPath = file.getFullPath();
-
-                if (this._queue[type][fullPath]) {
-                    return;
-                }
-
-                if (file.isFile()) {
-                    if (type === 'audio') {
-                        this._processAudioFile(file, object);
-                    } else if (type === 'image') {
-                        this._processImageFile(file, object);
-                    }
-                } else {
-                    console.error('This is not a file: ' + fullPath);
-                }
+                processFile(new DKTools.IO.File(path));
             }
         }
     }
 
     /**
+     * @version 1.1.4
      * @private
      * @param {DKTools.IO.File} file
      * @param {Object} object
@@ -453,7 +455,9 @@ DKTools.PreloadManager = class {
             }
         }
 
-        this._queue.audio[normalizedPath] = { ...object, path: normalizedPath };
+        const basePath = AudioManager._basePath || AudioManager._path;
+
+        this._queue.audio[normalizedPath] = { ...object, path: basePath + normalizedPath };
     }
 
     /**

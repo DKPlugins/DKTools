@@ -223,6 +223,8 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
      *
+     * @version 1.3.2
+     *
      * @param {Object} object - Options of an operation
      *
      * @param {Boolean} [object.sync] - Use synchronous version of FileSystem.readdir
@@ -240,7 +242,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      *     console.log(result.data);
      * }
      *
-     * @return {{ data: Object | null, status: Number }} All files
+     * @return {{ data: DKTools.IO.Entity[] | null, status: Number }} All files
      */
     findFiles(object) {
         if (!object) {
@@ -251,7 +253,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
             return { data: null, status: DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE };
         }
 
-        if (!Utils.isNwjs()) {
+        if (!Utils.isNwjs() && DKTools.IO.mode === DKTools.IO.MODE_NWJS) {
             return { data: null, status: DKTools.IO.ERROR_NOT_LOCAL_MODE };
         }
 
@@ -275,7 +277,6 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
                     }
                 } else if (total < searchLimit && entity.isDirectory()) {
                     total++;
-
                     processDirectory(entity);
                 }
             });
@@ -518,6 +519,8 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
      * DKTools.IO.ERROR_OPTIONS_ARE_NOT_AVAILABLE
      * DKTools.IO.ERROR_CALLBACK_IS_NOT_AVAILABLE
      *
+     * @version 1.3.4
+     *
      * @param {Object} object - Options of an operation
      *
      * @param {Boolean} [object.sync] - Use synchronous version of FileSystem.readdir
@@ -570,7 +573,7 @@ DKTools.IO.Directory = class extends DKTools.IO.Entity {
         };
 
         if (!Utils.isNwjs() && DKTools.IO.mode === DKTools.IO.MODE_NWJS_STAMP) {
-            const parts = this.getFullPath().split('\\');
+            const parts = this.getFullPath().split(DKTools.IO.sep).filter(part => !!part);
             const temp = _.get(DKTools.IO.stamp, parts, {});
             const names = Object.keys(temp);
 

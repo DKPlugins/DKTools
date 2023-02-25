@@ -84,10 +84,20 @@ DKTools.Scene.prototype.addAnimation = function(animation) {
     this._eventsManager.addAnimation(animation);
 };
 
+/**
+ * Returns true if the page buttons enabled
+ * @since 1.2.4
+ * @return {Boolean} Page buttons enabled
+ */
+DKTools.Scene.prototype.arePageButtonsEnabled = function() {
+    return true;
+};
+
 // C methods
 
 /**
  * Creates all
+ * @version 1.2.4
  * @override
  */
 DKTools.Scene.prototype.create = function() {
@@ -95,20 +105,23 @@ DKTools.Scene.prototype.create = function() {
     this.createBackground();
     this.createAllSprites();
     this.createWindowLayer();
-    this.createAllWindows();
 
     if (ConfigManager.touchUI) {
         this.createUI();
     }
 
+    this.createAllWindows();
     this.createForeground();
 };
 
 /**
  * Creates the background
+ * @version 1.2.4
  */
 DKTools.Scene.prototype.createBackground = function() {
-    // to be overridden by plugins
+    if (this.needsBackground()) {
+        Scene_MenuBase.prototype.createBackground.apply(this, arguments);
+    }
 };
 
 /**
@@ -123,6 +136,16 @@ DKTools.Scene.prototype.createAllSprites = function() {
  */
 DKTools.Scene.prototype.createAllWindows = function() {
     // to be overridden by plugins
+};
+
+/**
+ * Creates the help window
+ * @since 1.2.4
+ * @param {Function} [windowClass=Window_Help] - Window class
+ */
+DKTools.Scene.prototype.createHelpWindow = function(windowClass = Window_Help) {
+    this._helpWindow = new windowClass(this.helpWindowRect());
+    this.addWindow(this._helpWindow);
 };
 
 /**
@@ -186,6 +209,11 @@ DKTools.Scene.prototype.hasWindowLayer = function() {
     return !!this._windowLayer;
 };
 
+DKTools.Scene.prototype.helpAreaBottom = Scene_MenuBase.prototype.helpAreaBottom;
+DKTools.Scene.prototype.helpAreaHeight = Scene_MenuBase.prototype.helpAreaHeight;
+DKTools.Scene.prototype.helpAreaTop = Scene_MenuBase.prototype.helpAreaTop;
+DKTools.Scene.prototype.helpWindowRect = Scene_MenuBase.prototype.helpWindowRect;
+
 // I methods
 
 /**
@@ -201,7 +229,22 @@ DKTools.Scene.prototype.isChild = function(object) {
     return this.children.includes(object);
 };
 
+// M methods
+
+DKTools.Scene.prototype.mainAreaBottom = Scene_MenuBase.prototype.mainAreaBottom;
+DKTools.Scene.prototype.mainAreaHeight = Scene_MenuBase.prototype.mainAreaHeight;
+DKTools.Scene.prototype.mainAreaTop = Scene_MenuBase.prototype.mainAreaTop;
+
 // N methods
+
+/**
+ * Returns true if needs create the background
+ * @since 1.2.4
+ * @return {Boolean} Needs create the background
+ */
+DKTools.Scene.prototype.needsBackground = function() {
+    return false;
+};
 
 /**
  * Returns true if needs create the cancel button
@@ -247,15 +290,43 @@ DKTools.Scene.prototype.removeWindow = function(window) {
     return false;
 };
 
+// S methods
+
+/**
+ * Sets the background opacity
+ * @since 1.2.4
+ * @param {Number} opacity - Opacity
+ */
+DKTools.Scene.prototype.setBackgroundOpacity = function(opacity) {
+    if (this._backgroundSprite) {
+        this._backgroundSprite.opacity = opacity;
+    }
+};
+
 // U methods
 
 /**
  * Updates the scene
+ * @version 1.2.4
  * @override
  */
 DKTools.Scene.prototype.update = function() {
     Scene_Base.prototype.update.apply(this, arguments);
+    this.updatePageButtons();
     this.updateEvents();
+};
+
+/**
+ * Updates page buttons
+ * @since 1.2.4
+ */
+DKTools.Scene.prototype.updatePageButtons = function() {
+    if (this._pageupButton && this._pagedownButton) {
+        const enabled = this.arePageButtonsEnabled();
+
+        this._pageupButton.visible = enabled;
+        this._pagedownButton.visible = enabled;
+    }
 };
 
 /**

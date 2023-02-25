@@ -36,6 +36,7 @@ DKTools.Utils = class {
 
     /**
      * Checks the updates
+     * @version 1.2.4
      * @private
      * @static
      * @async
@@ -55,7 +56,7 @@ DKTools.Utils = class {
 
             plugins = await DKTools.Network.fetchJson(`${DKTools.SITE}/plugins.php?${queryParams}`) || [];
 
-            if (plugins.length === 0) {
+            if (!plugins || plugins.length === 0) {
                 return;
             }
         } catch(e) {
@@ -66,6 +67,18 @@ DKTools.Utils = class {
 
         const showNewPlugins = DKToolsParam.get('Check Updates', 'Show New Plugins');
 
+        plugins = plugins.sort((a, b) => {
+            if (DKTools.PluginManager.isRegistered(a.name)) {
+                if (DKTools.PluginManager.isRegistered(b.name)) {
+                    return 0;
+                }
+
+                return -1;
+            }
+
+            return 1;
+        });
+
         plugins.forEach((plugin) => {
             const newVersion = plugin.version;
 
@@ -74,7 +87,7 @@ DKTools.Utils = class {
                     const currentVersion = DKTools.PluginManager.getVersion(plugin.name);
                     const args = [`Available a new ${plugin.beta ? 'beta ' : ''}version of ${plugin.name}: ${newVersion}\n`,
                         `Installed: ${currentVersion}\n`,
-                        `Visit site: ${plugin.url}`];
+                        `Plugin page: ${plugin.url}`];
 
                     if (plugin.download_url) {
                         args.push(`\nDownload: ${plugin.download_url}`)
@@ -85,6 +98,21 @@ DKTools.Utils = class {
                     }
 
                     console.log.apply(console, args);
+                }
+
+                if (DKTools.PluginManager.compareVersions(plugin.patreon_version, newVersion)
+                    && !DKTools.PluginManager.checkVersion(plugin.name, plugin.patreon_version)) {
+                        const currentVersion = DKTools.PluginManager.getVersion(plugin.name);
+                        const args = [`Available a new version of ${plugin.name} on Patreon: ${plugin.patreon_version}\n`,
+                            `Installed: ${currentVersion}\n`,
+                            `Patreon page: ${DKTools.PATREON}\n`,
+                            `Plugin page: ${plugin.url}`];
+
+                        if (plugin.patreon_url) {
+                            args.push(`\nPatreon download: ${plugin.patreon_url}`);
+                        }
+
+                        console.log.apply(console, args);
                 }
             } else if (showNewPlugins) {
                 const requirementsMet = plugin.requirements.length === 0 ||
@@ -98,7 +126,7 @@ DKTools.Utils = class {
                 const args = [
                     `Try the new plugin: ${plugin.name}\n`,
                     `Description: ${plugin.description}\n`,
-                    `Visit site: ${plugin.url} \n`];
+                    `Plugin page: ${plugin.url} \n`];
 
                 if (plugin.download_url) {
                     args.push(`\nDownload: ${plugin.download_url}`)
@@ -507,13 +535,17 @@ DKTools.Utils = class {
 
     /**
      * Throws the error
+     *
+     * @version 1.2.6
      * @static
+     *
      * @param {*} error - Error
+     * @param {Number} [timeout=0] - Timeout
      */
-    static throwError(error) {
+    static throwError(error, timeout = 0) {
         setTimeout(() => {
             throw error;
-        }, 0);
+        }, timeout);
     }
 
     // Q methods
